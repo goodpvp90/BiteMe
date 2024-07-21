@@ -8,11 +8,11 @@ import common.Order;
 import ocsf.server.AbstractServer;
 import ocsf.server.ConnectionToClient;
 
-public class ProtoServer extends AbstractServer {
+public class Server extends AbstractServer {
     private DBController dbController;
     private serverController controller;
     
-    public ProtoServer(int port) {
+    public Server(int port) {
         super(port);
         dbController = new DBController();
         try {

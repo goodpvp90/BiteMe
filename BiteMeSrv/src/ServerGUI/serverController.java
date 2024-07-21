@@ -8,10 +8,10 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.layout.GridPane;
-import server.ProtoServer;
+import server.Server;
 
 public class serverController {
-    private ProtoServer server;
+    private Server server;
     @FXML
     private GridPane gridPane;
     @FXML
@@ -37,7 +37,7 @@ public class serverController {
     @FXML
     private void handleConnectButton(ActionEvent event) {
         if (server == null) {
-            server = new ProtoServer(8080);
+            server = new Server(8080);
             server.setController(this);
             // Making a thread to run in the background and listen for clients
             new Thread(() -> {
@@ -109,7 +109,7 @@ public class serverController {
     }
 
     // Receive instance of server and send for him this instance of controller
-    public void setProtoServer(ProtoServer protoServer) {
+    public void setProtoServer(Server protoServer) {
         protoServer.setController(this);
     }
 }

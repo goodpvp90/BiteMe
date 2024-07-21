@@ -9,10 +9,10 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import java.io.IOException;
-import client.ProtoClient;
+import client.Client;
 
 public class clientController {
-    private ProtoClient client;
+    private Client client;
     private boolean updating = false;
     
     // UI components injected from FXML
@@ -56,7 +56,7 @@ public class clientController {
     @FXML
     private void handleConnectButton() {
         try {
-            client = new ProtoClient("localhost", ProtoClient.DEFAULT_PORT);
+            client = new Client("localhost", Client.DEFAULT_PORT);
             client.setGuiController(this);
             welcomeText.setText("Hello " + client.getHost() + "! Please choose an action:");
             connectButton.setDisable(true);

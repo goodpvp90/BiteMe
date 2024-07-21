@@ -6,7 +6,7 @@ import java.net.InetAddress;
 import common.Order;
 import ClientGUI.clientController;
 
-public class ProtoClient extends AbstractClient {
+public class Client extends AbstractClient {
     // Default port to connect to the server
     final public static int DEFAULT_PORT = 8080;
     
@@ -14,7 +14,7 @@ public class ProtoClient extends AbstractClient {
     private clientController clientController;
 
     // Constructor to initialize the client with host and port, and establish connection
-    public ProtoClient(String host, int port) throws IOException {
+    public Client(String host, int port) throws IOException {
         super(host, port);
         openConnection();
         
