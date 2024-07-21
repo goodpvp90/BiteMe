@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<VBox spacing="10.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8.0.171" fx:controller="ClientGUI.clientController">
+    <padding>
+        <Insets bottom="20" left="20" right="20" top="20" />
+    </padding>
+    <children>
+        <Text fx:id="welcomeText" text="Hello user! Please choose an action:" textAlignment="CENTER" wrappingWidth="566.89453125">
+            <font>
+                <Font name="System Bold Italic" size="20.0" />
+            </font>
+        </Text>
+        <HBox spacing="10.0">
+            <children>
+                <Button fx:id="connectButton" onAction="#handleConnectButton" text="CONNECT" />
+                <Button fx:id="viewButton" onAction="#handleViewButton" text="VIEW" />
+                <Button fx:id="updateButton" onAction="#handleUpdateButton" text="UPDATE" />
+                <Button fx:id="quitButton" onAction="#handleQuitButton" text="QUIT" />
+            </children>
+        </HBox>
+        <ListView fx:id="ordersListView" />
+        <VBox fx:id="ordersContainer" spacing="5.0" visible="false">
+            <padding>
+                <Insets bottom="10" left="10" right="10" top="10" />
+            </padding>
+            <children>
+                <Text text="Please enter below the ORDER NUMBER, choose a FIELD to update, enter a VALUE and press CONFIRM." />
+                <HBox spacing="10.0">
+                    <children>
+                        <TextField fx:id="orderNumberField" promptText="Order Number" />
+                        <ComboBox fx:id="fieldComboBox" />
+                        <TextField fx:id="newValueField" promptText="New Value" />
+                    </children>
+                </HBox>
+                <Button onAction="#handleConfirmButton" text="CONFIRM" />
+            </children>
+        </VBox>
+    </children>
+</VBox>

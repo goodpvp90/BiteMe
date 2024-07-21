@@ -1,0 +1,38 @@
+/* client.css */
+
+/* Set the font size and color for the welcome text */
+#welcomeText {
+    -fx-font-size: 16px;
+    -fx-fill: #333333; /* Dark gray color */
+}
+
+/* Style for buttons */
+.button {
+    -fx-background-color: #0073e6; /* Blue background */
+    -fx-text-fill: white; /* White text */
+    -fx-font-size: 14px; /* Font size */
+    -fx-padding: 10px 20px; /* Padding */
+    -fx-border-radius: 5px; /* Rounded corners */
+    -fx-background-radius: 5px; /* Background radius to match border radius */
+}
+
+.button:hover {
+    -fx-background-color: #005bb5; /* Darker blue on hover */
+}
+
+.button:pressed {
+    -fx-background-color: #003f7f; /* Even darker blue when pressed */
+}
+
+/* Style for ListView */
+.list-view {
+    -fx-background-color: #f0f0f0; /* Light gray background */
+    -fx-border-color: #d3d3d3; /* Gray border */
+    -fx-border-width: 1px; /* Border width */
+    -fx-padding: 5px; /* Padding */
+}
+
+/* Style for VBox */
+.vbox {
+    -fx-spacing: 10px; /* Spacing between elements */
+}

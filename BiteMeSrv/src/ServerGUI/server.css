@@ -1,0 +1,13 @@
+.button {
+    -fx-padding: 10px;
+    -fx-font-size: 14px;
+}
+
+.label {
+    -fx-font-size: 14px;
+}
+
+.list-view {
+    -fx-pref-height: 200px;
+    -fx-pref-width: 300px;
+}
