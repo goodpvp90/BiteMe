@@ -37,7 +37,8 @@ public class serverController {
     @FXML
     private void handleConnectButton(ActionEvent event) {
         if (server == null) {
-            server = new Server(8080);
+        	//TEMPORARY
+            server = new Server(8080, "jdbc:mysql://localhost:3306/biteme", "root", "Aa12345");
             server.setController(this);
             // Making a thread to run in the background and listen for clients
             new Thread(() -> {

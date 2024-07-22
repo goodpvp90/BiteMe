@@ -8,15 +8,16 @@ import common.Order;
 import ocsf.server.AbstractServer;
 import ocsf.server.ConnectionToClient;
 
+
 public class Server extends AbstractServer {
-    private DBController dbController;
+    static DBController dbController;
     private serverController controller;
     
-    public Server(int port) {
+    public Server(int port, String url, String username, String pass) {
         super(port);
         dbController = new DBController();
         try {
-            dbController.connect();
+            dbController.connect(url, username, pass);
         } catch (ClassNotFoundException | SQLException e) {
             System.out.println("Failed to connect to the database.");
             e.printStackTrace();
@@ -41,34 +42,34 @@ public class Server extends AbstractServer {
     protected void handleMessageFromClient(Object msg, ConnectionToClient client) {
         String result;
         if (msg instanceof String[]) {
-            //Handle the initial connection message
-            controller.displayClientDetails((String[])msg);
-        }
-        else if (msg instanceof Object[]) {
+            controller.displayClientDetails((String[]) msg);
+        } else if (msg instanceof Object[]) {
             Object[] message = (Object[]) msg;
-            //if got order to insert to DB
-            /////////////////////////////////ENUM
-            if ("insertOrder".equals(message[0])) {
-            	insertOrder(message, client);
-            }
-            //if we want to update an order
-            else if ("updateOrder".equals(message[0].toString())) {
-            	result = updateOrder(message);
-            } else {
-                System.out.println("Received unknown message type from client: " + msg);
+            switch (message[0].toString()) {
+                case "insertOrder":
+                    insertOrder(message, client);
+                    break;
+                case "updateOrder":
+                    result = updateOrder(message);
+                    break;
+                case "login":
+                	result = UserController.login(client, message);
+                default:
+                    System.out.println("Received unknown message type from client: " + msg);
             }
         } else if (msg instanceof String) {
-        	//if want to view
-            if ("view".equals(msg)) {
-            	viewOrders(client);
-            } else {
-                System.out.println("Received unknown message from client: " + msg);
+            switch ((String) msg) {
+                case "view":
+                    viewOrders(client);
+                    break;
+                default:
+                    System.out.println("Received unknown message from client: " + msg);
             }
         } else {
             System.out.println("Received unknown message from client: " + msg);
         }
-        
     }
+
     
     //CHECK IF WORKS
     private void insertOrder(Object[] message, ConnectionToClient client) {
@@ -103,11 +104,10 @@ public class Server extends AbstractServer {
             e.printStackTrace();
         }
     }
+    
     @Override
     protected void clientDisconnected(ConnectionToClient client) {
-        System.out.println("Client disconnected: " + client);
         controller.displayClientDetails((new String[]{"Client disconnected: "+client}));
-        System.out.println("Client disconnected: " + client);
     }
 
     @Override
