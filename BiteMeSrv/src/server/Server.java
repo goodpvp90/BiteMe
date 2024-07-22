@@ -7,19 +7,46 @@ import ServerGUI.serverController;
 import common.Order;
 import ocsf.server.AbstractServer;
 import ocsf.server.ConnectionToClient;
-
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 
 public class Server extends AbstractServer {
-    static DBController dbController;
+    private static Server instance;
+    public  DBController dbController;
     private serverController controller;
     
-    public Server(int port, String url, String username, String pass) {
+    // Private constructor
+    private Server(int port, String url, String username, String password) {
         super(port);
         dbController = new DBController();
         try {
-            dbController.connect(url, username, pass);
+            dbController.connect(url, username, password);
         } catch (ClassNotFoundException | SQLException e) {
             System.out.println("Failed to connect to the database.");
+            e.printStackTrace();
+        }
+    }
+    
+    // Public method to initialize the Server and get the instance
+    public static void initialize(int port, String url, String username, String password) {
+        if (instance == null) {
+            instance = new Server(port, url, username, password);
+        }
+    }
+    
+    // Public method to get the Server instance
+    public static Server getInstance() {
+        if (instance == null) {
+            throw new IllegalStateException("Server not initialized. Call initialize() first.");
+        }
+        return instance;
+    }
+    
+    public void sendMessageToClient(ConnectionToClient client, Object msg) {
+    	try {
+    	client.sendToClient(msg);
+    	}
+    	catch(IOException e) {
             e.printStackTrace();
         }
     }
@@ -53,9 +80,10 @@ public class Server extends AbstractServer {
                     result = updateOrder(message);
                     break;
                 case "login":
-                	result = UserController.login(client, message);
+                	UserController.login(client, message);
+                	break;
                 default:
-                    System.out.println("Received unknown message type from client: " + msg);
+                    System.out.println("Received unknown message type from client:1 " + msg);
             }
         } else if (msg instanceof String) {
             switch ((String) msg) {
@@ -63,10 +91,10 @@ public class Server extends AbstractServer {
                     viewOrders(client);
                     break;
                 default:
-                    System.out.println("Received unknown message from client: " + msg);
+                    System.out.println("Received unknown message from client:2 " + msg);
             }
         } else {
-            System.out.println("Received unknown message from client: " + msg);
+            System.out.println("Received unknown message from client:3 " + msg);
         }
     }
 
@@ -133,5 +161,4 @@ public class Server extends AbstractServer {
     public void setController(serverController controller) {
         this.controller = controller;
      }
-
 }

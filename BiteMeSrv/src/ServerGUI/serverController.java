@@ -38,7 +38,8 @@ public class serverController {
     private void handleConnectButton(ActionEvent event) {
         if (server == null) {
         	//TEMPORARY
-            server = new Server(8080, "jdbc:mysql://localhost:3306/biteme", "root", "Aa12345");
+        	Server.initialize(8080, "jdbc:mysql://localhost:3306/biteme", "root", "Aa123456");
+            server = Server.getInstance();
             server.setController(this);
             // Making a thread to run in the background and listen for clients
             new Thread(() -> {
