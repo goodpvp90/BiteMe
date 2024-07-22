@@ -10,6 +10,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import java.io.IOException;
 import client.Client;
+import common.User;
 
 public class clientController {
     private Client client;
@@ -62,6 +63,11 @@ public class clientController {
             connectButton.setDisable(true);
             viewButton.setDisable(false);
             updateButton.setDisable(false);
+            //////////////////////////////
+            User us = new User("nadir", "123");
+            client.loginValidation(us);
+            
+            
         } catch (IOException e) {
             e.printStackTrace();
             welcomeText.setText("Failed to connect: " + e.getMessage());

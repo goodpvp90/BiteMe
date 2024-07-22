@@ -7,18 +7,46 @@ import ServerGUI.serverController;
 import common.Order;
 import ocsf.server.AbstractServer;
 import ocsf.server.ConnectionToClient;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 
 public class Server extends AbstractServer {
-    private DBController dbController;
+    private static Server instance;
+    public  DBController dbController;
     private serverController controller;
     
-    public Server(int port) {
+    // Private constructor
+    private Server(int port, String url, String username, String password) {
         super(port);
         dbController = new DBController();
         try {
-            dbController.connect();
+            dbController.connect(url, username, password);
         } catch (ClassNotFoundException | SQLException e) {
             System.out.println("Failed to connect to the database.");
+            e.printStackTrace();
+        }
+    }
+    
+    // Public method to initialize the Server and get the instance
+    public static void initialize(int port, String url, String username, String password) {
+        if (instance == null) {
+            instance = new Server(port, url, username, password);
+        }
+    }
+    
+    // Public method to get the Server instance
+    public static Server getInstance() {
+        if (instance == null) {
+            throw new IllegalStateException("Server not initialized. Call initialize() first.");
+        }
+        return instance;
+    }
+    
+    public void sendMessageToClient(ConnectionToClient client, Object msg) {
+    	try {
+    	client.sendToClient(msg);
+    	}
+    	catch(IOException e) {
             e.printStackTrace();
         }
     }
@@ -41,34 +69,35 @@ public class Server extends AbstractServer {
     protected void handleMessageFromClient(Object msg, ConnectionToClient client) {
         String result;
         if (msg instanceof String[]) {
-            //Handle the initial connection message
-            controller.displayClientDetails((String[])msg);
-        }
-        else if (msg instanceof Object[]) {
+            controller.displayClientDetails((String[]) msg);
+        } else if (msg instanceof Object[]) {
             Object[] message = (Object[]) msg;
-            //if got order to insert to DB
-            /////////////////////////////////ENUM
-            if ("insertOrder".equals(message[0])) {
-            	insertOrder(message, client);
-            }
-            //if we want to update an order
-            else if ("updateOrder".equals(message[0].toString())) {
-            	result = updateOrder(message);
-            } else {
-                System.out.println("Received unknown message type from client: " + msg);
+            switch (message[0].toString()) {
+                case "insertOrder":
+                    insertOrder(message, client);
+                    break;
+                case "updateOrder":
+                    result = updateOrder(message);
+                    break;
+                case "login":
+                	UserController.login(client, message);
+                	break;
+                default:
+                    System.out.println("Received unknown message type from client:1 " + msg);
             }
         } else if (msg instanceof String) {
-        	//if want to view
-            if ("view".equals(msg)) {
-            	viewOrders(client);
-            } else {
-                System.out.println("Received unknown message from client: " + msg);
+            switch ((String) msg) {
+                case "view":
+                    viewOrders(client);
+                    break;
+                default:
+                    System.out.println("Received unknown message from client:2 " + msg);
             }
         } else {
-            System.out.println("Received unknown message from client: " + msg);
+            System.out.println("Received unknown message from client:3 " + msg);
         }
-        
     }
+
     
     //CHECK IF WORKS
     private void insertOrder(Object[] message, ConnectionToClient client) {
@@ -103,11 +132,10 @@ public class Server extends AbstractServer {
             e.printStackTrace();
         }
     }
+    
     @Override
     protected void clientDisconnected(ConnectionToClient client) {
-        System.out.println("Client disconnected: " + client);
         controller.displayClientDetails((new String[]{"Client disconnected: "+client}));
-        System.out.println("Client disconnected: " + client);
     }
 
     @Override
@@ -133,5 +161,4 @@ public class Server extends AbstractServer {
     public void setController(serverController controller) {
         this.controller = controller;
      }
-
 }

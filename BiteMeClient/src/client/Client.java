@@ -4,6 +4,7 @@ import ocsf.client.*;
 import java.io.*;
 import java.net.InetAddress;
 import common.Order;
+import common.User;
 import ClientGUI.clientController;
 
 public class Client extends AbstractClient {
@@ -40,7 +41,12 @@ public class Client extends AbstractClient {
             if (clientController != null) {
                 clientController.displayOrders(orders);
             }
-        } else {
+        }else if(msg instanceof User) {
+        	//SEND TO CLIENT CONTROLLER
+        	User user = (User)msg;
+        	System.out.println(user.getFirstName());
+        }
+        else {
             // Handle non-array messages for updating the top label in clientController
             if (clientController != null) {
                 clientController.updateWelcomeText("Message from server: " + msg);
@@ -98,5 +104,9 @@ public class Client extends AbstractClient {
     // Request to view orders from the database
     public void viewOrdersFromDB() {
         sendMessageToServer("view");
+    }
+    
+    public void loginValidation(User user) {
+    	sendMessageToServer(new Object[] { "login", user});
     }
 }
