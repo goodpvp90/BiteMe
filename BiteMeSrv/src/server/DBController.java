@@ -101,18 +101,14 @@ public class DBController {
                 	//if got true meaning user is already logged in
                 	if(updateIsLoggedStatus(username))
                 		return (Object)"user is already logged in";
-                    System.out.println("1");
-
+                	
                     String Email = rs.getString("email");
                     String phone = rs.getString("phone");
                     String firstName = rs.getString("firstname");
                     String lastName = rs.getString("lastname");
-                    System.out.println("2");
-
                     EnumBranch homeBranch = EnumBranch.valueOf(rs.getString("home_branch"));
                     EnumType type = EnumType.valueOf(rs.getString("type"));
                     boolean isLogged = rs.getBoolean("isLogged");
-                    System.out.println("3");
 
                     userDetails.add(firstName);
                     userDetails.add(lastName);
@@ -123,7 +119,6 @@ public class DBController {
                     userDetails.add(password);
                     userDetails.add(isLogged);
                     userDetails.add(type);
-                    System.out.println("mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm");
 
                 }
                 else {

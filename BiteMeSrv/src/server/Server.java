@@ -4,6 +4,7 @@ import java.io.*;
 import java.sql.SQLException;
 import java.util.List;
 import ServerGUI.serverController;
+import common.EnumServerOperations;
 import common.Order;
 import ocsf.server.AbstractServer;
 import ocsf.server.ConnectionToClient;
@@ -68,35 +69,62 @@ public class Server extends AbstractServer {
     @Override
     protected void handleMessageFromClient(Object msg, ConnectionToClient client) {
         String result;
-        if (msg instanceof String[]) {
-            controller.displayClientDetails((String[]) msg);
-        } else if (msg instanceof Object[]) {
-            Object[] message = (Object[]) msg;
-            switch (message[0].toString()) {
-                case "insertOrder":
-                    insertOrder(message, client);
+        EnumServerOperations operation = EnumServerOperations.NONE;
+        if (msg instanceof Object[]) {
+            Object[] mess = (Object[]) msg;
+            operation = (EnumServerOperations) mess[0];
+	        switch(operation) {
+	        	case USER_CONDITION:
+	        		controller.displayClientDetails((String[]) mess[1]);
+	        		break;
+	        	case INSERT_ORDER:
+	        		insertOrder((Object[])mess[1], client);
                     break;
-                case "updateOrder":
-                    result = updateOrder(message);
+	        	case UPDATE_ORDER:
+	        		result = updateOrder((Object[])mess[1]);
                     break;
-                case "login":
-                	UserController.login(client, message);
+	        	case LOGIN:
+	        		UserController.login(client, (Object[])mess);
                 	break;
-                default:
-                    System.out.println("Received unknown message type from client:1 " + msg);
-            }
-        } else if (msg instanceof String) {
-            switch ((String) msg) {
-                case "view":
-                    viewOrders(client);
-                    break;
-                default:
-                    System.out.println("Received unknown message from client:2 " + msg);
-            }
-        } else {
-            System.out.println("Received unknown message from client:3 " + msg);
+	        	case VIEW:
+	        		viewOrders(client);
+	        		break;
+	        	case NONE:
+	        		System.out.println("no operation was recived");
+	        		break;
+	        }
         }
+        else
+        	System.out.println("Received unknown message type from client: " + msg);
     }
+//        if (msg instanceof String[]) {
+//            controller.displayClientDetails((String[]) msg);
+//         if (msg instanceof Object[]) {
+//            Object[] message = (Object[]) msg;
+//            switch (message[0].toString()) {
+//                case "insertOrder":
+//                    insertOrder(message, client);
+//                    break;
+//                case "updateOrder":
+//                    result = updateOrder(message);
+//                    break;
+//                case "login":
+//                	UserController.login(client, message);
+//                	break;
+//                default:
+//                    System.out.println("Received unknown message type from client: " + msg);
+//            }
+//        } else if (msg instanceof String) {
+//            switch ((String) msg) {
+//                case "view":
+//                    viewOrders(client);
+//                    break;
+//                default:
+//                    System.out.println("Received unknown message from client: " + msg);
+//            }
+//        } else {
+//            System.out.println("Received unknown message from client: " + msg);
+//        }
 
     
     //CHECK IF WORKS

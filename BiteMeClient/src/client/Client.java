@@ -3,6 +3,8 @@ package client;
 import ocsf.client.*;
 import java.io.*;
 import java.net.InetAddress;
+
+import common.EnumServerOperations;
 import common.Order;
 import common.User;
 import ClientGUI.clientController;
@@ -24,7 +26,8 @@ public class Client extends AbstractClient {
         String clientHostName = InetAddress.getLocalHost().getHostName();
         
         // Send initial connection message to the server
-        sendToServer(new String[] { clientIP, clientHostName, "start" });
+        
+        sendToServer(new Object[] {EnumServerOperations.USER_CONDITION,new String[] { clientIP, clientHostName, "start" }});
     }
     
     // Sets the GUI controller for this client
@@ -62,7 +65,7 @@ public class Client extends AbstractClient {
             String clientHostName = InetAddress.getLocalHost().getHostName();
             
             // Send disconnection message to the server
-            sendToServer(new String[] { clientIP, clientHostName, "end" });
+            sendToServer(new Object[] {EnumServerOperations.USER_CONDITION,new String[] { clientIP, clientHostName, "end" }});
             
             // Close the connection
             closeConnection();
@@ -98,15 +101,15 @@ public class Client extends AbstractClient {
     
     // Send a request to insert a new order on the server
     public void sendInsertOrderRequest(Order order) {
-        sendMessageToServer(new Object[] { "insertOrder", order });
+        sendMessageToServer(new Object[] { EnumServerOperations.INSERT_ORDER, order });
     }
 
     // Request to view orders from the database
     public void viewOrdersFromDB() {
-        sendMessageToServer("view");
+        sendMessageToServer(new Object[] {EnumServerOperations.VIEW});
     }
     
     public void loginValidation(User user) {
-    	sendMessageToServer(new Object[] { "login", user});
+    	sendMessageToServer(new Object[] { EnumServerOperations.LOGIN, user});
     }
 }
