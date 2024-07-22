@@ -2,6 +2,7 @@ package server;
 
 import java.util.ArrayList;
 import common.EnumBranch;
+import common.EnumClientOperations;
 import common.EnumType;
 import common.User;
 import ocsf.server.ConnectionToClient;
@@ -14,7 +15,7 @@ public class UserController {
     	User user = (User)message[1];
         Object result = server.dbController.validateLogin(user);
 		if (result instanceof String)
-			server.sendMessageToClient(client, result);
+			server.sendMessageToClient(EnumClientOperations.EROR,client, result);
 		else {
 			@SuppressWarnings("unchecked")
 			ArrayList<Object> details = (ArrayList<Object>) result;
@@ -25,7 +26,7 @@ public class UserController {
 			user.setHomeBranch((EnumBranch)details.get(4));
 			user.setLogged((boolean)details.get(7));
 			user.setType((EnumType)details.get(8));
-			server.sendMessageToClient(client, (Object)user);
+			server.sendMessageToClient(EnumClientOperations.USER,client, (Object)user);
 		}
     }
 }
