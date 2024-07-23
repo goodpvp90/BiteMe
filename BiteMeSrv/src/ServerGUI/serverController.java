@@ -58,6 +58,7 @@ public class serverController {
     @FXML
     private void handleConnectButton(ActionEvent event) {
         if (server == null) {
+
           
             try {
             	CheckLegalInput(portText.getText(),DBNameText.getText(),DBuser.getText()
@@ -66,8 +67,9 @@ public class serverController {
 				showErrorOfWrongInput(e.getMessage());
 				return;
 			}
-            server = new Server(8080);
-            server.setController(this);
+        	Server.initialize(Integer.parseInt(portText.getText()), DBNameText.getText(), DBuser.getText(), DBPassword.getText());
+          server = Server.getInstance();
+          server.setController(this);
             //handle connection to server with legal input from text fields
             // Making a thread to run in the background and listen for clients
                 try {
