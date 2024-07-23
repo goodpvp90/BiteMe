@@ -15,7 +15,7 @@ public class ClientLoginUI extends Application {
         Scene scene = new Scene(root);
         primaryStage.setTitle("Client Login");
         primaryStage.setScene(scene);
-        primaryStage.show();
+        primaryStage.show();//
     }
 
     public static void main(String[] args) {

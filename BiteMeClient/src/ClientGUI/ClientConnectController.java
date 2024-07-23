@@ -49,7 +49,7 @@ public class ClientConnectController {
         stage.close();
     }
     
-    //launching Client Login UI, close the current window and set up new UI
+    //launching Client Login UI, close the current window and set up new UI.
     private void launchClientLoginUI() {
         try {
             // Launch ClientLoginUI

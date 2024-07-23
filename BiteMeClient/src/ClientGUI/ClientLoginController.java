@@ -39,7 +39,7 @@ public class ClientLoginController {
             showError("Username or password cannot be empty");
             
         } else {
-            // success storing the message from server if connect succeed
+            // success storing the message from server if connect succeed.
             boolean success=false;
             
             if (success) {

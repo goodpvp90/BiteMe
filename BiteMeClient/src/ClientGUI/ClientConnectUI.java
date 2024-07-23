@@ -19,7 +19,7 @@ public class ClientConnectUI extends Application {
         // Set the scene
         Scene scene = new Scene(root, 600, 500);
 
-        // Set the stage
+        // Set the stage.
         primaryStage.setTitle("Client Connect");
         primaryStage.setScene(scene);
         primaryStage.show();

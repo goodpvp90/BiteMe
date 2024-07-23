@@ -125,6 +125,7 @@ public class serverController {
     
     //When error occurred on input of wrong data in the text field this error
     //will appear
+    //
     public void showErrorOfWrongInput(String message) {
     	ErrorServerInput.setText(message);
     	ErrorServerInput.setVisible(true);
