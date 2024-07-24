@@ -1,5 +1,7 @@
 package ClientGUI;
 
+import client.Client;
+import common.User;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
@@ -23,10 +25,15 @@ public class ClientLoginController {
     @FXML
     private Button quitButton;
 
+    private Client client;
+    
+    private User user;
     @FXML
     private void initialize() {
         loginButton.setOnAction(event -> handleLogin());
         quitButton.setOnAction(event -> handleQuit());
+        client = Client.getInstance();
+    	client.getInstanceOfClientLoginController(this);
     }
 
     private void handleLogin() {
@@ -40,14 +47,17 @@ public class ClientLoginController {
             
         } else {
             // success storing the message from server if connect succeed.
-            boolean success=false;
             
-            if (success) {
-                // Proceed to next scene or application logic
-            } else {
-                showError("Invalid username or password");
-            }
+            client.loginValidation(new User(username,password));
+
         }
+    }
+    
+    public void updateUser(Object user) {
+    	if (user instanceof String) {
+    		//USER DIDNT PUT CORRECT DETAILS
+    	}
+    	this.user = (User)user;	
     }
 
     private void handleQuit() {

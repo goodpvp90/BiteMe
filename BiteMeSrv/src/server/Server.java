@@ -176,6 +176,7 @@ public class Server extends AbstractServer {
 		try {
 			stopListening();
 			close();
+			instance = null;
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

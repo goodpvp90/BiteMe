@@ -119,7 +119,7 @@ public class DBController {
                     userDetails.add(password);
                     userDetails.add(isLogged);
                     userDetails.add(type);
-
+                    
                 }
                 else {
                 	return (Object)"username or password are incorrect";

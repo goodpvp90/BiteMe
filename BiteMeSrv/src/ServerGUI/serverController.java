@@ -143,8 +143,8 @@ public class serverController {
     private void handleDisconnectButton(ActionEvent event) {
         if (server != null) {
             try {
-                server.stopListening(); // Stop the server from listening for new clients
-                server.close(); // Close the server
+                server.stopServer(); // Stop the server from listening for new clients
+                // Close the server
                 server = null;
                 updateStatus("Server disconnected");
                 connectButton.setDisable(false); // Enable the connect button

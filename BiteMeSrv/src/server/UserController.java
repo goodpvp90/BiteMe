@@ -1,4 +1,4 @@
-package server;
+	package server;
 
 import java.util.ArrayList;
 import common.EnumBranch;
@@ -14,11 +14,14 @@ public class UserController {
     public static void login(ConnectionToClient client, Object[] message) {
     	User user = (User)message[1];
         Object result = server.dbController.validateLogin(user);
-		if (result instanceof String)
+		if (result instanceof String) {
 			server.sendMessageToClient(EnumClientOperations.EROR,client, result);
+		}
 		else {
 			@SuppressWarnings("unchecked")
 			ArrayList<Object> details = (ArrayList<Object>) result;
+			
+
 			user.setFirstName((String)details.get(0));
 			user.setLastName((String)details.get(1));
 			user.setEmail((String)details.get(2));

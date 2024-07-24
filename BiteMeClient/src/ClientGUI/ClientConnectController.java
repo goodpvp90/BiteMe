@@ -1,5 +1,8 @@
 package ClientGUI;
 
+import java.io.IOException;
+
+import client.Client;
 import javafx.application.Application;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -29,17 +32,19 @@ public class ClientConnectController {
     }
 
     @FXML
-    private void handleConnectButtonAction() {
+    private void handleConnectButtonAction() throws IOException {
         String serverIp = serverIpTextField.getText();
-        String serverPort = serverPortTextField.getText();
+        int serverPort = Integer.parseInt(serverPortTextField.getText());
         
         //////////////added switch to login page
         boolean connect = true;
+        Client.initialize(serverIp, serverPort);
         if(connect)
         	launchClientLoginUI();
         
         // Handle the connect logic here
         System.out.println("Connecting to server " + serverIp + " on port " + serverPort);
+        
     }
 
     @FXML

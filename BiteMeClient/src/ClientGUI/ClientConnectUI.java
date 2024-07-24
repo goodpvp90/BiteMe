@@ -15,7 +15,7 @@ public class ClientConnectUI extends Application {
         // Load the FXML file
         FXMLLoader loader = new FXMLLoader(getClass().getResource("ClientConnect.fxml"));
         GridPane root = loader.load();
-
+        
         // Set the scene
         Scene scene = new Scene(root, 600, 500);
 

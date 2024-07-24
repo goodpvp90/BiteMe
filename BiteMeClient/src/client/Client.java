@@ -1,6 +1,8 @@
 package client;
 
 import ocsf.client.*;
+
+
 import java.io.*;
 import java.net.InetAddress;
 
@@ -8,15 +10,17 @@ import common.EnumClientOperations;
 import common.EnumServerOperations;
 import common.Order;
 import common.User;
+import ClientGUI.ClientLoginController;
 import ClientGUI.clientController;
 
 public class Client extends AbstractClient {
 	// Default port to connect to the server
 	final public static int DEFAULT_PORT = 8080;
-
+	private static Client instance;
 	// Controller for Client GUI functionality
 	private clientController clientController;
-
+	private ClientLoginController clientLoginController;
+	
 	// Constructor to initialize the client with host and port, and establish
 	// connection
 	public Client(String host, int port) throws IOException {
@@ -31,6 +35,21 @@ public class Client extends AbstractClient {
 
 		sendToServer(new Object[] { EnumServerOperations.USER_CONDITION,
 				new String[] { clientIP, clientHostName, "start" } });
+	}
+	
+	// Public method to get the Server instance
+	public static Client getInstance() {
+		if (instance == null) {
+			throw new IllegalStateException("Client not initialized. Call initialize() first.");
+		}
+		return instance;
+	}
+	
+	// Public method to initialize the Server and get the instance
+	public static void initialize(String host, int port) throws IOException {
+		if (instance == null) {
+			instance = new Client(host, port);
+		}
 	}
 
 	// Sets the GUI controller for this client
@@ -52,15 +71,18 @@ public class Client extends AbstractClient {
 	            if (clientController != null) {
 	                clientController.displayOrders(orders);
 	            }
+	            break;
 			case USER:
 				//SEND TO CLIENT CONTROLLER
-	        	User user = (User) message[1];
-	        	System.out.println(user.getFirstName());
+	        	Object data = (Object)message[1];
+	        	clientLoginController.updateUser(data);
+	        	break;
 			case UPDATE_WELOCME:
 				// Handle non-array messages for updating the top label in clientController
 	            if (clientController != null) {
 	                clientController.updateWelcomeText("Message from server: " + message[1]);
 	            }
+	            break;
 			case NONE:
 				System.out.println("no operation was recived");
 				break;
@@ -118,7 +140,11 @@ public class Client extends AbstractClient {
 			}
 		}
 	}
-
+	
+	public void getInstanceOfClientLoginController(ClientLoginController client) {
+		this.clientLoginController = client;
+	}
+	
 	// Send a request to update an order on the server
 	public void sendUpdateOrderRequest(int orderNum, String colToChange, Object newVal) {
 		Object[] arr = new Object[4];
