@@ -1,6 +1,8 @@
 package ClientGUI;
 
 import client.Client;
+import common.Dish;
+import common.EnumDish;
 import common.User;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -47,9 +49,7 @@ public class ClientLoginController {
             
         } else {
             // success storing the message from server if connect succeed.
-            
             client.loginValidation(new User(username,password));
-
         }
     }
     

@@ -6,5 +6,6 @@ public enum EnumServerOperations {
 	INSERT_ORDER,
 	UPDATE_ORDER,
 	VIEW,
-	LOGIN;
+	LOGIN, 
+	ADD_DISH
 }

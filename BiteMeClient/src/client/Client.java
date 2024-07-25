@@ -5,8 +5,13 @@ import ocsf.client.*;
 
 import java.io.*;
 import java.net.InetAddress;
+import java.util.ArrayList;
+import java.util.List;
 
+import common.Dish;
+import common.DishInOrder;
 import common.EnumClientOperations;
+import common.EnumDish;
 import common.EnumServerOperations;
 import common.Order;
 import common.User;
@@ -35,6 +40,7 @@ public class Client extends AbstractClient {
 
 		sendToServer(new Object[] { EnumServerOperations.USER_CONDITION,
 				new String[] { clientIP, clientHostName, "start" } });
+
 	}
 	
 	// Public method to get the Server instance
@@ -136,10 +142,15 @@ public class Client extends AbstractClient {
 		arr[3] = newVal;
 		sendMessageToServer(arr);
 	}
-
-	// Send a request to insert a new order on the server
-	public void sendInsertOrderRequest(Order order) {
-		sendMessageToServer(new Object[] { EnumServerOperations.INSERT_ORDER, order });
+	
+	public void sendAddDishRequest(Dish dish) {
+	    // Send a request to add a new dish
+		sendMessageToServer(new Object[] { EnumServerOperations.ADD_DISH, dish });
+	}
+	
+	public void sendCreateOrderRequest(Order order, List<DishInOrder> dishesInOrder) {
+	    sendMessageToServer(new Object[] {
+		        EnumServerOperations.INSERT_ORDER, order, dishesInOrder});
 	}
 
 	// Request to view orders from the database

@@ -10,6 +10,8 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
+import common.Dish;
+import common.DishInOrder;
 import common.EnumBranch;
 import common.EnumOrderStatus;
 import common.EnumType;
@@ -44,46 +46,7 @@ public class DBController {
 		}
 	}
 
-	public String updateOrder(int orderNumber, String toChange, Object newParam) {
-		String query = "UPDATE orders SET " + toChange + " = ? WHERE OrderNumber = ?";
-        String message;
 
-		try { 
-			PreparedStatement preparedStatement = connection.prepareStatement(query);
-			if (newParam instanceof Double)
-				preparedStatement.setDouble(1, (double)newParam);
-			else
-				preparedStatement.setString(1, (String)newParam);
-			preparedStatement.setInt(2, orderNumber);
-			int rowsAffected = preparedStatement.executeUpdate();
-			if (rowsAffected == 0)
-				message = "nothing";
-			else
-				message = "updated successfully";
-		} catch (SQLException e) {
-            message = e.getMessage();
-		}
-		return message;
-	}
-
-	public String insertOrder(int orderNumber, String restaurantName, double totalPrice, int orderListNumber, String orderAddress) {
-        String query = "INSERT INTO orders (OrderNumber, name_of_restaurant, Total_price, order_list_number, order_address) VALUES (?, ?, ?, ?, ?)";
-        String message;
-        try {
-            PreparedStatement preparedStatement = connection.prepareStatement(query);
-            preparedStatement.setInt(1, orderNumber);
-            preparedStatement.setString(2, restaurantName);
-            preparedStatement.setDouble(3, totalPrice);
-            preparedStatement.setInt(4, orderListNumber);
-            preparedStatement.setString(5, orderAddress);
-            preparedStatement.executeUpdate();
-            message = "inserted successfully";
-        } catch (SQLException e) {
-            message = e.getMessage();
-        }
-        return message;
-    }
-	
 	public Object validateLogin(User user) {
         List<Object> userDetails = new ArrayList<>();
         String username = user.getUsername(), password = user.getPassword();
@@ -135,27 +98,6 @@ public class DBController {
         return (Object)userDetails;
     }
 	
-//	private boolean checkIfLogged(String username) {   
-//        String sql = "SELECT isLogged FROM users WHERE username = ?";
-//        try {
-//            PreparedStatement statement = connection.prepareStatement(sql);
-//            // Set the parameter for the query
-//            statement.setString(1, username);
-//
-//            // Execute the query
-//            try (ResultSet resultSet = statement.executeQuery()) {
-//                if (resultSet.next()) {
-//                    boolean isLogged = resultSet.getBoolean("isLogged");
-//                    if (isLogged) {
-//                        return true;
-//                    }
-//                }
-//            }
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//        }
-//        return false;
-//    }
 	
 	private boolean updateIsLoggedStatus(String username) {
 		String query = "UPDATE users SET isLogged = 1 WHERE username = ?";
@@ -232,23 +174,128 @@ public class DBController {
                 }
             }
         }
-
         return pendingOrders;
     }
     
-    // Create an order
-    public void createOrder(Order order) throws SQLException {
-        String query = "INSERT INTO orders (username, branch_id, order_date, order_request_time, total_price, delivery) VALUES (?, ?, ?, ?, ?, ?)";
+    public void createOrder(Order order, List<DishInOrder> dishesInOrder) throws SQLException {
+        String insertOrderQuery = "INSERT INTO orders (username, branch_id, order_date, order_request_time, order_receive_time, total_price, delivery, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        String insertDishInOrderQuery = "INSERT INTO dish_in_order (order_id, dish_id, quantity) VALUES (?, ?, ?)";
+
+        try {
+            // Start transaction
+            connection.setAutoCommit(false);
+
+            // Insert the new order
+            try (PreparedStatement stmt = connection.prepareStatement(insertOrderQuery, Statement.RETURN_GENERATED_KEYS)) {
+                stmt.setString(1, order.getUsername());
+                stmt.setInt(2, order.getBranchId());
+                stmt.setTimestamp(3, order.getOrderDate());
+                stmt.setTimestamp(4, order.getOrderRequestTime());
+                stmt.setTimestamp(5, order.getOrderReceiveTime());
+                stmt.setDouble(6, order.getTotalPrice());
+                stmt.setBoolean(7, order.isDelivery());
+                stmt.setString(8, order.getStatus().toString());
+                stmt.executeUpdate();
+
+                // Retrieve the generated order ID
+                try (ResultSet generatedKeys = stmt.getGeneratedKeys()) {
+                    if (generatedKeys.next()) {
+                        int orderId = generatedKeys.getInt(1);
+
+                        // Insert the dishes for this order
+                        try (PreparedStatement dishStmt = connection.prepareStatement(insertDishInOrderQuery)) {
+                            for (DishInOrder dishInOrder : dishesInOrder) {
+                                dishStmt.setInt(1, orderId);
+                                dishStmt.setInt(2, dishInOrder.getDishId());
+                                dishStmt.setInt(3, dishInOrder.getQuantity());
+                                dishStmt.addBatch();
+                            }
+                            dishStmt.executeBatch();
+                        }
+                    } else {
+                        throw new SQLException("Creating order failed, no ID obtained.");
+                    }
+                }
+            }
+
+            // Commit transaction
+            connection.commit();
+        } catch (SQLException e) {
+            // Rollback transaction on error
+            try {
+                connection.rollback();
+            } catch (SQLException rollbackEx) {
+                // Log rollback error
+                rollbackEx.printStackTrace();
+            }
+            throw e;
+        } finally {
+            // Reset auto-commit mode
+            connection.setAutoCommit(true);
+        }
+    }
+
+    
+    public void addDishToOrder(int orderId, int dishId, int quantity) throws SQLException {
+        String sql = "INSERT INTO dish_in_order (order_id, dish_id, quantity) VALUES (?, ?, ?)";
+        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+            pstmt.setInt(1, orderId);
+            pstmt.setInt(2, dishId);
+            pstmt.setInt(3, quantity);
+            pstmt.executeUpdate();
+        }
+    }
+    
+    public List<DishInOrder> getDishesInOrder(int orderId) throws SQLException {
+        List<DishInOrder> dishesInOrder = new ArrayList<>();
+        String sql = "SELECT * FROM dish_in_order WHERE order_id = ?";
+        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+            pstmt.setInt(1, orderId);
+            ResultSet rs = pstmt.executeQuery();
+            while (rs.next()) {
+                int dishId = rs.getInt("dish_id");
+                int quantity = rs.getInt("quantity");
+                dishesInOrder.add(new DishInOrder(orderId, dishId, quantity));
+            }
+        }
+        return dishesInOrder;
+    }
+
+    public void updateOrderStatus(int orderId, EnumOrderStatus status) throws SQLException {
+        String query = "UPDATE orders SET status = ? WHERE order_id = ?";
         try (PreparedStatement stmt = connection.prepareStatement(query)) {
-            stmt.setString(1, order.getUsername());
-            stmt.setInt(2, order.getBranchId());
-            stmt.setTimestamp(3, order.getOrderDate());
-            stmt.setTimestamp(4, order.getOrderRequestTime());
-            stmt.setTimestamp(5, order.getOrderReceiveTime());
-            stmt.setDouble(6, order.getTotalPrice());
-            stmt.setBoolean(7, order.isDelivery());
-            stmt.setString(8, order.getStatus().toString());
+            stmt.setString(1, status.toString());
+            stmt.setInt(2, orderId);
             stmt.executeUpdate();
+        }
+    }
+    
+    public void addDish(Dish dish) throws SQLException {
+        String query = "INSERT INTO dishes (menu_id,dish_type, dish_name, price) VALUES (?, ?, ?, ?)";
+        try (PreparedStatement pstmt = connection.prepareStatement(query)) {
+        	pstmt.setInt(1, dish.getMenuId());
+        	pstmt.setString(2, dish.getDishType().toString());
+            pstmt.setString(3, dish.getDishName());
+            pstmt.setDouble(4, dish.getPrice());
+            pstmt.executeUpdate();
+        }
+    }
+    
+    
+    public void generateOrdersReport() {
+        String query = "INSERT INTO ordersreport (restaurant, dish_type, amount, month, year) " +
+                       "SELECT restaurant, dish_type, SUM(quantity), MONTH(order_date), YEAR(order_date) " +
+                       "FROM dish_in_order " +
+                       "JOIN orders ON dish_in_order.order_id = orders.order_id " +
+                       "WHERE MONTH(order_date) = MONTH(CURRENT_DATE - INTERVAL 1 MONTH) " +
+                       "AND YEAR(order_date) = YEAR(CURRENT_DATE - INTERVAL 1 MONTH) " +
+                       "GROUP BY restaurant, dish_type";
+
+        try (PreparedStatement pstmt = connection.prepareStatement(query)) {
+            pstmt.executeUpdate();
+            System.out.println("Monthly report generated successfully.");
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
     }
 
