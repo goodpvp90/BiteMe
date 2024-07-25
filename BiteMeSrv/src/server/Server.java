@@ -78,18 +78,18 @@ public class Server extends AbstractServer {
 			case USER_CONDITION:
 				controller.displayClientDetails((String[]) message[1]);
 				break;
-			case INSERT_ORDER:
-				insertOrder((Object[]) message[1], client);
-				break;
-			case UPDATE_ORDER:
-				result = updateOrder((Object[]) message[1]);
-				break;
+//			case INSERT_ORDER:
+//				insertOrder((Object[]) message[1], client);
+//				break;
+//			case UPDATE_ORDER:
+//				result = updateOrder((Object[]) message[1]);
+//				break;
 			case LOGIN:
 				UserController.login(client, (Object[]) message);
 				break;
-			case VIEW:
-				viewOrders(client);
-				break;
+//			case VIEW:
+//				viewOrders(client);
+//				break;
 			case NONE:
 				System.out.println("no operation was recived");
 				break;
@@ -97,64 +97,36 @@ public class Server extends AbstractServer {
 		} else
 			System.out.println("Received unknown message type from client: " + msg);
 	}
-//        if (msg instanceof String[]) {
-//            controller.displayClientDetails((String[]) msg);
-//         if (msg instanceof Object[]) {
-//            Object[] message = (Object[]) msg;
-//            switch (message[0].toString()) {
-//                case "insertOrder":
-//                    insertOrder(message, client);
-//                    break;
-//                case "updateOrder":
-//                    result = updateOrder(message);
-//                    break;
-//                case "login":
-//                	UserController.login(client, message);
-//                	break;
-//                default:
-//                    System.out.println("Received unknown message type from client: " + msg);
-//            }
-//        } else if (msg instanceof String) {
-//            switch ((String) msg) {
-//                case "view":
-//                    viewOrders(client);
-//                    break;
-//                default:
-//                    System.out.println("Received unknown message from client: " + msg);
-//            }
-//        } else {
-//            System.out.println("Received unknown message from client: " + msg);
-//        }
 
-	// CHECK IF WORKS
-	private void insertOrder(Object[] message, ConnectionToClient client) {
-		String result;
-		Order order = (Order) message[1];
-		result = dbController.insertOrder(order.getOrderNumber(), order.getNameOfRestaurant(), order.getTotalPrice(),
-				order.getOrderListNumber(), order.getOrderAddress());
-		try {
-			client.sendToClient(createResponseForClient(result));
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
+//	// CHECK IF WORKS
+//	private void insertOrder(Object[] message, ConnectionToClient client) {
+//		String result;
+//		Order order = (Order) message[1];
+//		result = dbController.insertOrder(order.getOrderNumber(), order.getNameOfRestaurant(), order.getTotalPrice(),
+//				order.getOrderListNumber(), order.getOrderAddress());
+//		try {
+//			client.sendToClient(createResponseForClient(result));
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//		}
+//	}
 
-	// Update order
-	private String updateOrder(Object[] message) {
-		int orderNum = (int) message[1];
-		String toChange = message[2].toString();
-		if ("Order_address".equals(toChange)) {
-			return (dbController.updateOrder(orderNum, toChange, (String) message[3]));
-		} else
-			return (dbController.updateOrder(orderNum, toChange, (double) message[3]));
-	}
+//	// Update order
+//	private String updateOrder(Object[] message) {
+//		int orderNum = (int) message[1];
+//		String toChange = message[2].toString();
+//		if ("Order_address".equals(toChange)) {
+//			return (dbController.updateOrder(orderNum, toChange, (String) message[3]));
+//		} else
+//			return (dbController.updateOrder(orderNum, toChange, (double) message[3]));
+//	}
 
 	// view orders
-	private void viewOrders(ConnectionToClient client) {
-		List<Object[]> orders = dbController.showOrders();
-		Object[] ordersObj = orders.toArray();
-		sendMessageToClient(EnumClientOperations.VIEW, client, (Object)ordersObj);
-	}
+//	private void viewOrders(ConnectionToClient client) {
+//		List<Object[]> orders = dbController.showOrders();
+//		Object[] ordersObj = orders.toArray();
+//		sendMessageToClient(EnumClientOperations.VIEW, client, (Object)ordersObj);
+//	}
 
 	@Override
 	protected void clientDisconnected(ConnectionToClient client) {

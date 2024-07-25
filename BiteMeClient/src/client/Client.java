@@ -90,24 +90,6 @@ public class Client extends AbstractClient {
 		}
 	}
 
-//    	if (msg instanceof Object[]) {
-//            // Handle array of orders from the server
-//            Object[] orders = (Object[]) msg;
-//            if (clientController != null) {
-//                clientController.displayOrders(orders);
-//            }
-//        }else if(msg instanceof User) {
-//        	//SEND TO CLIENT CONTROLLER
-//        	User user = (User)msg;
-//        	System.out.println(user.getFirstName());
-//        }
-//        else {
-//            // Handle non-array messages for updating the top label in clientController
-//            if (clientController != null) {
-//                clientController.updateWelcomeText("Message from server: " + msg);
-//            }
-//        }
-
 	// Quit the client and close the connection
 	public void quit() {
 		try {

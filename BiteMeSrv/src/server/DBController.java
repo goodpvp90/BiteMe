@@ -6,11 +6,14 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
 import common.EnumBranch;
+import common.EnumOrderStatus;
 import common.EnumType;
+import common.Order;
 import common.User;
 
 public class DBController {
@@ -168,27 +171,85 @@ public class DBController {
         }
         return logged;
 	}
-
-    public List<Object[]> showOrders() {
-        String query = "SELECT * FROM orders";
-        List<Object[]> orders = new ArrayList<>();
-
-        try {
-             Statement stmt = connection.createStatement();
-             ResultSet rs = stmt.executeQuery(query); 
-             while (rs.next()) {
-                int ordernum = rs.getInt("OrderNumber");
-                String name = rs.getString("name_of_restaurant");
-                double price = rs.getDouble("Total_price");
-                int order_lst = rs.getInt("order_list_number");
-                String order_add = rs.getString("order_address");
-
-                orders.add(new Object[]{ordernum, name, price, order_lst, order_add});
-            }
-        } catch (SQLException e) {
+    
+    // Update order receive time, used when user accepts he recied the order
+    public void updateOrderReceiveTime(int orderId, Timestamp orderReceiveTime){
+        String query = "UPDATE orders SET order_receive_time = ? WHERE order_id = ?";
+        try (PreparedStatement stmt = connection.prepareStatement(query)) {
+            stmt.setTimestamp(1, orderReceiveTime);
+            stmt.setInt(2, orderId);
+            stmt.executeUpdate();
+        }catch(SQLException e){
             e.printStackTrace();
         }
-
+    }
+    
+    // Get orders for a specific username
+    public List<Order> getOrdersByUsername(String username) throws SQLException {
+        List<Order> orders = new ArrayList<>();
+        String query = "SELECT * FROM orders WHERE username = ?";
+        try (PreparedStatement stmt = connection.prepareStatement(query)) {
+            stmt.setString(1, username);
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    Order order = new Order(rs.getInt("order_id"), rs.getString("username"), rs.getInt("branch_id"),
+                            rs.getTimestamp("order_date"), rs.getTimestamp("order_request_time"), rs.getTimestamp("order_receive_time"), rs.getDouble("total_price"), rs.getBoolean("delivery"),EnumOrderStatus.valueOf(rs.getString("home_branch")));
+                    orders.add(order);
+                }
+            }
+        }
         return orders;
     }
+    
+    /**
+     * Retrieves all pending orders for a specific branch.
+     *
+     * @param branchId The ID of the branch to retrieve orders for.
+     * @return A list of pending orders for the specified branch.
+     * @throws SQLException If there is an error querying the database.
+     */
+    public List<Order> showPendingOrdersByBranch(int branchId) throws SQLException {
+        String query = "SELECT * FROM orders WHERE branch_id = ? AND status = 'PENDING'";
+        List<Order> pendingOrders = new ArrayList<>();
+
+        try (PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setInt(1, branchId);
+            try (ResultSet resultSet = statement.executeQuery()) {
+                while (resultSet.next()) {
+                    int orderId = resultSet.getInt("order_id");
+                    String username = resultSet.getString("username");
+                    Timestamp orderDate = resultSet.getTimestamp("order_date"); // Adjust the type if necessary
+                    Timestamp orderRequestTime = resultSet.getTimestamp("order_request_time"); // Adjust the type if necessary
+                    Timestamp orderReceiveTime = resultSet.getTimestamp("order_receive_time"); // Adjust the type if necessary
+                    double totalPrice = resultSet.getDouble("total_price");
+                    boolean delivery = resultSet.getBoolean("delivery");
+                    EnumOrderStatus status = EnumOrderStatus.valueOf(resultSet.getString("status"));
+                   
+
+                    // Create and add the Order object to the list
+                    Order order = new Order(orderId, username, branchId, orderDate, orderRequestTime, orderReceiveTime, totalPrice, delivery, status);
+                    pendingOrders.add(order);
+                }
+            }
+        }
+
+        return pendingOrders;
+    }
+    
+    // Create an order
+    public void createOrder(Order order) throws SQLException {
+        String query = "INSERT INTO orders (username, branch_id, order_date, order_request_time, total_price, delivery) VALUES (?, ?, ?, ?, ?, ?)";
+        try (PreparedStatement stmt = connection.prepareStatement(query)) {
+            stmt.setString(1, order.getUsername());
+            stmt.setInt(2, order.getBranchId());
+            stmt.setTimestamp(3, order.getOrderDate());
+            stmt.setTimestamp(4, order.getOrderRequestTime());
+            stmt.setTimestamp(5, order.getOrderReceiveTime());
+            stmt.setDouble(6, order.getTotalPrice());
+            stmt.setBoolean(7, order.isDelivery());
+            stmt.setString(8, order.getStatus().toString());
+            stmt.executeUpdate();
+        }
+    }
+
 }
