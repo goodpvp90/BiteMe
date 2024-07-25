@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<GridPane hgap="5.00" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="700.0" vgap="5.0" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ClientGUI.UserHomePageController">
+  <columnConstraints>
+    <ColumnConstraints hgrow="ALWAYS" percentWidth="5.0" />
+    <ColumnConstraints hgrow="ALWAYS" percentWidth="5.0" />
+    <ColumnConstraints hgrow="ALWAYS" percentWidth="5.0" />
+    <ColumnConstraints hgrow="ALWAYS" percentWidth="5.0" />
+    <ColumnConstraints hgrow="ALWAYS" percentWidth="5.0" />
+    <ColumnConstraints hgrow="ALWAYS" percentWidth="5.0" />
+    <ColumnConstraints hgrow="ALWAYS" percentWidth="5.0" />
+    <ColumnConstraints hgrow="ALWAYS" percentWidth="5.0" />
+    <ColumnConstraints hgrow="ALWAYS" percentWidth="5.0" />
+    <ColumnConstraints hgrow="ALWAYS" percentWidth="5.0" />
+    <ColumnConstraints hgrow="ALWAYS" percentWidth="5.0" />
+    <ColumnConstraints hgrow="ALWAYS" percentWidth="5.0" />
+    <ColumnConstraints hgrow="ALWAYS" percentWidth="5.0" />
+    <ColumnConstraints hgrow="ALWAYS" percentWidth="5.0" />
+    <ColumnConstraints hgrow="ALWAYS" percentWidth="5.0" />
+    <ColumnConstraints hgrow="ALWAYS" percentWidth="5.0" />
+    <ColumnConstraints hgrow="ALWAYS" percentWidth="5.0" />
+    <ColumnConstraints hgrow="ALWAYS" percentWidth="5.0" />
+    <ColumnConstraints hgrow="ALWAYS" percentWidth="5.0" />
+    <ColumnConstraints hgrow="ALWAYS" percentWidth="5.0" />
+  </columnConstraints>
+  <rowConstraints>
+    <RowConstraints percentHeight="5.0" vgrow="ALWAYS" />
+        <RowConstraints percentHeight="5.0" vgrow="ALWAYS" />
+    <RowConstraints percentHeight="5.0" vgrow="ALWAYS" />
+    <RowConstraints percentHeight="5.0" vgrow="ALWAYS" />
+    <RowConstraints percentHeight="5.0" vgrow="ALWAYS" />
+    <RowConstraints percentHeight="5.0" vgrow="ALWAYS" />
+    <RowConstraints percentHeight="5.0" vgrow="ALWAYS" />
+    <RowConstraints percentHeight="5.0" vgrow="ALWAYS" />
+    <RowConstraints percentHeight="5.0" vgrow="ALWAYS" />
+    <RowConstraints percentHeight="5.0" vgrow="ALWAYS" />
+    <RowConstraints percentHeight="5.0" vgrow="ALWAYS" />
+    <RowConstraints percentHeight="5.0" vgrow="ALWAYS" />
+    <RowConstraints percentHeight="5.0" vgrow="ALWAYS" />
+    <RowConstraints percentHeight="5.0" vgrow="ALWAYS" />
+    <RowConstraints percentHeight="5.0" vgrow="ALWAYS" />
+    <RowConstraints percentHeight="5.0" vgrow="ALWAYS" />
+    <RowConstraints percentHeight="5.0" vgrow="ALWAYS" />
+    <RowConstraints percentHeight="5.0" vgrow="ALWAYS" />
+    <RowConstraints percentHeight="5.0" vgrow="ALWAYS" />
+    <RowConstraints percentHeight="5.0" vgrow="ALWAYS" />
+  </rowConstraints>
+   <children>
+      <Button minHeight="40.0" minWidth="80.0" mnemonicParsing="false" style="-fx-background-color: red;" text="Logout" textAlignment="CENTER" textFill="WHITE" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER">
+         <font>
+            <Font size="16.0" />
+         </font>
+      </Button>
+      <Text strokeType="OUTSIDE" strokeWidth="0.0" text="CEO" GridPane.columnIndex="5" GridPane.columnSpan="10" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.rowSpan="2" GridPane.valignment="CENTER">
+         <font>
+            <Font name="System Bold" size="40.0" />
+         </font>
+      </Text>
+      <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Hello 'USER', Choose an Option " GridPane.columnIndex="5" GridPane.columnSpan="10" GridPane.halignment="CENTER" GridPane.rowIndex="5" GridPane.valignment="CENTER">
+         <GridPane.margin>
+            <Insets />
+         </GridPane.margin>
+         <font>
+            <Font size="16.0" />
+         </font>
+      </Text>
+	<Button mnemonicParsing="false" prefHeight="99.0" prefWidth="129.0" text="Create&#10;Order" GridPane.columnIndex="3" GridPane.columnSpan="4" GridPane.halignment="CENTER" GridPane.rowIndex="10" GridPane.rowSpan="2" GridPane.valignment="CENTER">
+		   <font>
+		       <Font size="16.0" />
+		   </font>
+	</Button>
+      <Button mnemonicParsing="false" prefHeight="88.0" prefWidth="111.0" text="Update&#10; Menu" GridPane.columnIndex="8" GridPane.columnSpan="4" GridPane.halignment="CENTER" GridPane.rowIndex="10" GridPane.rowSpan="2" GridPane.valignment="CENTER">
+         <font>
+            <Font size="16.0" />
+         </font>
+      </Button>
+      <Button mnemonicParsing="false" prefHeight="96.0" prefWidth="115.0" text="  View&#10;Reports" GridPane.columnIndex="13" GridPane.columnSpan="4" GridPane.halignment="CENTER" GridPane.rowIndex="10" GridPane.rowSpan="2" GridPane.valignment="CENTER">
+         <font>
+            <Font size="16.0" />
+         </font>
+      </Button>
+	<Button mnemonicParsing="false" prefHeight="55.0" prefWidth="134.0" text=" Change Home &#10;        Branch" GridPane.columnIndex="3" GridPane.columnSpan="4" GridPane.halignment="CENTER" GridPane.rowIndex="13" GridPane.rowSpan="2" GridPane.valignment="CENTER">
+	    <font>
+	        <Font size="16.0" />
+	    </font>
+	</Button>
+      <Button mnemonicParsing="false" prefHeight="104.0" prefWidth="99.0" text="Pending&#10; Orders" GridPane.columnIndex="8" GridPane.columnSpan="4" GridPane.halignment="CENTER" GridPane.rowIndex="13" GridPane.rowSpan="2" GridPane.valignment="CENTER">
+         <font>
+            <Font size="16.0" />
+         </font>
+      </Button>
+      <Button mnemonicParsing="false" prefHeight="100.0" prefWidth="114.0" text="Register&#10;   User" GridPane.columnIndex="13" GridPane.columnSpan="4" GridPane.halignment="CENTER" GridPane.rowIndex="13" GridPane.rowSpan="2" GridPane.valignment="CENTER">
+         <font>
+            <Font size="16.0" />
+         </font>
+      </Button>
+   </children>
+</GridPane>

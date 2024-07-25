@@ -11,6 +11,6 @@
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/OCSF"/>
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/BiteMeClient"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/javaFX"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/JavaFx"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
-
