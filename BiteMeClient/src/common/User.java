@@ -2,8 +2,11 @@ package common;
 
 import java.io.Serializable;
 
-@SuppressWarnings("serial")
 public class User implements Serializable{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private String firstName, lastName, Email, phone, username, password;
 	private boolean isLogged;
 	private EnumType type;
