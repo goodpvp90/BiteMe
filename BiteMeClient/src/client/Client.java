@@ -16,14 +16,14 @@ import common.EnumServerOperations;
 import common.Order;
 import common.User;
 import ClientGUI.ClientLoginController;
-import ClientGUI.clientController;
+import ClientGUI.ZProtoClientController;
 
 public class Client extends AbstractClient {
 	// Default port to connect to the server
 	final public static int DEFAULT_PORT = 8080;
 	private static Client instance;
 	// Controller for Client GUI functionality
-	private clientController clientController;
+	private ZProtoClientController clientController;
 	private ClientLoginController clientLoginController;
 	
 	// Constructor to initialize the client with host and port, and establish
@@ -59,7 +59,7 @@ public class Client extends AbstractClient {
 	}
 
 	// Sets the GUI controller for this client
-	public void setGuiController(clientController clientController) {
+	public void setGuiController(ZProtoClientController clientController) {
 		this.clientController = clientController;
 	}
 

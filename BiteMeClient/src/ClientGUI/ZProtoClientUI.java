@@ -4,7 +4,13 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
-public class clientUI extends Application {
+
+
+
+
+//Changed to ZProto so itll be last in the list because we have it as reference, Maybe later we will delete.
+
+public class ZProtoClientUI extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
         try {
