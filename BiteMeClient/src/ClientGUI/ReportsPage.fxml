@@ -54,7 +54,7 @@
     <RowConstraints percentHeight="5.0" vgrow="ALWAYS" />
   </rowConstraints>
    <children>
-      <Button minHeight="40.0" minWidth="80.0" mnemonicParsing="false" style="-fx-background-color: red;" text="Back" textAlignment="CENTER" textFill="WHITE" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER">
+      <Button fx:id="backButton" onAction="#handleBackButton" minHeight="40.0" minWidth="80.0" mnemonicParsing="false" style="-fx-background-color: red;" text="Back" textAlignment="CENTER" textFill="WHITE" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER">
          <font>
             <Font size="16.0" />
          </font>
@@ -72,17 +72,17 @@
             <Font size="16.0" />
          </font>
       </Text>
-      <Button mnemonicParsing="false" prefHeight="56.0" prefWidth="253.0" text="Revenue Report" textAlignment="CENTER" GridPane.columnIndex="7" GridPane.columnSpan="6" GridPane.rowIndex="8" GridPane.rowSpan="2">
+      <Button fx:id="revenueReportButton" onAction="#handleRevenueReport" mnemonicParsing="false" prefHeight="56.0" prefWidth="253.0" text="Revenue Report" textAlignment="CENTER" GridPane.columnIndex="7" GridPane.columnSpan="6" GridPane.rowIndex="8" GridPane.rowSpan="2">
          <font>
             <Font size="15.0" />
          </font>
       </Button>
-      <Button mnemonicParsing="false" prefHeight="108.0" prefWidth="203.0" text="Performance Report" GridPane.columnIndex="7" GridPane.columnSpan="6" GridPane.rowIndex="11" GridPane.rowSpan="2">
+      <Button fx:id="performanceReportButton" onAction="#handlePerformanceReport" mnemonicParsing="false" prefHeight="108.0" prefWidth="203.0" text="Performance Report" GridPane.columnIndex="7" GridPane.columnSpan="6" GridPane.rowIndex="11" GridPane.rowSpan="2">
          <font>
             <Font size="15.0" />
          </font>
       </Button>
-      <Button mnemonicParsing="false" prefHeight="55.0" prefWidth="210.0" text="Orders Report" GridPane.columnIndex="7" GridPane.columnSpan="6" GridPane.rowIndex="14" GridPane.rowSpan="2">
+      <Button fx:id="ordersReportButton" onAction="#handleOrdersReport" mnemonicParsing="false" prefHeight="55.0" prefWidth="210.0" text="Orders Report" GridPane.columnIndex="7" GridPane.columnSpan="6" GridPane.rowIndex="14" GridPane.rowSpan="2">
          <font>
             <Font size="15.0" />
          </font>
