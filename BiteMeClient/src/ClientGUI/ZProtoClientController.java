@@ -12,7 +12,13 @@ import java.io.IOException;
 import client.Client;
 import common.User;
 
-public class clientController {
+
+//Changed to ZProto so itll be last in the list because we have it as reference, Maybe later we will delete.
+
+
+
+
+public class ZProtoClientController {
     private Client client;
     private boolean updating = false;
     
@@ -39,7 +45,7 @@ public class clientController {
     private Button quitButton;
 
     // Constructor
-    public clientController() {
+    public ZProtoClientController() {
         client = null;
     }
 
