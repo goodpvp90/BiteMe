@@ -33,7 +33,7 @@
   </columnConstraints>
   <rowConstraints>
     <RowConstraints percentHeight="5.0" vgrow="ALWAYS" />
-        <RowConstraints percentHeight="5.0" vgrow="ALWAYS" />
+    <RowConstraints percentHeight="5.0" vgrow="ALWAYS" />
     <RowConstraints percentHeight="5.0" vgrow="ALWAYS" />
     <RowConstraints percentHeight="5.0" vgrow="ALWAYS" />
     <RowConstraints percentHeight="5.0" vgrow="ALWAYS" />
@@ -54,7 +54,7 @@
     <RowConstraints percentHeight="5.0" vgrow="ALWAYS" />
   </rowConstraints>
    <children>
-      <Button minHeight="40.0" minWidth="80.0" mnemonicParsing="false" style="-fx-background-color: red;" text="Logout" textAlignment="CENTER" textFill="WHITE" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER">
+      <Button fx:id="logoutButton" minHeight="40.0" minWidth="80.0" mnemonicParsing="false" onAction="#handleLogout" style="-fx-background-color: red;" text="Logout" textAlignment="CENTER" textFill="WHITE" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER">
          <font>
             <Font size="16.0" />
          </font>
@@ -64,7 +64,7 @@
             <Font name="System Bold" size="40.0" />
          </font>
       </Text>
-      <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Hello 'USER', Choose an Option " GridPane.columnIndex="5" GridPane.columnSpan="10" GridPane.halignment="CENTER" GridPane.rowIndex="5" GridPane.valignment="CENTER">
+      <Text fx:id="welcomeText" strokeType="OUTSIDE" strokeWidth="0.0" text="Hello 'USER', Choose an Option " GridPane.columnIndex="5" GridPane.columnSpan="10" GridPane.halignment="CENTER" GridPane.rowIndex="5" GridPane.valignment="CENTER">
          <GridPane.margin>
             <Insets />
          </GridPane.margin>
@@ -72,32 +72,32 @@
             <Font size="16.0" />
          </font>
       </Text>
-	<Button mnemonicParsing="false" prefHeight="99.0" prefWidth="129.0" text="Create&#10;Order" GridPane.columnIndex="3" GridPane.columnSpan="4" GridPane.halignment="CENTER" GridPane.rowIndex="10" GridPane.rowSpan="2" GridPane.valignment="CENTER">
-		   <font>
-		       <Font size="16.0" />
-		   </font>
-	</Button>
-      <Button mnemonicParsing="false" prefHeight="88.0" prefWidth="111.0" text="Update&#10; Menu" GridPane.columnIndex="8" GridPane.columnSpan="4" GridPane.halignment="CENTER" GridPane.rowIndex="10" GridPane.rowSpan="2" GridPane.valignment="CENTER">
+      <Button fx:id="createOrderButton" mnemonicParsing="false" onAction="#handleCreateOrder" prefHeight="99.0" prefWidth="129.0" text="Create&#10;Order" GridPane.columnIndex="3" GridPane.columnSpan="4" GridPane.halignment="CENTER" GridPane.rowIndex="10" GridPane.rowSpan="2" GridPane.valignment="CENTER">
+         <font>
+             <Font size="16.0" />
+         </font>
+      </Button>
+      <Button fx:id="updateMenuButton" mnemonicParsing="false" onAction="#handleUpdateMenu" prefHeight="88.0" prefWidth="111.0" text="Update&#10; Menu" GridPane.columnIndex="8" GridPane.columnSpan="4" GridPane.halignment="CENTER" GridPane.rowIndex="10" GridPane.rowSpan="2" GridPane.valignment="CENTER">
          <font>
             <Font size="16.0" />
          </font>
       </Button>
-      <Button mnemonicParsing="false" prefHeight="96.0" prefWidth="115.0" text="  View&#10;Reports" GridPane.columnIndex="13" GridPane.columnSpan="4" GridPane.halignment="CENTER" GridPane.rowIndex="10" GridPane.rowSpan="2" GridPane.valignment="CENTER">
+      <Button fx:id="viewReportsButton" mnemonicParsing="false" onAction="#handleViewReports" prefHeight="96.0" prefWidth="115.0" text="  View&#10;Reports" GridPane.columnIndex="13" GridPane.columnSpan="4" GridPane.halignment="CENTER" GridPane.rowIndex="10" GridPane.rowSpan="2" GridPane.valignment="CENTER">
          <font>
             <Font size="16.0" />
          </font>
       </Button>
-	<Button mnemonicParsing="false" prefHeight="55.0" prefWidth="134.0" text=" Change Home &#10;        Branch" GridPane.columnIndex="3" GridPane.columnSpan="4" GridPane.halignment="CENTER" GridPane.rowIndex="13" GridPane.rowSpan="2" GridPane.valignment="CENTER">
-	    <font>
-	        <Font size="16.0" />
-	    </font>
-	</Button>
-      <Button mnemonicParsing="false" prefHeight="104.0" prefWidth="99.0" text="Pending&#10; Orders" GridPane.columnIndex="8" GridPane.columnSpan="4" GridPane.halignment="CENTER" GridPane.rowIndex="13" GridPane.rowSpan="2" GridPane.valignment="CENTER">
+      <Button fx:id="changeHomeBranchButton" mnemonicParsing="false" onAction="#handleChangeHomeBranch" prefHeight="55.0" prefWidth="134.0" text=" Change Home &#10;        Branch" GridPane.columnIndex="3" GridPane.columnSpan="4" GridPane.halignment="CENTER" GridPane.rowIndex="13" GridPane.rowSpan="2" GridPane.valignment="CENTER">
+          <font>
+              <Font size="16.0" />
+          </font>
+      </Button>
+      <Button fx:id="pendingOrdersButton" mnemonicParsing="false" onAction="#handlePendingOrders" prefHeight="104.0" prefWidth="99.0" text="Pending&#10; Orders" GridPane.columnIndex="8" GridPane.columnSpan="4" GridPane.halignment="CENTER" GridPane.rowIndex="13" GridPane.rowSpan="2" GridPane.valignment="CENTER">
          <font>
             <Font size="16.0" />
          </font>
       </Button>
-      <Button mnemonicParsing="false" prefHeight="100.0" prefWidth="114.0" text="Register&#10;   User" GridPane.columnIndex="13" GridPane.columnSpan="4" GridPane.halignment="CENTER" GridPane.rowIndex="13" GridPane.rowSpan="2" GridPane.valignment="CENTER">
+      <Button fx:id="registerUserButton" mnemonicParsing="false" onAction="#handleRegisterUser" prefHeight="100.0" prefWidth="114.0" text="Register&#10;   User" GridPane.columnIndex="13" GridPane.columnSpan="4" GridPane.halignment="CENTER" GridPane.rowIndex="13" GridPane.rowSpan="2" GridPane.valignment="CENTER">
          <font>
             <Font size="16.0" />
          </font>

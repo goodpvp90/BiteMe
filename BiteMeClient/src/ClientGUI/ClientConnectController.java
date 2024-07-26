@@ -14,18 +14,14 @@ public class ClientConnectController {
 
     @FXML
     private TextField serverIpTextField;
-
     @FXML
     private TextField serverPortTextField;
-
     @FXML
     private Button connectButton;
-
     @FXML
     private Button quitButton;
     @FXML
     private Text ErrorTextConnect;
-    
     @FXML
     private void initialize() {
         // Initialization code, if needed

@@ -39,8 +39,8 @@ public class ClientLoginController {
 	private void initialize() {
 		loginButton.setOnAction(event -> handleLogin());
 		quitButton.setOnAction(event -> handleQuit());
-		//client = Client.getInstance();
-		//client.getInstanceOfClientLoginController(this);
+		client = Client.getInstance();
+		client.getInstanceOfClientLoginController(this);
 	}
 
 	private void handleLogin() {
@@ -51,29 +51,15 @@ public class ClientLoginController {
 		// Check if the data input from user is legal
 		if (username.isEmpty() || password.isEmpty()) {
 			showError("Username or password cannot be empty");
-
-		}else 
-		{
-            //if (authenticate(username, password)) {
-             launchUserHomePageUI(username, false); // assuming non-CEO user for now
-			// success storing the message from server if connect succeed.
-			//client.loginValidation(new User(username, password));
-
-			//if (client == null) {
-			//	return;
-			//} else {
-			//launchUserHomePageUI();
-			//}
-
-		}
-	}
-
-	public void updateUser(Object user) {
-		if (user instanceof String) {
-			showError("Incorrect Information, Try Again.");
 			return;
 		}
-		this.user = (User) user;
+		//Using dummy to enter:
+		//Username : a
+		//Password : a
+            if (authenticate(username, password)) 
+            {
+             launchUserHomePageUI(username, false);
+            }
 	}
 
 	private void handleQuit() {
@@ -86,25 +72,9 @@ public class ClientLoginController {
 	}
 
 	private boolean authenticate(String username, String password) {
-		// Dummy authentication logic; replace with actual logic
-		return "admin".equals(username) && "password".equals(password);
+		 //Dummy authentication logic; replace with actual logic
+		return "a".equals(username) && "a".equals(password);
 	}
-
-
-//    private void launchClientLoginUI() {
-//        try {
-//            // Launch ClientLoginUI
-//            ClientLoginUI loginApp = new ClientLoginUI();
-//            loginApp.start(new Stage());
-//
-//            // Close the current stage
-//            Stage currentStage = (Stage) connectButton.getScene().getWindow();
-//            currentStage.close();
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//    }
-//}
 	
     private void launchUserHomePageUI(String username, boolean isCEO) {
         try {
