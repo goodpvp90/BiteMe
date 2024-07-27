@@ -89,6 +89,36 @@ public class Client extends AbstractClient {
 	                clientController.updateWelcomeText("Message from server: " + message[1]);
 	            }
 	            break;
+            case NOTIFICATION:
+                List<String> notifications = (List<String>) message[1];
+                for (String notification : notifications) {
+                    //DISPLAY NOTIFICATIONS FROM HERE
+                }
+                break;
+            case DELETE_DISH:
+                boolean deleteDishResult = (boolean) message[1];
+                if (clientController != null) {
+                    //clientController.displayDeleteDishResult(deleteDishResult);
+                }
+                break;
+            case UPDATE_DISH:
+                boolean updateDishResult = (boolean) message[1];
+                if (clientController != null) {
+                    //clientController.displayUpdateDishResult(updateDishResult);
+                }
+                break;
+            case VIEW_MENU:
+                List<Dish> menu = (List<Dish>) message[1];
+                if (clientController != null) {
+                    //clientController.displayMenu(menu);
+                }
+                break;
+            case ADD_DISH:
+                boolean addDishResult = (boolean) message[1];
+                if (clientController != null) {
+                    //clientController.displayAddDishResult(addDishResult);
+                }
+                break;
 			case NONE:
 				System.out.println("no operation was recived");
 				break;

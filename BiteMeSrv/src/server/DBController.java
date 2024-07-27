@@ -13,6 +13,7 @@ import java.util.List;
 import common.Dish;
 import common.DishInOrder;
 import common.EnumBranch;
+import common.EnumDish;
 import common.EnumOrderStatus;
 import common.EnumType;
 import common.Order;
@@ -270,17 +271,86 @@ public class DBController {
         }
     }
     
-    public void addDish(Dish dish) throws SQLException {
-        String query = "INSERT INTO dishes (menu_id,dish_type, dish_name, price) VALUES (?, ?, ?, ?)";
-        try (PreparedStatement pstmt = connection.prepareStatement(query)) {
-        	pstmt.setInt(1, dish.getMenuId());
-        	pstmt.setString(2, dish.getDishType().toString());
-            pstmt.setString(3, dish.getDishName());
-            pstmt.setDouble(4, dish.getPrice());
-            pstmt.executeUpdate();
+    public boolean addDish(int menuId, EnumDish dishType, String dishName, double price) {
+        String sql = "INSERT INTO dishes (menu_id, dish_type, dish_name, price) VALUES (?, ?, ?, ?)";
+
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+
+            preparedStatement.setInt(1, menuId);
+            preparedStatement.setString(2, dishType.toString());
+            preparedStatement.setString(3, dishName);
+            preparedStatement.setDouble(4, price);
+
+            int rowsAffected = preparedStatement.executeUpdate();
+            return rowsAffected > 0;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
         }
     }
     
+    public boolean deleteDish(int menuId, EnumDish enumDish, String dishName, Double price) {
+        String sql = "DELETE FROM dishes WHERE menu_id = ? AND dish_type = ? AND dish_name = ? AND price = ?";
+
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+
+            preparedStatement.setInt(1, menuId);
+            preparedStatement.setString(2, enumDish.toString());
+            preparedStatement.setString(3, dishName);
+            preparedStatement.setDouble(4, price);
+
+            int rowsAffected = preparedStatement.executeUpdate();
+            return rowsAffected > 0;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    
+    public boolean updateDish(int dishId, EnumDish enumDish, String dishName, double price) {
+        String sql = "UPDATE dishes SET dish_type = ?, dish_name = ?, price = ? WHERE dish_id = ?";
+
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+
+        	preparedStatement.setString(2, enumDish.toString());
+            preparedStatement.setString(2, dishName);
+            preparedStatement.setDouble(3, price);
+            preparedStatement.setInt(4, dishId);
+
+            int rowsAffected = preparedStatement.executeUpdate();
+            return rowsAffected > 0;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+    
+    public List<Dish> getMenu(int menuId) {
+        String sql = "SELECT * FROM dishes WHERE menu_id = ?";
+        List<Dish> dishes = new ArrayList<>();
+
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+
+            preparedStatement.setInt(1, menuId);
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            while (resultSet.next()) {
+                int dishId = resultSet.getInt("dish_id");
+                EnumDish dishType = EnumDish.valueOf(resultSet.getString("dish_type"));
+                String dishName = resultSet.getString("dish_name");
+                double price = resultSet.getDouble("price");
+                dishes.add(new Dish(dishType, dishName, price, menuId));
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return dishes;
+    }
     
     public void generateOrdersReport() {
         String query = "INSERT INTO ordersreport (restaurant, dish_type, amount, month, year) " +
@@ -297,6 +367,61 @@ public class DBController {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+    
+    public void savePendingNotification(String username, int orderId, String status) throws SQLException {
+        String query = "INSERT INTO pendingnotifications (username, orderNumber, status) VALUES (?, ?, ?)";
+        try (PreparedStatement stmt = connection.prepareStatement(query)) {
+            stmt.setString(1, username);
+            stmt.setInt(2, orderId);
+            stmt.setString(3, status);
+            stmt.executeUpdate();
+        }
+    }
+    
+    public List<String> getPendingNotifications(String username) throws SQLException {
+        String query = "SELECT orderNumber, status FROM pendingnotifications WHERE username = ?";
+        List<String> notifications = new ArrayList<>();
+        try (PreparedStatement stmt = connection.prepareStatement(query)) {
+            stmt.setString(1, username);
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    notifications.add("Order " + rs.getInt("orderNumber") + ": " + rs.getString("status"));
+                }
+            }
+        }
+        return notifications;
+    }
+    
+    public void deletePendingNotifications(String username) throws SQLException {
+        String query = "DELETE FROM pendingnotifications WHERE username = ?";
+        try (PreparedStatement stmt = connection.prepareStatement(query)) {
+            stmt.setString(1, username);
+            stmt.executeUpdate();
+        }
+    }
+    
+    public Order getOrderById(int orderId) throws SQLException {
+        String query = "SELECT * FROM orders WHERE order_id = ?";
+        try (PreparedStatement stmt = connection.prepareStatement(query)) {
+            stmt.setInt(1, orderId);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return new Order(
+                        rs.getInt("order_id"),
+                        rs.getString("username"),
+                        rs.getInt("branch_id"),
+                        rs.getTimestamp("order_date"),
+                        rs.getTimestamp("order_request_time"),
+                        rs.getTimestamp("order_receive_time"),
+                        rs.getDouble("total_price"),
+                        rs.getBoolean("delivery"),
+                        EnumOrderStatus.valueOf(rs.getString("status"))
+                    );
+                }
+            }
+        }
+        return null;
     }
 
 }
