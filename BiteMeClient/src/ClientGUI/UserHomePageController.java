@@ -39,6 +39,8 @@ public class UserHomePageController {
     @FXML
     private Text welcomeText;
     
+    @FXML
+    private Text headlineText;
 
     
     public void setUser(User user) {
@@ -50,20 +52,27 @@ public class UserHomePageController {
     private void updateUI() {
     	switch(user.getType()) {
     	case BRANCH_MANAGER:
-    		//Change view reports method of handle, for CEO its different
+    		viewReportsButton.setOnAction(this::handleViewReportsForBranch);
+    		break;
     	case WORKER:
-    		viewReportsButton.setVisible(true);
-    		registerUserButton.setVisible(true);
-    		
+    		viewReportsButton.setVisible(false);
+    		registerUserButton.setVisible(false);
+    		break;
     	case CUSTOMER:
-    		viewReportsButton.setVisible(true);
-    		registerUserButton.setVisible(true);
-    		updateMenuButton.setVisible(true);
-    		pendingOrdersButton.setVisible(true);
+    		viewReportsButton.setVisible(false);
+    		registerUserButton.setVisible(false);
+    		updateMenuButton.setVisible(false);
+    		pendingOrdersButton.setVisible(false);
+    		break;
+      	//need to add one more case
+    	//if user is not registered customer he need approval of manager
+    	//all not buttons not visible
+
     	}
     	//CEO is default screen
     	
-    	changeHelloText();
+    	
+    	changeHelloTextAndHeadline();
 	}
 
 
@@ -107,6 +116,13 @@ public class UserHomePageController {
         }
     }
 
+    //Different functionality for branch manager when pressed view
+    //change to the right one
+    @FXML
+    private void handleViewReportsForBranch(ActionEvent event) {
+    	
+    }
+    
     @FXML
     private void handleChangeHomeBranch(ActionEvent event) {
         System.out.println("Change Home Branch button clicked");
@@ -119,8 +135,31 @@ public class UserHomePageController {
         // Implement navigation to Pending Orders page
     }
 
-    private void changeHelloText() {
-    	welcomeText.setText("Hello " + user.getUsername()+ ", what would you like to do?");
+    private void changeHelloTextAndHeadline() {
+    	String userType = ""; 
+    	switch(user.getType()) {
+    	case CEO:
+    		userType = "CEO";
+    		break;
+    	case BRANCH_MANAGER:
+    		userType = "Manager";
+    		break;
+    	case WORKER:
+    		userType = "Worker";
+    		break;
+    	case CUSTOMER:
+    		userType = "Customer";
+    		break;
+    	//add Unregistered customer case
+    	}
+    	headlineText.setText(user.getUsername()+ ", "+userType);
+    	if(!userType.equals("Unregistered Customer"))
+    		welcomeText.setText("Hello " + user.getFirstName()+ ", what would you like to do?");
+    	else
+    		welcomeText.setText("Hello " + user.getFirstName()+", looks like\n"
+    				+ " you have not registered yet.\n"
+    				+ "Please make contact with a\n "
+    				+ "manager of your prefered brunch.");
     }
     
     
