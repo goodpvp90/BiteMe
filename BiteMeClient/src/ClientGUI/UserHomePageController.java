@@ -3,6 +3,8 @@ package ClientGUI;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.text.Text;
+import common.EnumType;
+import common.User;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -11,6 +13,8 @@ import javafx.stage.Stage;
 
 public class UserHomePageController {
 
+	private User user;
+	
     @FXML
     private Button logoutButton;
 
@@ -34,8 +38,36 @@ public class UserHomePageController {
 
     @FXML
     private Text welcomeText;
+    
 
-    @FXML
+    
+    public void setUser(User user) {
+        this.user = user;
+        updateUI();
+    }
+    
+    
+    private void updateUI() {
+    	switch(user.getType()) {
+    	case BRANCH_MANAGER:
+    		//Change view reports method of handle, for CEO its different
+    	case WORKER:
+    		viewReportsButton.setVisible(true);
+    		registerUserButton.setVisible(true);
+    		
+    	case CUSTOMER:
+    		viewReportsButton.setVisible(true);
+    		registerUserButton.setVisible(true);
+    		updateMenuButton.setVisible(true);
+    		pendingOrdersButton.setVisible(true);
+    	}
+    	//CEO is default screen
+    	
+    	changeHelloText();
+	}
+
+
+	@FXML
     private void initialize() {
         // Initialize any necessary components or data
         // For example, you might want to set the welcome message:
@@ -87,6 +119,11 @@ public class UserHomePageController {
         // Implement navigation to Pending Orders page
     }
 
+    private void changeHelloText() {
+    	welcomeText.setText("Hello " + user.getUsername()+ ", what would you like to do?");
+    }
+    
+    
     @FXML
     private void handleRegisterUser(ActionEvent event) {
         System.out.println("Register User button clicked");

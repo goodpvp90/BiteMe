@@ -39,6 +39,8 @@ public class ClientLoginController {
 	private void initialize() {
 		loginButton.setOnAction(event -> handleLogin());
 		quitButton.setOnAction(event -> handleQuit());
+		
+		//Initialize the client controller in the client class the instance of this class
 		client = Client.getInstance();
 		client.getInstanceOfClientLoginController(this);
 	}
@@ -56,18 +58,28 @@ public class ClientLoginController {
 		//Using dummy to enter:
 		//Username : a
 		//Password: a
-        if (authenticate(username, password)) {
-             launchUserHomePageUI(username);
-            }
+        //if (authenticate(username, password))
+	
+		
+		//Send to client user name username and password which we received earlier
+		//if user doesn't exist login failed and error is printed
+		//else we launch appropriate Home page
+		client.loginValidation(new User(username,password));
+		if (user==null) 
+			return;
+		else
+			launchUserHomePageUI();
+
 	}
 
-//	public void updateUser(Object user) {
-//		if (user instanceof String) {
-//			showError("Incorrect Information, Try Again.");
-//			return;
-//		}
-//		this.user = (User) user;
-//	}
+	public void updateUser(Object user) {
+		if (user instanceof String) {
+			showError("Incorrect Information, Try Again.");
+			user=null;
+			return;
+		}
+		this.user = (User) user;
+	}
 
 	private void handleQuit() {
 		System.exit(0);
@@ -83,9 +95,9 @@ public class ClientLoginController {
 		return "a".equals(username) && "a".equals(password);
 	}
 	
-    private void launchUserHomePageUI(String username) {
+    private void launchUserHomePageUI() {
         try {
-        	UserHomePageUI Userapp = new UserHomePageUI();
+        	UserHomePageUI Userapp = new UserHomePageUI(user);
         	Userapp.start(new Stage());
             Stage currentStage = (Stage) loginButton.getScene().getWindow();
             currentStage.close();
@@ -95,13 +107,6 @@ public class ClientLoginController {
         }
     }
 
-	public void updateUser(Object user) {
-		if (user instanceof String) {
-			showError("Incorrect Information, Try Again.");
-			return;
-		}
-		this.user = (User) user;
-		
-	}
+
 
 }
