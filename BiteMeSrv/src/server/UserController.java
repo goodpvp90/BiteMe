@@ -32,4 +32,15 @@ public class UserController {
 			server.sendMessageToClient(EnumClientOperations.USER,client, (Object)user);
 		}
     }
+    
+    public static void createAccount(ConnectionToClient client, Object[] message) {
+    	User user = (User)message[1];
+    	boolean result = server.dbController.createUser(user.getUsername(), user.getPassword(), user.getEmail(), user.getPhone(), 
+    			user.getFirstName(), user.getLastName(), user.getHomeBranch(), user.getType());
+    	if (!result)
+    		server.sendMessageToClient(EnumClientOperations.EROR,client, result);
+    	else {
+    		server.sendMessageToClient(EnumClientOperations.CREATED_USER,client, (Object)user);
+    	}
+    }
 }

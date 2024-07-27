@@ -114,6 +114,30 @@ public class DBController {
         }
         return logged;
 	}
+	
+	public boolean createUser(String username, String password, String email, String phone, String firstName, String lastName, EnumBranch enumBranch, EnumType type) {
+	    String sql = "INSERT INTO users (username, password, email, phone, firstname, lastname, home_branch, type, isLogged) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
+	    try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+	        preparedStatement.setString(1, username);
+	        preparedStatement.setString(2, password);  // Ensure you hash passwords before storing them
+	        preparedStatement.setString(3, email);
+	        preparedStatement.setString(4, phone);
+	        preparedStatement.setString(5, firstName);
+	        preparedStatement.setString(6, lastName);
+	        preparedStatement.setString(7, enumBranch.toString());
+	        preparedStatement.setString(8, type.toString());
+	        preparedStatement.setInt(9, 0);  // isLogged defaults to 0 (false)
+
+	        int rowsAffected = preparedStatement.executeUpdate();
+	        return rowsAffected > 0;
+
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	        return false;
+	    }
+	}
+
     
     // Update order receive time, used when user accepts he recied the order
     public void updateOrderReceiveTime(int orderId, Timestamp orderReceiveTime){

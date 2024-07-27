@@ -107,6 +107,12 @@ public class Client extends AbstractClient {
                     //clientController.displayUpdateDishResult(updateDishResult);
                 }
                 break;
+            case CREATED_ACCOUNT:
+            	Object dataUser = (Object)message[1]; //You receive here user object if created
+                if (clientController != null) {
+    	        	//clientLoginController.updateUser(data);
+                }
+                break;
             case VIEW_MENU:
                 List<Dish> menu = (List<Dish>) message[1];
                 if (clientController != null) {

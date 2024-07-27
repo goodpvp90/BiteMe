@@ -99,6 +99,7 @@ public class Server extends AbstractServer {
             case LOGIN:
                 String username = (String) message[1];
                 List<String> notifications = null;
+                UserController.login(client, (Object[]) message);
                 try {
                     notifications = dbController.getPendingNotifications(username);
                     dbController.deletePendingNotifications(username);
@@ -107,6 +108,8 @@ public class Server extends AbstractServer {
                 }
                 sendMessageToClient(EnumClientOperations.NOTIFICATION, client, notifications);
                 break;
+            case CREATE_ACCOUNT:
+            	UserController.createAccount(client, (Object[]) message);
             case VIEW_MENU:
                 int menuId = (int) message[1];
                 List<Dish> menu = OrderController.viewMenu(menuId);
