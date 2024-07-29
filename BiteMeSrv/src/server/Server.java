@@ -101,8 +101,10 @@ public class Server extends AbstractServer {
                 OrderController.updateOrderStatus(orderId, newStatus);
                 break;
             case LOGIN:
-                String username = (String) message[1];
+            	User user = (User)message[1];
+                String username = user.getUsername();
                 List<String> notifications = null;
+               	System.out.println("LOGIN SHOWED ON SERVER");
                 UserController.login(client, (Object[]) message);
                 try {
                     notifications = dbController.getPendingNotifications(username);
