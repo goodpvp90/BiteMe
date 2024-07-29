@@ -92,6 +92,7 @@ public class UserHomePageController {
     private void handleLogout(ActionEvent event) {
         // Implement logout logic
         System.out.println("Logout button clicked");
+        //Here will be function that changed is_Loggedstatus to 0 (SHOULD BE MADE BY BACKEND)
         // Navigate to login page or close the application
     }
 

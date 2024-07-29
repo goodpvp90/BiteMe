@@ -84,6 +84,7 @@ public class ClientLoginController {
 		client.quit();
 		System.exit(0);
 	}
+	//Talk to Ben how to implement it so itll be not copied always.
 	//By clickin "X" same effect like clicking Quit Button
     public void closeApplication() {
         if (client != null) {
@@ -93,13 +94,11 @@ public class ClientLoginController {
         System.exit(0);
     }
 	
-	//Added Runlater by Eldar
-	//Added Plat.run later because of a thread problem (Because we have to do it, Otherwise will be thread problem)
+    
+    //Thread*
 	private void showError(String message) {
-	    Platform.runLater(() -> {
 	        errorText.setText(message);
 	        errorText.setVisible(true);
-	    });
 	}
 	
 	
