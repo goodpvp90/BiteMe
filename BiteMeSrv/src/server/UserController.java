@@ -15,7 +15,7 @@ public class UserController {
     	User user = (User)message[1];
         Object result = server.dbController.validateLogin(user);
 		if (result instanceof String) {
-			server.sendMessageToClient(EnumClientOperations.EROR,client, result);
+			server.sendMessageToClient(EnumClientOperations.USER,client, result);
 		}
 		else {
 			@SuppressWarnings("unchecked")

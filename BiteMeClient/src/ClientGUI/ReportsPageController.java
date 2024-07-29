@@ -2,6 +2,8 @@ package ClientGUI;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import client.Client;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -21,12 +23,13 @@ public class ReportsPageController {
 
     @FXML
     private Button ordersReportButton;
-
+    
+    
+    private Client client;
     @FXML
     private void initialize() {
-        // Initialize any necessary components or data
+    	client = Client.getInstance();
     }
-
     @FXML
     private void handleBackButton(ActionEvent event) {
         try {
@@ -56,4 +59,14 @@ public class ReportsPageController {
         // Implement logic for generating and displaying the Orders Report
         System.out.println("Orders Report button clicked");
     }
+    
+    public void closeApplication() {
+        if (client != null) {
+            System.out.println("Closing application from UserHomePage");
+            client.quit();
+        }
+        Platform.exit();
+        System.exit(0);
+    }
+    
 }
