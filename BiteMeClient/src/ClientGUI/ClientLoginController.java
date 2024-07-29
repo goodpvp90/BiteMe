@@ -65,10 +65,6 @@ public class ClientLoginController {
 		//if user doesn't exist login failed and error is printed
 		//else we launch appropriate Home page
 		client.loginValidation(new User(username,password));
-		if (user==null) 
-			return;
-		else
-			launchUserHomePageUI();
 
 	}
 
@@ -79,6 +75,7 @@ public class ClientLoginController {
 			return;
 		}
 		this.user = (User) user;
+		System.out.println(this.user.getFirstName());
 	}
 
 	private void handleQuit() {
