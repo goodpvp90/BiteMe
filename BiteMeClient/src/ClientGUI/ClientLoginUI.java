@@ -15,6 +15,13 @@ public class ClientLoginUI extends Application {
         Scene scene = new Scene(root);
         primaryStage.setTitle("Client Login");
         primaryStage.setScene(scene);
+        // Add this close request handler
+        // Made the "X" button to Close the thread and send msg to client.
+        primaryStage.setOnCloseRequest(event -> {
+            event.consume(); // Prevent the window from closing immediately
+            ClientLoginController controller = loader.getController();
+            controller.closeApplication();
+        });
         primaryStage.show();//
     }
 

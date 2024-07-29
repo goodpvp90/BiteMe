@@ -4,6 +4,7 @@ import client.Client;
 import common.Dish;
 import common.EnumDish;
 import common.User;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -55,42 +56,51 @@ public class ClientLoginController {
 			showError("Username or password cannot be empty");
 			return;
 		}
-		//Using dummy to enter:
-		//Username : a
-		//Password: a
-        //if (authenticate(username, password))
-	
-		
 		//Send to client user name username and password which we received earlier
 		//if user doesn't exist login failed and error is printed
 		//else we launch appropriate Home page
-		client.loginValidation(new User(username,password));
-
+		//updateUser is the one that takes care of incorrect information.
+		client.loginValidation(new User(username,password));	
 	}
-
+	
+	//New By Eldar because of thread problems
+	//Added Plat.run later because of a thread problem (Because we have to do it, Otherwise will be thread problem)
 	public void updateUser(Object user) {
-		if (user instanceof String) {
-			showError("Incorrect Information, Try Again.");
-			user=null;
-			return;
-		}
-		this.user = (User) user;
-		System.out.println(this.user.getFirstName());
+	    Platform.runLater(() -> {
+	        if (user == null) {
+	            showError("Invalid username or password. Please try again.");
+	            this.user = null;
+	        } else if (user instanceof User) {
+	            this.user = (User) user;
+	            launchUserHomePageUI();
+	        } else {
+	            showError("Invalid username or password. Please try again.");
+	            this.user = null;
+	        }
+	    });
 	}
-
+	//Quit button sends a msg that client disconnected
 	private void handleQuit() {
+		client.quit();
 		System.exit(0);
 	}
-
+	//Talk to Ben how to implement it so itll be not copied always.
+	//By clickin "X" same effect like clicking Quit Button
+    public void closeApplication() {
+        if (client != null) {
+            client.quit();
+        }
+        Platform.exit();
+        System.exit(0);
+    }
+	
+    
+    //Thread*
 	private void showError(String message) {
-		errorText.setText(message);
-		errorText.setVisible(true);
+	        errorText.setText(message);
+	        errorText.setVisible(true);
 	}
-
-	private boolean authenticate(String username, String password) {
-		 //Dummy authentication logic; replace with actual logic
-		return "a".equals(username) && "a".equals(password);
-	}
+	
 	
     private void launchUserHomePageUI() {
         try {

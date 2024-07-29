@@ -26,7 +26,6 @@ public class ClientConnectController {
     private void initialize() {
         // Initialization code, if needed
     }
-
     @FXML
     private void handleConnectButtonAction() throws IOException {
         String serverIp = serverIpTextField.getText();

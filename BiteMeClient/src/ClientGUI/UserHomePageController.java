@@ -3,8 +3,10 @@ package ClientGUI;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.text.Text;
+import client.Client;
 import common.EnumType;
 import common.User;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -14,6 +16,7 @@ import javafx.stage.Stage;
 public class UserHomePageController {
 
 	private User user;
+	private Client client;
 	
     @FXML
     private Button logoutButton;
@@ -78,6 +81,8 @@ public class UserHomePageController {
 
 	@FXML
     private void initialize() {
+        // Initialize the client
+        client = Client.getInstance();
         // Initialize any necessary components or data
         // For example, you might want to set the welcome message:
         // welcomeText.setText("Hello '" + currentUser.getName() + "', Choose an Option");
@@ -87,6 +92,7 @@ public class UserHomePageController {
     private void handleLogout(ActionEvent event) {
         // Implement logout logic
         System.out.println("Logout button clicked");
+        //Here will be function that changed is_Loggedstatus to 0 (SHOULD BE MADE BY BACKEND)
         // Navigate to login page or close the application
     }
 
@@ -168,4 +174,15 @@ public class UserHomePageController {
         System.out.println("Register User button clicked");
         // Implement navigation to Register User page
     }
+    
+	//Making Quit Button to kill thread and send message to server
+    public void closeApplication() {
+        if (client != null) {
+            System.out.println("Closing application from UserHomePage");
+            client.quit();
+        }
+        Platform.exit();
+        System.exit(0);
+    }
+    
 }

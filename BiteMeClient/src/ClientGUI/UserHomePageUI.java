@@ -24,6 +24,11 @@ public class UserHomePageUI extends Application {
         UserHomePageController controller = loader.getController();
         controller.setUser(user);
         
+        //Handler for "X" button in the top screen
+        primaryStage.setOnCloseRequest(event -> {
+            event.consume(); // Prevent the window from closing immediately
+            controller.closeApplication();
+        });
         
         primaryStage.setTitle("User Home Page");
         primaryStage.setScene(new Scene(root, 700, 600));
