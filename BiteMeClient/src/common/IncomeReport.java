@@ -1,11 +1,19 @@
 package common;
 
-public class IncomeReport {
-    private int reportId;
-    private int restaurantId;
-    private int month;
-    private int year;
+public class IncomeReport extends MonthlyReport{
     private double income;
 
-    // Getters and Setters
+    // Constructors
+    public IncomeReport(Restaurant restaurant, int month, int year) {
+		super(restaurant, month, year);
+    }
+
+	public double getIncome() {
+		return income;
+	}
+
+	public void setIncome(double income) {
+		this.income = income;
+	}
+    
 }

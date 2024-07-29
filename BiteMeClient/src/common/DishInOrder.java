@@ -6,10 +6,10 @@ public class DishInOrder {
     private int quantity;
 
     // Constructors
-    public DishInOrder(int orderid, int dishId, int d) {
-        this.orderId = orderid;
+    public DishInOrder(int orderId, int dishId, int quantity) {
+        this.orderId = orderId;
         this.dishId = dishId;
-        this.quantity = d;
+        this.quantity = quantity;
     }
 
     // Getters and Setters
