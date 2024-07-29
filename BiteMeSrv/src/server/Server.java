@@ -9,7 +9,10 @@ import common.DishInOrder;
 import common.EnumClientOperations;
 import common.EnumOrderStatus;
 import common.EnumServerOperations;
+import common.IncomeReport;
 import common.Order;
+import common.OrdersReport;
+import common.PerformanceReport;
 import common.User;
 import ocsf.server.AbstractServer;
 import ocsf.server.ConnectionToClient;
@@ -20,11 +23,12 @@ public class Server extends AbstractServer {
 	private static Server instance;
 	public DBController dbController;
 	private serverController controller;
-
+	private ReportController reportController;
 	// Private constructor
 	private Server(int port, String url, String username, String password) {
 		super(port);
 		dbController = new DBController();
+		reportController = new ReportController(this);
 		try {
 			dbController.connect(url, username, password);
 		} catch (ClassNotFoundException | SQLException e) {
@@ -124,6 +128,15 @@ public class Server extends AbstractServer {
                 boolean updateResult = OrderController.updateDish(updatedDish);
                 sendMessageToClient(EnumClientOperations.UPDATE_DISH, client, updateResult);
                 break;
+            case INCOME_REPORT:
+            	reportController.getIncomeReport((IncomeReport)message[1], client);
+            	break;
+            case ORDERS_REPORT:
+            	reportController.getOrdersReport((OrdersReport)message[1], client);
+            	break;
+            case PERFORMANCE_REPORT:
+            	reportController.getPerformanceReport((PerformanceReport)message[1], client);
+            	break;
 			case NONE:
 				System.out.println("no operation was recived");
 				break;
@@ -159,6 +172,7 @@ public class Server extends AbstractServer {
 	protected void serverStopped() {
 		controller.updateStatus("Server has stopped listening for connections.");
 		dbController.closeConnection();
+		reportController.shutdown();
 	}
 
 	public void stopServer() {

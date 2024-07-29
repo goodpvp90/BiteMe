@@ -13,7 +13,11 @@ import common.DishInOrder;
 import common.EnumClientOperations;
 import common.EnumDish;
 import common.EnumServerOperations;
+import common.IncomeReport;
+import common.MonthlyReport;
 import common.Order;
+import common.OrdersReport;
+import common.PerformanceReport;
 import common.User;
 import ClientGUI.ClientLoginController;
 import ClientGUI.ZProtoClientController;
@@ -125,6 +129,23 @@ public class Client extends AbstractClient {
                     //clientController.displayAddDishResult(addDishResult);
                 }
                 break;
+            case REPORT_ERROR:
+            	String errorMsg = (String)message[1];
+            	//do smth
+            	break;
+            case INCOME_REPORT:
+            	IncomeReport incomeReport = (IncomeReport)message[1];
+            	//do smth
+            	System.out.println(incomeReport.getIncome());
+            	break;
+            case ORDERS_REPORT:
+            	OrdersReport ordersReport = (OrdersReport)message[1];
+            	//do smth
+            	break;
+            case PERFORMANCE_REPORT:
+            	PerformanceReport performanceReport = (PerformanceReport)message[1];
+            	//do smth
+            	break;
 			case NONE:
 				System.out.println("no operation was recived");
 				break;
@@ -196,5 +217,17 @@ public class Client extends AbstractClient {
 
 	public void loginValidation(User user) {
 		sendMessageToServer(new Object[] { EnumServerOperations.LOGIN, user });
+	}
+	
+	public void getIncomeReport(IncomeReport report) {
+		sendMessageToServer(new Object[] { EnumServerOperations.INCOME_REPORT, report });
+	}
+	
+	public void getPerformanceReport(PerformanceReport report) {
+		sendMessageToServer(new Object[] { EnumServerOperations.PERFORMANCE_REPORT, report });
+	}
+	
+	public void getOrdersReport(OrdersReport report) {
+		sendMessageToServer(new Object[] { EnumServerOperations.ORDERS_REPORT, report });
 	}
 }

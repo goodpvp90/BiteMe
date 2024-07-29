@@ -4,7 +4,6 @@ package common;
 import java.io.Serializable;
 
 public class Dish implements Serializable {
-	
     private int dishId; // This field will be auto-incremented by the database
     private EnumDish dishType;
     private String dishName;

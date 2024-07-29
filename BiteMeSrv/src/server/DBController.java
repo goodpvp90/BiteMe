@@ -16,7 +16,10 @@ import common.EnumBranch;
 import common.EnumDish;
 import common.EnumOrderStatus;
 import common.EnumType;
+import common.IncomeReport;
 import common.Order;
+import common.OrdersReport;
+import common.PerformanceReport;
 import common.User;
 
 public class DBController {
@@ -376,14 +379,23 @@ public class DBController {
         return dishes;
     }
     
+    /**
+     * Generates the orders report that collects the Total amount of each dish type sold for the previous month 
+     * and inserts it into the ordersreport table.
+     * If a report for the same restaurant and month already exists, it updates the amount field.
+     */
+    //===================================add completed
     public void generateOrdersReport() {
         String query = "INSERT INTO ordersreport (restaurant, dish_type, amount, month, year) " +
-                       "SELECT restaurant, dish_type, SUM(quantity), MONTH(order_date), YEAR(order_date) " +
-                       "FROM dish_in_order " +
-                       "JOIN orders ON dish_in_order.order_id = orders.order_id " +
-                       "WHERE MONTH(order_date) = MONTH(CURRENT_DATE - INTERVAL 1 MONTH) " +
-                       "AND YEAR(order_date) = YEAR(CURRENT_DATE - INTERVAL 1 MONTH) " +
-                       "GROUP BY restaurant, dish_type";
+                "SELECT o.branch_id AS restaurant, d.dish_type, SUM(dio.quantity) AS amount, " +
+                "MONTH(o.order_date) AS month, YEAR(o.order_date) AS year " +
+                "FROM dish_in_order dio " +
+                "JOIN dishes d ON dio.dish_id = d.dish_id " +
+                "JOIN orders o ON dio.order_id = o.order_id " +
+                "WHERE MONTH(o.order_date) = MONTH(CURRENT_DATE - INTERVAL 1 MONTH) " +
+                "AND YEAR(o.order_date) = YEAR(CURRENT_DATE - INTERVAL 1 MONTH) " +
+                "GROUP BY o.branch_id, d.dish_type, MONTH(o.order_date), YEAR(o.order_date) " +
+                "ON DUPLICATE KEY UPDATE amount = VALUES(amount)";
 
         try (PreparedStatement pstmt = connection.prepareStatement(query)) {
             pstmt.executeUpdate();
@@ -392,6 +404,161 @@ public class DBController {
             e.printStackTrace();
         }
     }
+    
+    /**
+     * Generates the income report for the previous month based on the total income of a branch for the month
+     * and inserts it into the incomereport table.
+     * If a report for the same restaurant and month already exists, it updates the income field.
+     */
+    public void generateIncomeReport() {
+        String query = "INSERT INTO incomereport (restaurant, month, year, income) " +
+                       "SELECT branch_id AS restaurant, " +
+                       "MONTH(order_date) AS month, " +
+                       "YEAR(order_date) AS year, " +
+                       "SUM(total_price) AS income " +
+                       "FROM orders " +
+                       "WHERE MONTH(order_date) = MONTH(CURRENT_DATE - INTERVAL 1 MONTH) " +
+                       "AND YEAR(order_date) = YEAR(CURRENT_DATE - INTERVAL 1 MONTH) " +
+                       "GROUP BY branch_id, MONTH(order_date), YEAR(order_date)";
+
+        try (PreparedStatement pstmt = connection.prepareStatement(query)) {
+            pstmt.executeUpdate();
+            System.out.println("Monthly income report generated successfully.");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+    
+    /**
+     * Generates the performance report for the previous month collects the amount of orders and amount of orders that were completed in time
+     * and inserts it into the performancereport table.
+     * If a report for the same branch and month already exists, it updates the totalOrders and ordersCompletedInTime fields.
+     */
+    public void generatePerformanceReport() {
+        String query = "INSERT INTO performancereport (branch_id, month, year, totalOrders, ordersCompletedInTime) " +
+                       "SELECT o.branch_id AS branch_id, MONTH(o.order_date) AS month, YEAR(o.order_date) AS year, " +
+                       "COUNT(*) AS totalOrders, " +
+                       "SUM(CASE WHEN TIMESTAMPDIFF(MINUTE, o.order_request_time, o.order_receive_time) <= 60 THEN 1 ELSE 0 END) AS ordersCompletedInTime " +
+                       "FROM orders o " +
+                       "WHERE MONTH(o.order_date) = MONTH(CURRENT_DATE - INTERVAL 1 MONTH) " +
+                       "AND YEAR(o.order_date) = YEAR(CURRENT_DATE - INTERVAL 1 MONTH) " +
+                       "GROUP BY o.branch_id, MONTH(o.order_date), YEAR(o.order_date) " +
+                       "ON DUPLICATE KEY UPDATE totalOrders = VALUES(totalOrders), ordersCompletedInTime = VALUES(ordersCompletedInTime)";
+        try (PreparedStatement pstmt = connection.prepareStatement(query)) {
+            pstmt.executeUpdate();
+            System.out.println("Monthly income report generated successfully.");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+    
+    /**
+     * Retrieves an income report from the database for the specified restaurant, month, and year.
+     * If no report exists, returns a string indicating that no such report exists.
+     * If a database error occurs, returns the error message.
+     *
+     * @param report an IncomeReport object with the restaurant, month, and year set
+     * @return the updated IncomeReport object with the income set if found,
+     *         otherwise a string indicating that no such report exists or an error message
+     */
+    public Object getIncomeReport(IncomeReport report) {
+        String query = "SELECT income FROM incomereport WHERE restaurant = ? AND month = ? AND year = ?";
+        try {
+            PreparedStatement pstmt = connection.prepareStatement(query);
+            // Set the parameters for the query
+            pstmt.setInt(1, report.getRestaurant().getBranchID());
+            pstmt.setInt(2, report.getMonth());
+            pstmt.setInt(3, report.getYear());
+
+            // Execute the query
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    double income = rs.getDouble("income");
+                    report.setIncome(income);      
+                }
+                else {
+                	return (Object)"no such report exists";
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return (Object)e.toString();
+        }
+        return (Object)report;
+    }
+    
+    /**
+     * Retrieves an performance report from the database for the specified restaurant, month, and year.
+     * If no report exists, returns a string indicating that no such report exists.
+     * If a database error occurs, returns the error message.
+     *
+     * @param report an PerformanceReport object with the restaurant, month, and year set
+     * @return the updated PerformanceReport object with the income set if found,
+     *         otherwise a string indicating that no such report exists or an error message
+     */
+    public Object getPerformanceReport(PerformanceReport report) {
+        String query = "SELECT totalOrders, ordersCompletedInTime FROM performancereport"+
+                "WHERE branch_id = ? AND month = ? AND year = ?";
+        try {
+            PreparedStatement pstmt = connection.prepareStatement(query);
+            // Set the parameters for the query
+            pstmt.setInt(1, report.getRestaurant().getBranchID());
+            pstmt.setInt(2, report.getMonth());
+            pstmt.setInt(3, report.getYear());
+
+            // Execute the query
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    int totalOrders = rs.getInt("totalOrders");
+                    int ordersCompletedInTime = rs.getInt("ordersCompletedInTime");
+                    report.setTotalOrders(totalOrders);
+                    report.setOrdersCompletedInTime(ordersCompletedInTime);
+                }
+                else {
+                	return (Object)"no such report exists";
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return (Object)e.toString();
+        }
+        return (Object)report;
+    }
+    
+    /**
+     * Retrieves the orders report from the database for the specified restaurant, month, and year.
+     *
+     * @param report the OrdersReport object containing the restaurant, month, and year to query
+     * @return the OrdersReport object populated with the retrieved data or an error message if an error occurs
+     */
+    public Object getOrdersReport(OrdersReport report) {
+        String query = "SELECT dish_type, amount FROM ordersreport WHERE restaurant = ? AND month = ? AND year = ?";
+        try {
+            PreparedStatement pstmt = connection.prepareStatement(query);
+            // Set the parameters for the query
+            pstmt.setInt(1, report.getRestaurant().getBranchID());
+            pstmt.setInt(2, report.getMonth());
+            pstmt.setInt(3, report.getYear());
+
+            // Execute the query
+            try (ResultSet rs = pstmt.executeQuery()) {
+                while (rs.next()) {
+                    EnumDish dishType = EnumDish.valueOf(rs.getString("dish_type"));
+                    int amount = rs.getInt("amount");
+                    report.getDishTypeAmountMap().put(dishType, amount);
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+                return (Object) e.toString();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return (Object) e.toString();
+        }
+        return (Object) report;
+    }
+
+
     
     public void savePendingNotification(String username, int orderId, String status) throws SQLException {
         String query = "INSERT INTO pendingnotifications (username, orderNumber, status) VALUES (?, ?, ?)";
