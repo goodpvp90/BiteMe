@@ -126,11 +126,6 @@ public class Server extends AbstractServer {
                 List<Order> pendingOrders = OrderController.getPendingOrdersByBranch((int) message[1]);
                 sendMessageToClient(EnumClientOperations.PENDING_ORDER, client, pendingOrders);
                 break;
-            case UPDATE_DISH:
-                Dish updatedDish = (Dish) message[1];
-                boolean updateResult = OrderController.updateDish(updatedDish);
-                sendMessageToClient(EnumClientOperations.UPDATE_DISH, client, updateResult);
-                break;
             case INCOME_REPORT:
             	reportController.getIncomeReport((IncomeReport)message[1], client);
             	break;

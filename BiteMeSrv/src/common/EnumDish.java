@@ -4,5 +4,5 @@ public enum EnumDish {
 	APPETIZER,
 	MAIN_COURSE,
 	DESSERT,
-	BEVERAGE;
+	BEVERAGE, SALAD;
 }

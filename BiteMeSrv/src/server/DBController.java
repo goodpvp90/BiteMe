@@ -11,7 +11,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import common.Dish;
+import common.DishAppetizer;
+import common.DishBeverage;
+import common.DishDessert;
 import common.DishInOrder;
+import common.DishMainCourse;
+import common.DishSalad;
 import common.EnumBranch;
 import common.EnumDish;
 import common.EnumOrderStatus;
@@ -265,7 +270,7 @@ public class DBController {
                             for (DishInOrder dishInOrder : dishesInOrder) {
                                 dishStmt.setInt(1, orderId);
                                 dishStmt.setInt(2, dishInOrder.getDishId());
-                                dishStmt.setInt(3, dishInOrder.getQuantity());
+                                dishStmt.setString(3, dishInOrder.getComment());
                                 dishStmt.addBatch();
                             }
                             dishStmt.executeBatch();
@@ -294,12 +299,12 @@ public class DBController {
     }
 
     
-    public void addDishToOrder(int orderId, int dishId, int quantity) throws SQLException {
-        String sql = "INSERT INTO dish_in_order (order_id, dish_id, quantity) VALUES (?, ?, ?)";
+    public void addDishToOrder(DishInOrder dishinorder) throws SQLException {
+        String sql = "INSERT INTO dish_in_order (order_id, dish_id, comment) VALUES (?, ?, ?)";
         try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
-            pstmt.setInt(1, orderId);
-            pstmt.setInt(2, dishId);
-            pstmt.setInt(3, quantity);
+            pstmt.setInt(1, dishinorder.getOrderId());
+            pstmt.setInt(2, dishinorder.getDishId());
+            pstmt.setString(3, dishinorder.getComment());
             pstmt.executeUpdate();
         }
     }
@@ -311,9 +316,11 @@ public class DBController {
             pstmt.setInt(1, orderId);
             ResultSet rs = pstmt.executeQuery();
             while (rs.next()) {
-                int dishId = rs.getInt("dish_id");
-                int quantity = rs.getInt("quantity");
-                dishesInOrder.add(new DishInOrder(orderId, dishId, quantity));
+                int dishId = rs.getInt("dish_id"); 
+                String comment = rs.getString("comment");
+                DishInOrder ndish = new DishInOrder(dishId, comment);
+                ndish.setOrderId(orderId);
+                dishesInOrder.add(ndish);
             }
         }
         return dishesInOrder;
@@ -328,15 +335,15 @@ public class DBController {
         }
     }
     
-    public boolean addDish(int menuId, EnumDish dishType, String dishName, double price) {
+    public boolean addDish(Dish dish) {
         String sql = "INSERT INTO dishes (menu_id, dish_type, dish_name, price) VALUES (?, ?, ?, ?)";
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
 
-            preparedStatement.setInt(1, menuId);
-            preparedStatement.setString(2, dishType.toString());
-            preparedStatement.setString(3, dishName);
-            preparedStatement.setDouble(4, price);
+            preparedStatement.setInt(1, dish.getMenuId());
+            preparedStatement.setString(2, dish.getDishType().toString());
+            preparedStatement.setString(3, dish.getDishName());
+            preparedStatement.setDouble(4, dish.getPrice());
 
             int rowsAffected = preparedStatement.executeUpdate();
             return rowsAffected > 0;
@@ -347,15 +354,15 @@ public class DBController {
         }
     }
     
-    public boolean deleteDish(int menuId, EnumDish enumDish, String dishName, Double price) {
+    public boolean deleteDish(Dish dish) {
         String sql = "DELETE FROM dishes WHERE menu_id = ? AND dish_type = ? AND dish_name = ? AND price = ?";
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
 
-            preparedStatement.setInt(1, menuId);
-            preparedStatement.setString(2, enumDish.toString());
-            preparedStatement.setString(3, dishName);
-            preparedStatement.setDouble(4, price);
+            preparedStatement.setInt(1, dish.getMenuId());
+            preparedStatement.setString(2, dish.getDishType().toString());
+            preparedStatement.setString(3, dish.getDishName());
+            preparedStatement.setDouble(4, dish.getPrice());
 
             int rowsAffected = preparedStatement.executeUpdate();
             return rowsAffected > 0;
@@ -366,25 +373,6 @@ public class DBController {
         }
     }
 
-    
-    public boolean updateDish(int dishId, EnumDish enumDish, String dishName, double price) {
-        String sql = "UPDATE dishes SET dish_type = ?, dish_name = ?, price = ? WHERE dish_id = ?";
-
-        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
-
-        	preparedStatement.setString(2, enumDish.toString());
-            preparedStatement.setString(2, dishName);
-            preparedStatement.setDouble(3, price);
-            preparedStatement.setInt(4, dishId);
-
-            int rowsAffected = preparedStatement.executeUpdate();
-            return rowsAffected > 0;
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
     
     public List<Dish> getMenu(int menuId) {
         String sql = "SELECT * FROM dishes WHERE menu_id = ?";
@@ -400,7 +388,18 @@ public class DBController {
                 EnumDish dishType = EnumDish.valueOf(resultSet.getString("dish_type"));
                 String dishName = resultSet.getString("dish_name");
                 double price = resultSet.getDouble("price");
-                dishes.add(new Dish(dishType, dishName, price, menuId));
+                switch(dishType){
+                case BEVERAGE:
+                	dishes.add(new DishBeverage(dishName, price, menuId));
+                case SALAD:
+                	dishes.add(new DishSalad(dishName, price, menuId));
+                case APPETIZER:
+                	dishes.add(new DishAppetizer(dishName, price, menuId));
+                case DESSERT:
+                	dishes.add(new DishDessert(dishName, price, menuId));
+                case MAIN_COURSE:
+                	dishes.add(new DishMainCourse(dishName, price, menuId));
+                }
             }
 
         } catch (SQLException e) {
@@ -417,7 +416,7 @@ public class DBController {
     //===================================add completed
     public void generateOrdersReport() {
         String query = "INSERT INTO ordersreport (restaurant, dish_type, amount, month, year) " +
-                "SELECT o.branch_id AS restaurant, d.dish_type, SUM(dio.quantity) AS amount, " +
+                "SELECT o.branch_id AS restaurant, d.dish_type, COUNT(*) AS amount, " +
                 "MONTH(o.order_date) AS month, YEAR(o.order_date) AS year " +
                 "FROM dish_in_order dio " +
                 "JOIN dishes d ON dio.dish_id = d.dish_id " +

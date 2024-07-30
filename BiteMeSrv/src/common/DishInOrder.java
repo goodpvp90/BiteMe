@@ -1,15 +1,14 @@
 package common;
 
 public class DishInOrder {
-    private int orderId;
+    private int orderId; //Check if needed, currently unused
     private int dishId;
-    private int quantity;
+    private String comment;
 
     // Constructors
-    public DishInOrder(int orderId, int dishId, int quantity) {
-        this.orderId = orderId;
+    public DishInOrder(int dishId, String comment) {
         this.dishId = dishId;
-        this.quantity = quantity;
+        this.comment = comment;
     }
 
     // Getters and Setters
@@ -29,12 +28,12 @@ public class DishInOrder {
         this.dishId = dishId;
     }
 
-    public int getQuantity() {
-        return quantity;
+    public String getComment() {
+        return this.comment;
     }
 
-    public void setQuantity(int quantity) {
-        this.quantity = quantity;
+    public void setComment(String comment) {
+        this.comment = comment;
     }
 
     @Override
@@ -42,7 +41,7 @@ public class DishInOrder {
         return "DishInOrder{" +
                 "orderId=" + orderId +
                 ", dishId=" + dishId +
-                ", quantity=" + quantity +
+                ", comment=" + comment +
                 '}';
     }
 }
