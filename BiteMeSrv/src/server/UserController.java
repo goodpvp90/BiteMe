@@ -21,7 +21,9 @@ public class UserController {
 		else {
 			@SuppressWarnings("unchecked")
 			ArrayList<Object> details = (ArrayList<Object>) result;
+
 			client.setInfo("user", result); //Store information into client object
+      
 			user.setFirstName((String)details.get(0));
 			user.setLastName((String)details.get(1));
 			user.setEmail((String)details.get(2));
@@ -29,7 +31,14 @@ public class UserController {
 			user.setHomeBranch((EnumBranch)details.get(4));
 			user.setLogged((boolean)details.get(7));
 			user.setType((EnumType)details.get(8));
-			server.sendMessageToClient(EnumClientOperations.USER,client, (Object)user);
+			
+			boolean isApproved = false;
+			if(user.getType() == EnumType.CUSTOMER) {
+				isApproved = server.dbController.checkCustomerRegistered(user);
+				server.sendMessageToClient(EnumClientOperations.USER,client, new Object[] {(Object)user, isApproved});
+			}
+			else
+				server.sendMessageToClient(EnumClientOperations.USER,client, new Object[] {(Object)user});
 		}
     }
     

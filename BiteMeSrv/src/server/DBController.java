@@ -102,6 +102,22 @@ public class DBController {
         return (Object)userDetails;
     }
 	
+	public boolean checkCustomerRegistered(User user) {
+		boolean isRegistered = false;
+        String query = "SELECT registered FROM customers WHERE username = ?";
+        try {
+            PreparedStatement preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setString(1, user.getUsername());
+            ResultSet rs = preparedStatement.executeQuery();
+            if (rs.next()) {
+                isRegistered = rs.getBoolean("registered"); 
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return isRegistered;
+	}
+	
 	
 	private boolean updateIsLoggedStatus(String username) {
 		String query = "UPDATE users SET isLogged = 1 WHERE username = ?";
