@@ -84,7 +84,8 @@ public class Client extends AbstractClient {
 	            break;
 			case USER:
 				//SEND TO CLIENT CONTROLLER
-	        	Object data = (Object)message[1];
+	        	Object[] data = (Object[])message[1];
+				System.out.println((boolean)data[1]);
 	        	clientLoginController.updateUser(data);
 	        	break;
 			case INSERT_ORDER:
