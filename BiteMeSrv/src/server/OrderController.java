@@ -76,16 +76,6 @@ public class OrderController {
         }
     }
 
-    // Add a dish to an existing order
-    public static String addDishToOrder(int orderId, int dishId, int quantity) {
-        try {
-            server.dbController.addDishToOrder(orderId, dishId, quantity);
-            return "Dish added to order successfully";
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return "Error adding dish to order: " + e.getMessage();
-        }
-    }
 
     // Retrieve dishes in a specific order
     public static List<DishInOrder> getDishesInOrder(int orderId) {
@@ -98,17 +88,12 @@ public class OrderController {
     }
     
     public static void addDish(Dish dish) {
-        server.dbController.addDish(dish.getMenuId(), dish.getDishType(), dish.getDishName(), dish.getPrice());
+        server.dbController.addDish(dish);
     }
     
     public static boolean deleteDish(Dish dish) {
-        return server.dbController.deleteDish(dish.getMenuId(), dish.getDishType(), dish.getDishName(), dish.getPrice());
+        return server.dbController.deleteDish(dish);
     }
-
-	public static boolean updateDish(Dish updateDish) {
-        return server.dbController.updateDish(updateDish.getMenuId(), updateDish.getDishType(), updateDish.getDishName(), updateDish.getPrice());
-
-	}
 
 	public static List<Dish> viewMenu(int menuId) {
 		List<Dish> menu = server.dbController.getMenu(menuId);

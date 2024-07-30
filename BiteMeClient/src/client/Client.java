@@ -114,12 +114,6 @@ public class Client extends AbstractClient {
                     //clientController.displayDeleteDishResult(deleteDishResult);
                 }
                 break;
-            case UPDATE_DISH:
-                boolean updateDishResult = (boolean) message[1];
-                if (clientController != null) {
-                    //clientController.displayUpdateDishResult(updateDishResult);
-                }
-                break;
             case CREATED_ACCOUNT:
             	Object dataUser = (Object)message[1]; //You receive here user object if created
                 if (clientController != null) {

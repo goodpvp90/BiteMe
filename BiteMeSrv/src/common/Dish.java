@@ -3,8 +3,12 @@ package common;
 
 import java.io.Serializable;
 
-public class Dish implements Serializable {
-    private int dishId; // This field will be auto-incremented by the database
+public abstract class Dish implements Serializable {
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	private int dishId; // This field will be auto-incremented by the database
     private EnumDish dishType;
     private String dishName;
     private double price;
@@ -14,8 +18,7 @@ public class Dish implements Serializable {
     public Dish() {}
 
     // Parameterized constructor
-    public Dish(EnumDish dishType, String dishName, double price, int menuId) {
-        this.dishType = dishType;
+    public Dish(String dishName, double price, int menuId) {
         this.dishName = dishName;
         this.price = price;
         this.menu_id = menuId; // Initialize the menu_id
@@ -35,7 +38,7 @@ public class Dish implements Serializable {
         return dishType;
     }
 
-    public void setDishType(EnumDish dishType) {
+    public void setDishType(EnumDish dishType) { //CHECK IF NEEDED, not used now.
         this.dishType = dishType;
     }
 
