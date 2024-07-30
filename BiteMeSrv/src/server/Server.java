@@ -84,8 +84,7 @@ public class Server extends AbstractServer {
                 List<DishInOrder> dishesInOrder = (List<DishInOrder>) message[2];
                 // Call the method to create the order
                 try {
-                    OrderController.createOrder(newOrder, dishesInOrder);
-                    result = "Order created successfully.";
+                    sendMessageToClient(EnumClientOperations.INSERT_ORDER,client, OrderController.createOrder(newOrder, dishesInOrder));
                 } catch (Exception e) {
                     result = "Error creating order: " + e.getMessage();
                 }

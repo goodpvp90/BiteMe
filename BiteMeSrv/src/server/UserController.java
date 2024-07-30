@@ -10,7 +10,8 @@ import ocsf.server.ConnectionToClient;
 
 public class UserController {
 	private static Server server = Server.getInstance();
-    //view orders
+	
+	
     public static void login(ConnectionToClient client, Object[] message) {
     	User user = (User)message[1];
         Object result = server.dbController.validateLogin(user);
