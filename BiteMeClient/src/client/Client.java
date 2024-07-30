@@ -87,6 +87,8 @@ public class Client extends AbstractClient {
 	        	Object data = (Object)message[1];
 	        	clientLoginController.updateUser(data);
 	        	break;
+			case INSERT_ORDER:
+				
 			case UPDATE_WELOCME:
 				// Handle non-array messages for updating the top label in clientController
 	            if (clientController != null) {
