@@ -21,8 +21,7 @@ public class UserController {
 		else {
 			@SuppressWarnings("unchecked")
 			ArrayList<Object> details = (ArrayList<Object>) result;
-			
-
+			client.setInfo("user", result); //Store information into client object
 			user.setFirstName((String)details.get(0));
 			user.setLastName((String)details.get(1));
 			user.setEmail((String)details.get(2));
@@ -32,6 +31,18 @@ public class UserController {
 			user.setType((EnumType)details.get(8));
 			server.sendMessageToClient(EnumClientOperations.USER,client, (Object)user);
 		}
+    }
+    
+    public static void logout(ConnectionToClient client, Object[] message) {
+        User user = (User) message[1];
+        boolean logoutSuccess = server.dbController.logout(user.getUsername());
+
+        if (logoutSuccess) {
+            user.setLogged(false);
+            server.sendMessageToClient(EnumClientOperations.LOG_OUT, client, (Object) user);
+        } else {
+            server.sendMessageToClient(EnumClientOperations.LOG_OUT, client, "Failed to log out user.");
+        }
     }
     
     public static void createAccount(ConnectionToClient client, Object[] message) {

@@ -118,6 +118,20 @@ public class DBController {
         return logged;
 	}
 	
+	
+    public boolean logout(String username) {
+        String query = "UPDATE users SET isLogged = 0 WHERE username = ?";
+        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            preparedStatement.setString(1, username);
+            int rowsAffected = preparedStatement.executeUpdate();
+            return rowsAffected > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+
 	public boolean createUser(String username, String password, String email, String phone, String firstName, String lastName, EnumBranch enumBranch, EnumType type) {
 	    String sql = "INSERT INTO users (username, password, email, phone, firstname, lastname, home_branch, type, isLogged) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
