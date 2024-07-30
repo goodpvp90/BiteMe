@@ -113,6 +113,8 @@ public class Server extends AbstractServer {
                 }
                 sendMessageToClient(EnumClientOperations.NOTIFICATION, client, notifications);
                 break;
+            case LOG_OUT:
+            	UserController.logout(client,(Object[]) message);
             case CREATE_ACCOUNT:
             	UserController.createAccount(client, (Object[]) message);
             case VIEW_MENU:

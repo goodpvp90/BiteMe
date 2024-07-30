@@ -87,8 +87,15 @@ public class Client extends AbstractClient {
 	        	Object[] data = (Object[])message[1];
 	        	clientLoginController.updateUser(data);
 	        	break;
+			case LOG_OUT:
+				// UPDATE HERE WHAT NEEDED, its here for example
+				// you receive object user if loggedout succesfully or string if not logged.
+	        	Object loggedoutuser = (Object)message[1];
+	        	clientLoginController.updateUser(loggedoutuser);
 			case INSERT_ORDER:
-				
+				//HERE YOU RECEIVE BACK Order, and list of dishes in order.
+				Object order = (Object)message[1];
+				Object dishesinorder = (Object)message[2];
 			case UPDATE_WELOCME:
 				// Handle non-array messages for updating the top label in clientController
 	            if (clientController != null) {
@@ -219,6 +226,10 @@ public class Client extends AbstractClient {
 
 	public void loginValidation(User user) {
 		sendMessageToServer(new Object[] { EnumServerOperations.LOGIN, user });
+	}
+	
+	public void userLogout(User user) {
+		sendMessageToServer(new Object[] { EnumServerOperations.LOG_OUT, user });
 	}
 	
 	public void getIncomeReport(IncomeReport report) {
