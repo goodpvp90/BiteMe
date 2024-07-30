@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane prefHeight="500" prefWidth="800" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ClientGUI.CustomerCheckout">
+    <Button layoutX="10.0" layoutY="10.0" onAction="#handleBackButtonAction" prefHeight="30.0" prefWidth="110.0" text="BACK" />
+    <Button layoutX="608.0" layoutY="7.0" onAction="#handleConfirmOrderAction" prefHeight="67.0" prefWidth="185.0" text="CONFIRM ORDER" />
+    <!-- Add other UI components for the checkout process here -->
+</AnchorPane>
