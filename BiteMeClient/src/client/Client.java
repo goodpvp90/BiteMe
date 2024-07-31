@@ -91,7 +91,7 @@ public class Client extends AbstractClient {
 				// UPDATE HERE WHAT NEEDED, its here for example
 				// you receive object user if loggedout succesfully or string if not logged.
 	        	Object loggedoutuser = (Object)message[1];
-	        	clientLoginController.updateUser(loggedoutuser);
+	        	//clientLoginController.updateUser(loggedoutuser);
 			case INSERT_ORDER:
 				//HERE YOU RECEIVE BACK Order, and list of dishes in order.
 				Object order = (Object)message[1];

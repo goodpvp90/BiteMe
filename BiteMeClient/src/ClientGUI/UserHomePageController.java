@@ -87,13 +87,38 @@ public class UserHomePageController {
         // For example, you might want to set the welcome message:
         // welcomeText.setText("Hello '" + currentUser.getName() + "', Choose an Option");
     }
-
-    @FXML
+	@FXML
     private void handleLogout(ActionEvent event) {
         // Implement logout logic
         System.out.println("Logout button clicked");
-        //Here will be function that changed is_Loggedstatus to 0 (SHOULD BE MADE BY BACKEND)
-        // Navigate to login page or close the application
+        
+        // Send logout request to the server
+        client.userLogout(user);
+        
+        // Navigate back to the login page
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("ClientLogin.fxml"));
+            Parent root = loader.load();
+            
+            ClientLoginController loginController = loader.getController();
+            // Reset the user in the login controller
+            //loginController.updateUser(new Object[]{null});
+            
+            Stage stage = (Stage) logoutButton.getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.setTitle("Client Login");
+            
+            // Add close request handler
+            stage.setOnCloseRequest(e -> {
+                e.consume();
+                loginController.closeApplication();
+            });
+            
+            stage.show();
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.err.println("Error loading login page: " + e.getMessage());
+        }
     }
 
     @FXML

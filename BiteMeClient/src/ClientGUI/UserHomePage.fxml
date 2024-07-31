@@ -54,7 +54,7 @@
     <RowConstraints percentHeight="5.0" vgrow="ALWAYS" />
   </rowConstraints>
    <children>
-      <Button fx:id="logoutButton" minHeight="40.0" minWidth="80.0" mnemonicParsing="false" onAction="#handleLogout" style="-fx-background-color: red;" text="Logout" textAlignment="CENTER" textFill="WHITE" GridPane.columnIndex="1" GridPane.columnSpan="3" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER">
+      <Button fx:id="logoutButton" minHeight="40.0" minWidth="80.0" mnemonicParsing="false" onAction="#handleLogout" style="-fx-background-color: red;" text="Logout" textAlignment="CENTER" >
          <font>
             <Font size="16.0" />
          </font>

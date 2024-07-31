@@ -65,20 +65,22 @@ public class ClientLoginController {
 	
 	//New By Eldar because of thread problems
 	//Added Plat.run later because of a thread problem (Because we have to do it, Otherwise will be thread problem)
-	public void updateUser(Object user) {
+	public void updateUser(Object[] user) {
 	    Platform.runLater(() -> {
-	        if (user == null) {
-	            showError("Invalid username or password. Please try again.");
-	            this.user = null;
-	        } else if (user instanceof User) {
-	            this.user = (User) user;
+	        if (user[0] instanceof User) {
+	            this.user = (User) user[0];
 	            launchUserHomePageUI();
+	        } else if (user[0] instanceof String) {
+	            showError((String) user[0]);
+	            this.user = null;
 	        } else {
-	            showError("Invalid username or password. Please try again.");
+	            showError("An unexpected error occurred. Please try again.");
 	            this.user = null;
 	        }
 	    });
 	}
+	
+	
 	//Quit button sends a msg that client disconnected
 	private void handleQuit() {
 		client.quit();
