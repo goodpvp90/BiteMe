@@ -1,10 +1,12 @@
 package common;
 
+import common.Restaurant.Location;
+
 public class IncomeReport extends MonthlyReport{
     private double income;
 
     // Constructors
-    public IncomeReport(Restaurant restaurant, int month, int year) {
+    public IncomeReport(Location restaurant, int month, int year) {
 		super(restaurant, month, year);
     }
 

@@ -47,10 +47,10 @@ public class OrderController {
             String username = order.getUsername();
             ConnectionToClient client = server.getClientByUsername(username);
             
-            if (client != null) {
+            if (client != null)
             	server.sendMessageToClient(EnumClientOperations.NOTIFICATION, client, (Object) ("Your order " + orderId + " is ready!"));
+            else 
                 server.dbController.savePendingNotification(username, orderId, "Your order is ready!");
-            }
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -79,12 +79,7 @@ public class OrderController {
 
     // Retrieve dishes in a specific order
     public static List<DishInOrder> getDishesInOrder(int orderId) {
-        try {
-            return server.dbController.getDishesInOrder(orderId);
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return null;
-        }
+        return server.dbController.getDishesInOrder(orderId);
     }
     
     public static void addDish(Dish dish) {
