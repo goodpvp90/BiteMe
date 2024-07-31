@@ -3,6 +3,7 @@ package ClientGUI;
 import client.Client;
 import common.Dish;
 import common.EnumDish;
+import common.EnumType;
 import common.User;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -68,8 +69,14 @@ public class ClientLoginController {
 	public void updateUser(Object[] user) {
 	    Platform.runLater(() -> {
 	        if (user[0] instanceof User) {
-	            this.user = (User) user[0];
-	            launchUserHomePageUI();
+	        	//TODO I cant implemment it in the KURDI WAY
+	        	//Check for Unregistered Customer
+	        	if (((User)user[0]).getType().equals(EnumType.CUSTOMER) && !(boolean)user[1]){
+	        		this.user = (User) user[0];
+	        		launchUserHomePageUI((User) user[0], (boolean) false);	
+	        	}
+	        	else
+	        	launchUserHomePageUI((User) user[0], (boolean) true);
 	        } else if (user[0] instanceof String) {
 	            showError((String) user[0]);
 	            this.user = null;
@@ -86,7 +93,7 @@ public class ClientLoginController {
 		client.quit();
 		System.exit(0);
 	}
-	//Talk to Ben how to implement it so itll be not copied always.
+	//TODO Talk to Ben how to implement it so itll be not copied always.
 	//By clickin "X" same effect like clicking Quit Button
     public void closeApplication() {
         if (client != null) {
@@ -104,12 +111,12 @@ public class ClientLoginController {
 	}
 	
 	
-    private void launchUserHomePageUI() {
+    private void launchUserHomePageUI(User user, boolean isRegistered) {
         try {
-        	UserHomePageUI Userapp = new UserHomePageUI(user);
+        	UserHomePageUI Userapp = new UserHomePageUI(user, isRegistered);
         	Userapp.start(new Stage());
             Stage currentStage = (Stage) loginButton.getScene().getWindow();
-            currentStage.close();
+            currentStage.hide();
         } catch (Exception e) {
             e.printStackTrace();
             showError("An error occurred while loading the User Home Page.");

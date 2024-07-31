@@ -44,10 +44,12 @@ public class UserHomePageController {
     
     @FXML
     private Text headlineText;
+	private boolean isRegistered;
 
     
-    public void setUser(User user) {
+    public void setUser(User user, boolean isRegistered) {
         this.user = user;
+        this.isRegistered = isRegistered;
         updateUI();
     }
     
@@ -66,15 +68,18 @@ public class UserHomePageController {
     		registerUserButton.setVisible(false);
     		updateMenuButton.setVisible(false);
     		pendingOrdersButton.setVisible(false);
+    		if (!isRegistered) {
+    			createOrderButton.setVisible(false);
+    			changeHomeBranchButton.setVisible(false);    			
+    		}
+    		break;
+    	//CEO is default screen
+    	case CEO:
     		break;
       	//need to add one more case
     	//if user is not registered customer he need approval of manager
     	//all not buttons not visible
-
     	}
-    	//CEO is default screen
-    	
-    	
     	changeHelloTextAndHeadline();
 	}
 
@@ -94,33 +99,8 @@ public class UserHomePageController {
         
         // Send logout request to the server
         client.userLogout(user);
-        
-        // Navigate back to the login page
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("ClientLogin.fxml"));
-            Parent root = loader.load();
-            
-            ClientLoginController loginController = loader.getController();
-            // Reset the user in the login controller
-            //loginController.updateUser(new Object[]{null});
-            
-            Stage stage = (Stage) logoutButton.getScene().getWindow();
-            stage.setScene(new Scene(root));
-            stage.setTitle("Client Login");
-            
-            // Add close request handler
-            stage.setOnCloseRequest(e -> {
-                e.consume();
-                loginController.closeApplication();
-            });
-            
-            stage.show();
-        } catch (Exception e) {
-            e.printStackTrace();
-            System.err.println("Error loading login page: " + e.getMessage());
-        }
-    }
 
+	}
     @FXML
     private void handleCreateOrder(ActionEvent event) {
         System.out.println("Create Order button clicked");
@@ -138,7 +118,6 @@ public class UserHomePageController {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("ReportsPage.fxml"));
             Parent root = loader.load();
-            
             Stage stage = (Stage) viewReportsButton.getScene().getWindow();
             stage.setScene(new Scene(root, 700, 600));
             stage.setTitle("Reports Page");
@@ -179,18 +158,18 @@ public class UserHomePageController {
     		userType = "Worker";
     		break;
     	case CUSTOMER:
-    		userType = "Customer";
+    		userType = isRegistered ? "Customer" : "Unregistered Customer";
     		break;
     	//add Unregistered customer case
     	}
-    	headlineText.setText(user.getUsername()+ ", "+userType);
-    	if(!userType.equals("Unregistered Customer"))
-    		welcomeText.setText("Hello " + user.getFirstName()+ ", what would you like to do?");
-    	else
-    		welcomeText.setText("Hello " + user.getFirstName()+", looks like\n"
-    				+ " you have not registered yet.\n"
-    				+ "Please make contact with a\n "
-    				+ "manager of your prefered brunch.");
+        headlineText.setText(user.getUsername()+ ", "+userType);
+        if(isRegistered || user.getType() != EnumType.CUSTOMER)
+            welcomeText.setText("Hello " + user.getFirstName()+ ", what would you like to do?");
+        else
+            welcomeText.setText("Hello " + user.getFirstName()+", looks like\n"
+                    + " you have not registered yet.\n"
+                    + "Please make contact with a\n "
+                    + "manager of your preferred branch.");
     }
     
     

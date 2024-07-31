@@ -85,7 +85,7 @@ public class ZProtoClientController {
     private void handleViewButton() {
         if (!updating) {
             try {
-                client.viewOrdersFromDB();
+                //client.viewOrdersFromDB();
             } catch (Exception e) {
                 e.printStackTrace();
                 System.out.println("Error while handling view button: " + e.getMessage());

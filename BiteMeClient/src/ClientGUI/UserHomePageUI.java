@@ -8,12 +8,14 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 public class UserHomePageUI extends Application {
-	private User user; 
+	private User user;
+	private boolean isRegistered; 
 	
 	//Receives User information to set the right screen buttons for user 
 	//by his permissions
-	public UserHomePageUI (User user) {
+	public UserHomePageUI (User user, boolean isRegistered) {
 		this.user = user;
+		this.isRegistered=isRegistered;
 	}
 	
     @Override
@@ -22,7 +24,7 @@ public class UserHomePageUI extends Application {
         Parent root = loader.load();
         
         UserHomePageController controller = loader.getController();
-        controller.setUser(user);
+        controller.setUser(user, isRegistered);
         
         //Handler for "X" button in the top screen
         primaryStage.setOnCloseRequest(event -> {
