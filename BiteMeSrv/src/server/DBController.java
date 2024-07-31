@@ -25,6 +25,7 @@ import common.IncomeReport;
 import common.Order;
 import common.OrdersReport;
 import common.PerformanceReport;
+import common.Restaurant.Location;
 import common.User;
 
 public class DBController {
@@ -269,7 +270,7 @@ public class DBController {
                         try (PreparedStatement dishStmt = connection.prepareStatement(insertDishInOrderQuery)) {
                             for (DishInOrder dishInOrder : dishesInOrder) {
                                 dishStmt.setInt(1, orderId);
-                                dishStmt.setInt(2, dishInOrder.getDishId());
+                                dishStmt.setInt(2, dishInOrder.getDish().getDishId());
                                 dishStmt.setString(3, dishInOrder.getComment());
                                 dishStmt.addBatch();
                             }
@@ -303,27 +304,69 @@ public class DBController {
         String sql = "INSERT INTO dish_in_order (order_id, dish_id, comment) VALUES (?, ?, ?)";
         try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
             pstmt.setInt(1, dishinorder.getOrderId());
-            pstmt.setInt(2, dishinorder.getDishId());
+            pstmt.setInt(2, dishinorder.getDish().getDishId());
             pstmt.setString(3, dishinorder.getComment());
             pstmt.executeUpdate();
         }
     }
     
-    public List<DishInOrder> getDishesInOrder(int orderId) throws SQLException {
+    public List<DishInOrder> getDishesInOrder(int orderId) {
         List<DishInOrder> dishesInOrder = new ArrayList<>();
         String sql = "SELECT * FROM dish_in_order WHERE order_id = ?";
         try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
             pstmt.setInt(1, orderId);
             ResultSet rs = pstmt.executeQuery();
             while (rs.next()) {
-                int dishId = rs.getInt("dish_id"); 
+                int dishId = rs.getInt("dish_id");
                 String comment = rs.getString("comment");
-                DishInOrder ndish = new DishInOrder(dishId, comment);
+                
+                // Retrieve the Dish object based on dish_id
+                Dish dish = getDishById(dishId);
+                
+                // Create a DishInOrder object
+                DishInOrder ndish = new DishInOrder(dish, comment);
                 ndish.setOrderId(orderId);
                 dishesInOrder.add(ndish);
             }
-        }
+        } catch (SQLException e) {
+			e.printStackTrace();
+		}
         return dishesInOrder;
+    }
+    
+    private Dish getDishById(int dishId){
+        String sql = "SELECT * FROM dishes WHERE dish_id = ?";
+        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+            pstmt.setInt(1, dishId);
+            ResultSet rs = pstmt.executeQuery();
+            if (rs.next()) {
+                String dishName = rs.getString("dish_name");
+                double price = rs.getDouble("price");
+                int menuId = rs.getInt("menu_id");
+                EnumDish dishType = EnumDish.valueOf(rs.getString("dish_type"));
+                Dish dish = null;
+                switch(dishType) {
+                case BEVERAGE:
+                	dish = new DishBeverage(dishName, price, menuId);
+                	break;
+                case SALAD:
+                	dish = new DishSalad(dishName, price, menuId);
+                	break;
+                case APPETIZER:
+                	dish = new DishAppetizer(dishName, price, menuId);
+                	break;
+                case DESSERT:
+                	dish = new DishDessert(dishName, price, menuId);
+                	break;
+                case MAIN_COURSE:
+                	dish = new DishMainCourse(dishName,false, price, menuId);        
+                	break;
+                }
+                return dish;
+            }
+        } catch (SQLException e) {
+		}
+		return null;
     }
 
     public void updateOrderStatus(int orderId, EnumOrderStatus status) throws SQLException {
@@ -335,30 +378,74 @@ public class DBController {
         }
     }
     
+    /**
+     * Adds a new dish to the database. Before adding, it checks if a dish with
+     * the same name, menu ID, and dish type already exists.
+     * 
+     * @param dish the dish to be added
+     * @return true if the dish was added successfully, false if a dish with the
+     *         same name, menu ID, and dish type already exists or if an error
+     *         occurred
+     */
     public boolean addDish(Dish dish) {
-        String sql = "INSERT INTO dishes (menu_id, dish_type, dish_name, price) VALUES (?, ?, ?, ?)";
+        if (dishExists(dish)) {
+            return false;
+        }
 
-        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+        String insertSql = "INSERT INTO dishes (menu_id, dish_type, dish_name, price) VALUES (?, ?, ?, ?)";
+        try (PreparedStatement insertStmt = connection.prepareStatement(insertSql)) {
+            insertStmt.setInt(1, dish.getMenuId());
+            insertStmt.setString(2, dish.getDishType().toString());
+            insertStmt.setString(3, dish.getDishName());
+            insertStmt.setDouble(4, dish.getPrice());
 
-            preparedStatement.setInt(1, dish.getMenuId());
-            preparedStatement.setString(2, dish.getDishType().toString());
-            preparedStatement.setString(3, dish.getDishName());
-            preparedStatement.setDouble(4, dish.getPrice());
-
-            int rowsAffected = preparedStatement.executeUpdate();
+            int rowsAffected = insertStmt.executeUpdate();
             return rowsAffected > 0;
-
         } catch (SQLException e) {
             e.printStackTrace();
             return false;
         }
     }
+
+    /**
+     * Checks if a dish with the same name, menu ID, and dish type already exists
+     * in the database.
+     * 
+     * @param dish the dish to be checked
+     * @return true if a dish with the same name, menu ID, and dish type exists,
+     *         false otherwise
+     */
+    private boolean dishExists(Dish dish) {
+        String checkSql = "SELECT COUNT(*) FROM dishes WHERE menu_id = ? AND dish_name = ? AND dish_type = ?";
+        try (PreparedStatement checkStmt = connection.prepareStatement(checkSql)) {
+            checkStmt.setInt(1, dish.getMenuId());
+            checkStmt.setString(2, dish.getDishName());
+            checkStmt.setString(3, dish.getDishType().toString());
+
+            try (ResultSet rs = checkStmt.executeQuery()) {
+                if (rs.next() && rs.getInt(1) > 0) {
+                    // Dish with the same name, menu_id, and dish_type already exists
+                    return true;
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
     
+    /**
+     * Deletes a dish from the database based on the menu ID, dish type, dish name,
+     * and price.
+     * 
+     * @param dish the dish to be deleted
+     * @return true if the dish was deleted successfully, false if no matching dish
+     *         was found or if an error occurred
+     */
     public boolean deleteDish(Dish dish) {
         String sql = "DELETE FROM dishes WHERE menu_id = ? AND dish_type = ? AND dish_name = ? AND price = ?";
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
-
             preparedStatement.setInt(1, dish.getMenuId());
             preparedStatement.setString(2, dish.getDishType().toString());
             preparedStatement.setString(3, dish.getDishName());
@@ -391,14 +478,19 @@ public class DBController {
                 switch(dishType){
                 case BEVERAGE:
                 	dishes.add(new DishBeverage(dishName, price, menuId));
+                	break;
                 case SALAD:
                 	dishes.add(new DishSalad(dishName, price, menuId));
+                	break;
                 case APPETIZER:
                 	dishes.add(new DishAppetizer(dishName, price, menuId));
+                	break;
                 case DESSERT:
                 	dishes.add(new DishDessert(dishName, price, menuId));
+                	break;
                 case MAIN_COURSE:
-                	dishes.add(new DishMainCourse(dishName, price, menuId));
+                	dishes.add(new DishMainCourse(dishName,false, price, menuId));
+                	break;
                 }
             }
 
@@ -495,7 +587,8 @@ public class DBController {
         try {
             PreparedStatement pstmt = connection.prepareStatement(query);
             // Set the parameters for the query
-            pstmt.setInt(1, report.getRestaurant().getBranchID());
+            int restaurantId = getRestaurantIdByLocation(report.getRestaurant());
+            pstmt.setInt(1, restaurantId);
             pstmt.setInt(2, report.getMonth());
             pstmt.setInt(3, report.getYear());
 
@@ -516,6 +609,24 @@ public class DBController {
         return (Object)report;
     }
     
+    // Method to retrieve restaurant ID from its location
+    private int getRestaurantIdByLocation(Location location){
+        String query = "SELECT branch_id FROM restaurants WHERE address = ?";
+        try (PreparedStatement pstmt = connection.prepareStatement(query)) {
+            pstmt.setString(1, location.toString());
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt("branch_id");
+            }
+        } catch (SQLException e) {
+			e.printStackTrace();
+		}
+        } catch (SQLException e1) {
+        	e1.printStackTrace();
+        }
+        return 0;
+    }
+    
     /**
      * Retrieves an performance report from the database for the specified restaurant, month, and year.
      * If no report exists, returns a string indicating that no such report exists.
@@ -531,7 +642,8 @@ public class DBController {
         try {
             PreparedStatement pstmt = connection.prepareStatement(query);
             // Set the parameters for the query
-            pstmt.setInt(1, report.getRestaurant().getBranchID());
+            int restaurantId = getRestaurantIdByLocation(report.getRestaurant());
+            pstmt.setInt(1, restaurantId);
             pstmt.setInt(2, report.getMonth());
             pstmt.setInt(3, report.getYear());
 
@@ -565,7 +677,8 @@ public class DBController {
         try {
             PreparedStatement pstmt = connection.prepareStatement(query);
             // Set the parameters for the query
-            pstmt.setInt(1, report.getRestaurant().getBranchID());
+            int restaurantId = getRestaurantIdByLocation(report.getRestaurant());
+            pstmt.setInt(1, restaurantId);
             pstmt.setInt(2, report.getMonth());
             pstmt.setInt(3, report.getYear());
 

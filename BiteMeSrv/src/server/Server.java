@@ -115,8 +115,10 @@ public class Server extends AbstractServer {
                 break;
             case LOG_OUT:
             	UserController.logout(client,(Object[]) message);
+            	break;
             case CREATE_ACCOUNT:
             	UserController.createAccount(client, (Object[]) message);
+            	break;
             case VIEW_MENU:
                 int menuId = (int) message[1];
                 List<Dish> menu = OrderController.viewMenu(menuId);

@@ -1,22 +1,24 @@
 package common;
 
+import common.Restaurant.Location;
+
 public class MonthlyReport {
-	private Restaurant restaurant;
+	private Location loc;
     private int month;
     private int year;
     
-	public MonthlyReport(Restaurant restaurant, int month, int year) {
-		this.restaurant = restaurant;
+	public MonthlyReport(Location loc, int month, int year) {
+		this.loc = loc;
 		this.month = month;
 		this.year = year;
 	}
 
-	public Restaurant getRestaurant() {
-		return restaurant;
+	public Location getRestaurant() {
+		return loc;
 	}
 
-	public void setRestaurant(Restaurant restaurant) {
-		this.restaurant = restaurant;
+	public void setRestaurant(Location loc) {
+		this.loc = loc;
 	}
 
 	public int getMonth() {

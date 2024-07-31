@@ -1,10 +1,12 @@
 package common;
 
+import common.Restaurant.Location;
+
 public class PerformanceReport extends MonthlyReport{
     private int totalOrders;
     private int ordersCompletedInTime;
 
-    public PerformanceReport(Restaurant restaurant, int month, int year) {
+    public PerformanceReport(Location restaurant, int month, int year) {
 		super(restaurant, month, year);
 	}
 

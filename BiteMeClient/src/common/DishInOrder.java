@@ -2,12 +2,12 @@ package common;
 
 public class DishInOrder {
     private int orderId; //Check if needed, currently unused
-    private int dishId;
+    private Dish dish;
     private String comment;
 
     // Constructors
-    public DishInOrder(int dishId, String comment) {
-        this.dishId = dishId;
+    public DishInOrder(Dish dish, String comment) {
+        this.dish = dish;
         this.comment = comment;
     }
 
@@ -20,12 +20,12 @@ public class DishInOrder {
         this.orderId = orderId;
     }
 
-    public int getDishId() {
-        return dishId;
+    public Dish getDish() {
+        return dish;
     }
 
-    public void setDishId(int dishId) {
-        this.dishId = dishId;
+    public void setDish(Dish dish) {
+        this.dish = dish;
     }
 
     public String getComment() {
@@ -40,7 +40,7 @@ public class DishInOrder {
     public String toString() {
         return "DishInOrder{" +
                 "orderId=" + orderId +
-                ", dishId=" + dishId +
+                ", dishId=" + dish +
                 ", comment=" + comment +
                 '}';
     }

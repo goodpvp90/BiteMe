@@ -108,12 +108,6 @@ public class Client extends AbstractClient {
                     //DISPLAY NOTIFICATIONS FROM HERE
                 }
                 break;
-            case DELETE_DISH:
-                boolean deleteDishResult = (boolean) message[1];
-                if (clientController != null) {
-                    //clientController.displayDeleteDishResult(deleteDishResult);
-                }
-                break;
             case CREATED_ACCOUNT:
             	Object dataUser = (Object)message[1]; //You receive here user object if created
                 if (clientController != null) {
@@ -130,6 +124,12 @@ public class Client extends AbstractClient {
                 boolean addDishResult = (boolean) message[1];
                 if (clientController != null) {
                     //clientController.displayAddDishResult(addDishResult);
+                }
+                break;
+            case DELETE_DISH:
+                boolean deleteDishResult = (boolean) message[1];
+                if (clientController != null) {
+                    //clientController.displayDeleteDishResult(deleteDishResult);
                 }
                 break;
             case REPORT_ERROR:
@@ -203,19 +203,25 @@ public class Client extends AbstractClient {
 		sendMessageToServer(arr);
 	}
 	
+	public void sendCreateAccout(User user) {
+	    // Send a request to create accout
+		sendMessageToServer(new Object[] { EnumServerOperations.CREATE_ACCOUNT, user });
+	}
+	
 	public void sendAddDishRequest(Dish dish) {
 	    // Send a request to add a new dish
 		sendMessageToServer(new Object[] { EnumServerOperations.ADD_DISH, dish });
+	}
+
+	
+	public void sendDeleteDishRequest(Dish dish) {
+	    // Send a request to delete a new dish
+		sendMessageToServer(new Object[] { EnumServerOperations.DELETE_DISH, dish });
 	}
 	
 	public void sendCreateOrderRequest(Order order, List<DishInOrder> dishesInOrder) {
 	    sendMessageToServer(new Object[] {
 		        EnumServerOperations.INSERT_ORDER, order, dishesInOrder});
-	}
-
-	// Request to view orders from the database
-	public void viewOrdersFromDB() {
-		sendMessageToServer(new Object[] { EnumServerOperations.VIEW });
 	}
 
 	public void loginValidation(User user) {
