@@ -90,18 +90,7 @@ public class Server extends AbstractServer {
                 orderController.updateOrderStatus(orderId, newStatus);
                 break;
             case LOGIN:
-            	User user = (User)message[1];
-                String username = user.getUsername();
-                List<String> notifications = null;
-               	System.out.println("LOGIN SHOWED ON SERVER");
-                userController.login(client, (Object[]) message);
-                try {
-                    notifications = dbController.getPendingNotifications(username);
-                    dbController.deletePendingNotifications(username);
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-                sendMessageToClient(EnumClientOperations.NOTIFICATION, client, notifications);
+            	handleLogin(client, message);
                 break;
             case LOG_OUT:
             	userController.logout(client,(Object[]) message);
@@ -134,7 +123,21 @@ public class Server extends AbstractServer {
 		} else
 			System.out.println("Received unknown message type from client: " + msg);
 	}
-
+	
+	private void handleLogin(ConnectionToClient client, Object[] message) {
+    	User user = (User)message[1];
+        String username = user.getUsername();
+        List<String> notifications = null;
+       	System.out.println("LOGIN SHOWED ON SERVER");
+        userController.login(client, (Object[]) message);
+        try {
+            notifications = dbController.getPendingNotifications(username);
+            dbController.deletePendingNotifications(username);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        sendMessageToClient(EnumClientOperations.NOTIFICATION, client, notifications);
+	}
 	
     public ConnectionToClient getClientByUsername(String username) {
         Thread[] clientThreadList = getClientConnections();
