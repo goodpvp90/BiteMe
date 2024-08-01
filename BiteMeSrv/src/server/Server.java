@@ -101,7 +101,7 @@ public class Server extends AbstractServer {
                 } catch (SQLException e) {
                     e.printStackTrace();
                 }
-                sendMessageToClient(EnumClientOperations.NOTIFICATION, client, notifications);
+                //sendMessageToClient(EnumClientOperations.NOTIFICATION, client, notifications);
                 break;
             case LOG_OUT:
             	userController.logout(client,(Object[]) message);

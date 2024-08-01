@@ -1,5 +1,7 @@
 package ClientGUI;
 
+import java.io.IOException;
+
 import client.Client;
 import common.Dish;
 import common.EnumDish;
@@ -71,6 +73,7 @@ public class ClientLoginController {
 	        if (user[0] instanceof User) {
 	        	//TODO I cant implemment it in the KURDI WAY
 	        	//Check for Unregistered Customer
+	        	System.out.println("HELLO IM BADIR1");
 	        	if (((User)user[0]).getType().equals(EnumType.CUSTOMER) && !(boolean)user[1]){
 	        		this.user = (User) user[0];
 	        		launchUserHomePageUI((User) user[0], (boolean) false);	
@@ -78,6 +81,7 @@ public class ClientLoginController {
 	        	else
 	        	launchUserHomePageUI((User) user[0], (boolean) true);
 	        } else if (user[0] instanceof String) {
+	        	System.out.println("HELLO IM BADIR2");
 	            showError((String) user[0]);
 	            this.user = null;
 	        } else {
@@ -103,8 +107,6 @@ public class ClientLoginController {
         System.exit(0);
     }
 	
-    
-    //Thread*
 	private void showError(String message) {
 	        errorText.setText(message);
 	        errorText.setVisible(true);
@@ -122,7 +124,24 @@ public class ClientLoginController {
             showError("An error occurred while loading the User Home Page.");
         }
     }
-
+    public void resetClient() {
+        // Reset the client state if necessary
+        client = Client.getInstance();
+        try {
+            if (!client.isConnected()) {
+                client.openConnection();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            showError("Failed to connect to the server.");
+        }
+        client.getInstanceOfClientLoginController(this);
+        
+        // Clear the input fields
+        usernameField.clear();
+        passwordField.clear();
+        errorText.setVisible(false);
+    }
 
 
 }

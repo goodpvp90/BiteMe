@@ -128,7 +128,7 @@ public class ZProtoClientController {
             }
 
             // Sends update request to the server
-            client.sendUpdateOrderRequest(orderNum, field, newVal);
+            //client.sendUpdateOrderRequest(orderNum, field, newVal);
 
             // Clears fields and resets UI after successful update
             orderNumberField.clear();

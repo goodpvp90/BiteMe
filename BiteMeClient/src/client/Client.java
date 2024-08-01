@@ -52,7 +52,16 @@ public class Client extends AbstractClient {
 		if (instance == null) {
 			throw new IllegalStateException("Client not initialized. Call initialize() first.");
 		}
-		return instance;
+		//Added by Eldar
+	    if (!instance.isConnected()) {
+	        try {
+	            instance.openConnection();
+	        } catch (IOException e) {
+	            e.printStackTrace();
+	            // Handle reconnection failure
+	        }
+	    }
+	    return instance;
 	}
 	
 	// Public method to initialize the Server and get the instance
@@ -134,20 +143,20 @@ public class Client extends AbstractClient {
                 break;
             case REPORT_ERROR:
             	String errorMsg = (String)message[1];
-            	//do smth
+            	//TODO do something
             	break;
             case INCOME_REPORT:
             	IncomeReport incomeReport = (IncomeReport)message[1];
-            	//do smth
+            	//TODO do smth
             	System.out.println(incomeReport.getIncome());
             	break;
             case ORDERS_REPORT:
             	OrdersReport ordersReport = (OrdersReport)message[1];
-            	//do smth
+            	//TODO do smth
             	break;
             case PERFORMANCE_REPORT:
             	PerformanceReport performanceReport = (PerformanceReport)message[1];
-            	//do smth
+            	//TODO do smth
             	break;
 			case NONE:
 				System.out.println("no operation was recived");
@@ -156,6 +165,8 @@ public class Client extends AbstractClient {
 		}
 	}
 
+	
+	
 	// Quit the client and close the connection
 	public void quit() {
 		try {
@@ -192,17 +203,7 @@ public class Client extends AbstractClient {
 	public void getInstanceOfClientLoginController(ClientLoginController client) {
 		this.clientLoginController = client;
 	}
-	
-	// Send a request to update an order on the server
-	public void sendUpdateOrderRequest(int orderNum, String colToChange, Object newVal) {
-		Object[] arr = new Object[4];
-		arr[0] = "updateOrder";
-		arr[1] = orderNum;
-		arr[2] = colToChange;
-		arr[3] = newVal;
-		sendMessageToServer(arr);
-	}
-	
+		
 	public void sendCreateAccout(User user) {
 	    // Send a request to create accout
 		sendMessageToServer(new Object[] { EnumServerOperations.CREATE_ACCOUNT, user });
