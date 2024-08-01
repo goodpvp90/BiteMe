@@ -4,5 +4,6 @@ public enum EnumType{
 	BRANCH_MANAGER,
 	CEO,
 	WORKER,
-	CUSTOMER;
+	CUSTOMER,
+	UN_CUSTOMER;
 }

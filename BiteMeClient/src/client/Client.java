@@ -92,9 +92,7 @@ public class Client extends AbstractClient {
 	            }
 	            break;
 			case USER:
-				//SEND TO CLIENT CONTROLLER
-	        	Object[] data = (Object[])message[1];
-	        	clientLoginController.updateUser(data);
+					handleLogin(message);
 	        	break;
 			case LOG_OUT:
 				// UPDATE HERE WHAT NEEDED, its here for example
@@ -163,6 +161,21 @@ public class Client extends AbstractClient {
 				break;
 			}
 		}
+	}
+	
+	private void handleLogin(Object[] message) {
+		//SEND TO CLIENT CONTROLLER
+        Object messagePart = message[1];
+        Object[] data;
+        if (messagePart instanceof String) {
+            // Convert to Object[] containing the single string
+            data = new Object[]{messagePart};
+        } else {
+            // Return as is if it's already an Object[]
+            data = (Object[]) messagePart;
+        }
+		System.out.println("4");
+    	clientLoginController.updateUser(data);
 	}
 
 	
