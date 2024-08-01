@@ -5,7 +5,7 @@ import java.util.Arrays;
 
 public class DishAppetizer extends Dish{
 
-	private ArrayList<String> optionals;
+	//private ArrayList<String> optionals; NO NEED
 	
 	public DishAppetizer() {
 		super();
@@ -17,7 +17,7 @@ public class DishAppetizer extends Dish{
         optionals = new ArrayList<>(Arrays.asList());
 	}
 	
-	
+	@Override
     public ArrayList<String> getOptionals() {
         return optionals;
     }

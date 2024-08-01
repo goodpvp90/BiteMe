@@ -3,6 +3,9 @@ package ClientGUI;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.text.Text;
+
+import java.io.IOException;
+
 import client.Client;
 import common.EnumType;
 import common.User;
@@ -13,7 +16,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
-public class UserHomePageController {
+public class UserHomePageControllerBACKUP {
 
 	private User user;
 	private Client client;
@@ -44,18 +47,23 @@ public class UserHomePageController {
     
     @FXML
     private Text headlineText;
+	private boolean isRegistered;
 
     
-    public void setUser(User user) {
+    public void setUser(User user, boolean isRegistered) {
         this.user = user;
+        this.isRegistered = isRegistered;
         updateUI();
     }
     
     
     private void updateUI() {
     	switch(user.getType()) {
+    	//CEO is default screen
+    	case CEO:
+    		break;
+    	//BM AND CEO see same buttons But not same "Title"
     	case BRANCH_MANAGER:
-    		viewReportsButton.setOnAction(this::handleViewReportsForBranch);
     		break;
     	case WORKER:
     		viewReportsButton.setVisible(false);
@@ -66,15 +74,13 @@ public class UserHomePageController {
     		registerUserButton.setVisible(false);
     		updateMenuButton.setVisible(false);
     		pendingOrdersButton.setVisible(false);
+    		//For Unregistered Customer
+    		if (!isRegistered) {
+    			createOrderButton.setVisible(false);
+    			changeHomeBranchButton.setVisible(false);    			
+    		}
     		break;
-      	//need to add one more case
-    	//if user is not registered customer he need approval of manager
-    	//all not buttons not visible
-
     	}
-    	//CEO is default screen
-    	
-    	
     	changeHelloTextAndHeadline();
 	}
 
@@ -84,35 +90,41 @@ public class UserHomePageController {
         // Initialize the client
         client = Client.getInstance();
         // Initialize any necessary components or data
-        // For example, you might want to set the welcome message:
-        // welcomeText.setText("Hello '" + currentUser.getName() + "', Choose an Option");
     }
+	@FXML
+	private void handleLogout(ActionEvent event) {
+	    System.out.println("Logout button clicked");
+	    
+	    // Send logout request to the server
+	    client.userLogout(user);
 
-    @FXML
-    private void handleLogout(ActionEvent event) {
-        // Implement logout logic
-        System.out.println("Logout button clicked");
-        //Here will be function that changed is_Loggedstatus to 0 (SHOULD BE MADE BY BACKEND)
-        // Navigate to login page or close the application
-    }
-
+	    // Navigate back to the ClientLoginUI
+	    try {
+	        FXMLLoader loader = new FXMLLoader(getClass().getResource("ClientLogin.fxml"));
+	        Parent root = loader.load();
+	        
+	        // Get the current stage
+	        Stage stage = (Stage) logoutButton.getScene().getWindow();
+	        
+	        // Set the new scene
+	        Scene scene = new Scene(root);
+	        stage.setScene(scene);
+	        stage.setTitle("Client Login");
+	        
+	        // Get the controller and reset the client
+	        ClientLoginController loginController = loader.getController();
+	        loginController.resetClient();
+	        
+	        stage.show();
+	    } catch (IOException e) {
+	        e.printStackTrace();
+	        // Handle the exception (show an error message to the user)
+	    }
+	}
     @FXML
     private void handleCreateOrder(ActionEvent event) {
-    	try {
-            // Launch CustomerOrderCreationUI future logic
-    		//OFEK changed this one to work on this current version	
-    		CustomerOrderCreationUI CustCreatApp = new CustomerOrderCreationUI(user,null);
-    		
-    		//use this when we don't want to test user
-    		//CustomerOrderCreationUI CustCreatApp = new CustomerOrderCreationUI();
-    		CustCreatApp.start(new Stage());
-
-            // Close the current stage
-            Stage currentStage = (Stage) createOrderButton.getScene().getWindow();
-            currentStage.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        System.out.println("Create Order button clicked");
+        // Implement navigation to Create Order page
     }
 
     @FXML
@@ -125,7 +137,11 @@ public class UserHomePageController {
     private void handleViewReports(ActionEvent event) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("ReportsPage.fxml"));
-            Parent root = loader.load();          
+            Parent root = loader.load();
+            ReportsPageController reportsController = loader.getController();
+            //Sending the data for next page so if i would want to go back then i wont lose DATA
+            reportsController.setUser(this.user, this.isRegistered);
+            reportsController.setUserType(user.getType());
             Stage stage = (Stage) viewReportsButton.getScene().getWindow();
             stage.setScene(new Scene(root, 700, 600));
             stage.setTitle("Reports Page");
@@ -166,18 +182,18 @@ public class UserHomePageController {
     		userType = "Worker";
     		break;
     	case CUSTOMER:
-    		userType = "Customer";
+    		userType = isRegistered ? "Customer" : "Unregistered Customer";
     		break;
     	//add Unregistered customer case
     	}
-    	headlineText.setText(user.getUsername()+ ", "+userType);
-    	if(!userType.equals("Unregistered Customer"))
-    		welcomeText.setText("Hello " + user.getFirstName()+ ", what would you like to do?");
-    	else
-    		welcomeText.setText("Hello " + user.getFirstName()+", looks like\n"
-    				+ " you have not registered yet.\n"
-    				+ "Please make contact with a\n "
-    				+ "manager of your prefered brunch.");
+        headlineText.setText(user.getUsername()+ ", "+userType);
+        if(isRegistered || user.getType() != EnumType.CUSTOMER)
+            welcomeText.setText("Hello " + user.getFirstName()+ ", what would you like to do?");
+        else
+            welcomeText.setText("Hello " + user.getFirstName()+", looks like\n"
+                    + " you have not registered yet.\n"
+                    + "Please make contact with a\n "
+                    + "manager of your preferred branch.");
     }
     
     

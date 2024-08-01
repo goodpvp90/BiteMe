@@ -2,6 +2,7 @@ package common;
 
 
 import java.io.Serializable;
+import java.util.ArrayList;
 
 public abstract class Dish implements Serializable {
     /**
@@ -13,7 +14,9 @@ public abstract class Dish implements Serializable {
     private String dishName;
     private double price;
     private int menu_id; // Field to associate with the menu
-
+    private String comments;//OFEK-------------------------
+    protected ArrayList<String> optionals;//OFEK-------------------------
+    
     // Default constructor
     public Dish() {}
 
@@ -22,6 +25,7 @@ public abstract class Dish implements Serializable {
         this.dishName = dishName;
         this.price = price;
         this.menu_id = menuId; // Initialize the menu_id
+        this.comments = "Add Comment Here";//OFEK-------------------------
     }
 
     // Getter and setter for dishId
@@ -78,5 +82,19 @@ public abstract class Dish implements Serializable {
                ", price=" + price +
                ", menuId=" + menu_id +
                '}';
+    }
+    
+    //OFEK-------------------------
+    public void setComments(String comments) { 
+    	this.comments = comments;
+	} 
+    //OFEK-------------------------
+    public String getComments() 
+    {
+    	return comments; 
+	}
+    //OFEK-------------------------
+    public ArrayList<String> getOptionals() {
+        return optionals;
     }
 }

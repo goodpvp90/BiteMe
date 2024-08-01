@@ -1,7 +1,6 @@
 package ClientGUI;
 import common.Restaurant.Location;
 import common.User;
-import common.EnumDish;
 import common.Dish;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -17,12 +16,10 @@ import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.text.Text;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.stream.Collectors;
 import client.Client;
 import javafx.stage.Stage;
 import javafx.application.Platform;
@@ -32,10 +29,9 @@ import javafx.scene.control.cell.ComboBoxTableCell;
 import javafx.util.Callback;
 
 
-public class CustomerOrderCreation {
+public class CustomerOrderCreationBACKUP {
 	private Client client;
 	private User user = null;
-	private List<Dish> TemporaryMenuList = new ArrayList<>();
 	private HashMap<Dish, Integer> selectedDishesCount = new HashMap<>();
     @FXML
     private ComboBox<Location> branchComboBox;
@@ -64,20 +60,13 @@ public class CustomerOrderCreation {
     private void initialize() {
     	// Initialize the client
         client = Client.getInstance();
-        client.setCustomerOrderCreation(this);
         // Populate the branchComboBox with locations
         branchComboBox.getItems().addAll(Location.values());
         branchComboBox.setPromptText("Select a branch");
-        // Set up the listener for the ComboBox
-        //branchComboBox.setOnAction(event -> handleBranchSelection());***************
-        
+        // Add listener to handle branch selection changes
+        //branchComboBox.setOnAction(event -> handleBranchSelection(null));//CHECK THISSSSSSSSSSSSSSSSSSSSSS
         // Populate the categoryComboBox with categories
-        categoryComboBox.setItems(FXCollections.observableArrayList(
-        	    Arrays.stream(EnumDish.values())
-        	          .map(EnumDish::toString) // Convert each enum to a string
-        	          .collect(Collectors.toList())
-        	));
-        
+        categoryComboBox.setItems(FXCollections.observableArrayList("Appetizer", "Main Course", "Beverage", "Dessert"));
         categoryComboBox.setPromptText("Select a category");
         // Setup table columns
         nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
@@ -93,10 +82,8 @@ public class CustomerOrderCreation {
                 handleSelectedItemClick();
             }
         });  
-  
         //if we returned from CustomerOrderGatherSelection show the view list
-        if(selectedDishesCount.size()>0) {updateSelectedItemsListView(); }   
-         
+        if(selectedDishesCount.size()>0) {updateSelectedItemsListView(); }     
         // Set up ComboBoxTableCell for optionalsColumn
         optionalsColumn.setCellFactory(column -> new ComboBoxTableCell<Dish, String>() {
             @Override
@@ -112,9 +99,9 @@ public class CustomerOrderCreation {
                     // Set the default value to the first element if available
                     if (!options.isEmpty()) {
                         comboBox.setValue(options.get(0));
-                        //dish.setOptionalPick(options.get(0)); WILL FIX*****************
+                        dish.setOptionalPick(options.get(0));
                     }
-                    //comboBox.valueProperty().addListener((obs, oldVal, newVal) -> dish.setOptionalPick(newVal)); WILL FIX*****************
+                    comboBox.valueProperty().addListener((obs, oldVal, newVal) -> dish.setOptionalPick(newVal));
                     setGraphic(comboBox);
                     setText(null); // Ensure no text is displayed beside the ComboBox
                 }
@@ -133,8 +120,6 @@ public class CustomerOrderCreation {
             String selectedOption = event.getNewValue();
             // Handle the selected option (e.g., update the Dish object, perform any necessary actions)
         });  
-        
-        
      // Setup comments column
         commentsColumn.setCellValueFactory(new PropertyValueFactory<>("comments"));
         commentsColumn.setCellFactory(TextFieldTableCell.forTableColumn());
@@ -179,16 +164,15 @@ public class CustomerOrderCreation {
         	}    
             // Call the backend function to get the menu for the selected branch
         	client.getViewMenu(MenuID);
-            List<Dish> menuItems = menu;              
+            List<Dish> menuItems = menu;   
             menuTableView.getItems().setAll(menuItems);
             // Clear the selected dishes count
             selectedDishesCount.clear();
-            updateSelectedItemsListView();                  
+            updateSelectedItemsListView();         
             // Clear the category selection
             categoryComboBox.setValue(null);
         }
     }
-  
     
     //Set the dishes hash map
     public void setDishesCount(HashMap<Dish, Integer> selectedDishesCount) {
@@ -214,27 +198,43 @@ public class CustomerOrderCreation {
     @FXML
     private void handleCategorySelection() {
         String selectedCategory = categoryComboBox.getValue();
-        menuTableView.getItems().clear();                    
+        menuTableView.getItems().clear();       
+        //dish option
+        String[] smallLarge = new String[]{"S","L"};
+        String[] emptyOpt = new String[] {""};
         // Load menu items based on the selected category
         switch (selectedCategory) {
-            case "APPETIZER":
-            	menuTableView.getItems().addAll();
+            case "Appetizer":
+                menuTableView.getItems().addAll(
+                    new Dish("Salad", 5.0,  smallLarge),
+                    new Dish("Spring Rolls", 6.0, smallLarge),
+                    new Dish("Bruschetta", 4.5, smallLarge)
+                );
                 break;
-            case "SALAD":
-            	menuTableView.getItems().addAll();
+            case "Main Course":
+                menuTableView.getItems().addAll(
+                    new Dish("Steak", 15.0, new String[] {"R","M","MW"}),
+                    new Dish("Pasta", 12.0, emptyOpt),
+                    new Dish("Pizza", 10.0, emptyOpt)
+                );
                 break;
-            case "MAIN_COURSE":
-            	menuTableView.getItems().addAll();
+            case "Beverage":
+                menuTableView.getItems().addAll(
+                    new Dish("Soda", 2.0, smallLarge),
+                    new Dish("Water", 1.0, emptyOpt),
+                    new Dish("Juice", 3.0, smallLarge)
+                );
                 break;
-            case "BEVERAGE":
-            	menuTableView.getItems().addAll();
-                break;
-            case "DESSERT":
-            	menuTableView.getItems().addAll();
+            case "Dessert":
+                menuTableView.getItems().addAll(
+                    new Dish("Cake", 4.0, emptyOpt),
+                    new Dish("Ice Cream", 3.5, emptyOpt),
+                    new Dish("Pie", 4.5, emptyOpt)
+                );
                 break;
         }
     }
-	
+
     @FXML
     private void handleConfirmSelectionAction() {
         // Get all selected dishes
@@ -247,28 +247,24 @@ public class CustomerOrderCreation {
     	errorText.setVisible(false);  	
         updateSelectedItemsListView();
     }
-    
-    //shows the selected items from the menu on the list at the bottom of the screen
+
     private void updateSelectedItemsListView() {
         // Prepare the updated list of selected item names to display
         List<String> selectedNames = new ArrayList<>();
         for (Map.Entry<Dish, Integer> entry : selectedDishesCount.entrySet()) {
             Dish dish = entry.getKey();
             int count = entry.getValue();           
-            selectedNames.add(dish.getDishName() + " - $" + dish.getPrice() + " (x" + count + ")");
-            
-            //if (!dish.getOptionalPick().equals(""))
+            if (!dish.getOptionalPick().equals(""))
             //added getOptionalPick
-           // selectedNames.add(dish.getDishName() +" "/+ dish.getOptionalPick()/ + " - $" + dish.getPrice() + " (x" + count + ")");
-            //else
-            //    selectedNames.add(dish.getDishName() + " - $" + dish.getPrice() + " (x" + count + ")");*/
+            selectedNames.add(dish.getName() +" "+ dish.getOptionalPick() + " - $" + dish.getPrice() + " (x" + count + ")");
+            else
+                selectedNames.add(dish.getName() + " - $" + dish.getPrice() + " (x" + count + ")");
         }
         // Update the ListView with selected dish names and counts
         selectedItemsListView.setItems(FXCollections.observableArrayList(selectedNames)); // Display selected items in the ListView
         System.out.println("Selected dishes: " + selectedDishesCount); // Print the selected dishes to the console
     }
 
-    //This one lets a user delete an item from the order list by clicking on it
     private void handleSelectedItemClick() {  	
         String selectedItem = selectedItemsListView.getSelectionModel().getSelectedItem();
         if (selectedItem != null) {
@@ -281,7 +277,7 @@ public class CustomerOrderCreation {
             // Find the corresponding Dish object
             Dish selectedDish = null;
             for (Dish dish : selectedDishesCount.keySet()) {
-                if (dish.getDishName().equals(dishName) && dish.getPrice() == price) {
+                if (dish.getName().equals(dishName) && dish.getPrice() == price) {
                     selectedDish = dish;
                     break;
                 }
@@ -295,11 +291,10 @@ public class CustomerOrderCreation {
                 }
             }
             // Update the ListView to reflect the changes
-            updateSelectedItemsListView();           
+            updateSelectedItemsListView();
         }
     }
 
-    //	UNUSEABLE UNTIL DISH ISSUE IS DEALT WITH
 	@FXML
 	private void handleContinueAction(javafx.event.ActionEvent event) throws IOException {		
 		if (selectedDishesCount.size() > 0) {
@@ -314,31 +309,20 @@ public class CustomerOrderCreation {
 		}
 	}
 	
-	
-	
 	//Change Error text and make it visible, appear under continue button
 	private void showError(String str) {
 		errorText.setText(str);
 		errorText.setVisible(true);
 	}
 
-	
-	
-	
-	
     @FXML
     private void handleBackButtonAction() {
         System.out.println("Back button clicked");
-        client.getViewMenu(1);
         if(user==null)
         	showError("Yep, user is fucking NULL here");
         else
         	showError("I guess user is NOT NULL");
     }
-    
-    
-    
-    
     
   //Making Quit Button to kill thread and send message to server
     public void closeApplication() {
@@ -349,11 +333,8 @@ public class CustomerOrderCreation {
         Platform.exit();
         System.exit(0);
     }
-    
-  
-    
     // Inner class to represent a dish
-    /*public static class Dish {
+    public static class Dish {
         private String name;
         private double price;
         private String[] optionals;//changed to array
@@ -408,7 +389,7 @@ public class CustomerOrderCreation {
         public int hashCode() {
             return Objects.hash(name, price, optionalPick);
         }
-    }*/
+    }
     
 	
 
