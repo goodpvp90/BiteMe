@@ -24,32 +24,22 @@ public class Server extends AbstractServer {
 	public DBController dbController;
 	private serverController controller;
 	private ReportController reportController;
+	private OrderController orderController;
+	private UserController userController;
+	
 	// Private constructor
-	private Server(int port, String url, String username, String password) {
+	public Server(int port, String url, String username, String password) {
 		super(port);
 		dbController = new DBController();
 		reportController = new ReportController(this);
+		orderController = new OrderController(this);
+		userController = new UserController(this);
 		try {
 			dbController.connect(url, username, password);
 		} catch (ClassNotFoundException | SQLException e) {
 			System.out.println("Failed to connect to the database.");
 			e.printStackTrace();
 		}
-	}
-
-	// Public method to initialize the Server and get the instance
-	public static void initialize(int port, String url, String username, String password) {
-		if (instance == null) {
-			instance = new Server(port, url, username, password);
-		}
-	}
-
-	// Public method to get the Server instance
-	public static Server getInstance() {
-		if (instance == null) {
-			throw new IllegalStateException("Server not initialized. Call initialize() first.");
-		}
-		return instance;
 	}
 
     public void sendMessageToClient(EnumClientOperations op, ConnectionToClient client, Object msg) {
@@ -76,7 +66,7 @@ public class Server extends AbstractServer {
 				break;
             case ADD_DISH:
                 Dish dish = (Dish) message[1];
-                OrderController.addDish(dish);
+                orderController.addDish(dish);
                 break;
             case INSERT_ORDER:
                 // Extract data from the message
@@ -84,27 +74,27 @@ public class Server extends AbstractServer {
                 List<DishInOrder> dishesInOrder = (List<DishInOrder>) message[2];
                 // Call the method to create the order
                 try {
-                    sendMessageToClient(EnumClientOperations.INSERT_ORDER,client, OrderController.createOrder(newOrder, dishesInOrder));
+                    sendMessageToClient(EnumClientOperations.INSERT_ORDER,client, orderController.createOrder(newOrder, dishesInOrder));
                 } catch (Exception e) {
                     result = "Error creating order: " + e.getMessage();
                 }
                 break;
             case DELETE_DISH:
                 Dish dishO = (Dish)message[1];
-                boolean deleteResult = OrderController.deleteDish(dishO);
+                boolean deleteResult = orderController.deleteDish(dishO);
                 sendMessageToClient(EnumClientOperations.DELETE_DISH, client, deleteResult);
                 break;
             case UPDATE_ORDER:
                 int orderId = (int) message[1];
                 EnumOrderStatus newStatus = (EnumOrderStatus) message[2];
-                OrderController.updateOrderStatus(orderId, newStatus);
+                orderController.updateOrderStatus(orderId, newStatus);
                 break;
             case LOGIN:
             	User user = (User)message[1];
                 String username = user.getUsername();
                 List<String> notifications = null;
                	System.out.println("LOGIN SHOWED ON SERVER");
-                UserController.login(client, (Object[]) message);
+                userController.login(client, (Object[]) message);
                 try {
                     notifications = dbController.getPendingNotifications(username);
                     dbController.deletePendingNotifications(username);
@@ -114,18 +104,18 @@ public class Server extends AbstractServer {
                 sendMessageToClient(EnumClientOperations.NOTIFICATION, client, notifications);
                 break;
             case LOG_OUT:
-            	UserController.logout(client,(Object[]) message);
+            	userController.logout(client,(Object[]) message);
             	break;
             case CREATE_ACCOUNT:
-            	UserController.createAccount(client, (Object[]) message);
+            	userController.createAccount(client, (Object[]) message);
             	break;
             case VIEW_MENU:
                 int menuId = (int) message[1];
-                List<Dish> menu = OrderController.viewMenu(menuId);
+                List<Dish> menu = orderController.viewMenu(menuId);
                 sendMessageToClient(EnumClientOperations.VIEW_MENU, client, menu);
                 break;
             case PENDING_ORDER:
-                List<Order> pendingOrders = OrderController.getPendingOrdersByBranch((int) message[1]);
+                List<Order> pendingOrders = orderController.getPendingOrdersByBranch((int) message[1]);
                 sendMessageToClient(EnumClientOperations.PENDING_ORDER, client, pendingOrders);
                 break;
             case INCOME_REPORT:

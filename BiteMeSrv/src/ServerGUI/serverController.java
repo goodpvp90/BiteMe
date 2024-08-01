@@ -67,8 +67,7 @@ public class serverController {
 				showErrorOfWrongInput(e.getMessage());
 				return;
 			}
-        	Server.initialize(Integer.parseInt(portText.getText()), DBNameText.getText(), DBuser.getText(), DBPassword.getText());
-          server = Server.getInstance();
+            server = new Server(Integer.parseInt(portText.getText()), DBNameText.getText(), DBuser.getText(), DBPassword.getText());
           server.setController(this);
             //handle connection to server with legal input from text fields
             // Making a thread to run in the background and listen for clients

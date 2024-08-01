@@ -14,10 +14,15 @@ import java.util.List;
 public class OrderController {
 
 
-    private static Server server = Server.getInstance();
+    private Server server;
 
-    // Create a new order
-    public static String createOrder(Order order, List<DishInOrder> dishesInOrder) {
+    
+    public OrderController(Server server) {
+		this.server = server;
+	}
+
+	// Create a new order
+    public String createOrder(Order order, List<DishInOrder> dishesInOrder) {
         try {
             server.dbController.createOrder(order, dishesInOrder);
             return "Order created successfully";
@@ -28,7 +33,7 @@ public class OrderController {
     }
 
     // Update an existing order's status
-    public static String updateOrderStatus(int orderId, EnumOrderStatus status) {
+    public String updateOrderStatus(int orderId, EnumOrderStatus status) {
         try {
             server.dbController.updateOrderStatus(orderId, status);
             if (status == EnumOrderStatus.COMPLETED) {
@@ -41,7 +46,7 @@ public class OrderController {
         }
     }
     
-    private static void notifyUser(int orderId) {
+    private void notifyUser(int orderId) {
         try {
             Order order = server.dbController.getOrderById(orderId);
             String username = order.getUsername();
@@ -57,7 +62,7 @@ public class OrderController {
     }
 
     // Retrieve orders for a specific username
-    public static List<Order> getOrdersByUsername(String username) {
+    public List<Order> getOrdersByUsername(String username) {
         try {
             return server.dbController.getOrdersByUsername(username);
         } catch (SQLException e) {
@@ -67,7 +72,7 @@ public class OrderController {
     }
 
     // Retrieve pending orders for a specific branch
-    public static List<Order> getPendingOrdersByBranch(int branchId) {
+    public List<Order> getPendingOrdersByBranch(int branchId) {
         try {
             return server.dbController.showPendingOrdersByBranch(branchId);
         } catch (SQLException e) {
@@ -78,19 +83,19 @@ public class OrderController {
 
 
     // Retrieve dishes in a specific order
-    public static List<DishInOrder> getDishesInOrder(int orderId) {
+    public List<DishInOrder> getDishesInOrder(int orderId) {
         return server.dbController.getDishesInOrder(orderId);
     }
     
-    public static void addDish(Dish dish) {
+    public void addDish(Dish dish) {
         server.dbController.addDish(dish);
     }
     
-    public static boolean deleteDish(Dish dish) {
+    public boolean deleteDish(Dish dish) {
         return server.dbController.deleteDish(dish);
     }
 
-	public static List<Dish> viewMenu(int menuId) {
+	public List<Dish> viewMenu(int menuId) {
 		List<Dish> menu = server.dbController.getMenu(menuId);
 		return menu;
 	}
