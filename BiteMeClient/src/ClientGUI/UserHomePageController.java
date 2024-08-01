@@ -3,6 +3,9 @@ package ClientGUI;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.text.Text;
+
+import java.io.IOException;
+
 import client.Client;
 import common.EnumType;
 import common.User;
@@ -56,8 +59,11 @@ public class UserHomePageController {
     
     private void updateUI() {
     	switch(user.getType()) {
+    	//CEO is default screen
+    	case CEO:
+    		break;
+    	//BM AND CEO see same buttons But not same "Title"
     	case BRANCH_MANAGER:
-    		viewReportsButton.setOnAction(this::handleViewReportsForBranch);
     		break;
     	case WORKER:
     		viewReportsButton.setVisible(false);
@@ -68,17 +74,12 @@ public class UserHomePageController {
     		registerUserButton.setVisible(false);
     		updateMenuButton.setVisible(false);
     		pendingOrdersButton.setVisible(false);
+    		//For Unregistered Customer
     		if (!isRegistered) {
     			createOrderButton.setVisible(false);
     			changeHomeBranchButton.setVisible(false);    			
     		}
     		break;
-    	//CEO is default screen
-    	case CEO:
-    		break;
-      	//need to add one more case
-    	//if user is not registered customer he need approval of manager
-    	//all not buttons not visible
     	}
     	changeHelloTextAndHeadline();
 	}
@@ -89,17 +90,36 @@ public class UserHomePageController {
         // Initialize the client
         client = Client.getInstance();
         // Initialize any necessary components or data
-        // For example, you might want to set the welcome message:
-        // welcomeText.setText("Hello '" + currentUser.getName() + "', Choose an Option");
     }
 	@FXML
-    private void handleLogout(ActionEvent event) {
-        // Implement logout logic
-        System.out.println("Logout button clicked");
-        
-        // Send logout request to the server
-        client.userLogout(user);
+	private void handleLogout(ActionEvent event) {
+	    System.out.println("Logout button clicked");
+	    
+	    // Send logout request to the server
+	    client.userLogout(user);
 
+	    // Navigate back to the ClientLoginUI
+	    try {
+	        FXMLLoader loader = new FXMLLoader(getClass().getResource("ClientLogin.fxml"));
+	        Parent root = loader.load();
+	        
+	        // Get the current stage
+	        Stage stage = (Stage) logoutButton.getScene().getWindow();
+	        
+	        // Set the new scene
+	        Scene scene = new Scene(root);
+	        stage.setScene(scene);
+	        stage.setTitle("Client Login");
+	        
+	        // Get the controller and reset the client
+	        ClientLoginController loginController = loader.getController();
+	        loginController.resetClient();
+	        
+	        stage.show();
+	    } catch (IOException e) {
+	        e.printStackTrace();
+	        // Handle the exception (show an error message to the user)
+	    }
 	}
     @FXML
     private void handleCreateOrder(ActionEvent event) {
@@ -118,6 +138,10 @@ public class UserHomePageController {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("ReportsPage.fxml"));
             Parent root = loader.load();
+            ReportsPageController reportsController = loader.getController();
+            //Sending the data for next page so if i would want to go back then i wont lose DATA
+            reportsController.setUser(this.user, this.isRegistered);
+            reportsController.setUserType(user.getType());
             Stage stage = (Stage) viewReportsButton.getScene().getWindow();
             stage.setScene(new Scene(root, 700, 600));
             stage.setTitle("Reports Page");
