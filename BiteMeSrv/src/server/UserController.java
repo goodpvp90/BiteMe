@@ -9,10 +9,13 @@ import ocsf.server.ConnectionToClient;
 
 
 public class UserController {
-	private static Server server = Server.getInstance();
+	private Server server;
 	
-	
-    public static void login(ConnectionToClient client, Object[] message) {
+    public UserController(Server server) {
+		this.server = server;
+	}
+
+	public void login(ConnectionToClient client, Object[] message) {
     	User user = (User)message[1];
         Object result = server.dbController.validateLogin(user);
 		if (result instanceof String) {
@@ -42,7 +45,7 @@ public class UserController {
 		}
     }
     
-    public static void logout(ConnectionToClient client, Object[] message) {
+    public void logout(ConnectionToClient client, Object[] message) {
         User user = (User) message[1];
         boolean logoutSuccess = server.dbController.logout(user.getUsername());
 
@@ -54,7 +57,7 @@ public class UserController {
         }
     }
     
-    public static void createAccount(ConnectionToClient client, Object[] message) {
+    public void createAccount(ConnectionToClient client, Object[] message) {
     	User user = (User)message[1];
     	boolean result = server.dbController.createUser(user.getUsername(), user.getPassword(), user.getEmail(), user.getPhone(), 
     			user.getFirstName(), user.getLastName(), user.getHomeBranch(), user.getType());
