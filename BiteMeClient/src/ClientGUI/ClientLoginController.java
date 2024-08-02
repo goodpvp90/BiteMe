@@ -71,9 +71,7 @@ public class ClientLoginController {
 	public void updateUser(Object[] user) {
 	    Platform.runLater(() -> {
 	        if (user[0] instanceof User) {
-	        	//TODO I cant implemment it in the KURDI WAY
 	        	//Check for Unregistered Customer
-	        	System.out.println("HELLO IM BADIR1");
 	        	if (((User)user[0]).getType().equals(EnumType.CUSTOMER) && !(boolean)user[1]){
 	        		this.user = (User) user[0];
 	        		launchUserHomePageUI((User) user[0], (boolean) false);	
@@ -81,7 +79,6 @@ public class ClientLoginController {
 	        	else
 	        	launchUserHomePageUI((User) user[0], (boolean) true);
 	        } else if (user[0] instanceof String) {
-	        	System.out.println("HELLO IM BADIR2");
 	            showError((String) user[0]);
 	            this.user = null;
 	        } else {
