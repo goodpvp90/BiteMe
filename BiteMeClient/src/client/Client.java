@@ -21,6 +21,8 @@ import common.PerformanceReport;
 import common.User;
 import ClientGUI.ClientLoginController;
 import ClientGUI.ZProtoClientController;
+import ClientGUI.CustomerOrderCreation;
+import common.Dish;
 
 public class Client extends AbstractClient {
 	// Default port to connect to the server
@@ -30,6 +32,7 @@ public class Client extends AbstractClient {
 	private ZProtoClientController clientController;
 	private ClientLoginController clientLoginController;
 	
+	private CustomerOrderCreation  CustomerOrderCreation;
 	// Constructor to initialize the client with host and port, and establish
 	// connection
 	public Client(String host, int port) throws IOException {
@@ -69,6 +72,12 @@ public class Client extends AbstractClient {
 		if (instance == null) {
 			instance = new Client(host, port);
 		}
+		
+	}
+	
+	// sets the CustomerOrderCreation instance
+	public void setCustomerOrderCreation(CustomerOrderCreation CustomerOrderCreation) {
+		this.CustomerOrderCreation = CustomerOrderCreation;
 	}
 
 	// Sets the GUI controller for this client
@@ -122,11 +131,12 @@ public class Client extends AbstractClient {
                 }
                 break;
             case VIEW_MENU:
-                List<Dish> menu = (List<Dish>) message[1];
-                if (clientController != null) {
-                    //clientController.displayMenu(menu);
-                }
-                break;
+            	 List<Dish> menu = (List<Dish>) message[1];
+                 for (Dish dish : menu) {
+                     System.out.println(dish.getMenuId() +dish.getDishName() + dish.getDishType() + dish.getComments() + dish.getPrice()+"\n");
+                 }
+                 	//CustomerOrderCreation.updateMenu(menu);     
+                 break;
             case ADD_DISH:
                 boolean addDishResult = (boolean) message[1];
                 if (clientController != null) {
@@ -256,5 +266,10 @@ public class Client extends AbstractClient {
 	
 	public void getOrdersReport(OrdersReport report) {
 		sendMessageToServer(new Object[] { EnumServerOperations.ORDERS_REPORT, report });
+	}
+
+	// OFEK
+	public void getViewMenu(int menuId) {
+		sendMessageToServer(new Object[] { EnumServerOperations.VIEW_MENU, menuId });
 	}
 }

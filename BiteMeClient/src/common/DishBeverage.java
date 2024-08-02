@@ -8,7 +8,7 @@ public class DishBeverage extends Dish {
 
 	private static final long serialVersionUID = -5732423076855052222L;
 	
-	private ArrayList<String> optionals;
+	//private ArrayList<String> optionals; NO NEED
 	
 	
 	public DishBeverage() {
@@ -21,7 +21,7 @@ public class DishBeverage extends Dish {
         optionals = new ArrayList<>(Arrays.asList("Big", "Small"));
 	}
 	
-    // Method to get the optionals list
+	@Override
     public ArrayList<String> getOptionals() {
         return optionals;
     }

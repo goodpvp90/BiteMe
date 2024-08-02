@@ -6,7 +6,7 @@ import java.util.Arrays;
 public class DishMainCourse extends Dish{
 
 	
-	private ArrayList<String> optionals;
+	//private ArrayList<String> optionals; NO NEED
 	private boolean isGrill;
 	
 	public DishMainCourse() {
@@ -23,6 +23,7 @@ public class DishMainCourse extends Dish{
 			optionals = new ArrayList<String>();
 	}
 	
+	@Override
     public ArrayList<String> getOptionals() {
         return optionals;
     }
