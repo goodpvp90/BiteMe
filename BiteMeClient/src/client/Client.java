@@ -267,9 +267,9 @@ public class Client extends AbstractClient {
 	public void getOrdersReport(OrdersReport report) {
 		sendMessageToServer(new Object[] { EnumServerOperations.ORDERS_REPORT, report });
 	}
-	
-	//OFEK
-		public void getViewMenu(int menuId) {
-			sendMessageToServer(new Object[] { EnumServerOperations.VIEW_MENU, menuId });
-		}
+
+	// OFEK
+	public void getViewMenu(int menuId) {
+		sendMessageToServer(new Object[] { EnumServerOperations.VIEW_MENU, menuId });
+	}
 }

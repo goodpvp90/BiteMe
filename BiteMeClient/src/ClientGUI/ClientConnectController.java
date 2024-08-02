@@ -26,20 +26,55 @@ public class ClientConnectController {
     private void initialize() {
         // Initialization code, if needed
     }
-    @FXML
-    private void handleConnectButtonAction() throws IOException {
-        String serverIp = serverIpTextField.getText();
-        int serverPort = Integer.parseInt(serverPortTextField.getText());
-        
-        //////////////added switch to login page
-        boolean connect = true;
-        Client.initialize(serverIp, serverPort);
-        if(connect)
-        	launchClientLoginUI();
-        
-        // Handle the connect logic here
-        System.out.println("Connecting to server " + serverIp + " on port " + serverPort);
-        
+
+	@FXML
+	private void handleConnectButtonAction() throws IOException {
+		String serverIp = serverIpTextField.getText();
+		int serverPort = Integer.parseInt(serverPortTextField.getText());
+		System.out.println(serverPort);
+
+//		if (IPandPortLegal(serverIp, serverPort)) {
+			Client.initialize(serverIp, serverPort);
+			launchClientLoginUI();
+//		}
+	}
+    
+	private boolean IPandPortLegal(String ip, int port) {
+		if (port < 1000 || port > 9999) {
+			showError("Port must be a 4-digit number.");
+			return false;
+		}
+
+		if (ip == null || ip.isEmpty()) {
+			showError("IP address cannot be empty.");
+			return false;
+		}
+
+		String[] ipParts = ip.split("\\.");
+		if (ipParts.length != 4) {
+			showError("IP address must be 4 numbers separated by dots.");
+			return false;
+		}
+
+		for (String part : ipParts) {
+			if (!part.matches("\\d+")) {
+				showError("IP address must contain only numbers.");
+				return false;
+			}
+
+			int num = Integer.parseInt(part);
+			if (num < 0 || num > 255) {
+				showError("Each number in the IP address must be between 0 and 255.");
+				return false;
+			}
+		}
+
+		return true;
+	}
+
+    private void showError(String err) {
+    	ErrorTextConnect.setVisible(true);
+    	ErrorTextConnect.setText(err);
     }
 
     @FXML
