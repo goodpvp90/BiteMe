@@ -7,6 +7,7 @@ import java.io.*;
 import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 
 import common.Dish;
 import common.DishInOrder;
@@ -19,9 +20,11 @@ import common.Order;
 import common.OrdersReport;
 import common.PerformanceReport;
 import common.User;
+import javafx.application.Platform;
 import ClientGUI.ClientLoginController;
 import ClientGUI.ZProtoClientController;
 import ClientGUI.CustomerOrderCreation;
+import ClientGUI.ReportsPageController;
 import common.Dish;
 
 public class Client extends AbstractClient {
@@ -31,8 +34,9 @@ public class Client extends AbstractClient {
 	// Controller for Client GUI functionality
 	private ZProtoClientController clientController;
 	private ClientLoginController clientLoginController;
-	
 	private CustomerOrderCreation  CustomerOrderCreation;
+	private Consumer<IncomeReport> pendingRevenueReportCallback;
+	private ReportsPageController reportsPageController;
 	// Constructor to initialize the client with host and port, and establish
 	// connection
 	public Client(String host, int port) throws IOException {
@@ -84,6 +88,11 @@ public class Client extends AbstractClient {
 	public void setGuiController(ZProtoClientController clientController) {
 		this.clientController = clientController;
 	}
+	
+	//Sets the ReportsPageController.
+    public void setReportsPageController(ReportsPageController controller) {
+        this.reportsPageController = controller;
+    }
 
 	// Handle messages received from the server
 	@Override
@@ -151,13 +160,17 @@ public class Client extends AbstractClient {
                 break;
             case REPORT_ERROR:
             	String errorMsg = (String)message[1];
-            	//TODO do something
+            	//TODO somthing more            	
+                if (reportsPageController != null) {
+                    reportsPageController.handleIncomeReportResponse(message[1]);
+                }
             	break;
             case INCOME_REPORT:
-            	IncomeReport incomeReport = (IncomeReport)message[1];
-            	//TODO do smth
-            	System.out.println(incomeReport.getIncome());
-            	break;
+                IncomeReport receivedReport = (IncomeReport) message[1];
+                if (reportsPageController != null) {
+                    reportsPageController.handleIncomeReportResponse(message[1]);
+                }
+                break;
             case ORDERS_REPORT:
             	OrdersReport ordersReport = (OrdersReport)message[1];
             	//TODO do smth
@@ -172,6 +185,9 @@ public class Client extends AbstractClient {
 			}
 		}
 	}
+	
+	
+
 	
 	private void handleLogin(Object[] message) {
 		//SEND TO CLIENT CONTROLLER
@@ -259,6 +275,8 @@ public class Client extends AbstractClient {
 	public void getIncomeReport(IncomeReport report) {
 		sendMessageToServer(new Object[] { EnumServerOperations.INCOME_REPORT, report });
 	}
+	
+	
 	
 	public void getPerformanceReport(PerformanceReport report) {
 		sendMessageToServer(new Object[] { EnumServerOperations.PERFORMANCE_REPORT, report });
