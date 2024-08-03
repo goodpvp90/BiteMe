@@ -9,6 +9,7 @@
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.text.Text?>
 <?import javafx.scene.layout.Region?>
+<?import javafx.scene.control.Label?>
 
 <VBox spacing="20" alignment="TOP_CENTER" prefHeight="600.0" prefWidth="700.0" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ClientGUI.ReportsPageController">
     <padding>
@@ -64,4 +65,10 @@
             </HBox>
         </VBox>
     </GridPane>
+	<Label fx:id="errorMessageLabel" textFill="RED" wrapText="true" visible="true" managed="true" 
+	       style="-fx-font-size: 14;" maxWidth="600" alignment="CENTER">
+        <VBox.margin>
+            <Insets top="20" />
+        </VBox.margin>
+    </Label>
 </VBox>
