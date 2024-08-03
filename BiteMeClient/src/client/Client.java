@@ -30,8 +30,7 @@ public class Client extends AbstractClient {
 	private static Client instance;
 	// Controller for Client GUI functionality
 	private ZProtoClientController clientController;
-	private ClientLoginController clientLoginController;
-	
+	private ClientLoginController clientLoginController;	
 	private CustomerOrderCreation  CustomerOrderCreation;
 	// Constructor to initialize the client with host and port, and establish
 	// connection
@@ -132,10 +131,8 @@ public class Client extends AbstractClient {
                 break;
             case VIEW_MENU:
             	 List<Dish> menu = (List<Dish>) message[1];
-                 for (Dish dish : menu) {
-                     System.out.println(dish.getMenuId() +dish.getDishName() + dish.getDishType() + dish.getComments() + dish.getPrice()+"\n");
-                 }
-                 	//CustomerOrderCreation.updateMenu(menu);     
+            	 CustomerOrderCreation.tempMenuFromDB.clear();                            	 
+            	 CustomerOrderCreation.tempMenuFromDB = menu;            	  
                  break;
             case ADD_DISH:
                 boolean addDishResult = (boolean) message[1];

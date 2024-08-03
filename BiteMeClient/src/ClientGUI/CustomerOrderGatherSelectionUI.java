@@ -1,8 +1,6 @@
 package ClientGUI;
-
-import java.util.HashMap;
-import common.Dish;//OFEK-------------------------
-//import ClientGUI.CustomerOrderCreation.Dish;
+import java.util.List;
+import common.Dish;
 import common.User;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -12,12 +10,16 @@ import javafx.stage.Stage;
 
 public class CustomerOrderGatherSelectionUI extends Application {
 	private User user = null;
-    private HashMap<Dish, Integer> orders = null;
+    private List<Dish> orders = null;
 	
     //added constructor
-    public CustomerOrderGatherSelectionUI(User user, HashMap<Dish, Integer> selectedDishesCount) {
-    	this.user=user;
-    	orders=selectedDishesCount;
+    public CustomerOrderGatherSelectionUI(User user, List<Dish> orders) {
+    	this.user = user;
+    	this.orders = orders;
+	}
+    
+  //added constructor
+    public CustomerOrderGatherSelectionUI() {
 	}
 
 	@Override
@@ -37,5 +39,8 @@ public class CustomerOrderGatherSelectionUI extends Application {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+	public static void main(String[] args) {
+        launch(args);
     }
 }

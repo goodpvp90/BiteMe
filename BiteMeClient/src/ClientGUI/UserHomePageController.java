@@ -102,7 +102,6 @@ public class UserHomePageController {
             // Launch CustomerOrderCreationUI future logic
     		//OFEK changed this one to work on this current version	
     		CustomerOrderCreationUI CustCreatApp = new CustomerOrderCreationUI(user,null);
-    		
     		//use this when we don't want to test user
     		//CustomerOrderCreationUI CustCreatApp = new CustomerOrderCreationUI();
     		CustCreatApp.start(new Stage());
