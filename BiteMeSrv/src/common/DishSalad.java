@@ -13,8 +13,8 @@ public class DishSalad extends Dish{
 		// TODO Auto-generated constructor stub
 	}
 
-	public DishSalad(String dishName, double price, int menuId) {
-		super(dishName, price, menuId);
+	public DishSalad(String dishName, boolean isGrill, double price, int menuId) {
+		super(dishName, price, menuId, isGrill);
 		this.setDishType(EnumDish.SALAD);
         optionals = new ArrayList<>(Arrays.asList("Big", "Small"));
 	}
