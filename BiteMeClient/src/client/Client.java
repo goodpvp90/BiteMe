@@ -141,10 +141,8 @@ public class Client extends AbstractClient {
                 break;
             case VIEW_MENU:
             	 List<Dish> menu = (List<Dish>) message[1];
-                 for (Dish dish : menu) {
-                     System.out.println(dish.getMenuId() +dish.getDishName() + dish.getDishType() + dish.getComments() + dish.getPrice()+"\n");
-                 }
-                 	//CustomerOrderCreation.updateMenu(menu);     
+            	 CustomerOrderCreation.tempMenuFromDB.clear();                            	 
+            	 CustomerOrderCreation.tempMenuFromDB = menu;            	  
                  break;
             case ADD_DISH:
                 boolean addDishResult = (boolean) message[1];

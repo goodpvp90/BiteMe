@@ -11,10 +11,9 @@
 <?import javafx.scene.text.Text?>
 
 <AnchorPane prefHeight="552.0" prefWidth="800" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ClientGUI.CustomerOrderCreation">
-    <Button layoutX="10.0" layoutY="10.0" onAction="#handleBackButtonAction" prefHeight="30.0" prefWidth="110.0" text="BACK" />
-
+<Button fx:id="backButton" layoutX="10.0" layoutY="10.0" onAction="#handleBackButtonAction" prefHeight="30.0" prefWidth="110.0" text="BACK" />
     <Label layoutX="20.0" layoutY="50.0" style="-fx-font-weight: bold;" text="Please Choose a branch" />
-    <ComboBox fx:id="branchComboBox" layoutX="20.0" layoutY="70.0" prefWidth="200.0" />
+    <ComboBox fx:id="branchComboBox" layoutX="20.0" layoutY="70.0"  prefWidth="200.0" onAction = "#handleBranchSelection" />
 
     <Label layoutX="20.0" layoutY="110.0" style="-fx-font-weight: bold;" text="Please Choose a Category from the menu" />
     <ComboBox fx:id="categoryComboBox" layoutX="20.0" layoutY="130.0" onAction="#handleCategorySelection" prefWidth="200.0" />
@@ -31,8 +30,14 @@
 	</TableView>
 
     <Label layoutX="20.0" layoutY="410.0" style="-fx-font-weight: bold;" text="Selected Items:" />
-    <ListView fx:id="selectedItemsListView" layoutX="20.0" layoutY="430.0" prefHeight="100.0" prefWidth="760.0" />
-
+	 <TableView fx:id="ChosenItemsTableView" layoutX="20.0" layoutY="430.0" prefHeight="150.0" prefWidth="760.0">
+	    <columns>
+	        <TableColumn fx:id="ChosenItemsnameColumn" prefWidth="150.0" text="Name" />
+	        <TableColumn fx:id="ChosenItemspriceColumn" prefWidth="150.0" text="Price" />
+	        <TableColumn fx:id="ChosenItemsoptionalsColumn" prefWidth="150.0" text="Optionals" />
+	        <TableColumn fx:id="ChosenItemscommentsColumn" prefWidth="310.0" text="Comments" />
+	    </columns>
+	</TableView>
     <Button fx:id="continueButton" layoutX="608.0" layoutY="7.0" onAction="#handleContinueAction" prefHeight="67.0" prefWidth="185.0" text="CONTINUE" />
     <Button layoutX="325.0" layoutY="390.0" onAction="#handleConfirmSelectionAction" prefHeight="30.0" prefWidth="150.0" text="SAVE SELECTIONS" />
    <Text fx:id="errorText" fill="RED" layoutX="475.0" layoutY="100.0" strokeType="OUTSIDE" strokeWidth="0.0" text="ERROR MESSAGES HERE" textAlignment="RIGHT" visible="false" wrappingWidth="319.4700012207031">

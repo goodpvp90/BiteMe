@@ -16,6 +16,7 @@ public abstract class Dish implements Serializable {
     private int menu_id; // Field to associate with the menu
     private String comments;//OFEK-------------------------
     protected ArrayList<String> optionals;//OFEK-------------------------
+    private String optionalPick;//OFEK-------------------------
     
     // Default constructor
     public Dish() {}
@@ -26,8 +27,9 @@ public abstract class Dish implements Serializable {
         this.price = price;
         this.menu_id = menuId; // Initialize the menu_id
         this.comments = "Add Comment Here";//OFEK-------------------------
+        this.optionalPick ="";//OFEK-------------------------
     }
-
+    
     // Getter and setter for dishId
     public int getDishId() {
         return dishId;
@@ -97,4 +99,15 @@ public abstract class Dish implements Serializable {
     public ArrayList<String> getOptionals() {
         return optionals;
     }
+    //OFEK-------------------------
+    public void setOptionalPick(String optionalPick)
+    {
+    	this.optionalPick = optionalPick;
+    }
+    //OFEK-------------------------	
+    public String getOptionalPick()
+    {
+    	return optionalPick;
+    }
+    
 }
