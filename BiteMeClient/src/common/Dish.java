@@ -31,7 +31,7 @@ public abstract class Dish implements Serializable {
         this.optionalPick ="";//OFEK-------------------------
 		this.isGrill = isGrill;
     }
-    
+
     public boolean isGrill() {
 		return isGrill;
 	}
@@ -40,7 +40,7 @@ public abstract class Dish implements Serializable {
 		this.isGrill = isGrill;
 	}
 
-    // Getter and setter for dishId
+	// Getter and setter for dishId
     public int getDishId() {
         return dishId;
     }

@@ -117,10 +117,12 @@ public class Client extends AbstractClient {
 				// you receive object user if loggedout succesfully or string if not logged.
 	        	Object loggedoutuser = (Object)message[1];
 	        	//clientLoginController.updateUser(loggedoutuser);
+	        	break;
 			case INSERT_ORDER:
 				//HERE YOU RECEIVE BACK Order, and list of dishes in order.
 				Object order = (Object)message[1];
 				Object dishesinorder = (Object)message[2];
+				break;
 			case UPDATE_WELOCME:
 				// Handle non-array messages for updating the top label in clientController
 	            if (clientController != null) {
@@ -140,13 +142,19 @@ public class Client extends AbstractClient {
                 }
                 break;
             case VIEW_MENU:
-            	 List<Dish> menu = (List<Dish>) message[1];
-            	 for (Dish dish: menu) {
-            		 System.out.println(dish);//TEST SO OFEK DONT CRY
-            	 }
-            	 CustomerOrderCreation.tempMenuFromDB.clear();                            	 
-            	 CustomerOrderCreation.tempMenuFromDB = menu;            	  
-            	 
+            	System.out.println("ENTERED VIEW");
+            	List<Dish> menu = (List<Dish>) message[1];
+            	for (Dish dish:menu) {
+            		System.out.println(dish);
+            	}
+            	System.out.println("HIGHER" + menu.size());
+           	 	CustomerOrderCreation.SettempMenuFromDB(menu);    
+           	 	for (Dish dish :  CustomerOrderCreation.tempMenuFromDB) {
+        		    String dishInfo = "Dish{" +
+        		                      "dishId=" + dish.getDishId()  +
+        		                      '}';
+        		    System.out.println(dishInfo);
+        		}
                  break;
             case ADD_DISH:
                 boolean addDishResult = (boolean) message[1];

@@ -343,23 +343,24 @@ public class DBController {
                 String dishName = rs.getString("dish_name");
                 double price = rs.getDouble("price");
                 int menuId = rs.getInt("menu_id");
+                boolean isGrill = rs.getBoolean("is_grill");
                 EnumDish dishType = EnumDish.valueOf(rs.getString("dish_type"));
                 Dish dish = null;
                 switch(dishType) {
                 case BEVERAGE:
-                	dish = new DishBeverage(dishName, price, menuId);
+                	dish = new DishBeverage(dishName,isGrill, price, menuId);
                 	break;
                 case SALAD:
-                	dish = new DishSalad(dishName, price, menuId);
+                	dish = new DishSalad(dishName,isGrill, price, menuId);
                 	break;
                 case APPETIZER:
-                	dish = new DishAppetizer(dishName, price, menuId);
+                	dish = new DishAppetizer(dishName,isGrill, price, menuId);
                 	break;
                 case DESSERT:
-                	dish = new DishDessert(dishName, price, menuId);
+                	dish = new DishDessert(dishName,isGrill, price, menuId);
                 	break;
                 case MAIN_COURSE:
-                	dish = new DishMainCourse(dishName,false, price, menuId);        
+                	dish = new DishMainCourse(dishName,isGrill, price, menuId);        
                 	break;
                 }
                 return dish;
@@ -477,31 +478,32 @@ public class DBController {
                 EnumDish dishType = EnumDish.valueOf(resultSet.getString("dish_type"));
                 String dishName = resultSet.getString("dish_name");
                 double price = resultSet.getDouble("price");
+                boolean isGrill = resultSet.getBoolean("is_grill");
                 switch(dishType){
                 case BEVERAGE:
-                	DishBeverage dish = new DishBeverage(dishName,false, price, menuId);
+                	DishBeverage dish = new DishBeverage(dishName,isGrill, price, menuId);
                 	dish.setDishId(dishId);
                 	dishes.add(dish);
                 	break;
                 case SALAD:
-                	DishSalad dish = new DishSalad(dishName,false, price, menuId);
-                	dish.setDishId(dishId);
-                	dishes.add(dish);
+                	DishSalad dishs = new DishSalad(dishName,isGrill, price, menuId);
+                	dishs.setDishId(dishId);
+                	dishes.add(dishs);
                 	break;
                 case APPETIZER:
-                	DishAppetizer dish = new DishAppetizer(dishName,false, price, menuId);
-                	dish.setDishId(dishId);
-                	dishes.add(dish);
+                	DishAppetizer dishdi = new DishAppetizer(dishName,isGrill, price, menuId);
+                	dishdi.setDishId(dishId);
+                	dishes.add(dishdi);
                 	break;
                 case DESSERT:
-                	DishDessert dish = new DishDessert(dishName,false, price, menuId);
-                	dish.setDishId(dishId);
-                	dishes.add(dish);
+                	DishDessert dishd = new DishDessert(dishName,isGrill, price, menuId);
+                	dishd.setDishId(dishId);
+                	dishes.add(dishd);
                 	break;
                 case MAIN_COURSE:
-                	DishMainCourse dish = new DishMainCourse(dishName,false, price, menuId);
-                	dish.setDishId(dishId);
-                	dishes.add(dish);
+                	DishMainCourse dishm = new DishMainCourse(dishName,isGrill, price, menuId);
+                	dishm.setDishId(dishId);
+                	dishes.add(dishm);
                 	break;
                 }
             }
@@ -509,6 +511,7 @@ public class DBController {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+
         return dishes;
     }
     
