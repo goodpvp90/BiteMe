@@ -113,8 +113,6 @@ public class CustomerOrderCreation {
                     comboBox.setValue(dish.getOptionalPick());
                     comboBox.valueProperty().addListener((obs, oldVal, newVal) -> {
                         dish.setOptionalPick(newVal);
-                        String selectedOptional = newVal;
-                        System.out.println("Selected optional: " + selectedOptional);
                     });
                     // Set the default value to the first element if available
                     if (!options.isEmpty()) {
@@ -139,7 +137,6 @@ public class CustomerOrderCreation {
             public void handle(CellEditEvent<Dish, String> event) {
                 Dish dish = event.getRowValue();
                 dish.setComments(event.getNewValue());
-                String newComment = event.getNewValue();
             }
         });        
         ChosenItemsTableView.setRowFactory(tv -> {
@@ -168,6 +165,11 @@ public class CustomerOrderCreation {
         {   branchComboBox.setValue(Location.SOUTH); // or any default location
     		showError("NO HOME BRANCH FOUND FOR USER");        
         }            
+    }
+    
+    public void setMenuID(int menuID)
+    {
+    
     }
     
     //Set the default home branch of the viewer as a default selected branch when ordering
@@ -206,6 +208,7 @@ public class CustomerOrderCreation {
         	}    
         	client.getViewMenu(MenuID);
         	ChosenItemsFromMenu.clear();                  
+        	ChosenItemsTableView.getItems().clear();
             categoryComboBox.setValue(null);      
         }
     }
@@ -220,8 +223,8 @@ public class CustomerOrderCreation {
             List<Dish> filteredDishes = new ArrayList<>();
             for (Dish dish : tempMenuFromDB) {
                 if (dish.getDishType() == categoryType) {
-                    filteredDishes.add(dish);
-                }
+                	filteredDishes.add(dish);     
+                	}
             }          
             menuTableView.getItems().addAll(filteredDishes);        
         }
@@ -238,43 +241,52 @@ public class CustomerOrderCreation {
     	}
     	// Get all selected dishes
     	Dish tempDish = menuTableView.getSelectionModel().getSelectedItem();
-    	String updatedComment = tempDish.getComments();
+    	String updatedComment = tempDish.getComments();    	
     	if(updatedComment.equals("Add Comment Here"))
     		updatedComment = "";
+    	tempDish.setComments("Add Comment Here");//Prevents the changed comment from being saved on the menu table
+    	menuTableView.refresh();
     	String dishName = tempDish.getDishName();
     	double dishPrice = tempDish.getPrice();
     	int dishMenuID= tempDish.getMenuId();
+    	int dishId = tempDish.getDishId();
     	String dishOptPick = tempDish.getOptionalPick();
+    	boolean isGrill = tempDish.isGrill();
     	switch(tempDish.getDishType().toString())
     	{
     	case "SALAD":   
-    		DishSalad dishSalad = new DishSalad(dishName,dishPrice,dishMenuID);
+    		DishSalad dishSalad = new DishSalad(dishName,isGrill,dishPrice,dishMenuID);
     		dishSalad.setOptionalPick(dishOptPick);
     		dishSalad.setComments(updatedComment);
+    		dishSalad.setDishId(dishId);
     		tempChosenItemsFromMenu.add(dishSalad);
     		break;
     	case "BEVERAGE":
-    		DishBeverage dishBev = new DishBeverage(dishName,dishPrice,dishMenuID);
+    		DishBeverage dishBev = new DishBeverage(dishName,isGrill,dishPrice,dishMenuID);
     		dishBev.setOptionalPick(dishOptPick);
     		dishBev.setComments(updatedComment);
+    		dishBev.setDishId(dishId);
     		tempChosenItemsFromMenu.add(dishBev);
     		break;
     	case "DESSERT":
-    		DishDessert dishDess = new DishDessert(dishName,dishPrice,dishMenuID);
+    		DishDessert dishDess = new DishDessert(dishName,isGrill,dishPrice,dishMenuID);
     		dishDess.setOptionalPick(dishOptPick);
     		dishDess.setComments(updatedComment);
+    		dishDess.setDishId(dishId);
     		tempChosenItemsFromMenu.add(dishDess);
     		break;
     	case "MAIN_COURSE":
-    		DishMainCourse dishMainC = new DishMainCourse(dishName,false,dishPrice,dishMenuID);
+    		DishMainCourse dishMainC = new DishMainCourse(dishName,isGrill,dishPrice,dishMenuID);
     		dishMainC.setOptionalPick(dishOptPick);
     		dishMainC.setComments(updatedComment);
+    		dishMainC.setDishId(dishId);
     		tempChosenItemsFromMenu.add(dishMainC);
     		break;
     	case "APPETIZER":
-    		DishAppetizer dishApptzr = new DishAppetizer(dishName, dishPrice, dishMenuID);
+    		DishAppetizer dishApptzr = new DishAppetizer(dishName, isGrill, dishPrice, dishMenuID);
     		dishApptzr.setOptionalPick(dishOptPick);
     		dishApptzr.setComments(updatedComment);
+    		dishApptzr.setDishId(dishId);
     		tempChosenItemsFromMenu.add(dishApptzr);
     		break;   		
     	}
@@ -314,11 +326,17 @@ public class CustomerOrderCreation {
 			showError("Error, please add at least ONE item to your order.");
 		}
 	}
-
+	
+	// for the client's backend. sets up the tempMenuFromDB's relevant branch information 
+	public void SettempMenuFromDB(List<Dish> DBlist)
+	{
+		tempMenuFromDB.clear();                            	 
+		tempMenuFromDB = DBlist; 
+	}
 	// Goes back to the user's home page
 	@FXML
-    private void handleBackButtonAction() {				
-    	try {
+    private void handleBackButtonAction() {						
+		try {
         	UserHomePageUI Userapp = new UserHomePageUI(user,true);
         	Userapp.start(new Stage());
             Stage currentStage = (Stage) backButton.getScene().getWindow();

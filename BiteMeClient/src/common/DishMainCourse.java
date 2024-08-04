@@ -7,7 +7,6 @@ public class DishMainCourse extends Dish{
 
 	
 	//private ArrayList<String> optionals; NO NEED
-	private boolean isGrill;
 	
 	public DishMainCourse() {
 		super();

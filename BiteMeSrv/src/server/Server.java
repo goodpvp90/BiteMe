@@ -45,7 +45,10 @@ public class Server extends AbstractServer {
     public void sendMessageToClient(EnumClientOperations op, ConnectionToClient client, Object msg) {
         try {
             Object message = new Object[]{op, msg};
+            System.out.println(op.toString());
+            System.out.println("SENDING TO CLIENT1");
             client.sendToClient(message);
+            System.out.println("SENDING TO CLIENT2");
         } catch (IOException e) {
             e.printStackTrace();
         }
