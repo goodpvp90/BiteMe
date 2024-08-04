@@ -14,9 +14,8 @@ public class DishMainCourse extends Dish{
 	}
 
 	public DishMainCourse(String dishName,boolean isGrill, double price, int menuId) {
-		super(dishName, price, menuId);
+		super(dishName, price, menuId, isGrill);
 		this.setDishType(EnumDish.MAIN_COURSE);
-		this.isGrill = isGrill;
 		if (isGrill)
 			optionals = new ArrayList<>(Arrays.asList("Medium","Well"));
 		else

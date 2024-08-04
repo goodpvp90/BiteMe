@@ -143,6 +143,7 @@ public class Client extends AbstractClient {
             	 List<Dish> menu = (List<Dish>) message[1];
             	 CustomerOrderCreation.tempMenuFromDB.clear();                            	 
             	 CustomerOrderCreation.tempMenuFromDB = menu;            	  
+            	 
                  break;
             case ADD_DISH:
                 boolean addDishResult = (boolean) message[1];

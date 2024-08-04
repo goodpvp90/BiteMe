@@ -17,20 +17,30 @@ public abstract class Dish implements Serializable {
     private String comments;//OFEK-------------------------
     protected ArrayList<String> optionals;//OFEK-------------------------
     private String optionalPick;//OFEK-------------------------
+    private boolean isGrill;
     
     // Default constructor
     public Dish() {}
 
     // Parameterized constructor
-    public Dish(String dishName, double price, int menuId) {
+    public Dish(String dishName, double price, int menuId, boolean isGrill) {
         this.dishName = dishName;
         this.price = price;
         this.menu_id = menuId; // Initialize the menu_id
         this.comments = "Add Comment Here";//OFEK-------------------------
         this.optionalPick ="";//OFEK-------------------------
+		this.isGrill = isGrill;
     }
-    
-    // Getter and setter for dishId
+
+    public boolean isGrill() {
+		return isGrill;
+	}
+
+	public void setGrill(boolean isGrill) {
+		this.isGrill = isGrill;
+	}
+
+	// Getter and setter for dishId
     public int getDishId() {
         return dishId;
     }

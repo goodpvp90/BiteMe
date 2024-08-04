@@ -15,8 +15,8 @@ public class DishBeverage extends Dish {
 		super();
 	}
 
-	public DishBeverage(String dishName, double price, int menuId) {
-		super(dishName, price, menuId);
+	public DishBeverage(String dishName,boolean isGrill, double price, int menuId) {
+		super(dishName, price, menuId, isGrill);
 		this.setDishType(EnumDish.BEVERAGE);
         optionals = new ArrayList<>(Arrays.asList("Big", "Small"));
 	}
