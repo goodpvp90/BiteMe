@@ -392,12 +392,13 @@ public class DBController {
             return false;
         }
 
-        String insertSql = "INSERT INTO dishes (menu_id, dish_type, dish_name, price) VALUES (?, ?, ?, ?)";
+        String insertSql = "INSERT INTO dishes (menu_id, dish_type, dish_name, price, is_grill) VALUES (?, ?, ?, ?, ?)";
         try (PreparedStatement insertStmt = connection.prepareStatement(insertSql)) {
             insertStmt.setInt(1, dish.getMenuId());
             insertStmt.setString(2, dish.getDishType().toString());
             insertStmt.setString(3, dish.getDishName());
             insertStmt.setDouble(4, dish.getPrice());
+            insertStmt.setBoolean(5, dish.isGrill());
 
             int rowsAffected = insertStmt.executeUpdate();
             return rowsAffected > 0;
@@ -443,13 +444,14 @@ public class DBController {
      *         was found or if an error occurred
      */
     public boolean deleteDish(Dish dish) {
-        String sql = "DELETE FROM dishes WHERE menu_id = ? AND dish_type = ? AND dish_name = ? AND price = ?";
+        String sql = "DELETE FROM dishes WHERE menu_id = ? AND dish_type = ? AND dish_name = ? AND price = ? AND is_grill = ?";
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setInt(1, dish.getMenuId());
             preparedStatement.setString(2, dish.getDishType().toString());
             preparedStatement.setString(3, dish.getDishName());
             preparedStatement.setDouble(4, dish.getPrice());
+            preparedStatement.setBoolean(5, dish.isGrill());
 
             int rowsAffected = preparedStatement.executeUpdate();
             return rowsAffected > 0;
@@ -477,19 +479,29 @@ public class DBController {
                 double price = resultSet.getDouble("price");
                 switch(dishType){
                 case BEVERAGE:
-                	dishes.add(new DishBeverage(dishName, price, menuId));
+                	DishBeverage dish = new DishBeverage(dishName,false, price, menuId);
+                	dish.setDishId(dishId);
+                	dishes.add(dish);
                 	break;
                 case SALAD:
-                	dishes.add(new DishSalad(dishName, price, menuId));
+                	DishSalad dish = new DishSalad(dishName,false, price, menuId);
+                	dish.setDishId(dishId);
+                	dishes.add(dish);
                 	break;
                 case APPETIZER:
-                	dishes.add(new DishAppetizer(dishName, price, menuId));
+                	DishAppetizer dish = new DishAppetizer(dishName,false, price, menuId);
+                	dish.setDishId(dishId);
+                	dishes.add(dish);
                 	break;
                 case DESSERT:
-                	dishes.add(new DishDessert(dishName, price, menuId));
+                	DishDessert dish = new DishDessert(dishName,false, price, menuId);
+                	dish.setDishId(dishId);
+                	dishes.add(dish);
                 	break;
                 case MAIN_COURSE:
-                	dishes.add(new DishMainCourse(dishName,false, price, menuId));
+                	DishMainCourse dish = new DishMainCourse(dishName,false, price, menuId);
+                	dish.setDishId(dishId);
+                	dishes.add(dish);
                 	break;
                 }
             }
@@ -499,6 +511,25 @@ public class DBController {
         }
         return dishes;
     }
+    
+    public boolean updateDish(Dish dish) {
+        String updateSql = "UPDATE dishes SET dish_type = ?, dish_name = ?, price = ?, is_grill = ? WHERE dish_id = ?";
+
+        try (PreparedStatement updateStmt = connection.prepareStatement(updateSql)) {
+            updateStmt.setString(2, dish.getDishType().toString());
+            updateStmt.setString(3, dish.getDishName());
+            updateStmt.setDouble(4, dish.getPrice());
+            updateStmt.setBoolean(5, dish.isGrill());
+            updateStmt.setInt(6, dish.getDishId());
+
+            int rowsAffected = updateStmt.executeUpdate();
+            return rowsAffected > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
     
     /**
      * Generates the orders report that collects the Total amount of each dish type sold for the previous month 

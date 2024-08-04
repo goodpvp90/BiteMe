@@ -92,6 +92,7 @@ public abstract class Dish implements Serializable {
                ", dishType=" + dishType +
                ", dishName='" + dishName + '\'' +
                ", price=" + price +
+               ", isGrill=" + isGrill +
                ", menuId=" + menu_id +
                '}';
     }

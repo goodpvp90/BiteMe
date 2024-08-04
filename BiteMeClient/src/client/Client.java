@@ -141,6 +141,9 @@ public class Client extends AbstractClient {
                 break;
             case VIEW_MENU:
             	 List<Dish> menu = (List<Dish>) message[1];
+            	 for (Dish dish: menu) {
+            		 System.out.println(dish);//TEST SO OFEK DONT CRY
+            	 }
             	 CustomerOrderCreation.tempMenuFromDB.clear();                            	 
             	 CustomerOrderCreation.tempMenuFromDB = menu;            	  
             	 
@@ -176,6 +179,10 @@ public class Client extends AbstractClient {
             	break;
             case PERFORMANCE_REPORT:
             	PerformanceReport performanceReport = (PerformanceReport)message[1];
+            	//TODO do smth
+            	break;
+            case UPDATE_DISH:
+            	//UPDATE EXISSTING DISH RESPONSE.
             	//TODO do smth
             	break;
 			case NONE:
