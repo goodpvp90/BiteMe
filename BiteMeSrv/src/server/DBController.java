@@ -637,7 +637,7 @@ public class DBController {
      *         otherwise a string indicating that no such report exists or an error message
      */
     public Object getPerformanceReport(PerformanceReport report) {
-        String query = "SELECT totalOrders, ordersCompletedInTime FROM performancereport"+
+        String query = "SELECT totalOrders, ordersCompletedInTime FROM performancereport "+
                 "WHERE branch_id = ? AND month = ? AND year = ?";
         try {
             PreparedStatement pstmt = connection.prepareStatement(query);
