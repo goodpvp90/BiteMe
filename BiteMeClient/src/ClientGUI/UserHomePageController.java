@@ -3,6 +3,9 @@ package ClientGUI;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.text.Text;
+
+import java.io.IOException;
+
 import client.Client;
 import common.EnumType;
 import common.User;
@@ -45,17 +48,22 @@ public class UserHomePageController {
     @FXML
     private Text headlineText;
 
+    private boolean isRegistered;
     
-    public void setUser(User user) {
+    public void setUser(User user, boolean isRegistered) {
         this.user = user;
+        this.isRegistered = isRegistered;
         updateUI();
     }
     
     
     private void updateUI() {
     	switch(user.getType()) {
+    	//CEO AND BM Same buttons but other functionalities and roles.
+    	case CEO:
+    		break;
     	case BRANCH_MANAGER:
-    		viewReportsButton.setOnAction(this::handleViewReportsForBranch);
+    		//viewReportsButton.setOnAction(this::handleViewReportsForBranch);
     		break;
     	case WORKER:
     		viewReportsButton.setVisible(false);
@@ -66,35 +74,54 @@ public class UserHomePageController {
     		registerUserButton.setVisible(false);
     		updateMenuButton.setVisible(false);
     		pendingOrdersButton.setVisible(false);
+    		//For Unregistered Customer
+    		if (!isRegistered) {
+    			createOrderButton.setVisible(false);
+    			changeHomeBranchButton.setVisible(false);    			
+    		}
     		break;
-      	//need to add one more case
-    	//if user is not registered customer he need approval of manager
-    	//all not buttons not visible
-
     	}
-    	//CEO is default screen
-    	
-    	
     	changeHelloTextAndHeadline();
 	}
-
 
 	@FXML
     private void initialize() {
         // Initialize the client
         client = Client.getInstance();
         // Initialize any necessary components or data
-        // For example, you might want to set the welcome message:
-        // welcomeText.setText("Hello '" + currentUser.getName() + "', Choose an Option");
-    }
 
-    @FXML
-    private void handleLogout(ActionEvent event) {
-        // Implement logout logic
-        System.out.println("Logout button clicked");
-        //Here will be function that changed is_Loggedstatus to 0 (SHOULD BE MADE BY BACKEND)
-        // Navigate to login page or close the application
     }
+	
+	@FXML
+	private void handleLogout(ActionEvent event) {
+	    System.out.println("Logout button clicked");
+
+	    // Send logout request to the server
+	    client.userLogout(user);
+
+	    // Navigate back to the ClientLoginUI
+	    try {
+	        FXMLLoader loader = new FXMLLoader(getClass().getResource("ClientLogin.fxml"));
+	        Parent root = loader.load();
+
+	        // Get the current stage
+	        Stage stage = (Stage) logoutButton.getScene().getWindow();
+
+	        // Set the new scene
+	        Scene scene = new Scene(root);
+	        stage.setScene(scene);
+	        stage.setTitle("Client Login");
+
+	        // Get the controller and reset the client
+	        ClientLoginController loginController = loader.getController();
+	        loginController.resetClient();
+
+	        stage.show();
+	    } catch (IOException e) {
+	        e.printStackTrace();
+	        // Handle the exception (show an error message to the user)
+	    }
+	}
 
     @FXML
     private void handleCreateOrder(ActionEvent event) {
@@ -124,7 +151,11 @@ public class UserHomePageController {
     private void handleViewReports(ActionEvent event) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("ReportsPage.fxml"));
-            Parent root = loader.load();          
+            Parent root = loader.load();
+            ReportsPageController reportsController = loader.getController();
+            //Sending the data for next page so if i would want to go back then i wont lose DATA
+            reportsController.setUser(this.user, this.isRegistered);
+            reportsController.setUserType(user.getType());
             Stage stage = (Stage) viewReportsButton.getScene().getWindow();
             stage.setScene(new Scene(root, 700, 600));
             stage.setTitle("Reports Page");
@@ -165,18 +196,18 @@ public class UserHomePageController {
     		userType = "Worker";
     		break;
     	case CUSTOMER:
-    		userType = "Customer";
+    		//For Unregisterd too
+    		userType = isRegistered ? "Customer" : "Unregistered Customer";
     		break;
-    	//add Unregistered customer case
     	}
-    	headlineText.setText(user.getUsername()+ ", "+userType);
-    	if(!userType.equals("Unregistered Customer"))
-    		welcomeText.setText("Hello " + user.getFirstName()+ ", what would you like to do?");
-    	else
-    		welcomeText.setText("Hello " + user.getFirstName()+", looks like\n"
-    				+ " you have not registered yet.\n"
-    				+ "Please make contact with a\n "
-    				+ "manager of your prefered brunch.");
+        headlineText.setText(user.getUsername()+ ", "+userType);
+        if(isRegistered || user.getType() != EnumType.CUSTOMER)
+            welcomeText.setText("Hello " + user.getFirstName()+ ", what would you like to do?");
+        else
+            welcomeText.setText("Hello " + user.getFirstName()+", looks like\n"
+                    + " you have not registered yet.\n"
+                    + "Please make contact with a\n "
+                    + "manager of your preferred branch.");
     }
     
     

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.Button?>
+<?import javafx.geometry.Insets?>
+
+<VBox alignment="CENTER" spacing="20" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ClientGUI.RevenueReportWindowController"
+      prefWidth="400" prefHeight="300" style="-fx-background-color: #f0f0f0;">
+    <padding>
+        <Insets top="20" right="20" bottom="20" left="20"/>
+    </padding>
+    <Label text="Revenue Report" style="-fx-font-size: 24; -fx-font-weight: bold;"/>
+    <Label fx:id="branchLabel" style="-fx-font-size: 16;"/>
+    <Label fx:id="monthYearLabel" style="-fx-font-size: 16;"/>
+    <TextField fx:id="revenueField" editable="false" style="-fx-font-size: 18; -fx-alignment: CENTER;"/>
+    <Label fx:id="errorLabel" textFill="RED" wrapText="true" visible="false" style="-fx-font-size: 14;"/>
+    <Button text="Close" onAction="#handleClose" style="-fx-font-size: 14;"/>
+</VBox>

@@ -1,8 +1,14 @@
 package common;
 
+import java.io.Serializable;
+
 import common.Restaurant.Location;
 
-public class MonthlyReport {
+public class MonthlyReport implements Serializable{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private Location loc;
     private int month;
     private int year;

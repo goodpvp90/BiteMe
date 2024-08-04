@@ -611,7 +611,7 @@ public class DBController {
     
     // Method to retrieve restaurant ID from its location
     private int getRestaurantIdByLocation(Location location){
-        String query = "SELECT branch_id FROM restaurants WHERE address = ?";
+        String query = "SELECT branch_id FROM restaurants WHERE location = ?";
         try (PreparedStatement pstmt = connection.prepareStatement(query)) {
             pstmt.setString(1, location.toString());
             try (ResultSet rs = pstmt.executeQuery()) {

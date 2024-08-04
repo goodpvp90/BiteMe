@@ -24,10 +24,7 @@ public class UserHomePageUI extends Application {
         Parent root = loader.load();
         
         UserHomePageController controller = loader.getController();
-        //OFEK, this is a comment now because of issues
-        //controller.setUser(user, isRegistered);
-        controller.setUser(user);
-        
+        controller.setUser(user, isRegistered); 
         //Handler for "X" button in the top screen
         primaryStage.setOnCloseRequest(event -> {
             event.consume(); // Prevent the window from closing immediately
