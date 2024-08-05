@@ -9,6 +9,7 @@ import common.EnumOrderStatus;
 import common.EnumServerOperations;
 
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.List;
 
 public class OrderController {
@@ -36,15 +37,25 @@ public class OrderController {
     public String updateOrderStatus(int orderId, EnumOrderStatus status) {
         try {
             server.dbController.updateOrderStatus(orderId, status);
+            
+            // Check if status is IN_PROGRESS and update the start time
+            if (status == EnumOrderStatus.IN_PROGRESS) {
+                server.dbController.updateOrderStartTime(orderId, new Timestamp(System.currentTimeMillis()));
+            }
+            
+            // Check if status is COMPLETED and update the receive time
             if (status == EnumOrderStatus.COMPLETED) {
+                server.dbController.updateOrderReceiveTime(orderId, new Timestamp(System.currentTimeMillis()));
                 notifyUser(orderId);
             }
+            
             return "Order status updated successfully";
         } catch (SQLException e) {
             e.printStackTrace();
             return "Error updating order status: " + e.getMessage();
         }
     }
+
     
     private void notifyUser(int orderId) {
         try {
