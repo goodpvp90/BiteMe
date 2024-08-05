@@ -176,19 +176,61 @@ public class DBController {
 	        return false;
 	    }
 	}
+	
+	public void updateOrderStatus(int orderId, EnumOrderStatus status) throws SQLException {
+	    String checkDeliveryQuery = "SELECT delivery FROM orders WHERE order_id = ?";
+	    String updateStatusQuery = "UPDATE orders SET status = ? WHERE order_id = ?";
+	    String updateReceiveTimeQuery = "UPDATE orders SET order_receive_time = ? WHERE order_id = ?";
+	    
+	    try (PreparedStatement checkStmt = connection.prepareStatement(checkDeliveryQuery)) {
+	        checkStmt.setInt(1, orderId);
+	        try (ResultSet rs = checkStmt.executeQuery()) {
+	            if (rs.next()) {
+	                int delivery = rs.getInt("delivery");
+	                
+	                try (PreparedStatement updateStmt = connection.prepareStatement(updateStatusQuery)) {
+	                    updateStmt.setString(1, status.toString());
+	                    updateStmt.setInt(2, orderId);
+	                    updateStmt.executeUpdate();
+	                }
+	                
+	                if (delivery == 0 && status == EnumOrderStatus.READY) {
+	                    try (PreparedStatement updateTimeStmt = connection.prepareStatement(updateReceiveTimeQuery)) {
+	                        updateTimeStmt.setTimestamp(1, new Timestamp(System.currentTimeMillis()));
+	                        updateTimeStmt.setInt(2, orderId);
+	                        updateTimeStmt.executeUpdate();
+	                    }
+	                }
+	            }
+	        }
+	    }
+	}
 
-    
-    // Update order receive time, used when user accepts he recied the order
-    public void updateOrderReceiveTime(int orderId, Timestamp orderReceiveTime){
-        String query = "UPDATE orders SET order_receive_time = ? WHERE order_id = ?";
-        try (PreparedStatement stmt = connection.prepareStatement(query)) {
-            stmt.setTimestamp(1, orderReceiveTime);
-            stmt.setInt(2, orderId);
-            stmt.executeUpdate();
-        }catch(SQLException e){
-            e.printStackTrace();
-        }
-    }
+	
+	// Update order start time when worker accepts the order.
+	public void updateOrderStartTime(int orderId, Timestamp orderStartTime) {
+	    String query = "UPDATE orders SET order_request_time = ? WHERE order_id = ?";
+	    try (PreparedStatement stmt = connection.prepareStatement(query)) {
+	        stmt.setTimestamp(1, orderStartTime);
+	        stmt.setInt(2, orderId);
+	        stmt.executeUpdate();
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    }
+	}
+	
+	// Update order receive time, used when user accepts he received the order
+	public void updateOrderReceiveTime(int orderId, Timestamp orderReceiveTime) {
+	    String query = "UPDATE orders SET order_receive_time = ? WHERE order_id = ?";
+	    try (PreparedStatement stmt = connection.prepareStatement(query)) {
+	        stmt.setTimestamp(1, orderReceiveTime);
+	        stmt.setInt(2, orderId);
+	        stmt.executeUpdate();
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    }
+	}
+
     
     // Get orders for a specific username
     public List<Order> getOrdersByUsername(String username) throws SQLException {
@@ -370,14 +412,7 @@ public class DBController {
 		return null;
     }
 
-    public void updateOrderStatus(int orderId, EnumOrderStatus status) throws SQLException {
-        String query = "UPDATE orders SET status = ? WHERE order_id = ?";
-        try (PreparedStatement stmt = connection.prepareStatement(query)) {
-            stmt.setString(1, status.toString());
-            stmt.setInt(2, orderId);
-            stmt.executeUpdate();
-        }
-    }
+
     
     /**
      * Adds a new dish to the database. Before adding, it checks if a dish with

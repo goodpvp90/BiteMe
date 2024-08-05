@@ -13,6 +13,7 @@ import common.Dish;
 import common.DishInOrder;
 import common.EnumClientOperations;
 import common.EnumDish;
+import common.EnumOrderStatus;
 import common.EnumServerOperations;
 import common.IncomeReport;
 import common.MonthlyReport;
@@ -179,6 +180,9 @@ public class Client extends AbstractClient {
             	//UPDATE EXISSTING DISH RESPONSE.
             	//TODO do smth
             	break;
+            case UPDATE_ORDER_STATUS:
+            	//HERE U GET RESPONSE IF UPDATE STATUS IS SUCCESFULL
+            	break;
 			case NONE:
 				System.out.println("no operation was received");
 				break;
@@ -266,6 +270,12 @@ public class Client extends AbstractClient {
 	
 	public void getOrdersReport(OrdersReport report) {
 		sendMessageToServer(new Object[] { EnumServerOperations.ORDERS_REPORT, report });
+	}
+	
+	//USE IT TO UPDATE ORDER STATUS, IN PROGESS, READY , COMPLETED .....
+	// IT HAS A LOT OF LOGIC IN BACKEND, by status we update time and etc..
+	public void updateOrderStatus(int orderId, EnumOrderStatus status) {
+		sendMessageToServer(new Object[] { EnumServerOperations.UPDATE_ORDER_STATUS, orderId, status});
 	}
 
 	// OFEK
