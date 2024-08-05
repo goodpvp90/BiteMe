@@ -9,7 +9,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.shape.Rectangle?>
 
-<StackPane prefWidth="450.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/22" fx:controller="ClientGUI.OrdersReportWindowController">
+<StackPane prefWidth="450.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/22" fx:controller="ClientGUI.OrdersReportController">
     <Rectangle arcHeight="20.0" arcWidth="20.0" fill="#f0f0f0" height="200" width="450" />
     <VBox alignment="CENTER" maxHeight="-Infinity" maxWidth="-Infinity" prefHeight="400.0" prefWidth="438.0" spacing="25">
         <padding>

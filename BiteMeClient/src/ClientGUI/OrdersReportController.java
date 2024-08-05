@@ -4,12 +4,13 @@ import javafx.fxml.FXML;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.stage.Stage;
 import common.OrdersReport;
 import common.EnumDish;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
-public class OrdersReportWindowController {
+public class OrdersReportController {
 
     @FXML private TableView<OrdersReportEntry> ordersTable;
     @FXML private TableColumn<OrdersReportEntry, String> dishTypeColumn;
@@ -36,8 +37,9 @@ public class OrdersReportWindowController {
 
     @FXML
     private void handleClose() {
-        ordersTable.getScene().getWindow().hide();
+        Stage stage = (Stage) ordersTable.getScene().getWindow();
         reportsPageController.enableOrdersReportButton();
+        stage.close();
     }
 
     public static class OrdersReportEntry {
