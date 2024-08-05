@@ -216,13 +216,17 @@ public class UserHomePageController {
     }
     
 	//Making Quit Button to kill thread and send message to server
-    public void closeApplication() {
-        if (client != null) {
+    public void closeApplication() 
+    {
+    	Platform.runLater(() ->
+    	{
+        if (client != null) 
+        {
             System.out.println("Closing application from UserHomePage");
+            client.userLogout(user);
             client.quit();
         }
         Platform.exit();
         System.exit(0);
-    }
-    
-}
+    });
+}}

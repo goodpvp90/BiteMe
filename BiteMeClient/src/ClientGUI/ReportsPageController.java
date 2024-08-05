@@ -42,9 +42,6 @@ public class ReportsPageController {
     private EnumType userType;
     private User user;
     private boolean isRegistered;
-    private Stage revenueReportStage;
-    private Stage ordersReportStage;
-    private Stage performanceReportStage;
 
     public void initialize() {
         client = Client.getInstance();
@@ -117,16 +114,9 @@ public class ReportsPageController {
 
     @FXML
     private void handleRevenueReport(ActionEvent event) {
-        // If a window is already open, bring it to front instead of opening a new one
-        if (revenueReportStage != null && revenueReportStage.isShowing()) {
-            revenueReportStage.toFront();
-            return;
-        }
         String branch = branchDropdown.getValue(); // This should be pre-set and disabled for BM
         String monthStr = monthDropdown.getValue();
         String yearStr = yearDropdown.getValue();
-     
-        
         // Clear any previous error messages
         clearErrorMessage();
         if (monthStr == null || yearStr == null || monthStr.isEmpty() || yearStr.isEmpty()) {
@@ -179,27 +169,11 @@ public class ReportsPageController {
     }
     
     private void openRevenueReportWindow(IncomeReport report) {
-        if (revenueReportStage != null && revenueReportStage.isShowing()) {
-            revenueReportStage.toFront();
-            return;
-        }
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("RevenueReportWindow.fxml"));
-            Parent root = loader.load();
-            
-            RevenueReportWindowController controller = loader.getController();
-            controller.setReportData(report);
-            controller.setReportsPageController(this);
-
-            Stage stage = new Stage();
-            stage.setScene(new Scene(root));
-            stage.setTitle("Revenue Report");
-            
-            // Re-enable the button when the window is closed
-            stage.setOnHidden(e -> enableRevenueReportButton());
-
-            stage.show();
-        } catch (IOException e) {
+            RevenueReportUI revenueReportUI = new RevenueReportUI();
+            revenueReportUI.setReportData(report, this);
+            revenueReportUI.start(new Stage());
+        } catch (Exception e) {
             e.printStackTrace();
             showErrorMessage("An error occurred while opening the Revenue Report window.");
             enableRevenueReportButton();
@@ -213,10 +187,6 @@ public class ReportsPageController {
 
     @FXML
     private void handlePerformanceReport(ActionEvent event) {
-        if (performanceReportStage != null && performanceReportStage.isShowing()) {
-            performanceReportStage.toFront();
-            return;
-        }
         String branch = branchDropdown.getValue();
         String monthStr = monthDropdown.getValue();
         String yearStr = yearDropdown.getValue();
@@ -264,34 +234,13 @@ public class ReportsPageController {
     }
     
     private void openPerformanceReportWindow(PerformanceReport report) {
-        if (performanceReportStage != null && performanceReportStage.isShowing()) {
-            performanceReportStage.toFront();
-            return;
-        }
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("PerformanceReportWindow.fxml"));
-            Parent root = loader.load();
-            
-            PerformanceReportWindowController controller = loader.getController();
-            controller.setReportData(report);
-            controller.setReportsPageController(this);
-
-            Stage stage = new Stage();
-            stage.setScene(new Scene(root));
-            stage.setTitle("Performance Report");
-            
-            stage.setOnShowing(e -> performanceReportButton.setDisable(true));
-            stage.setOnHidden(e -> {
-                performanceReportButton.setDisable(false);
-                performanceReportStage = null;
-            });
-
-            stage.show();
-            performanceReportStage = stage;
-        } catch (IOException e) {
+            PerformanceReportUI performanceReportUI = new PerformanceReportUI();
+            performanceReportUI.setReportData(report, this);
+            performanceReportUI.start(new Stage());
+        } catch (Exception e) {
             e.printStackTrace();
             showErrorMessage("An error occurred while opening the Performance Report window.");
-            // Ensure the button is enabled if there's an error
             performanceReportButton.setDisable(false);
         }
     }
@@ -302,10 +251,6 @@ public class ReportsPageController {
 
     @FXML
     private void handleOrdersReport(ActionEvent event) {
-        if (ordersReportStage != null && ordersReportStage.isShowing()) {
-            ordersReportStage.toFront();
-            return;
-        }
         String branch = branchDropdown.getValue();
         String monthStr = monthDropdown.getValue();
         String yearStr = yearDropdown.getValue();
@@ -355,27 +300,11 @@ public class ReportsPageController {
     }
     
     private void openOrdersReportWindow(OrdersReport report) {
-        if (ordersReportStage != null && ordersReportStage.isShowing()) {
-            ordersReportStage.toFront();
-            return;
-        }
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("OrdersReportWindow.fxml"));
-            Parent root = loader.load();
-            
-            OrdersReportWindowController controller = loader.getController();
-            controller.setReportData(report);
-            controller.setReportsPageController(this);
-
-            Stage stage = new Stage();
-            stage.setScene(new Scene(root));
-            stage.setTitle("Orders Report");
-            
-            stage.setOnHidden(e -> enableOrdersReportButton());
-
-            stage.show();
-            ordersReportStage = stage;
-        } catch (IOException e) {
+            OrdersReportUI ordersReportUI = new OrdersReportUI();
+            ordersReportUI.setReportData(report, this);
+            ordersReportUI.start(new Stage());
+        } catch (Exception e) {
             e.printStackTrace();
             showErrorMessage("An error occurred while opening the Orders Report window.");
             enableOrdersReportButton();
