@@ -13,7 +13,7 @@ public class RevenueReportWindowController {
 
     @FXML private Label branchLabel;
     @FXML private Label monthYearLabel;
-    @FXML private TextField revenueField;
+    @FXML private Label revenueLabel;
     @FXML private Label errorLabel;
 
     private Client client;
@@ -28,8 +28,8 @@ public class RevenueReportWindowController {
 
     public void setReportData(IncomeReport report) {
         branchLabel.setText("Branch: " + report.getRestaurant().toString());
-        monthYearLabel.setText("Month:"+ report.getMonth() + "Year: " + report.getYear());
-        revenueField.setText(String.format("$%.2f", report.getIncome()));
+        monthYearLabel.setText("Month/Year: " + report.getMonth() + "/" + report.getYear());
+        revenueLabel.setText(String.format("$%.2f", report.getIncome()));
     }
    
 
