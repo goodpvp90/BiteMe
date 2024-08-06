@@ -2,33 +2,28 @@ package common;
 
 public class DishInOrder {
     private int orderId; //Check if needed, currently unused
-    private Dish dish;
     private String comment;
     private String optionalPick;
+    private int dishId;
+    private String dishName;
     
     // Constructors
-    public DishInOrder(Dish dish, String comment) {
-        this.dish = dish;
+    public DishInOrder(String dishName, int dishId, String comment, String opt) {
+    	this.dishName = dishName;
+    	this.dishId = dishId;
         this.comment = comment;
-        this.optionalPick ="";
+        this.optionalPick = opt;
     }
 
-    // Getters and Setters
+    // Getters and Setters//CHECK IF NEED
     public int getOrderId() {
         return orderId;
     }
 
-    public void setOrderId(int orderId) {
+    public void setOrderId(int orderId) {//CHECK IF NEED
         this.orderId = orderId;
     }
 
-    public Dish getDish() {
-        return dish;
-    }
-
-    public void setDish(Dish dish) {
-        this.dish = dish;
-    }
 
     public String getComment() {
         return this.comment;
@@ -48,12 +43,22 @@ public class DishInOrder {
     {
     	return optionalPick;
     }
+    
+    // Getter and setter for dishName
+    public String getDishName() {
+        return dishName;
+    }
+
+    public void setDishName(String dishName) {
+        this.dishName = dishName;
+    }
 
     @Override
     public String toString() {
         return "DishInOrder{" +
                 "orderId=" + orderId +
-                ", dishId=" + dish +
+                ", dishId=" + dishId +
+                ", dishName=" + dishName +
                 ", comment=" + comment +
                 '}';
     }

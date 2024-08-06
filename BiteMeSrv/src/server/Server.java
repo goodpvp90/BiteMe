@@ -74,7 +74,7 @@ public class Server extends AbstractServer {
             case INSERT_ORDER:
                 // Extract data from the message
                 Order newOrder = (Order) message[1];
-                List<DishInOrder> dishesInOrder = (List<DishInOrder>) message[2];
+                List<Dish> dishesInOrder = (List<Dish>) message[2];
                 // Call the method to create the order
                 try {
                     sendMessageToClient(EnumClientOperations.INSERT_ORDER,client, orderController.createOrder(newOrder, dishesInOrder));

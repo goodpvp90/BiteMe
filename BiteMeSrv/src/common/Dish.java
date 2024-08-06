@@ -17,6 +17,7 @@ public abstract class Dish implements Serializable {
     private String comments;//OFEK-------------------------
     protected ArrayList<String> optionals;//OFEK-------------------------
     private boolean isGrill;
+    private String optionalPick;
     
     // Default constructor
     public Dish() {}
@@ -28,6 +29,7 @@ public abstract class Dish implements Serializable {
         this.menu_id = menuId; // Initialize the menu_id
         this.comments = "Add Comment Here";//OFEK-------------------------
 		this.isGrill = isGrill;
+        this.optionalPick ="";
     }
 
     public boolean isGrill() {
@@ -107,6 +109,16 @@ public abstract class Dish implements Serializable {
     //OFEK-------------------------
     public ArrayList<String> getOptionals() {
         return optionals;
+    }
+    
+    public void setOptionalPick(String optionalPick)
+    {
+    	this.optionalPick = optionalPick;
+    }
+
+    public String getOptionalPick()
+    {
+    	return optionalPick;
     }
 
     
