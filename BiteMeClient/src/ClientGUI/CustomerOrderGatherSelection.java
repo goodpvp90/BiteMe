@@ -120,6 +120,9 @@ public class CustomerOrderGatherSelection {
     private Text streetText;
     
     @FXML
+    private Text receiverInfoText;
+    
+    @FXML
     private Text errorText;
     
     @FXML
@@ -180,6 +183,8 @@ public class CustomerOrderGatherSelection {
         
         //set delivery type to default
         deliveryTypeComboBox.setValue("Normal");
+        
+        
 	}
 
 	// Set the user instance from the UI
@@ -192,6 +197,51 @@ public class CustomerOrderGatherSelection {
 		this.selectedDishes = selectedDishesCount;
 	}
 	
+	/////////////////////////////////////////////////////////////////////
+	public void setBooleanParam(boolean[] param) {
+		earlyChoosed = param[0];
+		setVisibleForChoiceOfDateAndTime(earlyChoosed);
+		chooseTime = param[1];
+
+		if(chooseTime) {
+			earlyButton.setDisable(earlyChoosed);
+			regularButton.setDisable(!earlyChoosed);
+		}
+			
+		
+		deliveryChoosed = param[2];
+		setVisibleForDeliveryandPickup(deliveryChoosed);
+		
+		chooseSupply = param[3];
+		if(chooseSupply)
+		{
+			deliveryButton.setDisable(deliveryChoosed);
+			pickupButton.setDisable(!deliveryChoosed);
+
+		}	
+		
+		chooseOptionShared = param[4];
+		setVisibleForDeliveryType(chooseOptionShared);
+		if(param[4]) {
+			deliveryTypeComboBox.setValue("Shared");
+		}
+		
+	}
+	//if returned from checkout retrieve the choices
+	public void setContactInfo(String[] contactInfo) {
+		cityAddressTextField.setText(contactInfo[0]);
+		streetAddressTextField.setText(contactInfo[1]);
+		receiverTextField.setText(contactInfo[2]);
+		phoneNumberTextField.setText(contactInfo[3]);
+		hoursComboBox.setValue(contactInfo[4]);
+		minutesComboBox.setValue(contactInfo[5]);
+		participantsTextField.setText(contactInfo[6]);
+	}
+	//if returned from checkout retrieve the date choice
+	public void setDateInfo(Object dateOld) {
+		LocalDate date = (LocalDate) dateOld;
+		datePicker.setValue(date);
+	}
 	
 	@FXML
 	private void handleEarlyButtonAction(ActionEvent event) throws IOException {
@@ -246,6 +296,7 @@ public class CustomerOrderGatherSelection {
 		deliveryTypeComboBox.setVisible(hide);
 		cityText.setVisible(hide);
 		streetText.setVisible(hide);
+		receiverInfoText.setVisible(hide);
 		
 		participantsTextField.setVisible(false);
 		participantsText.setVisible(false);
@@ -409,14 +460,20 @@ public class CustomerOrderGatherSelection {
 
 	
 	private void launchCheckout() {
+		boolean[] param = {earlyChoosed,chooseTime,deliveryChoosed,chooseSupply,chooseOptionShared};
+		String[] paramContacts = { cityAddressTextField.getText(), streetAddressTextField.getText(),
+				receiverTextField.getText(), phoneNumberTextField.getText(), hoursComboBox.getValue(),
+				minutesComboBox.getValue(),participantsTextField.getText() };
 		try {
-		Parent root = FXMLLoader.load(getClass().getResource("CustomerCheckout.fxml"));
-		Scene scene = new Scene(root);
-		Stage stage = (Stage) checkoutButton.getScene().getWindow();
-		stage.setScene(scene);
-		stage.show();
-		}catch(IOException e) {
-		}
+        	CustomerCheckoutUI Userapp = 
+        			new CustomerCheckoutUI(user,selectedDishes,param,paramContacts,datePicker.getValue());
+        	Userapp.start(new Stage());
+            Stage currentStage = (Stage) backButton.getScene().getWindow();
+            currentStage.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+            showError("An error occurred while loading the User Home Page.");
+        }
 	}
 	
 	// Add methods for handling other actions in this window
