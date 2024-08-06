@@ -9,7 +9,8 @@ import java.sql.Statement;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
-
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import common.Dish;
 import common.DishAppetizer;
 import common.DishBeverage;
@@ -208,28 +209,124 @@ public class DBController {
 
 	
 	// Update order start time when worker accepts the order.
-	public void updateOrderStartTime(int orderId, Timestamp orderStartTime) {
-	    String query = "UPDATE orders SET order_request_time = ? WHERE order_id = ?";
+	public void updateOrderStartTime(int orderId) {
+	    String selectQuery = "SELECT order_ready_time FROM orders WHERE order_id = ?";
+	    String updateQuery = "UPDATE orders SET order_ready_time = ? WHERE order_id = ?";
+	    
+	    try (PreparedStatement selectStmt = connection.prepareStatement(selectQuery);
+	         PreparedStatement updateStmt = connection.prepareStatement(updateQuery)) {
+	        
+	        // Check the current order_ready_time
+	        selectStmt.setInt(1, orderId);
+	        ResultSet rs = selectStmt.executeQuery();
+	        
+	        if (rs.next()) {
+	            Timestamp currentOrderReadyTime = rs.getTimestamp("order_ready_time");
+	            Timestamp newOrderReadyTime;
+	            
+	            if (currentOrderReadyTime == null) {
+	                // If order_ready_time is null, set it to the current time plus 1 hour
+	                LocalDateTime nowPlusOneHour = LocalDateTime.now().plus(1, ChronoUnit.HOURS);
+	                newOrderReadyTime = Timestamp.valueOf(nowPlusOneHour);
+	            } else {
+	                // If order_ready_time is not null, add 20 minutes to the existing time
+	                LocalDateTime updatedTime = currentOrderReadyTime.toLocalDateTime().plus(20, ChronoUnit.MINUTES);
+	                newOrderReadyTime = Timestamp.valueOf(updatedTime);
+	            }
+	            
+	            // Set the new order_ready_time and orderId, then execute the update statement
+	            updateStmt.setTimestamp(1, newOrderReadyTime);
+	            updateStmt.setInt(2, orderId);
+	            updateStmt.executeUpdate();
+	        }
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    }
+	}
+	
+	//GET DISCOUNT FOR USERNAME
+	public double getCurrentDiscountAmount(String username) {
+	    String query = "SELECT discount_amount FROM discounts WHERE username = ?";
 	    try (PreparedStatement stmt = connection.prepareStatement(query)) {
-	        stmt.setTimestamp(1, orderStartTime);
-	        stmt.setInt(2, orderId);
+	        stmt.setString(1, username);
+	        ResultSet rs = stmt.executeQuery();
+	        if (rs.next()) {
+	            return rs.getDouble("discount_amount");
+	        }
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    }
+	    return 0.0;
+	}
+	
+	//UPDATE NEW DISCOUNT AMOUNT FOR USER
+	public void updateDiscountAmount(String username, double discountAmount) {
+	    String query = "INSERT INTO discounts (username, discount_amount) VALUES (?, ?) ON DUPLICATE KEY UPDATE discount_amount = ?";
+	    try (PreparedStatement stmt = connection.prepareStatement(query)) {
+	        stmt.setString(1, username);
+	        stmt.setDouble(2, discountAmount);
+	        stmt.setDouble(3, discountAmount);
 	        stmt.executeUpdate();
 	    } catch (SQLException e) {
 	        e.printStackTrace();
 	    }
 	}
 	
-	// Update order receive time, used when user accepts he received the order
-	public void updateOrderReceiveTime(int orderId, Timestamp orderReceiveTime) {
-	    String query = "UPDATE orders SET order_receive_time = ? WHERE order_id = ?";
-	    try (PreparedStatement stmt = connection.prepareStatement(query)) {
-	        stmt.setTimestamp(1, orderReceiveTime);
-	        stmt.setInt(2, orderId);
-	        stmt.executeUpdate();
+	
+	// Update order receive time, used when user accepts he received the order and insert the correct discount.
+	public void updateOrderReceiveTimeAndInsertDiscount(int orderId, Timestamp orderReceiveTime) {
+	    String selectQuery = "SELECT order_ready_time, total_price, username FROM orders WHERE order_id = ?";
+	    String updateOrderQuery = "UPDATE orders SET order_receive_time = ? WHERE order_id = ?";
+	    String getDiscountQuery = "SELECT discount_amount FROM discounts WHERE username = ?";
+	    String updateDiscountQuery = "INSERT INTO discounts (username, discount_amount) VALUES (?, ?) ON DUPLICATE KEY UPDATE discount_amount = ?";
+	    
+	    try (PreparedStatement selectStmt = connection.prepareStatement(selectQuery);
+	         PreparedStatement updateOrderStmt = connection.prepareStatement(updateOrderQuery);
+	         PreparedStatement getDiscountStmt = connection.prepareStatement(getDiscountQuery);
+	         PreparedStatement updateDiscountStmt = connection.prepareStatement(updateDiscountQuery)) {
+	        
+	        // Select the current order details
+	        selectStmt.setInt(1, orderId);
+	        ResultSet rs = selectStmt.executeQuery();
+	        
+	        if (rs.next()) {
+	            Timestamp orderReadyTime = rs.getTimestamp("order_ready_time");
+	            double totalPrice = rs.getDouble("total_price");
+	            String username = rs.getString("username");
+	            
+	            // Update the order receive time
+	            updateOrderStmt.setTimestamp(1, orderReceiveTime);
+	            updateOrderStmt.setInt(2, orderId);
+	            updateOrderStmt.executeUpdate();
+	            
+	            if (orderReadyTime != null && orderReceiveTime != null && orderReceiveTime.after(orderReadyTime)) {
+	                // Calculate the discount amount
+	                double newDiscountAmount = totalPrice * 0.50;
+	                
+	                // Get the current discount amount
+	                double currentDiscountAmount = 0.0;
+	                getDiscountStmt.setString(1, username);
+	                ResultSet discountRs = getDiscountStmt.executeQuery();
+	                if (discountRs.next()) {
+	                    currentDiscountAmount = discountRs.getDouble("discount_amount");
+	                }
+	                
+	                // Calculate the total discount amount
+	                double totalDiscountAmount = currentDiscountAmount + newDiscountAmount;
+	                
+	                // Update the discount table
+	                updateDiscountStmt.setString(1, username);
+	                updateDiscountStmt.setDouble(2, totalDiscountAmount);
+	                updateDiscountStmt.setDouble(3, totalDiscountAmount);
+	                updateDiscountStmt.executeUpdate();
+	            }
+	        }
 	    } catch (SQLException e) {
 	        e.printStackTrace();
 	    }
 	}
+
+
 
     
     // Get orders for a specific username
@@ -241,7 +338,7 @@ public class DBController {
             try (ResultSet rs = stmt.executeQuery()) {
                 while (rs.next()) {
                     Order order = new Order(rs.getInt("order_id"), rs.getString("username"), rs.getInt("branch_id"),
-                            rs.getTimestamp("order_date"), rs.getTimestamp("order_request_time"), rs.getTimestamp("order_receive_time"), rs.getDouble("total_price"), rs.getBoolean("delivery"),EnumOrderStatus.valueOf(rs.getString("home_branch")));
+                            rs.getTimestamp("order_date"), rs.getTimestamp("order_ready_time"), rs.getTimestamp("order_receive_time"), rs.getDouble("total_price"), rs.getBoolean("delivery"),EnumOrderStatus.valueOf(rs.getString("home_branch")));
                     orders.add(order);
                 }
             }
@@ -267,7 +364,7 @@ public class DBController {
                     int orderId = resultSet.getInt("order_id");
                     String username = resultSet.getString("username");
                     Timestamp orderDate = resultSet.getTimestamp("order_date"); // Adjust the type if necessary
-                    Timestamp orderRequestTime = resultSet.getTimestamp("order_request_time"); // Adjust the type if necessary
+                    Timestamp orderRequestTime = resultSet.getTimestamp("order_ready_time"); // Adjust the type if necessary
                     Timestamp orderReceiveTime = resultSet.getTimestamp("order_receive_time"); // Adjust the type if necessary
                     double totalPrice = resultSet.getDouble("total_price");
                     boolean delivery = resultSet.getBoolean("delivery");
@@ -283,8 +380,10 @@ public class DBController {
         return pendingOrders;
     }
     
+    
+    
     public void createOrder(Order order, List<DishInOrder> dishesInOrder) throws SQLException {
-        String insertOrderQuery = "INSERT INTO orders (username, branch_id, order_date, order_request_time, order_receive_time, total_price, delivery, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        String insertOrderQuery = "INSERT INTO orders (username, branch_id, order_date, order_ready_time, order_receive_time, total_price, delivery, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
         String insertDishInOrderQuery = "INSERT INTO dish_in_order (order_id, dish_id, quantity) VALUES (?, ?, ?)";
 
         try {
@@ -628,7 +727,7 @@ public class DBController {
         String query = "INSERT INTO performancereport (branch_id, month, year, totalOrders, ordersCompletedInTime) " +
                        "SELECT o.branch_id AS branch_id, MONTH(o.order_date) AS month, YEAR(o.order_date) AS year, " +
                        "COUNT(*) AS totalOrders, " +
-                       "SUM(CASE WHEN TIMESTAMPDIFF(MINUTE, o.order_request_time, o.order_receive_time) <= 60 THEN 1 ELSE 0 END) AS ordersCompletedInTime " +
+                       "SUM(CASE WHEN TIMESTAMPDIFF(MINUTE, o.order_ready_time, o.order_receive_time) <= 60 THEN 1 ELSE 0 END) AS ordersCompletedInTime " +
                        "FROM orders o " +
                        "WHERE MONTH(o.order_date) = MONTH(CURRENT_DATE - INTERVAL 1 MONTH) " +
                        "AND YEAR(o.order_date) = YEAR(CURRENT_DATE - INTERVAL 1 MONTH) " +
@@ -814,7 +913,7 @@ public class DBController {
                         rs.getString("username"),
                         rs.getInt("branch_id"),
                         rs.getTimestamp("order_date"),
-                        rs.getTimestamp("order_request_time"),
+                        rs.getTimestamp("order_ready_time"),
                         rs.getTimestamp("order_receive_time"),
                         rs.getDouble("total_price"),
                         rs.getBoolean("delivery"),
