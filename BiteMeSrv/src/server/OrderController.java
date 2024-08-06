@@ -40,13 +40,15 @@ public class OrderController {
             
             // Check if status is IN_PROGRESS and update the start time
             if (status == EnumOrderStatus.IN_PROGRESS) {
-                server.dbController.updateOrderStartTime(orderId, new Timestamp(System.currentTimeMillis()));
+                server.dbController.updateOrderStartTime(orderId);
+                notifyUser(orderId, "Your order is now in progress");
             }
             
             // Check if status is COMPLETED and update the receive time
             if (status == EnumOrderStatus.COMPLETED) {
-                server.dbController.updateOrderReceiveTime(orderId, new Timestamp(System.currentTimeMillis()));
-                notifyUser(orderId);
+                server.dbController.updateOrderReceiveTimeAndInsertDiscount(orderId, new Timestamp(System.currentTimeMillis()));
+                //LOGIC OF DISCOUNT TO INSERT INTO DB
+                notifyUser(orderId, "Your order is ready!");
             }
             
             return "Order status updated successfully";
@@ -57,7 +59,7 @@ public class OrderController {
     }
 
     
-    private void notifyUser(int orderId) {
+    private void notifyUser(int orderId, String message) {
         try {
             Order order = server.dbController.getOrderById(orderId);
             String username = order.getUsername();
@@ -66,7 +68,7 @@ public class OrderController {
             if (client != null)
             	server.sendMessageToClient(EnumClientOperations.NOTIFICATION, client, (Object) ("Your order " + orderId + " is ready!"));
             else 
-                server.dbController.savePendingNotification(username, orderId, "Your order is ready!");
+                server.dbController.savePendingNotification(username, orderId, message);
         } catch (SQLException e) {
             e.printStackTrace();
         }

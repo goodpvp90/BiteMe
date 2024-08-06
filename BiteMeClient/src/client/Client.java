@@ -183,6 +183,12 @@ public class Client extends AbstractClient {
             case UPDATE_ORDER_STATUS:
             	//HERE U GET RESPONSE IF UPDATE STATUS IS SUCCESFULL
             	break;
+            case SET_DISCOUNT_AMOUNT: //NEED TO DECIDE IF TO UPDATE RESPONSE, NOW NOT USED.
+            	break;
+            case GET_DISCOUNT_AMOUNT: 
+            	double amount = (double)message[1];
+            	//HERE YOU RECEIVE DISCOUNT AMOUNT FOR USER , DO WHATEVER U WANT HERE.
+            	break;
 			case NONE:
 				System.out.println("no operation was received");
 				break;
@@ -270,6 +276,18 @@ public class Client extends AbstractClient {
 	
 	public void getOrdersReport(OrdersReport report) {
 		sendMessageToServer(new Object[] { EnumServerOperations.ORDERS_REPORT, report });
+	}
+	
+	
+	//THIS FUNCTION TO GET DISCOUNT AMOUNT FOR SPECIFIC USER.
+	public void getDiscountAmount(String username) {
+		sendMessageToServer(new Object[] { EnumServerOperations.GET_DISCOUNT_AMOUNT, username });
+	}
+	
+	
+	//USE THIS TO SEND TO US NEW AMOUNT, THE MATHEMATICAL LOGIC YOU DO.
+	public void setDiscountAmount(String username) {
+		sendMessageToServer(new Object[] { EnumServerOperations.SET_DISCOUNT_AMOUNT, username });
 	}
 	
 	//USE IT TO UPDATE ORDER STATUS, IN PROGESS, READY , COMPLETED .....

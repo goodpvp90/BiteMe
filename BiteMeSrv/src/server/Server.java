@@ -119,6 +119,17 @@ public class Server extends AbstractServer {
             case PERFORMANCE_REPORT:
             	reportController.getPerformanceReport((PerformanceReport)message[1], client);
             	break;
+            case GET_DISCOUNT_AMOUNT:
+            	String username = (String)message[1];
+            	double amount = dbController.getCurrentDiscountAmount(username);
+            	sendMessageToClient(EnumClientOperations.GET_DISCOUNT_AMOUNT, client, amount);
+            	break;
+            case SET_DISCOUNT_AMOUNT:
+            	String username1 = (String)message[1];
+            	double amount1 = (double)message[2];
+            	dbController.updateDiscountAmount(username1, amount1);
+            	//MAYBE ADD RESPONSE TO CLIENT IF UPDATED SUCCESFULLY.
+            	break;
 			case NONE:
 				System.out.println("no operation was recived");
 				break;
