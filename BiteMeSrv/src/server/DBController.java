@@ -170,7 +170,7 @@ public class DBController {
 	        preparedStatement.setString(7, enumBranch.toString());
 	        preparedStatement.setString(8, type.toString());
 	        preparedStatement.setInt(9, 0);  // isLogged defaults to 0 (false)
-
+	        
 	        int rowsAffected = preparedStatement.executeUpdate();
 	        return rowsAffected > 0;
 
@@ -389,6 +389,7 @@ public class DBController {
     public void createOrder(Order order, List<Dish> dishes) throws SQLException {
         String insertOrderQuery = "INSERT INTO orders (username, branch_id, order_date, order_ready_time, order_receive_time, total_price, delivery, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
         String insertDishInOrderQuery = "INSERT INTO dish_in_order (order_id, dish_id, optional, comment, dish_name) VALUES (?, ?, ?, ?, ?)";
+        String insertDeliveryQuery = "INSERT INTO delivery (order_id, City, street_and_number, receiver_name, phone_number) VALUES (?, ?, ?, ?, ?)";
 
         try {
             // Start transaction
@@ -423,6 +424,18 @@ public class DBController {
                             }
                             dishStmt.executeBatch();
                         }
+
+                        // Insert the delivery details if it's a delivery order
+                        if (order.isDelivery()) {
+                            try (PreparedStatement deliveryStmt = connection.prepareStatement(insertDeliveryQuery)) {
+                                deliveryStmt.setInt(1, orderId);
+                                deliveryStmt.setString(2, order.getCity());
+                                deliveryStmt.setString(3, order.getStreetAndNum());
+                                deliveryStmt.setString(4, order.getReceiverName());
+                                deliveryStmt.setString(5, String.valueOf(order.getPhoneNum()));
+                                deliveryStmt.executeUpdate();
+                            }
+                        }
                     } else {
                         throw new SQLException("Creating order failed, no ID obtained.");
                     }
@@ -443,6 +456,31 @@ public class DBController {
         } finally {
             // Reset auto-commit mode
             connection.setAutoCommit(true);
+        }
+    }
+    
+    
+    public User searchUsername(String username) throws SQLException {
+        String query = "SELECT * FROM users WHERE username = ?";
+        try (PreparedStatement stmt = connection.prepareStatement(query)) {
+            stmt.setString(1, username);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    String firstName = rs.getString("firstname");
+                    String lastName = rs.getString("lastname");
+                    String email = rs.getString("email");
+                    String phone = rs.getString("phone");
+                    String dbUsername = rs.getString("username");
+                    String password = rs.getString("password");
+                    boolean isLogged = rs.getBoolean("isLogged");
+                    EnumType type = EnumType.valueOf(rs.getString("type"));
+                    EnumBranch homeBranch = rs.getString("home_branch") != null ? EnumBranch.valueOf(rs.getString("home_branch")) : null;
+
+                    return new User(firstName, lastName, email, phone, homeBranch, dbUsername, password, isLogged, type);
+                } else {
+                    return null; // User not found
+                }
+            }
         }
     }
     

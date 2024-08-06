@@ -1,5 +1,6 @@
 	package server;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import common.EnumBranch;
 import common.EnumClientOperations;
@@ -55,6 +56,20 @@ public class UserController {
         } else {
             server.sendMessageToClient(EnumClientOperations.LOG_OUT, client, "Failed to log out user.");
         }
+    }
+    
+    public void checkUserForCreation(ConnectionToClient client, String username) {
+    	try {
+			Object result = server.dbController.searchUsername(username);
+			if (result instanceof User)
+				server.sendMessageToClient(EnumClientOperations.CHECK_USER, client, result);
+			else {
+				server.sendMessageToClient(EnumClientOperations.CHECK_USER, client, false);
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
     }
     
     public void createAccount(ConnectionToClient client, Object[] message) {

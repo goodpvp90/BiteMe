@@ -127,6 +127,31 @@ public class Order implements Serializable {
 	public void setStatus(EnumOrderStatus status) {
 		this.status = status;
 	}
+	
+	public String getCity() {
+	    return City;
+	}
+
+	public String getStreetAndNum() {
+	    return StreenAndNum;
+	}
+
+	public int getPhoneNum() {
+	    return phoneNum;
+	}
+
+	public String getReceiverName() {
+	    return receiverName;
+	}
+
+	public boolean isEarly() {
+	    return isEarly;
+	}
+
+	public Timestamp getOrderReadyRequestTime() {
+	    return OrderReadyRequestTime;
+	}
+
     
     
 
