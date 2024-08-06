@@ -339,9 +339,8 @@ public class DBController {
             stmt.setString(1, username);
             try (ResultSet rs = stmt.executeQuery()) {
                 while (rs.next()) {
-                    Order order = new Order(rs.getInt("order_id"), rs.getString("username"), rs.getInt("branch_id"),
-                            rs.getTimestamp("order_date"), rs.getTimestamp("order_ready_time"), rs.getTimestamp("order_receive_time"), rs.getDouble("total_price"), rs.getBoolean("delivery"),EnumOrderStatus.valueOf(rs.getString("home_branch")));
-
+                    Order order = new Order(rs.getString("username"), rs.getInt("branch_id"),
+                            rs.getTimestamp("order_date"), rs.getTimestamp("order_request_time"), rs.getDouble("total_price"), rs.getBoolean("delivery"));
 
                     orders.add(order);
                 }
@@ -389,7 +388,7 @@ public class DBController {
     
     public void createOrder(Order order, List<DishInOrder> dishesInOrder) throws SQLException {
         String insertOrderQuery = "INSERT INTO orders (username, branch_id, order_date, order_ready_time, order_receive_time, total_price, delivery, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
-        String insertDishInOrderQuery = "INSERT INTO dish_in_order (order_id, dish_id, quantity) VALUES (?, ?, ?)";
+        String insertDishInOrderQuery = "INSERT INTO dish_in_order (order_id, dish_id, optional, comment) VALUES (?, ?, ?, ?)";
 
         try {
             // Start transaction
@@ -418,6 +417,7 @@ public class DBController {
                                 dishStmt.setInt(1, orderId);
                                 dishStmt.setInt(2, dishInOrder.getDish().getDishId());
                                 dishStmt.setString(3, dishInOrder.getComment());
+                                dishStmt.setString(4, dishInOrder.getOptionalPick());
                                 dishStmt.addBatch();
                             }
                             dishStmt.executeBatch();
