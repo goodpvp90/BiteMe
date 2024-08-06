@@ -16,21 +16,29 @@ public abstract class Dish implements Serializable {
     private int menu_id; // Field to associate with the menu
     private String comments;//OFEK-------------------------
     protected ArrayList<String> optionals;//OFEK-------------------------
-    private String optionalPick;//OFEK-------------------------
+    private boolean isGrill;
     
     // Default constructor
     public Dish() {}
 
     // Parameterized constructor
-    public Dish(String dishName, double price, int menuId) {
+    public Dish(String dishName, double price, int menuId, boolean isGrill) {
         this.dishName = dishName;
         this.price = price;
         this.menu_id = menuId; // Initialize the menu_id
         this.comments = "Add Comment Here";//OFEK-------------------------
-        this.optionalPick ="";//OFEK-------------------------
+		this.isGrill = isGrill;
     }
-    
-    // Getter and setter for dishId
+
+    public boolean isGrill() {
+		return isGrill;
+	}
+
+	public void setGrill(boolean isGrill) {
+		this.isGrill = isGrill;
+	}
+
+	// Getter and setter for dishId
     public int getDishId() {
         return dishId;
     }
@@ -82,6 +90,7 @@ public abstract class Dish implements Serializable {
                ", dishType=" + dishType +
                ", dishName='" + dishName + '\'' +
                ", price=" + price +
+               ", isGrill=" + isGrill +
                ", menuId=" + menu_id +
                '}';
     }
@@ -99,15 +108,6 @@ public abstract class Dish implements Serializable {
     public ArrayList<String> getOptionals() {
         return optionals;
     }
-    //OFEK-------------------------
-    public void setOptionalPick(String optionalPick)
-    {
-    	this.optionalPick = optionalPick;
-    }
-    //OFEK-------------------------	
-    public String getOptionalPick()
-    {
-    	return optionalPick;
-    }
+
     
 }

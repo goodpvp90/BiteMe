@@ -45,7 +45,10 @@ public class Server extends AbstractServer {
     public void sendMessageToClient(EnumClientOperations op, ConnectionToClient client, Object msg) {
         try {
             Object message = new Object[]{op, msg};
+            System.out.println(op.toString());
+            System.out.println("SENDING TO CLIENT1");
             client.sendToClient(message);
+            System.out.println("SENDING TO CLIENT2");
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -84,7 +87,7 @@ public class Server extends AbstractServer {
                 boolean deleteResult = orderController.deleteDish(dishO);
                 sendMessageToClient(EnumClientOperations.DELETE_DISH, client, deleteResult);
                 break;
-            case UPDATE_ORDER:
+            case UPDATE_ORDER_STATUS:
                 int orderId = (int) message[1];
                 EnumOrderStatus newStatus = (EnumOrderStatus) message[2];
                 orderController.updateOrderStatus(orderId, newStatus);
@@ -115,6 +118,17 @@ public class Server extends AbstractServer {
             	break;
             case PERFORMANCE_REPORT:
             	reportController.getPerformanceReport((PerformanceReport)message[1], client);
+            	break;
+            case GET_DISCOUNT_AMOUNT:
+            	String username = (String)message[1];
+            	double amount = dbController.getCurrentDiscountAmount(username);
+            	sendMessageToClient(EnumClientOperations.GET_DISCOUNT_AMOUNT, client, amount);
+            	break;
+            case SET_DISCOUNT_AMOUNT:
+            	String username1 = (String)message[1];
+            	double amount1 = (double)message[2];
+            	dbController.updateDiscountAmount(username1, amount1);
+            	//MAYBE ADD RESPONSE TO CLIENT IF UPDATED SUCCESFULLY.
             	break;
 			case NONE:
 				System.out.println("no operation was recived");

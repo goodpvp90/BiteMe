@@ -190,8 +190,6 @@ public class CustomerOrderCreation {
     		return Location.NORTH;
     	}
     	
-    }
-    
     //Set the default home branch of the viewer as a default selected branch when ordering
     private Location UserHomeBranchToRestaurantBranch(User user)
     {
@@ -272,6 +270,7 @@ public class CustomerOrderCreation {
     	int dishId = tempDish.getDishId();
     	boolean isGrill = tempDish.isGrill();
     	String dishOptPick = tempDish.getOptionalPick();
+    	boolean isGrill = tempDish.isGrill();
     	switch(tempDish.getDishType().toString())
     	{
     	case "SALAD":   

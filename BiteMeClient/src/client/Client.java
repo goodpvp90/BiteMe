@@ -13,6 +13,7 @@ import common.Dish;
 import common.DishInOrder;
 import common.EnumClientOperations;
 import common.EnumDish;
+import common.EnumOrderStatus;
 import common.EnumServerOperations;
 import common.IncomeReport;
 import common.MonthlyReport;
@@ -22,7 +23,6 @@ import common.PerformanceReport;
 import common.User;
 import javafx.application.Platform;
 import ClientGUI.ClientLoginController;
-import ClientGUI.ZProtoClientController;
 import ClientGUI.CustomerOrderCreation;
 import ClientGUI.ReportsPageController;
 import common.Dish;
@@ -32,7 +32,6 @@ public class Client extends AbstractClient {
 	final public static int DEFAULT_PORT = 8080;
 	private static Client instance;
 	// Controller for Client GUI functionality
-	private ZProtoClientController clientController;
 	private ClientLoginController clientLoginController;
 	private CustomerOrderCreation  CustomerOrderCreation;
 	private Consumer<IncomeReport> pendingRevenueReportCallback;
@@ -83,16 +82,15 @@ public class Client extends AbstractClient {
 	public void setCustomerOrderCreation(CustomerOrderCreation CustomerOrderCreation) {
 		this.CustomerOrderCreation = CustomerOrderCreation;
 	}
-
-	// Sets the GUI controller for this client
-	public void setGuiController(ZProtoClientController clientController) {
-		this.clientController = clientController;
-	}
 	
 	//Sets the ReportsPageController.
     public void setReportsPageController(ReportsPageController controller) {
         this.reportsPageController = controller;
     }
+    
+	public void getInstanceOfClientLoginController(ClientLoginController client) {
+		this.clientLoginController = client;
+	}
 
 	// Handle messages received from the server
 	@Override
@@ -105,9 +103,6 @@ public class Client extends AbstractClient {
 			case DISPLAY_ORDERS:
 				// Handle array of orders from the server
 	            Object[] orders = (Object[]) message[1];
-	            if (clientController != null) {
-	                clientController.displayOrders(orders);
-	            }
 	            break;
 			case USER:
 					handleLogin(message);
@@ -117,15 +112,14 @@ public class Client extends AbstractClient {
 				// you receive object user if loggedout succesfully or string if not logged.
 	        	Object loggedoutuser = (Object)message[1];
 	        	//clientLoginController.updateUser(loggedoutuser);
+	        	break;
 			case INSERT_ORDER:
 				//HERE YOU RECEIVE BACK Order, and list of dishes in order.
 				Object order = (Object)message[1];
 				Object dishesinorder = (Object)message[2];
+				break;
 			case UPDATE_WELOCME:
 				// Handle non-array messages for updating the top label in clientController
-	            if (clientController != null) {
-	                clientController.updateWelcomeText("Message from server: " + message[1]);
-	            }
 	            break;
             case NOTIFICATION:
                 List<String> notifications = (List<String>) message[1];
@@ -135,57 +129,72 @@ public class Client extends AbstractClient {
                 break;
             case CREATED_ACCOUNT:
             	Object dataUser = (Object)message[1]; //You receive here user object if created
-                if (clientController != null) {
-    	        	//clientLoginController.updateUser(data);
-                }
                 break;
             case VIEW_MENU:
-            	 List<Dish> menu = (List<Dish>) message[1];
-            	 CustomerOrderCreation.tempMenuFromDB.clear();                            	 
-            	 CustomerOrderCreation.tempMenuFromDB = menu;            	  
+            	System.out.println("ENTERED VIEW");
+            	List<Dish> menu = (List<Dish>) message[1];
+            	for (Dish dish:menu) {
+            		System.out.println(dish);
+            	}
+            	System.out.println("HIGHER" + menu.size());
+           	 	CustomerOrderCreation.SettempMenuFromDB(menu);    
+           	 	for (Dish dish :  CustomerOrderCreation.tempMenuFromDB) {
+        		    String dishInfo = "Dish{" +
+        		                      "dishId=" + dish.getDishId()  +
+        		                      '}';
+        		    System.out.println(dishInfo);
+        		}
                  break;
             case ADD_DISH:
                 boolean addDishResult = (boolean) message[1];
-                if (clientController != null) {
-                    //clientController.displayAddDishResult(addDishResult);
-                }
                 break;
             case DELETE_DISH:
                 boolean deleteDishResult = (boolean) message[1];
-                if (clientController != null) {
-                    //clientController.displayDeleteDishResult(deleteDishResult);
-                }
                 break;
             case REPORT_ERROR:
             	String errorMsg = (String)message[1];
             	//TODO somthing more            	
                 if (reportsPageController != null) {
-                    reportsPageController.handleIncomeReportResponse(message[1]);
+                    reportsPageController.handleIncomeReportResponse(errorMsg);
                 }
             	break;
             case INCOME_REPORT:
                 IncomeReport receivedReport = (IncomeReport) message[1];
                 if (reportsPageController != null) {
-                    reportsPageController.handleIncomeReportResponse(message[1]);
+                    reportsPageController.handleIncomeReportResponse(receivedReport);
                 }
                 break;
             case ORDERS_REPORT:
             	OrdersReport ordersReport = (OrdersReport)message[1];
-            	//TODO do smth
-            	break;
+            	if (reportsPageController != null) {
+                    reportsPageController.handleOrdersReportResponse(ordersReport);
+                }
+                break;
             case PERFORMANCE_REPORT:
             	PerformanceReport performanceReport = (PerformanceReport)message[1];
+                if (reportsPageController != null) {
+                    reportsPageController.handlePerformanceReportResponse(performanceReport);
+                }
+            	break;
+            case UPDATE_DISH:
+            	//UPDATE EXISSTING DISH RESPONSE.
             	//TODO do smth
             	break;
+            case UPDATE_ORDER_STATUS:
+            	//HERE U GET RESPONSE IF UPDATE STATUS IS SUCCESFULL
+            	break;
+            case SET_DISCOUNT_AMOUNT: //NEED TO DECIDE IF TO UPDATE RESPONSE, NOW NOT USED.
+            	break;
+            case GET_DISCOUNT_AMOUNT: 
+            	double amount = (double)message[1];
+            	//HERE YOU RECEIVE DISCOUNT AMOUNT FOR USER , DO WHATEVER U WANT HERE.
+            	break;
 			case NONE:
-				System.out.println("no operation was recived");
+				System.out.println("no operation was received");
 				break;
 			}
 		}
 	}
-	
-	
-
 	
 	private void handleLogin(Object[] message) {
 		//SEND TO CLIENT CONTROLLER
@@ -198,12 +207,9 @@ public class Client extends AbstractClient {
             // Return as is if it's already an Object[]
             data = (Object[]) messagePart;
         }
-		System.out.println("4");
     	clientLoginController.updateUser(data);
 	}
 
-	
-	
 	// Quit the client and close the connection
 	public void quit() {
 		try {
@@ -220,7 +226,6 @@ public class Client extends AbstractClient {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-
 		// Exit the application
 		System.exit(0);
 	}
@@ -230,15 +235,7 @@ public class Client extends AbstractClient {
 		try {
 			sendToServer(msg);
 		} catch (Exception e) {
-			// Update the GUI with an error message if sending fails
-			if (clientController != null) {
-				clientController.updateWelcomeText("Failed to send message to server: " + e.getMessage());
-			}
 		}
-	}
-	
-	public void getInstanceOfClientLoginController(ClientLoginController client) {
-		this.clientLoginController = client;
 	}
 		
 	public void sendCreateAccout(User user) {
@@ -251,7 +248,6 @@ public class Client extends AbstractClient {
 		sendMessageToServer(new Object[] { EnumServerOperations.ADD_DISH, dish });
 	}
 
-	
 	public void sendDeleteDishRequest(Dish dish) {
 	    // Send a request to delete a new dish
 		sendMessageToServer(new Object[] { EnumServerOperations.DELETE_DISH, dish });
@@ -274,14 +270,30 @@ public class Client extends AbstractClient {
 		sendMessageToServer(new Object[] { EnumServerOperations.INCOME_REPORT, report });
 	}
 	
-	
-	
 	public void getPerformanceReport(PerformanceReport report) {
 		sendMessageToServer(new Object[] { EnumServerOperations.PERFORMANCE_REPORT, report });
 	}
 	
 	public void getOrdersReport(OrdersReport report) {
 		sendMessageToServer(new Object[] { EnumServerOperations.ORDERS_REPORT, report });
+	}
+	
+	
+	//THIS FUNCTION TO GET DISCOUNT AMOUNT FOR SPECIFIC USER.
+	public void getDiscountAmount(String username) {
+		sendMessageToServer(new Object[] { EnumServerOperations.GET_DISCOUNT_AMOUNT, username });
+	}
+	
+	
+	//USE THIS TO SEND TO US NEW AMOUNT, THE MATHEMATICAL LOGIC YOU DO.
+	public void setDiscountAmount(String username) {
+		sendMessageToServer(new Object[] { EnumServerOperations.SET_DISCOUNT_AMOUNT, username });
+	}
+	
+	//USE IT TO UPDATE ORDER STATUS, IN PROGESS, READY , COMPLETED .....
+	// IT HAS A LOT OF LOGIC IN BACKEND, by status we update time and etc..
+	public void updateOrderStatus(int orderId, EnumOrderStatus status) {
+		sendMessageToServer(new Object[] { EnumServerOperations.UPDATE_ORDER_STATUS, orderId, status});
 	}
 
 	// OFEK

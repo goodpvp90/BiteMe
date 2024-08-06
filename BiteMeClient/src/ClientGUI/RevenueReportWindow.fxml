@@ -2,19 +2,25 @@
 
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.Button?>
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.shape.Rectangle?>
 
-<VBox alignment="CENTER" spacing="20" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ClientGUI.RevenueReportWindowController"
-      prefWidth="400" prefHeight="300" style="-fx-background-color: #f0f0f0;">
-    <padding>
-        <Insets top="20" right="20" bottom="20" left="20"/>
-    </padding>
-    <Label text="Revenue Report" style="-fx-font-size: 24; -fx-font-weight: bold;"/>
-    <Label fx:id="branchLabel" style="-fx-font-size: 16;"/>
-    <Label fx:id="monthYearLabel" style="-fx-font-size: 16;"/>
-    <TextField fx:id="revenueField" editable="false" style="-fx-font-size: 18; -fx-alignment: CENTER;"/>
-    <Label fx:id="errorLabel" textFill="RED" wrapText="true" visible="false" style="-fx-font-size: 14;"/>
-    <Button text="Close" onAction="#handleClose" style="-fx-font-size: 14;"/>
-</VBox>
+<StackPane xmlns:fx="http://javafx.com/fxml/1" fx:controller="ClientGUI.RevenueReportController">
+    <Rectangle width="450" height="400" arcWidth="20.0" arcHeight="20.0" fill="#f0f0f0"/>
+    <VBox alignment="CENTER" spacing="25" prefWidth="450" prefHeight="400">
+        <padding>
+            <Insets top="30" right="30" bottom="30" left="30"/>
+        </padding>
+        <Label text="Revenue Report" style="-fx-font-size: 28; -fx-font-weight: bold; -fx-text-fill: #2c3e50;"/>
+        <Label fx:id="branchLabel" style="-fx-font-size: 18; -fx-text-fill: #34495e;"/>
+        <Label fx:id="monthYearLabel" style="-fx-font-size: 18; -fx-text-fill: #34495e;"/>
+        <StackPane>
+            <Rectangle width="300" height="60" fill="#ecf0f1" arcWidth="10" arcHeight="10"/>
+            <Label fx:id="revenueLabel" style="-fx-font-size: 24; -fx-font-weight: bold; -fx-text-fill: #27ae60;"/>
+        </StackPane>
+        <Label fx:id="errorLabel" textFill="#e74c3c" wrapText="true" visible="false" style="-fx-font-size: 16;"/>
+        <Button text="Close" onAction="#handleClose" style="-fx-font-size: 16; -fx-background-color: #3498db; -fx-text-fill: white; -fx-padding: 10 20; -fx-background-radius: 5;"/>
+    </VBox>
+</StackPane>

@@ -12,6 +12,8 @@ import java.io.IOException;
 import client.Client;
 import common.EnumType;
 import common.IncomeReport;
+import common.OrdersReport;
+import common.PerformanceReport;
 import common.User;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -40,7 +42,6 @@ public class ReportsPageController {
     private EnumType userType;
     private User user;
     private boolean isRegistered;
-    private Stage revenueReportStage;
 
     public void initialize() {
         client = Client.getInstance();
@@ -113,16 +114,9 @@ public class ReportsPageController {
 
     @FXML
     private void handleRevenueReport(ActionEvent event) {
-        // If a window is already open, bring it to front instead of opening a new one
-        if (revenueReportStage != null && revenueReportStage.isShowing()) {
-            revenueReportStage.toFront();
-            return;
-        }
         String branch = branchDropdown.getValue(); // This should be pre-set and disabled for BM
         String monthStr = monthDropdown.getValue();
         String yearStr = yearDropdown.getValue();
-     
-        
         // Clear any previous error messages
         clearErrorMessage();
         if (monthStr == null || yearStr == null || monthStr.isEmpty() || yearStr.isEmpty()) {
@@ -175,27 +169,11 @@ public class ReportsPageController {
     }
     
     private void openRevenueReportWindow(IncomeReport report) {
-        if (revenueReportStage != null && revenueReportStage.isShowing()) {
-            revenueReportStage.toFront();
-            return;
-        }
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("RevenueReportWindow.fxml"));
-            Parent root = loader.load();
-            
-            RevenueReportWindowController controller = loader.getController();
-            controller.setReportData(report);
-            controller.setReportsPageController(this);
-
-            Stage stage = new Stage();
-            stage.setScene(new Scene(root));
-            stage.setTitle("Revenue Report");
-            
-            // Re-enable the button when the window is closed
-            stage.setOnHidden(e -> enableRevenueReportButton());
-
-            stage.show();
-        } catch (IOException e) {
+            RevenueReportUI revenueReportUI = new RevenueReportUI();
+            revenueReportUI.setReportData(report, this);
+            revenueReportUI.start(new Stage());
+        } catch (Exception e) {
             e.printStackTrace();
             showErrorMessage("An error occurred while opening the Revenue Report window.");
             enableRevenueReportButton();
@@ -209,14 +187,132 @@ public class ReportsPageController {
 
     @FXML
     private void handlePerformanceReport(ActionEvent event) {
-        // Implement logic for generating and displaying the Performance Report
-        System.out.println("Performance Report button clicked");
+        String branch = branchDropdown.getValue();
+        String monthStr = monthDropdown.getValue();
+        String yearStr = yearDropdown.getValue();
+        
+        clearErrorMessage();
+        if (monthStr == null || yearStr == null || monthStr.isEmpty() || yearStr.isEmpty()) {
+            showErrorMessage("Please select both a month and a year before generating the report.");
+            return;
+        }
+
+        if (branch == null && user.getType() == EnumType.BRANCH_MANAGER) {
+            branch = user.getHomeBranch().toString();
+        }
+        if (branch == null) {
+            showErrorMessage("Branch information is missing.");
+            return;
+        }
+        try {
+            int month = monthDropdown.getSelectionModel().getSelectedIndex() + 1;
+            int year = Integer.parseInt(yearStr);
+            PerformanceReport report = new PerformanceReport(common.Restaurant.Location.valueOf(branch.toUpperCase()), month, year);
+            // Don't disable the button here
+            client.getPerformanceReport(report);
+        } catch (NumberFormatException e) {
+            showErrorMessage("Invalid year format. Please enter a valid year.");
+        }
+    }
+    
+    public void handlePerformanceReportResponse(Object response) {
+        Platform.runLater(() -> {
+            if (response instanceof PerformanceReport) {
+                PerformanceReport report = (PerformanceReport) response;
+                if (report.getTotalOrders() > 0) {
+                    openPerformanceReportWindow(report);
+                    // The button will be disabled in openPerformanceReportWindow if successful
+                } else {
+                    showErrorMessage("No performance data available for the selected month and year.");
+                }
+            } else if (response instanceof String) {
+                showErrorMessage((String) response);
+            } else {
+                showErrorMessage("An unexpected error occurred while fetching the report.");
+            }
+        });
+    }
+    
+    private void openPerformanceReportWindow(PerformanceReport report) {
+        try {
+            PerformanceReportUI performanceReportUI = new PerformanceReportUI();
+            performanceReportUI.setReportData(report, this);
+            performanceReportUI.start(new Stage());
+        } catch (Exception e) {
+            e.printStackTrace();
+            showErrorMessage("An error occurred while opening the Performance Report window.");
+            performanceReportButton.setDisable(false);
+        }
+    }
+    
+    public void enablePerformanceReportButton() {
+        performanceReportButton.setDisable(false);
     }
 
     @FXML
     private void handleOrdersReport(ActionEvent event) {
-        // Implement logic for generating and displaying the Orders Report
-        System.out.println("Orders Report button clicked");
+        String branch = branchDropdown.getValue();
+        String monthStr = monthDropdown.getValue();
+        String yearStr = yearDropdown.getValue();
+        
+        clearErrorMessage();
+        if (monthStr == null || yearStr == null || monthStr.isEmpty() || yearStr.isEmpty()) {
+            showErrorMessage("Please select both a month and a year before generating the report.");
+            return;
+        }
+
+        if (branch == null && user.getType() == EnumType.BRANCH_MANAGER) {
+            branch = user.getHomeBranch().toString();
+        }
+        if (branch == null) {
+            showErrorMessage("Branch information is missing.");
+            return;
+        }
+        try {
+            int month = monthDropdown.getSelectionModel().getSelectedIndex() + 1;
+            int year = Integer.parseInt(yearStr);
+            OrdersReport report = new OrdersReport(common.Restaurant.Location.valueOf(branch.toUpperCase()), month, year);
+            ordersReportButton.setDisable(true);
+            client.getOrdersReport(report);
+        } catch (NumberFormatException e) {
+            showErrorMessage("Invalid year format. Please enter a valid year.");
+        }
+    }
+    
+    public void handleOrdersReportResponse(Object response) {
+        Platform.runLater(() -> {
+            if (response instanceof OrdersReport) {
+                OrdersReport report = (OrdersReport) response;
+                if (!report.getDishTypeAmountMap().isEmpty()) {
+                    openOrdersReportWindow(report);
+                } else {
+                    showErrorMessage("No orders data available for the selected month and year.");
+                    enableOrdersReportButton();
+                }
+            } else if (response instanceof String) {
+                showErrorMessage((String) response);
+                enableOrdersReportButton();
+            } else {
+                showErrorMessage("An unexpected error occurred while fetching the report.");
+                enableOrdersReportButton();
+            }
+        });
+    }
+    
+    private void openOrdersReportWindow(OrdersReport report) {
+        try {
+            OrdersReportUI ordersReportUI = new OrdersReportUI();
+            ordersReportUI.setReportData(report, this);
+            ordersReportUI.start(new Stage());
+        } catch (Exception e) {
+            e.printStackTrace();
+            showErrorMessage("An error occurred while opening the Orders Report window.");
+            enableOrdersReportButton();
+        }
+    }
+    
+    public void enableOrdersReportButton() {
+        ordersReportButton.setDisable(false);
     }
 
     @FXML

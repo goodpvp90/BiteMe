@@ -7,16 +7,14 @@ public class DishMainCourse extends Dish{
 
 	
 	//private ArrayList<String> optionals; NO NEED
-	private boolean isGrill;
 	
 	public DishMainCourse() {
 		super();
 	}
 
 	public DishMainCourse(String dishName,boolean isGrill, double price, int menuId) {
-		super(dishName, price, menuId);
+		super(dishName, price, menuId, isGrill);
 		this.setDishType(EnumDish.MAIN_COURSE);
-		this.isGrill = isGrill;
 		if (isGrill)
 			optionals = new ArrayList<>(Arrays.asList("Medium","Well"));
 		else

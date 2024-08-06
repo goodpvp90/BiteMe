@@ -1,6 +1,7 @@
 package server;
 
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -9,7 +10,9 @@ import java.sql.Statement;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
-
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
+import common.DailyPerformanceReport;
 import common.Dish;
 import common.DishAppetizer;
 import common.DishBeverage;
@@ -176,19 +179,157 @@ public class DBController {
 	        return false;
 	    }
 	}
+	
+	public void updateOrderStatus(int orderId, EnumOrderStatus status) throws SQLException {
+	    String checkDeliveryQuery = "SELECT delivery FROM orders WHERE order_id = ?";
+	    String updateStatusQuery = "UPDATE orders SET status = ? WHERE order_id = ?";
+	    String updateReceiveTimeQuery = "UPDATE orders SET order_receive_time = ? WHERE order_id = ?";
+	    
+	    try (PreparedStatement checkStmt = connection.prepareStatement(checkDeliveryQuery)) {
+	        checkStmt.setInt(1, orderId);
+	        try (ResultSet rs = checkStmt.executeQuery()) {
+	            if (rs.next()) {
+	                int delivery = rs.getInt("delivery");
+	                
+	                try (PreparedStatement updateStmt = connection.prepareStatement(updateStatusQuery)) {
+	                    updateStmt.setString(1, status.toString());
+	                    updateStmt.setInt(2, orderId);
+	                    updateStmt.executeUpdate();
+	                }
+	                
+	                if (delivery == 0 && status == EnumOrderStatus.READY) {
+	                    try (PreparedStatement updateTimeStmt = connection.prepareStatement(updateReceiveTimeQuery)) {
+	                        updateTimeStmt.setTimestamp(1, new Timestamp(System.currentTimeMillis()));
+	                        updateTimeStmt.setInt(2, orderId);
+	                        updateTimeStmt.executeUpdate();
+	                    }
+	                }
+	            }
+	        }
+	    }
+	}
 
-    
-    // Update order receive time, used when user accepts he recied the order
-    public void updateOrderReceiveTime(int orderId, Timestamp orderReceiveTime){
-        String query = "UPDATE orders SET order_receive_time = ? WHERE order_id = ?";
-        try (PreparedStatement stmt = connection.prepareStatement(query)) {
-            stmt.setTimestamp(1, orderReceiveTime);
-            stmt.setInt(2, orderId);
-            stmt.executeUpdate();
-        }catch(SQLException e){
-            e.printStackTrace();
-        }
-    }
+	
+	// Update order start time when worker accepts the order.
+	public void updateOrderStartTime(int orderId) {
+	    String selectQuery = "SELECT order_ready_time FROM orders WHERE order_id = ?";
+	    String updateQuery = "UPDATE orders SET order_ready_time = ? WHERE order_id = ?";
+	    
+	    try (PreparedStatement selectStmt = connection.prepareStatement(selectQuery);
+	         PreparedStatement updateStmt = connection.prepareStatement(updateQuery)) {
+	        
+	        // Check the current order_ready_time
+	        selectStmt.setInt(1, orderId);
+	        ResultSet rs = selectStmt.executeQuery();
+	        
+	        if (rs.next()) {
+	            Timestamp currentOrderReadyTime = rs.getTimestamp("order_ready_time");
+	            Timestamp newOrderReadyTime;
+	            
+	            if (currentOrderReadyTime == null) {
+	                // If order_ready_time is null, set it to the current time plus 1 hour
+	                LocalDateTime nowPlusOneHour = LocalDateTime.now().plus(1, ChronoUnit.HOURS);
+	                newOrderReadyTime = Timestamp.valueOf(nowPlusOneHour);
+	            } else {
+	                // If order_ready_time is not null, add 20 minutes to the existing time
+	                LocalDateTime updatedTime = currentOrderReadyTime.toLocalDateTime().plus(20, ChronoUnit.MINUTES);
+	                newOrderReadyTime = Timestamp.valueOf(updatedTime);
+	            }
+	            
+	            // Set the new order_ready_time and orderId, then execute the update statement
+	            updateStmt.setTimestamp(1, newOrderReadyTime);
+	            updateStmt.setInt(2, orderId);
+	            updateStmt.executeUpdate();
+	        }
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    }
+	}
+	
+	//GET DISCOUNT FOR USERNAME
+	public double getCurrentDiscountAmount(String username) {
+	    String query = "SELECT discount_amount FROM discounts WHERE username = ?";
+	    try (PreparedStatement stmt = connection.prepareStatement(query)) {
+	        stmt.setString(1, username);
+	        ResultSet rs = stmt.executeQuery();
+	        if (rs.next()) {
+	            return rs.getDouble("discount_amount");
+	        }
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    }
+	    return 0.0;
+	}
+	
+	//UPDATE NEW DISCOUNT AMOUNT FOR USER
+	public void updateDiscountAmount(String username, double discountAmount) {
+	    String query = "INSERT INTO discounts (username, discount_amount) VALUES (?, ?) ON DUPLICATE KEY UPDATE discount_amount = ?";
+	    try (PreparedStatement stmt = connection.prepareStatement(query)) {
+	        stmt.setString(1, username);
+	        stmt.setDouble(2, discountAmount);
+	        stmt.setDouble(3, discountAmount);
+	        stmt.executeUpdate();
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    }
+	}
+	
+	
+	// Update order receive time, used when user accepts he received the order and insert the correct discount.
+	public void updateOrderReceiveTimeAndInsertDiscount(int orderId, Timestamp orderReceiveTime) {
+	    String selectQuery = "SELECT order_ready_time, total_price, username FROM orders WHERE order_id = ?";
+	    String updateOrderQuery = "UPDATE orders SET order_receive_time = ? WHERE order_id = ?";
+	    String getDiscountQuery = "SELECT discount_amount FROM discounts WHERE username = ?";
+	    String updateDiscountQuery = "INSERT INTO discounts (username, discount_amount) VALUES (?, ?) ON DUPLICATE KEY UPDATE discount_amount = ?";
+	    
+	    try (PreparedStatement selectStmt = connection.prepareStatement(selectQuery);
+	         PreparedStatement updateOrderStmt = connection.prepareStatement(updateOrderQuery);
+	         PreparedStatement getDiscountStmt = connection.prepareStatement(getDiscountQuery);
+	         PreparedStatement updateDiscountStmt = connection.prepareStatement(updateDiscountQuery)) {
+	        
+	        // Select the current order details
+	        selectStmt.setInt(1, orderId);
+	        ResultSet rs = selectStmt.executeQuery();
+	        
+	        if (rs.next()) {
+	            Timestamp orderReadyTime = rs.getTimestamp("order_ready_time");
+	            double totalPrice = rs.getDouble("total_price");
+	            String username = rs.getString("username");
+	            
+	            // Update the order receive time
+	            updateOrderStmt.setTimestamp(1, orderReceiveTime);
+	            updateOrderStmt.setInt(2, orderId);
+	            updateOrderStmt.executeUpdate();
+	            
+	            if (orderReadyTime != null && orderReceiveTime != null && orderReceiveTime.after(orderReadyTime)) {
+	                // Calculate the discount amount
+	                double newDiscountAmount = totalPrice * 0.50;
+	                
+	                // Get the current discount amount
+	                double currentDiscountAmount = 0.0;
+	                getDiscountStmt.setString(1, username);
+	                ResultSet discountRs = getDiscountStmt.executeQuery();
+	                if (discountRs.next()) {
+	                    currentDiscountAmount = discountRs.getDouble("discount_amount");
+	                }
+	                
+	                // Calculate the total discount amount
+	                double totalDiscountAmount = currentDiscountAmount + newDiscountAmount;
+	                
+	                // Update the discount table
+	                updateDiscountStmt.setString(1, username);
+	                updateDiscountStmt.setDouble(2, totalDiscountAmount);
+	                updateDiscountStmt.setDouble(3, totalDiscountAmount);
+	                updateDiscountStmt.executeUpdate();
+	            }
+	        }
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    }
+	}
+
+
+
     
     // Get orders for a specific username
     public List<Order> getOrdersByUsername(String username) throws SQLException {
@@ -198,8 +339,9 @@ public class DBController {
             stmt.setString(1, username);
             try (ResultSet rs = stmt.executeQuery()) {
                 while (rs.next()) {
-                    Order order = new Order(rs.getInt("order_id"), rs.getString("username"), rs.getInt("branch_id"),
-                            rs.getTimestamp("order_date"), rs.getTimestamp("order_request_time"), rs.getTimestamp("order_receive_time"), rs.getDouble("total_price"), rs.getBoolean("delivery"),EnumOrderStatus.valueOf(rs.getString("home_branch")));
+                    Order order = new Order(rs.getString("username"), rs.getInt("branch_id"),
+                            rs.getTimestamp("order_date"), rs.getTimestamp("order_request_time"), rs.getDouble("total_price"), rs.getBoolean("delivery"));
+
                     orders.add(order);
                 }
             }
@@ -222,18 +364,19 @@ public class DBController {
             statement.setInt(1, branchId);
             try (ResultSet resultSet = statement.executeQuery()) {
                 while (resultSet.next()) {
-                    int orderId = resultSet.getInt("order_id");
+                    //int orderId = resultSet.getInt("order_id");
                     String username = resultSet.getString("username");
                     Timestamp orderDate = resultSet.getTimestamp("order_date"); // Adjust the type if necessary
+
                     Timestamp orderRequestTime = resultSet.getTimestamp("order_request_time"); // Adjust the type if necessary
-                    Timestamp orderReceiveTime = resultSet.getTimestamp("order_receive_time"); // Adjust the type if necessary
+
                     double totalPrice = resultSet.getDouble("total_price");
                     boolean delivery = resultSet.getBoolean("delivery");
-                    EnumOrderStatus status = EnumOrderStatus.valueOf(resultSet.getString("status"));
+                    //EnumOrderStatus status = EnumOrderStatus.valueOf(resultSet.getString("status"));
                    
 
                     // Create and add the Order object to the list
-                    Order order = new Order(orderId, username, branchId, orderDate, orderRequestTime, orderReceiveTime, totalPrice, delivery, status);
+                    Order order = new Order(username, branchId, orderDate, orderRequestTime, totalPrice, delivery);
                     pendingOrders.add(order);
                 }
             }
@@ -241,9 +384,11 @@ public class DBController {
         return pendingOrders;
     }
     
+    
+    
     public void createOrder(Order order, List<DishInOrder> dishesInOrder) throws SQLException {
-        String insertOrderQuery = "INSERT INTO orders (username, branch_id, order_date, order_request_time, order_receive_time, total_price, delivery, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
-        String insertDishInOrderQuery = "INSERT INTO dish_in_order (order_id, dish_id, quantity) VALUES (?, ?, ?)";
+        String insertOrderQuery = "INSERT INTO orders (username, branch_id, order_date, order_ready_time, order_receive_time, total_price, delivery, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        String insertDishInOrderQuery = "INSERT INTO dish_in_order (order_id, dish_id, optional, comment) VALUES (?, ?, ?, ?)";
 
         try {
             // Start transaction
@@ -272,6 +417,7 @@ public class DBController {
                                 dishStmt.setInt(1, orderId);
                                 dishStmt.setInt(2, dishInOrder.getDish().getDishId());
                                 dishStmt.setString(3, dishInOrder.getComment());
+                                dishStmt.setString(4, dishInOrder.getOptionalPick());
                                 dishStmt.addBatch();
                             }
                             dishStmt.executeBatch();
@@ -343,23 +489,24 @@ public class DBController {
                 String dishName = rs.getString("dish_name");
                 double price = rs.getDouble("price");
                 int menuId = rs.getInt("menu_id");
+                boolean isGrill = rs.getBoolean("is_grill");
                 EnumDish dishType = EnumDish.valueOf(rs.getString("dish_type"));
                 Dish dish = null;
                 switch(dishType) {
                 case BEVERAGE:
-                	dish = new DishBeverage(dishName, price, menuId);
+                	dish = new DishBeverage(dishName,isGrill, price, menuId);
                 	break;
                 case SALAD:
-                	dish = new DishSalad(dishName, price, menuId);
+                	dish = new DishSalad(dishName,isGrill, price, menuId);
                 	break;
                 case APPETIZER:
-                	dish = new DishAppetizer(dishName, price, menuId);
+                	dish = new DishAppetizer(dishName,isGrill, price, menuId);
                 	break;
                 case DESSERT:
-                	dish = new DishDessert(dishName, price, menuId);
+                	dish = new DishDessert(dishName,isGrill, price, menuId);
                 	break;
                 case MAIN_COURSE:
-                	dish = new DishMainCourse(dishName,false, price, menuId);        
+                	dish = new DishMainCourse(dishName,isGrill, price, menuId);        
                 	break;
                 }
                 return dish;
@@ -369,14 +516,7 @@ public class DBController {
 		return null;
     }
 
-    public void updateOrderStatus(int orderId, EnumOrderStatus status) throws SQLException {
-        String query = "UPDATE orders SET status = ? WHERE order_id = ?";
-        try (PreparedStatement stmt = connection.prepareStatement(query)) {
-            stmt.setString(1, status.toString());
-            stmt.setInt(2, orderId);
-            stmt.executeUpdate();
-        }
-    }
+
     
     /**
      * Adds a new dish to the database. Before adding, it checks if a dish with
@@ -392,12 +532,13 @@ public class DBController {
             return false;
         }
 
-        String insertSql = "INSERT INTO dishes (menu_id, dish_type, dish_name, price) VALUES (?, ?, ?, ?)";
+        String insertSql = "INSERT INTO dishes (menu_id, dish_type, dish_name, price, is_grill) VALUES (?, ?, ?, ?, ?)";
         try (PreparedStatement insertStmt = connection.prepareStatement(insertSql)) {
             insertStmt.setInt(1, dish.getMenuId());
             insertStmt.setString(2, dish.getDishType().toString());
             insertStmt.setString(3, dish.getDishName());
             insertStmt.setDouble(4, dish.getPrice());
+            insertStmt.setBoolean(5, dish.isGrill());
 
             int rowsAffected = insertStmt.executeUpdate();
             return rowsAffected > 0;
@@ -443,13 +584,14 @@ public class DBController {
      *         was found or if an error occurred
      */
     public boolean deleteDish(Dish dish) {
-        String sql = "DELETE FROM dishes WHERE menu_id = ? AND dish_type = ? AND dish_name = ? AND price = ?";
+        String sql = "DELETE FROM dishes WHERE menu_id = ? AND dish_type = ? AND dish_name = ? AND price = ? AND is_grill = ?";
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setInt(1, dish.getMenuId());
             preparedStatement.setString(2, dish.getDishType().toString());
             preparedStatement.setString(3, dish.getDishName());
             preparedStatement.setDouble(4, dish.getPrice());
+            preparedStatement.setBoolean(5, dish.isGrill());
 
             int rowsAffected = preparedStatement.executeUpdate();
             return rowsAffected > 0;
@@ -475,21 +617,32 @@ public class DBController {
                 EnumDish dishType = EnumDish.valueOf(resultSet.getString("dish_type"));
                 String dishName = resultSet.getString("dish_name");
                 double price = resultSet.getDouble("price");
+                boolean isGrill = resultSet.getBoolean("is_grill");
                 switch(dishType){
                 case BEVERAGE:
-                	dishes.add(new DishBeverage(dishName, price, menuId));
+                	DishBeverage dish = new DishBeverage(dishName,isGrill, price, menuId);
+                	dish.setDishId(dishId);
+                	dishes.add(dish);
                 	break;
                 case SALAD:
-                	dishes.add(new DishSalad(dishName, price, menuId));
+                	DishSalad dishs = new DishSalad(dishName,isGrill, price, menuId);
+                	dishs.setDishId(dishId);
+                	dishes.add(dishs);
                 	break;
                 case APPETIZER:
-                	dishes.add(new DishAppetizer(dishName, price, menuId));
+                	DishAppetizer dishdi = new DishAppetizer(dishName,isGrill, price, menuId);
+                	dishdi.setDishId(dishId);
+                	dishes.add(dishdi);
                 	break;
                 case DESSERT:
-                	dishes.add(new DishDessert(dishName, price, menuId));
+                	DishDessert dishd = new DishDessert(dishName,isGrill, price, menuId);
+                	dishd.setDishId(dishId);
+                	dishes.add(dishd);
                 	break;
                 case MAIN_COURSE:
-                	dishes.add(new DishMainCourse(dishName,false, price, menuId));
+                	DishMainCourse dishm = new DishMainCourse(dishName,isGrill, price, menuId);
+                	dishm.setDishId(dishId);
+                	dishes.add(dishm);
                 	break;
                 }
             }
@@ -497,8 +650,28 @@ public class DBController {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+
         return dishes;
     }
+    
+    public boolean updateDish(Dish dish) {
+        String updateSql = "UPDATE dishes SET dish_type = ?, dish_name = ?, price = ?, is_grill = ? WHERE dish_id = ?";
+
+        try (PreparedStatement updateStmt = connection.prepareStatement(updateSql)) {
+            updateStmt.setString(2, dish.getDishType().toString());
+            updateStmt.setString(3, dish.getDishName());
+            updateStmt.setDouble(4, dish.getPrice());
+            updateStmt.setBoolean(5, dish.isGrill());
+            updateStmt.setInt(6, dish.getDishId());
+
+            int rowsAffected = updateStmt.executeUpdate();
+            return rowsAffected > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
     
     /**
      * Generates the orders report that collects the Total amount of each dish type sold for the previous month 
@@ -556,22 +729,24 @@ public class DBController {
      * If a report for the same branch and month already exists, it updates the totalOrders and ordersCompletedInTime fields.
      */
     public void generatePerformanceReport() {
-        String query = "INSERT INTO performancereport (branch_id, month, year, totalOrders, ordersCompletedInTime) " +
-                       "SELECT o.branch_id AS branch_id, MONTH(o.order_date) AS month, YEAR(o.order_date) AS year, " +
+        String query = "INSERT INTO performancereport (branch_id, totalOrders, ordersCompletedInTime, date) " +
+                       "SELECT o.branch_id AS branch_id, " +
                        "COUNT(*) AS totalOrders, " +
-                       "SUM(CASE WHEN TIMESTAMPDIFF(MINUTE, o.order_request_time, o.order_receive_time) <= 60 THEN 1 ELSE 0 END) AS ordersCompletedInTime " +
+                       "SUM(CASE WHEN o.order_receive_time <= o.order_ready_time THEN 1 ELSE 0 END) AS ordersCompletedInTime, " +
+                       "DATE(o.order_date) AS date " +
                        "FROM orders o " +
-                       "WHERE MONTH(o.order_date) = MONTH(CURRENT_DATE - INTERVAL 1 MONTH) " +
-                       "AND YEAR(o.order_date) = YEAR(CURRENT_DATE - INTERVAL 1 MONTH) " +
-                       "GROUP BY o.branch_id, MONTH(o.order_date), YEAR(o.order_date) " +
+                       "WHERE o.order_date >= DATE_FORMAT(DATE_SUB(CURDATE(), INTERVAL 1 MONTH), '%Y-%m-01') " +
+                       "AND o.order_date < DATE_FORMAT(CURDATE(), '%Y-%m-01') " +
+                       "GROUP BY o.branch_id, DATE(o.order_date) " +
                        "ON DUPLICATE KEY UPDATE totalOrders = VALUES(totalOrders), ordersCompletedInTime = VALUES(ordersCompletedInTime)";
         try (PreparedStatement pstmt = connection.prepareStatement(query)) {
-            pstmt.executeUpdate();
-            System.out.println("Monthly income report generated successfully.");
+            int rowsAffected = pstmt.executeUpdate();
+            System.out.println(rowsAffected + " rows affected. Performance report for the last month generated successfully.");
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
+
     
     /**
      * Retrieves an income report from the database for the specified restaurant, month, and year.
@@ -628,17 +803,18 @@ public class DBController {
     }
     
     /**
-     * Retrieves an performance report from the database for the specified restaurant, month, and year.
-     * If no report exists, returns a string indicating that no such report exists.
-     * If a database error occurs, returns the error message.
+     * Retrieves the performance report for a given restaurant, month, and year.
+     * This function queries the database to get all daily performance reports for the specified
+     * parameters and adds them to the provided PerformanceReport object.
      *
-     * @param report an PerformanceReport object with the restaurant, month, and year set
-     * @return the updated PerformanceReport object with the income set if found,
-     *         otherwise a string indicating that no such report exists or an error message
+     * @param report The PerformanceReport object containing the restaurant location, month, and year.
+     * @return The updated PerformanceReport object with the daily reports added, or a string
+     * indicating that no such report exists, or an error message if an exception occurs.
      */
     public Object getPerformanceReport(PerformanceReport report) {
-        String query = "SELECT totalOrders, ordersCompletedInTime FROM performancereport"+
-                "WHERE branch_id = ? AND month = ? AND year = ?";
+        String query = "SELECT totalOrders, ordersCompletedInTime, date FROM performancereport " +
+                       "WHERE branch_id = ? AND MONTH(date) = ? AND YEAR(date) = ?";
+
         try {
             PreparedStatement pstmt = connection.prepareStatement(query);
             // Set the parameters for the query
@@ -649,14 +825,19 @@ public class DBController {
 
             // Execute the query
             try (ResultSet rs = pstmt.executeQuery()) {
-                if (rs.next()) {
+                boolean reportExists = false;
+                while (rs.next()) {
                     int totalOrders = rs.getInt("totalOrders");
                     int ordersCompletedInTime = rs.getInt("ordersCompletedInTime");
-                    report.setTotalOrders(totalOrders);
-                    report.setOrdersCompletedInTime(ordersCompletedInTime);
+                    Date date = rs.getDate("date");
+
+                    DailyPerformanceReport dailyReport = new DailyPerformanceReport(date, totalOrders, ordersCompletedInTime);
+                    report.addDailyReport(dailyReport);
+                    reportExists = true;
                 }
-                else {
-                	return (Object)"no such report exists";
+
+                if (!reportExists) {
+                    return (Object)"no such report exists";
                 }
             }
         } catch (SQLException e) {
@@ -665,6 +846,7 @@ public class DBController {
         }
         return (Object)report;
     }
+
     
     /**
      * Retrieves the orders report from the database for the specified restaurant, month, and year.
@@ -741,15 +923,12 @@ public class DBController {
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
                     return new Order(
-                        rs.getInt("order_id"),
                         rs.getString("username"),
                         rs.getInt("branch_id"),
                         rs.getTimestamp("order_date"),
                         rs.getTimestamp("order_request_time"),
-                        rs.getTimestamp("order_receive_time"),
                         rs.getDouble("total_price"),
-                        rs.getBoolean("delivery"),
-                        EnumOrderStatus.valueOf(rs.getString("status"))
+                        rs.getBoolean("delivery")
                     );
                 }
             }

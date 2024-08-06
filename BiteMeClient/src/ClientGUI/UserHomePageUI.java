@@ -1,5 +1,6 @@
 package ClientGUI;
 
+import client.Client;
 import common.User;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -10,6 +11,7 @@ import javafx.stage.Stage;
 public class UserHomePageUI extends Application {
 	private User user;
 	private boolean isRegistered; 
+	private Client client;
 	
 	//Receives User information to set the right screen buttons for user 
 	//by his permissions
@@ -27,6 +29,8 @@ public class UserHomePageUI extends Application {
         controller.setUser(user, isRegistered); 
         //Handler for "X" button in the top screen
         primaryStage.setOnCloseRequest(event -> {
+        	
+			// Send logout request to the server
             event.consume(); // Prevent the window from closing immediately
             controller.closeApplication();
         });

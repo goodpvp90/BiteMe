@@ -92,30 +92,21 @@ public class UserHomePageController {
 
     }
 	
+	
+	
 	@FXML
 	private void handleLogout(ActionEvent event) {
-	    System.out.println("Logout button clicked");
-
 	    // Send logout request to the server
 	    client.userLogout(user);
 
 	    // Navigate back to the ClientLoginUI
 	    try {
-	        FXMLLoader loader = new FXMLLoader(getClass().getResource("ClientLogin.fxml"));
-	        Parent root = loader.load();
-
 	        // Get the current stage
 	        Stage stage = (Stage) logoutButton.getScene().getWindow();
-
-	        // Set the new scene
-	        Scene scene = new Scene(root);
-	        stage.setScene(scene);
+	        // Load the login scene
+	        Scene loginScene = ClientLoginUI.loadLoginScene();
+	        stage.setScene(loginScene);
 	        stage.setTitle("Client Login");
-
-	        // Get the controller and reset the client
-	        ClientLoginController loginController = loader.getController();
-	        loginController.resetClient();
-
 	        stage.show();
 	    } catch (IOException e) {
 	        e.printStackTrace();
@@ -217,14 +208,25 @@ public class UserHomePageController {
         // Implement navigation to Register User page
     }
     
+    //Updates the user to be logged off in DB.
+    public void logoutUser() {
+        if (user != null && client != null) {
+            client.userLogout(user);
+        }
+    }
+    
 	//Making Quit Button to kill thread and send message to server
-    public void closeApplication() {
-        if (client != null) {
+    public void closeApplication() 
+    {
+    	Platform.runLater(() ->
+    	{
+        if (client != null) 
+        {
             System.out.println("Closing application from UserHomePage");
+            client.userLogout(user);
             client.quit();
         }
         Platform.exit();
         System.exit(0);
-    }
-    
-}
+    });
+}}
