@@ -127,6 +127,16 @@ public class Client extends AbstractClient {
                     //DISPLAY NOTIFICATIONS FROM HERE
                 }
                 break;
+            case CHECK_USER:
+            	Object res = message[1];
+            	if (res instanceof User)
+            		//// DO HERE WHATEVER U WANT, USERNAME IS FOUND ** CHANGE THE SYSO
+            		System.out.println("DELETE ME");
+            	else {
+            		//USERNAME IS NOT FOUND, ** CHANGE THE SYSO TO WHATEVER
+            		System.out.println("DELETE ME");
+            	}
+            	break;
             case CREATED_ACCOUNT:
             	Object dataUser = (Object)message[1]; //You receive here user object if created
                 break;
@@ -236,6 +246,11 @@ public class Client extends AbstractClient {
 			sendToServer(msg);
 		} catch (Exception e) {
 		}
+	}
+	
+	public void sendSearchUser(String username) {
+	    // Send a request to create accout
+		sendMessageToServer(new Object[] { EnumServerOperations.CHECK_USER, username });
 	}
 		
 	public void sendCreateAccout(User user) {
