@@ -7,7 +7,7 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.shape.Rectangle?>
 
-<StackPane xmlns:fx="http://javafx.com/fxml/1" fx:controller="ClientGUI.RevenueReportWindowController">
+<StackPane xmlns:fx="http://javafx.com/fxml/1" fx:controller="ClientGUI.RevenueReportController">
     <Rectangle width="450" height="400" arcWidth="20.0" arcHeight="20.0" fill="#f0f0f0"/>
     <VBox alignment="CENTER" spacing="25" prefWidth="450" prefHeight="400">
         <padding>

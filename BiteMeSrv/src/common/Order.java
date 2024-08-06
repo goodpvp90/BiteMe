@@ -10,28 +10,36 @@ public class Order implements Serializable {
 	private static final long serialVersionUID = 1L;
 	private int orderId;
     private String username;
+    
+    ///////////////////////// for delivery
+    private String City;
+    private String StreenAndNum;
+    private int phoneNum;
+    private String receiverName;
+    private boolean isEarly; //if false below doesn't needed to fill 
+    private Timestamp OrderReadyRequestTime; //when the delivery time
+    ////////////////////////
+    
     private int branchId;
     private Timestamp orderDate;
     private Timestamp orderRequestTime;
     private Timestamp orderReceiveTime;
     private Timestamp orderFutureTime;
     private double totalPrice;
-    private boolean delivery;
+    private boolean delivery; ///////////////Choose supply method 0 pickup
     private EnumOrderStatus status;
 
-    public Order(int orderId, String username, int branchId, Timestamp orderDate, Timestamp orderRequestTime, Timestamp orderReceiveTime, double totalPrice, boolean delivery, EnumOrderStatus status) {
-        this.orderId = orderId;
+    public Order( String username, int branchId, Timestamp orderDate, Timestamp orderRequestTime, double totalPrice, boolean delivery) {
         this.username = username;
         this.branchId = branchId;
         this.orderDate = orderDate;
         this.orderRequestTime = orderRequestTime;
-        this.orderReceiveTime = orderReceiveTime;
         this.totalPrice = totalPrice;
         this.delivery = delivery;
-        this.setStatus(status);
-        
+        status=EnumOrderStatus.PENDING;
     }
-
+ 
+    
 	public int getOrderId() {
 		return orderId;
 	}
@@ -40,6 +48,14 @@ public class Order implements Serializable {
 		this.orderId = orderId;
 	}
 
+	
+	public boolean getIseEarly() {
+		return isEarly;
+	}
+
+	public void setIseEarly(boolean iseEarly) {
+		this.isEarly = iseEarly;
+	}
 	public String getUsername() {
 		return username;
 	}
