@@ -386,9 +386,9 @@ public class DBController {
     
     
     
-    public void createOrder(Order order, List<DishInOrder> dishesInOrder) throws SQLException {
+    public void createOrder(Order order, List<Dish> dishes) throws SQLException {
         String insertOrderQuery = "INSERT INTO orders (username, branch_id, order_date, order_ready_time, order_receive_time, total_price, delivery, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
-        String insertDishInOrderQuery = "INSERT INTO dish_in_order (order_id, dish_id, optional, comment) VALUES (?, ?, ?, ?)";
+        String insertDishInOrderQuery = "INSERT INTO dish_in_order (order_id, dish_id, optional, comment, dish_name) VALUES (?, ?, ?, ?, ?)";
 
         try {
             // Start transaction
@@ -413,11 +413,12 @@ public class DBController {
 
                         // Insert the dishes for this order
                         try (PreparedStatement dishStmt = connection.prepareStatement(insertDishInOrderQuery)) {
-                            for (DishInOrder dishInOrder : dishesInOrder) {
+                            for (Dish dishInOrder : dishes) {
                                 dishStmt.setInt(1, orderId);
-                                dishStmt.setInt(2, dishInOrder.getDish().getDishId());
-                                dishStmt.setString(3, dishInOrder.getComment());
+                                dishStmt.setInt(2, dishInOrder.getDishId());
+                                dishStmt.setString(3, dishInOrder.getComments());
                                 dishStmt.setString(4, dishInOrder.getOptionalPick());
+                                dishStmt.setString(5, dishInOrder.getDishName());
                                 dishStmt.addBatch();
                             }
                             dishStmt.executeBatch();
@@ -444,17 +445,6 @@ public class DBController {
             connection.setAutoCommit(true);
         }
     }
-
-    
-    public void addDishToOrder(DishInOrder dishinorder) throws SQLException {
-        String sql = "INSERT INTO dish_in_order (order_id, dish_id, comment) VALUES (?, ?, ?)";
-        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
-            pstmt.setInt(1, dishinorder.getOrderId());
-            pstmt.setInt(2, dishinorder.getDish().getDishId());
-            pstmt.setString(3, dishinorder.getComment());
-            pstmt.executeUpdate();
-        }
-    }
     
     public List<DishInOrder> getDishesInOrder(int orderId) {
         List<DishInOrder> dishesInOrder = new ArrayList<>();
@@ -464,13 +454,15 @@ public class DBController {
             ResultSet rs = pstmt.executeQuery();
             while (rs.next()) {
                 int dishId = rs.getInt("dish_id");
+                String optional = rs.getString("optional");
                 String comment = rs.getString("comment");
+                String dishName = rs.getString("dish_name");
                 
                 // Retrieve the Dish object based on dish_id
                 Dish dish = getDishById(dishId);
                 
                 // Create a DishInOrder object
-                DishInOrder ndish = new DishInOrder(dish, comment);
+                DishInOrder ndish = new DishInOrder(dishName, dishId, comment, optional);
                 ndish.setOrderId(orderId);
                 dishesInOrder.add(ndish);
             }

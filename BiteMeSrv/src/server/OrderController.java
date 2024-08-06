@@ -23,7 +23,7 @@ public class OrderController {
 	}
 
 	// Create a new order
-    public String createOrder(Order order, List<DishInOrder> dishesInOrder) {
+    public String createOrder(Order order, List<Dish> dishesInOrder) {
         try {
             server.dbController.createOrder(order, dishesInOrder);
             return "Order created successfully";
