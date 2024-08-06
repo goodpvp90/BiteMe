@@ -87,7 +87,7 @@ public class Server extends AbstractServer {
                 boolean deleteResult = orderController.deleteDish(dishO);
                 sendMessageToClient(EnumClientOperations.DELETE_DISH, client, deleteResult);
                 break;
-            case UPDATE_ORDER:
+            case UPDATE_ORDER_STATUS:
                 int orderId = (int) message[1];
                 EnumOrderStatus newStatus = (EnumOrderStatus) message[2];
                 orderController.updateOrderStatus(orderId, newStatus);
