@@ -219,7 +219,7 @@ public class ReportsPageController {
         Platform.runLater(() -> {
             if (response instanceof PerformanceReport) {
                 PerformanceReport report = (PerformanceReport) response;
-                if (report.getTotalOrders() > 0) {
+                if (!report.getDailyReports().isEmpty()) {
                     openPerformanceReportWindow(report);
                     // The button will be disabled in openPerformanceReportWindow if successful
                 } else {
