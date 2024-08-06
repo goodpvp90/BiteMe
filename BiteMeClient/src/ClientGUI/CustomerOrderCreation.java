@@ -156,10 +156,19 @@ public class CustomerOrderCreation {
     public void setUser(User user) {
         this.user = user;
         if (user != null) {
+        	if(ChosenItemsFromMenu.size()==0) {
             branchComboBox.setValue(UserHomeBranchToRestaurantBranch(user));
             Location homeBranch = UserHomeBranchToRestaurantBranch(user);
             branchComboBox.setValue(homeBranch);
             handleBranchSelection(); // Call to load the menu for the home branch
+        	}
+        	else {
+        		Location returnLocation = convertNumToLocation(ChosenItemsFromMenu.get(0).getMenuId());
+                branchComboBox.setValue(returnLocation);
+                ChosenItemsTableView.getItems().addAll(ChosenItemsFromMenu);
+            	client.getViewMenu(ChosenItemsFromMenu.get(0).getMenuId());
+
+        	}
         }
         else
         {   branchComboBox.setValue(Location.SOUTH); // or any default location
@@ -167,11 +176,20 @@ public class CustomerOrderCreation {
         }            
     }
     
-    public void setMenuID(int menuID)
-    {
     
-    }
-    
+    private Location convertNumToLocation(int menuID) {
+    	switch(menuID)
+    	{
+    	case 1:
+    		return Location.NORTH;
+    	case 2:
+    		return Location.CENTER;
+    	case 3:
+    		return Location.SOUTH;	
+    	default:
+    		return Location.NORTH;
+    	}
+    	
     //Set the default home branch of the viewer as a default selected branch when ordering
     private Location UserHomeBranchToRestaurantBranch(User user)
     {
@@ -250,6 +268,7 @@ public class CustomerOrderCreation {
     	double dishPrice = tempDish.getPrice();
     	int dishMenuID= tempDish.getMenuId();
     	int dishId = tempDish.getDishId();
+    	boolean isGrill = tempDish.isGrill();
     	String dishOptPick = tempDish.getOptionalPick();
     	boolean isGrill = tempDish.isGrill();
     	switch(tempDish.getDishType().toString())
@@ -283,7 +302,7 @@ public class CustomerOrderCreation {
     		tempChosenItemsFromMenu.add(dishMainC);
     		break;
     	case "APPETIZER":
-    		DishAppetizer dishApptzr = new DishAppetizer(dishName, isGrill, dishPrice, dishMenuID);
+    		DishAppetizer dishApptzr = new DishAppetizer(dishName,isGrill,dishPrice,dishMenuID);
     		dishApptzr.setOptionalPick(dishOptPick);
     		dishApptzr.setComments(updatedComment);
     		dishApptzr.setDishId(dishId);
@@ -335,7 +354,7 @@ public class CustomerOrderCreation {
 	}
 	// Goes back to the user's home page
 	@FXML
-    private void handleBackButtonAction() {						
+    private void handleBackButtonAction() {			
 		try {
         	UserHomePageUI Userapp = new UserHomePageUI(user,true);
         	Userapp.start(new Stage());

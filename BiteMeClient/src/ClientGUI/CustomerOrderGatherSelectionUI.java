@@ -11,11 +11,23 @@ import javafx.stage.Stage;
 public class CustomerOrderGatherSelectionUI extends Application {
 	private User user = null;
     private List<Dish> orders = null;
+    private boolean[] param = null;
+    private String[] contactInfo=null;
+    private Object date=null;
 	
     //added constructor
     public CustomerOrderGatherSelectionUI(User user, List<Dish> orders) {
     	this.user = user;
     	this.orders = orders;
+	}
+    ////////////////////////////////////////////////////////////////////////////////
+  //added constructor
+    public CustomerOrderGatherSelectionUI(User user, List<Dish> orders,boolean[] param, String[] contactInfo,Object date) {
+    	this.user = user;
+    	this.orders = orders;
+    	this.param = param;
+    	this.contactInfo = contactInfo;
+    	this.date = date;
 	}
     
   //added constructor
@@ -34,6 +46,11 @@ public class CustomerOrderGatherSelectionUI extends Application {
             CustomerOrderGatherSelection controller = loader.getController();
             if(user!=null) controller.setUser(user);
             if(orders!= null) controller.setDishesCount(orders);
+            //////////////////////////////////////////////////////
+            if(param!=null) controller.setBooleanParam(param);
+            if(contactInfo!=null) controller.setContactInfo(contactInfo);
+            if(date!=null) controller.setDateInfo(date);
+
             
             primaryStage.show();
         } catch (Exception e) {

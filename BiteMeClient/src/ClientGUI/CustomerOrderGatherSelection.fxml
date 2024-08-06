@@ -54,12 +54,12 @@
       <font>
          <Font size="14.0" />
       </font></Text>
-    <Text fx:id="receiverText" layoutX="54.0" layoutY="448.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Receiver name:" visible="false" />
-    <Text fx:id="phoneNumberText" layoutX="54.0" layoutY="483.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Phone number:" visible="false" />
+    <Text fx:id="receiverText" layoutX="54.0" layoutY="470.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Receiver name:" visible="false" />
+    <Text fx:id="phoneNumberText" layoutX="54.0" layoutY="505.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Phone number:" visible="false" />
     <TextField fx:id="cityAddressTextField" layoutX="169.0" layoutY="360.0" prefHeight="25.0" prefWidth="175.0" visible="false" />
     <TextField fx:id="streetAddressTextField" layoutX="169.0" layoutY="394.0" prefHeight="25.0" prefWidth="175.0" visible="false" />
-    <TextField fx:id="receiverTextField" layoutX="169.0" layoutY="431.0" prefHeight="25.0" prefWidth="175.0" visible="false" />
-    <TextField fx:id="phoneNumberTextField" layoutX="169.0" layoutY="465.0" prefHeight="25.0" prefWidth="175.0" visible="false" />
+    <TextField fx:id="receiverTextField" layoutX="169.0" layoutY="453.0" prefHeight="25.0" prefWidth="175.0" visible="false" />
+    <TextField fx:id="phoneNumberTextField" layoutX="169.0" layoutY="487.0" prefHeight="25.0" prefWidth="175.0" visible="false" />
     <Text fx:id="deliveryTypeText" layoutX="394.0" layoutY="323.0" strokeType="OUTSIDE" strokeWidth="0.0" text="2. Please choose type of delivery:" visible="false">
         <font>
             <Font name="Arial Bold" size="14.0" />
@@ -85,5 +85,10 @@
       </font>
    </Text>
    <Text fx:id="errorRobotText" fill="RED" layoutX="563.0" layoutY="347.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Error! method of delivery is still staging,&#10;please pick a different method." visible="false" />
+   <Text fx:id="receiverInfoText" layoutX="53.0" layoutY="441.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Receiver Information:" visible="false">
+      <font>
+         <Font size="14.0" />
+      </font>
+   </Text>
 
 </AnchorPane>

@@ -31,12 +31,14 @@ public class CustomerOrderCreationUI extends Application {
         
         /////set user transferred from home page////////
         CustomerOrderCreation controller = loader.getController();
-        if (user != null) {
-            controller.setUser(user);
-        }
+
         if (selectedDishes != null) {
             controller.setDishesCount(selectedDishes);
         }
+        if (user != null) {
+            controller.setUser(user);
+        }
+        
       //Handler for "X" button in the top screen
         primaryStage.setOnCloseRequest(event -> {
             event.consume(); // Prevent the window from closing immediately
