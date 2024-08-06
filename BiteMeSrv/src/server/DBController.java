@@ -1,6 +1,7 @@
 package server;
 
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -10,6 +11,7 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
+import common.DailyPerformanceReport;
 import common.Dish;
 import common.DishAppetizer;
 import common.DishBeverage;
@@ -240,8 +242,8 @@ public class DBController {
             stmt.setString(1, username);
             try (ResultSet rs = stmt.executeQuery()) {
                 while (rs.next()) {
-                    Order order = new Order(rs.getInt("order_id"), rs.getString("username"), rs.getInt("branch_id"),
-                            rs.getTimestamp("order_date"), rs.getTimestamp("order_request_time"), rs.getTimestamp("order_receive_time"), rs.getDouble("total_price"), rs.getBoolean("delivery"),EnumOrderStatus.valueOf(rs.getString("home_branch")));
+                    Order order = new Order(rs.getString("username"), rs.getInt("branch_id"),
+                            rs.getTimestamp("order_date"), rs.getTimestamp("order_request_time"), rs.getDouble("total_price"), rs.getBoolean("delivery"));
                     orders.add(order);
                 }
             }
@@ -264,18 +266,18 @@ public class DBController {
             statement.setInt(1, branchId);
             try (ResultSet resultSet = statement.executeQuery()) {
                 while (resultSet.next()) {
-                    int orderId = resultSet.getInt("order_id");
+                    //int orderId = resultSet.getInt("order_id");
                     String username = resultSet.getString("username");
                     Timestamp orderDate = resultSet.getTimestamp("order_date"); // Adjust the type if necessary
                     Timestamp orderRequestTime = resultSet.getTimestamp("order_request_time"); // Adjust the type if necessary
-                    Timestamp orderReceiveTime = resultSet.getTimestamp("order_receive_time"); // Adjust the type if necessary
+                    //Timestamp orderReceiveTime = resultSet.getTimestamp("order_receive_time"); // Adjust the type if necessary
                     double totalPrice = resultSet.getDouble("total_price");
                     boolean delivery = resultSet.getBoolean("delivery");
-                    EnumOrderStatus status = EnumOrderStatus.valueOf(resultSet.getString("status"));
+                    //EnumOrderStatus status = EnumOrderStatus.valueOf(resultSet.getString("status"));
                    
 
                     // Create and add the Order object to the list
-                    Order order = new Order(orderId, username, branchId, orderDate, orderRequestTime, orderReceiveTime, totalPrice, delivery, status);
+                    Order order = new Order(username, branchId, orderDate, orderRequestTime, totalPrice, delivery);
                     pendingOrders.add(order);
                 }
             }
@@ -625,22 +627,24 @@ public class DBController {
      * If a report for the same branch and month already exists, it updates the totalOrders and ordersCompletedInTime fields.
      */
     public void generatePerformanceReport() {
-        String query = "INSERT INTO performancereport (branch_id, month, year, totalOrders, ordersCompletedInTime) " +
-                       "SELECT o.branch_id AS branch_id, MONTH(o.order_date) AS month, YEAR(o.order_date) AS year, " +
+        String query = "INSERT INTO performancereport (branch_id, totalOrders, ordersCompletedInTime, date) " +
+                       "SELECT o.branch_id AS branch_id, " +
                        "COUNT(*) AS totalOrders, " +
-                       "SUM(CASE WHEN TIMESTAMPDIFF(MINUTE, o.order_request_time, o.order_receive_time) <= 60 THEN 1 ELSE 0 END) AS ordersCompletedInTime " +
+                       "SUM(CASE WHEN o.order_receive_time <= o.order_ready_time THEN 1 ELSE 0 END) AS ordersCompletedInTime, " +
+                       "DATE(o.order_date) AS date " +
                        "FROM orders o " +
-                       "WHERE MONTH(o.order_date) = MONTH(CURRENT_DATE - INTERVAL 1 MONTH) " +
-                       "AND YEAR(o.order_date) = YEAR(CURRENT_DATE - INTERVAL 1 MONTH) " +
-                       "GROUP BY o.branch_id, MONTH(o.order_date), YEAR(o.order_date) " +
+                       "WHERE o.order_date >= DATE_FORMAT(DATE_SUB(CURDATE(), INTERVAL 1 MONTH), '%Y-%m-01') " +
+                       "AND o.order_date < DATE_FORMAT(CURDATE(), '%Y-%m-01') " +
+                       "GROUP BY o.branch_id, DATE(o.order_date) " +
                        "ON DUPLICATE KEY UPDATE totalOrders = VALUES(totalOrders), ordersCompletedInTime = VALUES(ordersCompletedInTime)";
         try (PreparedStatement pstmt = connection.prepareStatement(query)) {
-            pstmt.executeUpdate();
-            System.out.println("Monthly income report generated successfully.");
+            int rowsAffected = pstmt.executeUpdate();
+            System.out.println(rowsAffected + " rows affected. Performance report for the last month generated successfully.");
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
+
     
     /**
      * Retrieves an income report from the database for the specified restaurant, month, and year.
@@ -697,17 +701,18 @@ public class DBController {
     }
     
     /**
-     * Retrieves an performance report from the database for the specified restaurant, month, and year.
-     * If no report exists, returns a string indicating that no such report exists.
-     * If a database error occurs, returns the error message.
+     * Retrieves the performance report for a given restaurant, month, and year.
+     * This function queries the database to get all daily performance reports for the specified
+     * parameters and adds them to the provided PerformanceReport object.
      *
-     * @param report an PerformanceReport object with the restaurant, month, and year set
-     * @return the updated PerformanceReport object with the income set if found,
-     *         otherwise a string indicating that no such report exists or an error message
+     * @param report The PerformanceReport object containing the restaurant location, month, and year.
+     * @return The updated PerformanceReport object with the daily reports added, or a string
+     * indicating that no such report exists, or an error message if an exception occurs.
      */
     public Object getPerformanceReport(PerformanceReport report) {
-        String query = "SELECT totalOrders, ordersCompletedInTime FROM performancereport "+
-                "WHERE branch_id = ? AND month = ? AND year = ?";
+        String query = "SELECT totalOrders, ordersCompletedInTime, date FROM performancereport " +
+                       "WHERE branch_id = ? AND MONTH(date) = ? AND YEAR(date) = ?";
+
         try {
             PreparedStatement pstmt = connection.prepareStatement(query);
             // Set the parameters for the query
@@ -718,14 +723,19 @@ public class DBController {
 
             // Execute the query
             try (ResultSet rs = pstmt.executeQuery()) {
-                if (rs.next()) {
+                boolean reportExists = false;
+                while (rs.next()) {
                     int totalOrders = rs.getInt("totalOrders");
                     int ordersCompletedInTime = rs.getInt("ordersCompletedInTime");
-                    report.setTotalOrders(totalOrders);
-                    report.setOrdersCompletedInTime(ordersCompletedInTime);
+                    Date date = rs.getDate("date");
+
+                    DailyPerformanceReport dailyReport = new DailyPerformanceReport(date, totalOrders, ordersCompletedInTime);
+                    report.addDailyReport(dailyReport);
+                    reportExists = true;
                 }
-                else {
-                	return (Object)"no such report exists";
+
+                if (!reportExists) {
+                    return (Object)"no such report exists";
                 }
             }
         } catch (SQLException e) {
@@ -734,6 +744,7 @@ public class DBController {
         }
         return (Object)report;
     }
+
     
     /**
      * Retrieves the orders report from the database for the specified restaurant, month, and year.
@@ -810,15 +821,12 @@ public class DBController {
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {
                     return new Order(
-                        rs.getInt("order_id"),
                         rs.getString("username"),
                         rs.getInt("branch_id"),
                         rs.getTimestamp("order_date"),
                         rs.getTimestamp("order_request_time"),
-                        rs.getTimestamp("order_receive_time"),
                         rs.getDouble("total_price"),
-                        rs.getBoolean("delivery"),
-                        EnumOrderStatus.valueOf(rs.getString("status"))
+                        rs.getBoolean("delivery")
                     );
                 }
             }
