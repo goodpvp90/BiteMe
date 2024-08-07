@@ -20,6 +20,7 @@ import common.MonthlyReport;
 import common.Order;
 import common.OrdersReport;
 import common.PerformanceReport;
+import common.QuarterlyReport;
 import common.User;
 import javafx.application.Platform;
 import ClientGUI.ClientLoginController;
@@ -189,6 +190,10 @@ public class Client extends AbstractClient {
                 if (reportsPageController != null) {
                     reportsPageController.handlePerformanceReportResponse(performanceReport);
                 }
+            case QUARTERLY_REPORT:
+            	QuarterlyReport qreport = (QuarterlyReport)message[1];
+            	//TODO do smth
+
             	break;
             case UPDATE_DISH:
             	//UPDATE EXISSTING DISH RESPONSE.
@@ -294,6 +299,10 @@ public class Client extends AbstractClient {
 	
 	public void getOrdersReport(OrdersReport report) {
 		sendMessageToServer(new Object[] { EnumServerOperations.ORDERS_REPORT, report });
+	}
+	
+	public void getQuarterlyReport(QuarterlyReport qreport) {
+		sendMessageToServer(new Object[] { EnumServerOperations.QUARTERLY_REPORT, qreport });
 	}
 	
 	
