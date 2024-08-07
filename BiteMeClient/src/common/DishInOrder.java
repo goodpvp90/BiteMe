@@ -1,6 +1,8 @@
 package common;
 
-public class DishInOrder {
+import java.io.Serializable;
+
+public class DishInOrder implements Serializable{
     private int orderId; //Check if needed, currently unused
     private String comment;
     private String optionalPick;

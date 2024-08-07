@@ -221,7 +221,8 @@ public class WorkerPendingOrders {
  // Goes back to the user's home page
  	@FXML
      private void handleBackButtonAction() {	
- 		client.sendShowPending(1);
+ 		//client.sendShowPending(1);
+ 		client.sendShowDishesInOrder(22);
 /* 		try {
          	UserHomePageUI Userapp = new UserHomePageUI(user,true);
          	Userapp.start(new Stage());

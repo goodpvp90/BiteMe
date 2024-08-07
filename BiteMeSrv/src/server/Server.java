@@ -141,6 +141,11 @@ public class Server extends AbstractServer {
             	dbController.updateDiscountAmount(username1, amount1);
             	//MAYBE ADD RESPONSE TO CLIENT IF UPDATED SUCCESFULLY.
             	break;
+            case DISHES_IN_ORDER:
+            	int orderid = (int)message[1];
+            	List<DishInOrder> dishes = orderController.getDishesInOrder(orderid);
+            	sendMessageToClient(EnumClientOperations.DISHES_IN_ORDER, client, dishes);
+            	break;
 			case NONE:
 				System.out.println("no operation was recived");
 				break;

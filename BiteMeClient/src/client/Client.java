@@ -243,6 +243,13 @@ public class Client extends AbstractClient {
             case GET_DISCOUNT_AMOUNT: 
             	customerCheckout.setCompensation((double)message[1]);	
             	break;
+            case DISHES_IN_ORDER:
+            	List<DishInOrder> dishes = (List<DishInOrder>)message[1];
+            	///////////DO WHAT EVER U WANT
+				for (DishInOrder dishin :dishes) {
+					System.out.println(dishin);
+				}
+            	break;
 			case NONE:
 				System.out.println("no operation was received");
 				break;
@@ -290,6 +297,11 @@ public class Client extends AbstractClient {
 			sendToServer(msg);
 		} catch (Exception e) {
 		}
+	}
+	
+	public void sendShowDishesInOrder(int orderid) {
+	    //GET PENDING ORDERS
+		sendMessageToServer(new Object[] { EnumServerOperations.DISHES_IN_ORDER, orderid });
 	}
 	
 	
