@@ -3,7 +3,7 @@ package ClientGUI;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
-import javafx.scene.layout.GridPane;
+import javafx.scene.layout.AnchorPane; // Changed from GridPane
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -28,8 +28,8 @@ public class ClientLoginUI extends Application {
 
     public static Scene loadLoginScene() throws IOException {
         FXMLLoader loader = new FXMLLoader(ClientLoginUI.class.getResource("ClientLogin.fxml"));
-        GridPane root = loader.load();
-        Scene scene = new Scene(root);
+        AnchorPane root = loader.load(); // Changed from GridPane to AnchorPane
+        Scene scene = new Scene(root, 700, 600); // Added explicit dimensions
         
         // Get the controller and reset the client
         ClientLoginController loginController = loader.getController();
