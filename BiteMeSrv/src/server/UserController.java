@@ -53,27 +53,38 @@ public class UserController {
     }
     
     public void checkUserForCreation(ConnectionToClient client, String username) {
-    	try {
-			Object result = server.dbController.searchUsername(username);
-			if (result instanceof User)
-				server.sendMessageToClient(EnumClientOperations.CHECK_USER, client, result);
-			else {
-				server.sendMessageToClient(EnumClientOperations.CHECK_USER, client, false); //No username found
-			}
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+        try {
+            User result = server.dbController.searchUsername(username);
+            if (result != null) {
+                server.sendMessageToClient(EnumClientOperations.CHECK_USER, client, result);
+            } else {
+                server.sendMessageToClient(EnumClientOperations.CHECK_USER, client, false); // No username found
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            server.sendMessageToClient(EnumClientOperations.CHECK_USER, client, false); // Send false in case of error
+        }
     }
     
     public void createAccount(ConnectionToClient client, Object[] message) {
-    	User user = (User)message[1];
-    	boolean result = server.dbController.createUser(user.getId(), user.getUsername(), user.getPassword(), user.getEmail(), user.getPhone(), 
-    			user.getFirstName(), user.getLastName(), user.getHomeBranch(), user.getType(), user.getCustomerType(), user.getCreditCard());
-    	if (!result)
-    		server.sendMessageToClient(EnumClientOperations.EROR,client, result);
+        User user = (User)message[1];
+        System.out.println("Im after USER after CREATEACCOUNT");
+        boolean result = false;
+        try {
+            result = server.dbController.createUser(user.getId(), user.getUsername(), user.getPassword(), user.getEmail(), user.getPhone(),
+                    user.getFirstName(), user.getLastName(), user.getHomeBranch(), user.getType(), user.getCustomerType(), user.getCreditCard());
+        } catch (Exception e) {
+            System.out.println("Exception occurred while calling createUser:");
+            e.printStackTrace();
+        }
+        System.out.println("Im after RES after CREATEACCOUNT " + " RESULT IS :" + result);
+    	if (!result) {
+    		System.out.println("Im in ERROR CREATEACCOUNT");
+    		server.sendMessageToClient(EnumClientOperations.EROR,client, result);    		
+    	}
     	else {
-    		server.sendMessageToClient(EnumClientOperations.CREATED_USER,client, (Object)user);
+    		System.out.println("IM IN CREATED ACCOUNT ENUM");
+    		server.sendMessageToClient(EnumClientOperations.CREATED_ACCOUNT,client, (Object)user);
     	}
     }
 }

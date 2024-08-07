@@ -154,13 +154,6 @@ public class UserHomePageController {
             e.printStackTrace();
         }
     }
-
-    //Different functionality for branch manager when pressed view
-    //change to the right one
-    @FXML
-    private void handleViewReportsForBranch(ActionEvent event) {
-    	
-    }
     
     @FXML
     private void handleChangeHomeBranch(ActionEvent event) {
@@ -216,6 +209,7 @@ public class UserHomePageController {
             Stage stage = (Stage) registerUserButton.getScene().getWindow();
             Scene newScene = new Scene(root);
             stage.setScene(newScene);
+            stage.setTitle("Register User");
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();

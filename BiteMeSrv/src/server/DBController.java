@@ -143,55 +143,67 @@ public class DBController {
         }
     }
 
-    //Create new user by managers
-    public boolean createUser(String id,String username, String password, String email, String phone, String firstName, String lastName, EnumBranch enumBranch, EnumType type, EnumType customerType, String creditCard) {
-        String sqlUsers = "INSERT INTO users (username, password, email, phone, firstname, lastname, home_branch, type, isLogged, id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-        String sqlCustomers = "INSERT INTO customers (username, credit_card, type_of_customer) VALUES (?, ?, ?)";
+ // Create or update user by managers
+    public boolean createUser(String id, String username, String password, String email, String phone, String firstName, String lastName, EnumBranch enumBranch, EnumType type, EnumType customerType, String creditCard) {
+    	//TODO SYSO REMOVE
+    	System.out.println("Entering createUser method");
+        String sqlUpdateUsers = "UPDATE users SET password = ?, email = ?, phone = ?, firstname = ?, lastname = ?, home_branch = ?, type = ?, id = ? WHERE username = ?";
+        String sqlInsertCustomers = "INSERT INTO customers (username, credit_card, type_of_customer) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE credit_card = VALUES(credit_card), type_of_customer = VALUES(type_of_customer)";
 
         try {
             // Start transaction
             connection.setAutoCommit(false);
+          //TODO SYSO REMOVE
+            System.out.println("Starting transaction");
+            try (PreparedStatement preparedStatementUpdateUsers = connection.prepareStatement(sqlUpdateUsers);
+                 PreparedStatement preparedStatementInsertCustomers = connection.prepareStatement(sqlInsertCustomers)) {
+            	//TODO SYSO REMOVE
+            	System.out.println("Prepared statements created");
+                // Update users table
+                preparedStatementUpdateUsers.setString(1, password);  // Ensure you hash passwords before storing them
+                preparedStatementUpdateUsers.setString(2, email);
+                preparedStatementUpdateUsers.setString(3, phone);
+                preparedStatementUpdateUsers.setString(4, firstName);
+                preparedStatementUpdateUsers.setString(5, lastName);
+                preparedStatementUpdateUsers.setString(6, enumBranch != null ? enumBranch.toString() : null);
+                //TODO Added null
+                preparedStatementUpdateUsers.setString(7, type != null ? type.toString() : null);
+                preparedStatementUpdateUsers.setString(8, id);
+                preparedStatementUpdateUsers.setString(9, username);
 
-            try (PreparedStatement preparedStatementUsers = connection.prepareStatement(sqlUsers);
-                 PreparedStatement preparedStatementCustomers = connection.prepareStatement(sqlCustomers)) {
-
-                // Insert into users table
-                preparedStatementUsers.setString(1, username);
-                preparedStatementUsers.setString(2, password);  // Ensure you hash passwords before storing them
-                preparedStatementUsers.setString(3, email);
-                preparedStatementUsers.setString(4, phone);
-                preparedStatementUsers.setString(5, firstName);
-                preparedStatementUsers.setString(6, lastName);
-                preparedStatementUsers.setString(7, enumBranch.toString());
-                preparedStatementUsers.setString(8, type.toString());
-                preparedStatementUsers.setInt(9, 0);  // isLogged defaults to 0 (false)
-                preparedStatementUsers.setString(10, id);
-
-                int rowsAffected = preparedStatementUsers.executeUpdate();
-
-                // If the user is of type CUSTOMER, insert into customers table
+                int rowsAffected = preparedStatementUpdateUsers.executeUpdate();
+              //TODO SYSO REMOVE
+                System.out.println("Users table updated. Rows affected: " + rowsAffected);
+                // If the user is of type CUSTOMER, insert or update in customers table
                 if (type == EnumType.CUSTOMER) {
-                    preparedStatementCustomers.setString(1, username);
-                    preparedStatementCustomers.setString(2, creditCard);
-                    preparedStatementCustomers.setString(3, customerType.toString());
+                    preparedStatementInsertCustomers.setString(1, username);
+                    preparedStatementInsertCustomers.setString(2, creditCard);
+                    preparedStatementInsertCustomers.setString(3, customerType.toString());
 
-                    preparedStatementCustomers.executeUpdate();
+                    preparedStatementInsertCustomers.executeUpdate();
                 }
 
                 // Commit transaction
                 connection.commit();
-
+              //TODO SYSO REMOVE
+                System.out.println("Transaction committed");
                 return rowsAffected > 0;
             } catch (SQLException e) {
                 // Rollback transaction on error
                 connection.rollback();
+              //TODO SYSO REMOVE
+                System.out.println("SQLException occurred. Rolling back transaction.");
                 e.printStackTrace();
                 return false;
             } finally {
                 // Reset auto-commit mode
                 connection.setAutoCommit(true);
+              //TODO SYSO REMOVE
+                System.out.println("Auto-commit reset to true");
             }
         } catch (SQLException e) {
+        	//TODO SYSO REMOVE
+        	System.out.println("Outer SQLException occurred");
             e.printStackTrace();
             return false;
         }
@@ -491,8 +503,26 @@ public class DBController {
                     String dbUsername = rs.getString("username");
                     String password = rs.getString("password");
                     boolean isLogged = rs.getBoolean("isLogged");
-                    EnumType type = rs.getString("type") != null ? EnumType.valueOf(rs.getString("type")) : null;
-                    EnumBranch homeBranch = rs.getString("home_branch") != null ? EnumBranch.valueOf(rs.getString("home_branch")) : null;
+                    
+                    EnumType type = null;
+                    if (rs.getString("type") != null) {
+                        try {
+                            type = EnumType.valueOf(rs.getString("type"));
+                        } catch (IllegalArgumentException e) {
+                            // Handle the case where the type value is invalid
+                            type = null;
+                        }
+                    }
+
+                    EnumBranch homeBranch = null;
+                    if (rs.getString("home_branch") != null) {
+                        try {
+                            homeBranch = EnumBranch.valueOf(rs.getString("home_branch"));
+                        } catch (IllegalArgumentException e) {
+                            // Handle the case where the home_branch value is invalid
+                            homeBranch = null;
+                        }
+                    }
 
                     return new User(firstName, lastName, email, phone, homeBranch, dbUsername, password, isLogged, type);
                 } else {
