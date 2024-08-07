@@ -36,13 +36,7 @@ public class UserController {
 			user.setLogged((boolean)details.get(7));
 			user.setType((EnumType)details.get(8));
 			
-			boolean isApproved = false;
-			if(user.getType() == EnumType.CUSTOMER) {
-				isApproved = server.dbController.checkCustomerRegistered(user);
-				server.sendMessageToClient(EnumClientOperations.USER,client, new Object[] {(Object)user, isApproved});
-			}
-			else
-				server.sendMessageToClient(EnumClientOperations.USER,client, new Object[] {(Object)user});
+			server.sendMessageToClient(EnumClientOperations.USER,client, new Object[] {(Object)user});
 		}
     }
     
@@ -64,7 +58,7 @@ public class UserController {
 			if (result instanceof User)
 				server.sendMessageToClient(EnumClientOperations.CHECK_USER, client, result);
 			else {
-				server.sendMessageToClient(EnumClientOperations.CHECK_USER, client, false);
+				server.sendMessageToClient(EnumClientOperations.CHECK_USER, client, false); //No username found
 			}
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -75,7 +69,7 @@ public class UserController {
     public void createAccount(ConnectionToClient client, Object[] message) {
     	User user = (User)message[1];
     	boolean result = server.dbController.createUser(user.getUsername(), user.getPassword(), user.getEmail(), user.getPhone(), 
-    			user.getFirstName(), user.getLastName(), user.getHomeBranch(), user.getType());
+    			user.getFirstName(), user.getLastName(), user.getHomeBranch(), user.getType(), user.getCustomerType(), user.getCreditCard());
     	if (!result)
     		server.sendMessageToClient(EnumClientOperations.EROR,client, result);
     	else {

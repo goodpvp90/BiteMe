@@ -5,5 +5,8 @@ public enum EnumType{
 	CEO,
 	WORKER,
 	CUSTOMER,
-	UN_CUSTOMER;
+	UN_CUSTOMER,
+	REGULAR,
+	BUSINESS,
+	PRIVATE;
 }

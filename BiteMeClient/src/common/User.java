@@ -7,9 +7,10 @@ public class User implements Serializable{
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private String firstName, lastName, Email, phone, username, password;
+	private String firstName, lastName, Email, phone, username, password, creditCard;
 	private boolean isLogged;
 	private EnumType type;
+	private EnumType customerType;
 	private EnumBranch homeBranch;
 	
 	//constructor for validate login
@@ -97,6 +98,14 @@ public class User implements Serializable{
 	public EnumType getType() {
 		return type;
 	}
+	
+	public void setCustomerType(EnumType customerType) {
+		this.customerType = customerType;
+	}
+	
+	public EnumType getCustomerType() {
+		return customerType;
+	}
 
 
 	public void setType(EnumType type) {
@@ -111,6 +120,15 @@ public class User implements Serializable{
 
 	public String getPassword() {
 		return password;
+	}
+	
+	public String getCreditCard() {
+		return creditCard;
+	}
+
+
+	public void setCreditCard(String creditCard) {
+		this.creditCard = creditCard;
 	}
 	
 	
