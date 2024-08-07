@@ -124,7 +124,8 @@ public class Client extends AbstractClient {
 	            Object[] orders = (Object[]) message[1];
 	            break;
 			case USER:
-					handleLogin(message);
+				System.out.println(message);
+				handleLogin(message);
 	        	break;
 			case LOG_OUT:
 				// UPDATE HERE WHAT NEEDED, its here for example

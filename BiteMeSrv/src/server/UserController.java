@@ -17,8 +17,12 @@ public class UserController {
 	}
 
 	public void login(ConnectionToClient client, Object[] message) {
+		//TODO SYSO REMOVE
+		System.out.println("I GOT INTO LOGIN USER CONTROLLER");
     	User user = (User)message[1];
         Object result = server.dbController.validateLogin(user);
+      //TODO SYSO REMOVE
+      	System.out.println("IM AFTER DB CONTROLLER");
 		if (result instanceof String) {
 			server.sendMessageToClient(EnumClientOperations.USER,client, result);
 		}

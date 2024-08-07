@@ -59,34 +59,31 @@ public class ClientLoginController {
 			showError("Username or password cannot be empty");
 			return;
 		}
-		//Send to client user name username and password which we received earlier
-		//if user doesn't exist login failed and error is printed
-		//else we launch appropriate Home page
-		//updateUser is the one that takes care of incorrect information.
 		client.loginValidation(new User(username,password));	
 	}
 	
-	//New By Eldar because of thread problems
-	//Added Plat.run later because of a thread problem (Because we have to do it, Otherwise will be thread problem)
-	public void updateUser(Object[] user) {
-	    Platform.runLater(() -> {
-	        if (user[0] instanceof User) {
-	        	//Check for Unregistered Customer
-	        	if (((User)user[0]).getType().equals(EnumType.CUSTOMER) && !(boolean)user[1]){
-	        		this.user = (User) user[0];
-	        		launchUserHomePageUI((User) user[0], (boolean) false);	
-	        	}
-	        	else
-	        	launchUserHomePageUI((User) user[0], (boolean) true);
-	        } else if (user[0] instanceof String) {
-	            showError((String) user[0]);
-	            this.user = null;
-	        } else {
-	            showError("An unexpected error occurred. Please try again.");
-	            this.user = null;
-	        }
-	    });
-	}
+	public void updateUser(Object[] userData) {
+        Platform.runLater(() -> {
+            if (userData[0] instanceof User) {
+                User user = (User) userData[0];
+                boolean isRegistered = (user.getType() != null);
+                launchUserHomePageUI(user, isRegistered);
+            } else if (userData[0] instanceof String) {
+                showError((String) userData[0]);
+            } else {
+                showError("An unexpected error occurred. Please try again.");
+            }
+        });
+    }
+	
+	
+//	private boolean isUnregisteredCustomer(User user) {
+//	    return user.getType().equals(EnumType.CUSTOMER) 
+//	           && (user.getEmail() == null || user.getEmail().isEmpty())
+//	           && (user.getFirstName() == null || user.getFirstName().isEmpty())
+//	           && (user.getLastName() == null || user.getLastName().isEmpty())
+//	           && (user.getPhone() == null || user.getPhone().isEmpty());
+//	}
 	
 	
 	//Quit button sends a msg that client disconnected
@@ -112,10 +109,23 @@ public class ClientLoginController {
 	
     private void launchUserHomePageUI(User user, boolean isRegistered) {
         try {
-        	UserHomePageUI Userapp = new UserHomePageUI(user, isRegistered);
-        	Userapp.start(new Stage());
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("UserHomePage.fxml"));
+            Parent root = loader.load();
+            UserHomePageController controller = loader.getController();
+            controller.setUser(user, isRegistered);
+
             Stage currentStage = (Stage) loginButton.getScene().getWindow();
-            currentStage.hide();
+            Scene scene = new Scene(root, 700, 600);
+            currentStage.setScene(scene);
+            currentStage.setTitle("User Home Page");
+
+            // Set up the close request handler
+            currentStage.setOnCloseRequest(event -> {
+                event.consume(); // Prevent the window from closing immediately
+                controller.closeApplication();
+            });
+
+            currentStage.show();
         } catch (Exception e) {
             e.printStackTrace();
             showError("An error occurred while loading the User Home Page.");

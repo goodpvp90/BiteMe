@@ -41,6 +41,6 @@
             <Font size="14.0" />
          </font>
       </Text>
-      <Button fx:id="updateButton" layoutX="286.0" layoutY="640.0" mnemonicParsing="false" onAction="#handleUpdate" prefHeight="50.0" prefWidth="130.0" text="Update" />
+      <Button fx:id="updateButton" layoutX="257.0" layoutY="636.0" mnemonicParsing="false" onAction="#handleUpdate" prefHeight="50.0" prefWidth="191.0" text="Activate Customer" />
    </children>
 </AnchorPane>
