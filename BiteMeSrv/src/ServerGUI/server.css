@@ -1,13 +1,54 @@
+.root {
+    -fx-background-color: #f0f0f0;
+}
+
 .button {
-    -fx-padding: 10px;
+    -fx-background-color: #0073e6;
+    -fx-text-fill: white;
     -fx-font-size: 14px;
+    -fx-padding: 10px;
+    -fx-border-radius: 5px;
+    -fx-background-radius: 5px;
+}
+
+.button:hover {
+    -fx-background-color: #005bb5;
+}
+
+.button:pressed {
+    -fx-background-color: #003f7f;
+}
+
+.logout-button {
+    -fx-background-color: #e74c3c;
+}
+
+.logout-button:hover {
+    -fx-background-color: #c0392b;
+}
+
+.logout-button:pressed {
+    -fx-background-color: #a93226;
 }
 
 .label {
     -fx-font-size: 14px;
 }
 
+.text-field, .password-field {
+    -fx-font-size: 14px;
+    -fx-padding: 5px;
+}
+
 .list-view {
-    -fx-pref-height: 200px;
-    -fx-pref-width: 300px;
+    -fx-background-color: white;
+    -fx-border-color: #cccccc;
+}
+
+#headlineText {
+    -fx-font-weight: bold;
+}
+
+#ErrorServerInput {
+    -fx-font-size: 14px;
 }
