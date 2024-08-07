@@ -83,15 +83,16 @@ public class CustomerInformationUpdateController {
     @FXML
     private void handleUpdate() {
         try {
-            String id = idField.getText().trim();
-            String firstName = firstNameField.getText().trim();
-            String lastName = lastNameField.getText().trim();
-            String email = emailField.getText().trim();
-            String phone = phoneNumberField.getText().trim();
-            String creditCard = creditCardField.getText().trim();
+            String id = getTextSafely(idField);
+            String firstName = getTextSafely(firstNameField);
+            String lastName = getTextSafely(lastNameField);
+            String email = getTextSafely(emailField);
+            String phone = getTextSafely(phoneNumberField);
+            String creditCard = getTextSafely(creditCardField);
 
             if (id.isEmpty() || firstName.isEmpty() || lastName.isEmpty() || email.isEmpty() || phone.isEmpty()) {
                 showError("Please fill in all required fields");
+                return;
             }
             // Check if phone number contains only digits
             if (!phone.matches("\\d+")) {
@@ -143,6 +144,11 @@ public class CustomerInformationUpdateController {
             e.printStackTrace();
             showError("An error occurred: " + e.getMessage());
         }
+    }
+    
+    //If i enter nothing so i wont have any problems (Because of Trim)
+    private String getTextSafely(TextField field) {
+        return field.getText() == null ? "" : field.getText().trim();
     }
     
     private void openActivationConfirmationWindow() {
