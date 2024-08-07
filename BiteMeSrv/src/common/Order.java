@@ -12,12 +12,12 @@ public class Order implements Serializable {
     private String username;
     
     ///////////////////////// for delivery
-    private String City;
-    private String StreenAndNum;
+    private String city;
+    private String streenAndNum;
     private int phoneNum;
     private String receiverName;
     private boolean isEarly; //if false below doesn't needed to fill 
-    private Timestamp OrderReadyRequestTime; //when the delivery time
+    private Timestamp OrderReadyRequestTime; //when the delivery time, needed??????
     ////////////////////////
     
     private int branchId;
@@ -29,14 +29,22 @@ public class Order implements Serializable {
     private boolean delivery; ///////////////Choose supply method 0 pickup
     private EnumOrderStatus status;
 
-    public Order( String username, int branchId, Timestamp orderDate, Timestamp orderRequestTime, double totalPrice, boolean delivery) {
+    public Order( String username, int branchId, Timestamp orderDate, Timestamp orderRequestTime, double totalPrice, boolean delivery,
+    		String city, String streenAndNum, int phoneNum, String receiverName ) {
         this.username = username;
         this.branchId = branchId;
         this.orderDate = orderDate;
         this.orderRequestTime = orderRequestTime;
         this.totalPrice = totalPrice;
         this.delivery = delivery;
-        status=EnumOrderStatus.PENDING;
+        status=EnumOrderStatus.PENDING;	
+        
+        this.city = city;
+		this.streenAndNum = streenAndNum;
+		this.phoneNum = phoneNum;
+		this.receiverName = receiverName;
+		
+	
     }
  
     
@@ -129,11 +137,11 @@ public class Order implements Serializable {
 	}
 	
 	public String getCity() {
-	    return City;
+	    return city;
 	}
 
 	public String getStreetAndNum() {
-	    return StreenAndNum;
+	    return streenAndNum;
 	}
 
 	public int getPhoneNum() {
@@ -153,7 +161,23 @@ public class Order implements Serializable {
 	}
 
     
-    
+	@Override
+	public String toString() {
+	    return "Order{" +
+	            "orderId=" + orderId +
+	            ", username='" + username + '\'' +
+	            ", phoneNum=" + phoneNum +
+	            ", receiverName='" + receiverName + '\'' +
+	            ", isEarly=" + isEarly +
+	            ", branchId=" + branchId +
+	            ", orderDate=" + orderDate +
+	            ", orderRequestTime=" + orderRequestTime +
+	            ", orderFutureTime=" + orderFutureTime +
+	            ", totalPrice=" + totalPrice +
+	            ", delivery=" + delivery +
+	            ", status=" + status +
+	            '}';
+	}
 
     // Getters and setters
 }

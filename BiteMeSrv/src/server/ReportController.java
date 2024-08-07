@@ -11,6 +11,7 @@ import common.IncomeReport;
 import common.MonthlyReport;
 import common.OrdersReport;
 import common.PerformanceReport;
+import common.QuarterlyReport;
 import ocsf.server.ConnectionToClient;
 
 /**
@@ -159,6 +160,36 @@ public class ReportController {
             scheduler.shutdownNow();
             Thread.currentThread().interrupt();
         }
+    }
+    
+    /**
+     * Retrieves or creates a quarterly report for the given {@link QuarterlyReport} object and sends it to the specified client.
+     * 
+     * This method first attempts to retrieve an existing quarterly report from the database. If the report does not exist, 
+     * it attempts to create a new report using the provided {@code QuarterlyReport} object. After creating the report, 
+     * it retrieves the newly created report and sends it to the client. If there are errors during these operations, 
+     * appropriate error messages are sent to the client.
+     * 
+     * @param qreport the {@link QuarterlyReport} object containing the details of the report to be retrieved or created.
+     * @param client the {@link ConnectionToClient} object representing the client to whom the report or error message is sent.
+     */
+    
+    public void getQuarterlyReport(QuarterlyReport qreport, ConnectionToClient client) {
+    	Object getResult = server.dbController.getQuarterlyReport(qreport);
+    	if (getResult instanceof QuarterlyReport) {
+			server.sendMessageToClient(EnumClientOperations.QUARTERLY_REPORT, client, (QuarterlyReport)getResult);
+    	}else {
+    		boolean createResult = server.dbController.createQuarterlyReport(qreport);
+    		if (createResult) {
+    			Object newGetResult = server.dbController.getQuarterlyReport(qreport);
+    			if (newGetResult instanceof QuarterlyReport) {
+    				System.out.println("GOT HERE");
+    				//server.sendMessageToClient(EnumClientOperations.QUARTERLY_REPORT, client, (QuarterlyReport)newGetResult);
+    			}else {
+    				server.sendMessageToClient(EnumClientOperations.REPORT_ERROR, client, newGetResult);
+    			}
+    		}
+    	}	
     }
 
 }

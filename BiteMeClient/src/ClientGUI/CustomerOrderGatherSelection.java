@@ -184,7 +184,6 @@ public class CustomerOrderGatherSelection {
         //set delivery type to default
         deliveryTypeComboBox.setValue("Normal");
         
-        
 	}
 
 	// Set the user instance from the UI
@@ -246,10 +245,12 @@ public class CustomerOrderGatherSelection {
 	@FXML
 	private void handleEarlyButtonAction(ActionEvent event) throws IOException {
 		setVisibleForChoiceOfDateAndTime(true);
+		
 	}
 	@FXML
 	private void handleRegularButtonAction(ActionEvent event) throws IOException {
 		setVisibleForChoiceOfDateAndTime(false);	
+		earlyOrderWarningText.setVisible(false);
 	}
 	
 	private void setVisibleForChoiceOfDateAndTime(boolean hide) {
@@ -377,24 +378,25 @@ public class CustomerOrderGatherSelection {
         if (streetAddressTextField.getText().isEmpty()) {
             showError("Street address cannot be empty.");
             return false;
-        } else if (!streetAddressTextField.getText().matches("[a-zA-Z0-9]+")) {
+        } else if (!streetAddressTextField.getText().matches("[a-zA-Z0-9 ,.-]+")) {
             showError("Street address must contain only letters and numbers.");
             return false;
         }
 
+
+        if (receiverTextField.getText().isEmpty()) {
+            showError("Receiver cannot be empty.");
+            return false;
+        } else if (!receiverTextField.getText().matches("[a-zA-Z ]+")) {
+            showError("Receiver must contain only letters.");
+            return false;
+        }
+        
         if (phoneNumberTextField.getText().isEmpty()) {
             showError("Phone number cannot be empty.");
             return false;
         } else if (!phoneNumberTextField.getText().matches("\\d+")) {
             showError("Phone number must contain only numbers.");
-            return false;
-        }
-
-        if (receiverTextField.getText().isEmpty()) {
-            showError("Receiver cannot be empty.");
-            return false;
-        } else if (!receiverTextField.getText().matches("[a-zA-Z]+")) {
-            showError("Receiver must contain only letters.");
             return false;
         }
 
@@ -472,7 +474,7 @@ public class CustomerOrderGatherSelection {
             currentStage.close();
         } catch (Exception e) {
             e.printStackTrace();
-            showError("An error occurred while loading the User Home Page.");
+            showError("An error occurred while loading the User Checkout Page.");
         }
 	}
 	

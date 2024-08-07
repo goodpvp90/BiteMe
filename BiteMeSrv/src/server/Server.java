@@ -95,7 +95,6 @@ public class Server extends AbstractServer {
                 orderController.updateOrderStatus(orderId, newStatus);
                 break;
             case LOGIN:
-            	reportController.getQuarterlyReport(new QuarterlyReport(Location.NORTH, 1, 2024), client);
             	handleLogin(client, message);
                 break;
             case LOG_OUT:

@@ -79,9 +79,9 @@
     </Text>
    <Text fx:id="cityText" layoutX="54.0" layoutY="377.0" strokeType="OUTSIDE" strokeWidth="0.0" text="City" visible="false" />
    <Text fx:id="streetText" layoutX="53.0" layoutY="411.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Street &amp; number:" visible="false" />
-   <Text fx:id="errorText" fill="RED" layoutX="74.0" layoutY="515.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Error Text" textAlignment="RIGHT" visible="false" wrappingWidth="576.8032836914062">
+   <Text fx:id="errorText" fill="RED" layoutX="359.0" layoutY="498.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Error Text" textAlignment="RIGHT" visible="false" wrappingWidth="294.80328369140625">
       <font>
-         <Font size="16.0" />
+         <Font size="14.0" />
       </font>
    </Text>
    <Text fx:id="errorRobotText" fill="RED" layoutX="563.0" layoutY="347.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Error! method of delivery is still staging,&#10;please pick a different method." visible="false" />
