@@ -141,8 +141,8 @@ public class DBController {
     }
 
     //Create new user by managers
-    public boolean createUser(String username, String password, String email, String phone, String firstName, String lastName, EnumBranch enumBranch, EnumType type, EnumType customerType, String creditCard) {
-        String sqlUsers = "INSERT INTO users (username, password, email, phone, firstname, lastname, home_branch, type, isLogged) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    public boolean createUser(String id,String username, String password, String email, String phone, String firstName, String lastName, EnumBranch enumBranch, EnumType type, EnumType customerType, String creditCard) {
+        String sqlUsers = "INSERT INTO users (username, password, email, phone, firstname, lastname, home_branch, type, isLogged, id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         String sqlCustomers = "INSERT INTO customers (username, credit_card, type_of_customer) VALUES (?, ?, ?)";
 
         try {
@@ -162,6 +162,7 @@ public class DBController {
                 preparedStatementUsers.setString(7, enumBranch.toString());
                 preparedStatementUsers.setString(8, type.toString());
                 preparedStatementUsers.setInt(9, 0);  // isLogged defaults to 0 (false)
+                preparedStatementUsers.setString(10, id);
 
                 int rowsAffected = preparedStatementUsers.executeUpdate();
 
@@ -487,7 +488,7 @@ public class DBController {
                     String dbUsername = rs.getString("username");
                     String password = rs.getString("password");
                     boolean isLogged = rs.getBoolean("isLogged");
-                    EnumType type = EnumType.valueOf(rs.getString("type"));
+                    EnumType type = rs.getString("type") != null ? EnumType.valueOf(rs.getString("type")) : null;
                     EnumBranch homeBranch = rs.getString("home_branch") != null ? EnumBranch.valueOf(rs.getString("home_branch")) : null;
 
                     return new User(firstName, lastName, email, phone, homeBranch, dbUsername, password, isLogged, type);
