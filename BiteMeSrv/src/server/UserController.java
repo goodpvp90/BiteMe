@@ -68,7 +68,7 @@ public class UserController {
     
     public void createAccount(ConnectionToClient client, Object[] message) {
     	User user = (User)message[1];
-    	boolean result = server.dbController.createUser(user.getUsername(), user.getPassword(), user.getEmail(), user.getPhone(), 
+    	boolean result = server.dbController.createUser(user.getId(), user.getUsername(), user.getPassword(), user.getEmail(), user.getPhone(), 
     			user.getFirstName(), user.getLastName(), user.getHomeBranch(), user.getType(), user.getCustomerType(), user.getCreditCard());
     	if (!result)
     		server.sendMessageToClient(EnumClientOperations.EROR,client, result);

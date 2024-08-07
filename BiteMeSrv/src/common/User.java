@@ -7,7 +7,7 @@ public class User implements Serializable{
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private String firstName, lastName, Email, phone, username, password, creditCard;
+	private String firstName, lastName, Email, phone, username, password, creditCard, id;
 	private boolean isLogged;
 	private EnumType type;
 	private EnumType customerType;
@@ -129,6 +129,14 @@ public class User implements Serializable{
 
 	public void setCreditCard(String creditCard) {
 		this.creditCard = creditCard;
+	}
+	
+	public String getId() {
+		return id;
+	}
+	
+	public void setId(String id) {
+		this.id = id;
 	}
 	
 	
