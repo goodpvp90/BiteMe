@@ -29,6 +29,16 @@ public class Order implements Serializable {
     private boolean delivery; ///////////////Choose supply method 0 pickup
     private EnumOrderStatus status;
 
+    public Order( String username, int branchId, Timestamp orderDate, Timestamp orderRequestTime, double totalPrice, boolean delivery) {
+        this.username = username;
+        this.branchId = branchId;
+        this.orderDate = orderDate;
+        this.orderRequestTime = orderRequestTime;
+        this.totalPrice = totalPrice;
+        this.delivery = delivery;
+        status=EnumOrderStatus.PENDING;	
+    }
+    
     public Order( String username, int branchId, Timestamp orderDate, Timestamp orderRequestTime, double totalPrice, boolean delivery,
     		String city, String streenAndNum, int phoneNum, String receiverName ) {
         this.username = username;
@@ -38,7 +48,6 @@ public class Order implements Serializable {
         this.totalPrice = totalPrice;
         this.delivery = delivery;
         status=EnumOrderStatus.PENDING;	
-        
         this.city = city;
 		this.streenAndNum = streenAndNum;
 		this.phoneNum = phoneNum;
@@ -150,6 +159,10 @@ public class Order implements Serializable {
 
 	public String getReceiverName() {
 	    return receiverName;
+	}
+	
+	public void setReceiverName(String receiverName) {
+	    this.receiverName = receiverName;
 	}
 
 	public boolean isEarly() {

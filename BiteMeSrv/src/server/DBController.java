@@ -358,9 +358,7 @@ public class DBController {
 	    }
 	}
 
-
-
-    /*
+    
     // Get orders for a specific username
     public List<Order> getOrdersByUsername(String username) throws SQLException {
         List<Order> orders = new ArrayList<>();
@@ -370,14 +368,14 @@ public class DBController {
             try (ResultSet rs = stmt.executeQuery()) {
                 while (rs.next()) {
                     Order order = new Order(rs.getString("username"), rs.getInt("branch_id"),
-                            rs.getTimestamp("order_date"), rs.getTimestamp("order_request_time"), rs.getDouble("total_price"), rs.getBoolean("delivery"));
+                            rs.getTimestamp("order_date"), rs.getTimestamp("order_ready_time"), rs.getDouble("total_price"), rs.getBoolean("delivery"));
 
                     orders.add(order);
                 }
             }
         }
         return orders;
-    }*/
+    }
     
     /**
      * Retrieves all pending orders for a specific branch.
@@ -387,46 +385,57 @@ public class DBController {
      * @throws SQLException If there is an error querying the database.
      */
     
-    /*
-    public List<Order> showPendingOrdersByBranch(int branchId) throws SQLException {
-        String query = "SELECT o.*, d.receiver_name AS delivery_receiver_name, d.phone_number AS delivery_phone_number " +
-                       "FROM orders o " +
-                       "LEFT JOIN delivery d ON o.order_id = d.order_id AND o.delivery = 1 " +
-                       "WHERE o.branch_id = ? AND o.status = 'PENDING'";
-        
-        List<Order> pendingOrders = new ArrayList<>();
+    
+	public List<Order> showPendingOrdersByBranch(int branchId) throws SQLException {
+	    String query = "SELECT o.*, d.receiver_name AS delivery_receiver_name, d.phone_number AS delivery_phone_number " +
+	                   "FROM orders o " +
+	                   "LEFT JOIN delivery d ON o.order_id = d.order_id AND o.delivery = 1 " +
+	                   "WHERE o.branch_id = ? AND o.status = 'PENDING'";
+	    
+	    List<Order> pendingOrders = new ArrayList<>();
 
-        try (PreparedStatement statement = connection.prepareStatement(query)) {
-            statement.setInt(1, branchId);
-            try (ResultSet resultSet = statement.executeQuery()) {
-                while (resultSet.next()) {
-                    String username = resultSet.getString("username");
-                    Timestamp orderDate = resultSet.getTimestamp("order_date");
-                    Timestamp orderRequestTime = resultSet.getTimestamp("order_request_time");
-                    double totalPrice = resultSet.getDouble("total_price");
-                    boolean delivery = resultSet.getBoolean("delivery");
+	    try (PreparedStatement statement = connection.prepareStatement(query)) {
+	        statement.setInt(1, branchId);
+	        try (ResultSet resultSet = statement.executeQuery()) {
+	            while (resultSet.next()) {
+	            	int orderid = resultSet.getInt("order_id");
+	                String username = resultSet.getString("username");
+	                Timestamp orderDate = resultSet.getTimestamp("order_date");
+	                Timestamp orderRequestTime = resultSet.getTimestamp("order_ready_time");
+	                double totalPrice = resultSet.getDouble("total_price");
+	                boolean delivery = resultSet.getBoolean("delivery");
+	                Order order;
+	                
+	                if (delivery) {
+	                    String receiverName = resultSet.getString("delivery_receiver_name");
+	                    String phoneNumber = resultSet.getString("delivery_phone_number");
+	                    order = new Order(username, branchId, orderDate, orderRequestTime, totalPrice, delivery);
+	                    order.setReceiverName(receiverName);
+	                    order.setOrderId(orderid);
+	                } else {
+	                    order = new Order(username, branchId, orderDate, orderRequestTime, totalPrice, delivery);
+	                    order.setOrderId(orderid);
+	                    // Fetch the first name and last name from the users table
+	                    String userQuery = "SELECT firstname, lastname FROM users WHERE username = ?";
+	                    try (PreparedStatement userStatement = connection.prepareStatement(userQuery)) {
+	                        userStatement.setString(1, username);
+	                        try (ResultSet userResultSet = userStatement.executeQuery()) {
+	                            if (userResultSet.next()) {
+	                                String firstName = userResultSet.getString("firstname");
+	                                String lastName = userResultSet.getString("lastname");
+	                                order.setReceiverName(firstName + " " + lastName);
+	                            }
+	                        }
+	                    }
+	                }
 
-                    
+	                pendingOrders.add(order);
+	            }
+	        }
+	    }
+	    return pendingOrders;
+	}
 
-                    if (delivery) {
-                        String receiverName = resultSet.getString("delivery_receiver_name");
-                        String phoneNumber = resultSet.getString("delivery_phone_number");
-                        Order order = new Order(username, branchId, orderDate, orderRequestTime, totalPrice, delivery, receiverName, phoneNumber);
-                        order.setReceiverName(receiverName);
-                        order.setPhoneNumber(phoneNumber);
-                    } else {
-                        String receiverName = resultSet.getString("username");
-                        String phoneNumber = getUserPhoneNumber(username);  // Assuming there's a method to get phone number from users table
-                        order.setReceiverName(receiverName);
-                        order.setPhoneNumber(phoneNumber);
-                    }
-
-                    pendingOrders.add(order);
-                }
-            }
-        }
-        return pendingOrders;
-    }*/
     
     
     
@@ -1185,7 +1194,7 @@ public class DBController {
         }
     }
    
-    /*
+    
     public Order getOrderById(int orderId) throws SQLException {
         String query = "SELECT * FROM orders WHERE order_id = ?";
         try (PreparedStatement stmt = connection.prepareStatement(query)) {
@@ -1196,7 +1205,7 @@ public class DBController {
                         rs.getString("username"),
                         rs.getInt("branch_id"),
                         rs.getTimestamp("order_date"),
-                        rs.getTimestamp("order_request_time"),
+                        rs.getTimestamp("order_ready_time"),
                         rs.getDouble("total_price"),
                         rs.getBoolean("delivery")
                     );
@@ -1204,6 +1213,6 @@ public class DBController {
             }
         }
         return null;
-    }*/
+    }
 
 }
