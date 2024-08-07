@@ -48,9 +48,9 @@
             <Font name="System Bold" size="20.0" />
         </font>
     </Text>
-    <Text fx:id="priceTextInfo" fill="#20a119" layoutX="169.0" layoutY="552.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Price Info" wrappingWidth="163.95179748535156">
+    <Text fx:id="priceTextInfo" fill="#20a119" layoutX="164.0" layoutY="553.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Price Info" wrappingWidth="459.33331298828125">
         <font>
-            <Font name="System Bold" size="20.0" />
+            <Font name="System Bold" size="18.0" />
         </font>
     </Text>
     
@@ -59,19 +59,25 @@
             <Font name="System Bold" size="16.0" />
         </font>
     </Text>
-    <Text fx:id="earlyDeliveryLabel" fill="#0000007f" layoutX="493.0" layoutY="132.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Early Delivery:" />
+    <Text fx:id="earlyLabel" fill="#0000007f" layoutX="493.0" layoutY="132.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Early Supply Time:" />
     <Text fx:id="sharedDeliveryLabel" fill="#0000007f" layoutX="493.0" layoutY="157.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Shared Delivery:" />
     <Text fx:id="lateOrderCompensationLabel" fill="#0000007f" layoutX="493.0" layoutY="182.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Late Order Compensation:" />
-    <Text fx:id="earlyDeliveryInfoText" layoutX="640.0" layoutY="132.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Early Delivery Info" wrappingWidth="202.6184844970703" />
-    <Text fx:id="sharedDeliveryInfoText" layoutX="640.0" layoutY="157.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Shared Delivery Info" wrappingWidth="184.8638916015625" />
-    <Text fx:id="lateOrderDeliveryInfoText" layoutX="640.0" layoutY="182.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Late Order Delivery Info" />
+    <Text fx:id="earlyInfoText" layoutX="640.0" layoutY="132.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Early Delivery Info" wrappingWidth="202.6184844970703" />
+    <Text fx:id="sharedDeliveryInfoText" layoutX="640.0" layoutY="157.0" strokeType="OUTSIDE" strokeWidth="0.0" text="User not eligible" wrappingWidth="184.8638916015625" />
+    <Text fx:id="lateOrderDeliveryInfoText" layoutX="640.0" layoutY="182.0" strokeType="OUTSIDE" strokeWidth="0.0" text="User not eligible" />
     
-    <Text fx:id="compensationText" fill="#2614ed" layoutX="493.0" layoutY="216.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Compensation">
+    <Text fx:id="compensationText" fill="#2614ed" layoutX="493.0" layoutY="216.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Compensation" visible="false">
         <font>
             <Font name="System Bold" size="16.0" />
         </font>
     </Text>
-    <Text fx:id="compensationMessageText" layoutX="493.0" layoutY="236.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Hello FIRST NAME,&#10;we found you eligible for 50% off a compensation&#10;for a past late order.&#10;Would you like to use it?" wrappingWidth="300.0" />
-    <Button fx:id="yesButton" layoutX="493.0" layoutY="298.0" mnemonicParsing="false" text="Yes" />
-    <Button fx:id="noButton" layoutX="535.0" layoutY="298.0" mnemonicParsing="false" text="No" />
+    <Text fx:id="compensationMessageText" layoutX="493.0" layoutY="236.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Hello!&#10;we found you eligible for 50% off a compensation&#10;for a past late order.&#10;Would you like to use it?" visible="false" wrappingWidth="300.0" />
+    <Button fx:id="yesButton" layoutX="493.0" layoutY="311.0" mnemonicParsing="false" onAction="#handleYesCompensationButton" text="Yes" visible="false" />
+    <Button fx:id="noButton" layoutX="531.0" layoutY="311.0" mnemonicParsing="false" onAction="#handleNoCompensationButton" text="No" visible="false" />
+   <Text fx:id="compensationValueText" layoutX="493.0" layoutY="301.0" strokeType="OUTSIDE" strokeWidth="0.0" text="You got Text Compensation" visible="false" />
+   <Text fx:id="errorText" fill="RED" layoutX="530.0" layoutY="471.0" strokeType="OUTSIDE" strokeWidth="0.0" text="ErrorText" textAlignment="RIGHT" visible="false" wrappingWidth="300.0">
+      <font>
+         <Font size="14.0" />
+      </font>
+   </Text>
 </AnchorPane>

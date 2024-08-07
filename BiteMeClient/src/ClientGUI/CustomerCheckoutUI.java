@@ -23,7 +23,7 @@ public class CustomerCheckoutUI extends Application {
     	this.orders = orders;
     	this.param = param;
     	this.contactInfo = contactInfo;
-    	this.date=date;
+    	this.date = date;
 	}
     
     @Override
@@ -34,11 +34,10 @@ public class CustomerCheckoutUI extends Application {
         primaryStage.setScene(new Scene(root));
 
         CustomerCheckout controller = loader.getController();
-        if(user!=null) controller.setUser(user);
         if(orders!= null) controller.setChosenItemsFromMenu(orders);
-        //////////////////////////////////////////////////////
         if(param!=null) controller.setReturnBooleanPrefGather(param);
         if(contactInfo!=null) controller.setContacts(contactInfo);
+        if(user!=null) controller.setUser(user);
         if(date!=null) controller.setDate(date);
 
         

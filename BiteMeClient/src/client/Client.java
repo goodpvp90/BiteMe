@@ -24,6 +24,7 @@ import common.QuarterlyReport;
 import common.User;
 import javafx.application.Platform;
 import ClientGUI.ClientLoginController;
+import ClientGUI.CustomerCheckout;
 import ClientGUI.CustomerInformationUpdateController;
 import ClientGUI.CustomerOrderCreation;
 import ClientGUI.RegisterUserPageController;
@@ -41,6 +42,7 @@ public class Client extends AbstractClient {
 	private ReportsPageController reportsPageController;
 	private RegisterUserPageController registerUserPageController;
 	private CustomerInformationUpdateController customerInformationUpdateController;
+	private CustomerCheckout customerCheckout;
 	// Constructor to initialize the client with host and port, and establish
 	// connection
 	public Client(String host, int port) throws IOException {
@@ -104,7 +106,11 @@ public class Client extends AbstractClient {
 	public void getInstanceOfClientLoginController(ClientLoginController client) {
 		this.clientLoginController = client;
 	}
-
+	
+	public void getInstanceOfCustomerCheckout(CustomerCheckout customerCheckout) {
+		this.customerCheckout = customerCheckout;
+	}
+	
 	// Handle messages received from the server
 	@Override
 	protected void handleMessageFromServer(Object msg) {
@@ -221,8 +227,7 @@ public class Client extends AbstractClient {
             case SET_DISCOUNT_AMOUNT: //NEED TO DECIDE IF TO UPDATE RESPONSE, NOW NOT USED.
             	break;
             case GET_DISCOUNT_AMOUNT: 
-            	double amount = (double)message[1];
-            	//HERE YOU RECEIVE DISCOUNT AMOUNT FOR USER , DO WHATEVER U WANT HERE.
+            	customerCheckout.setCompensation((double)message[1]);	
             	break;
 			case NONE:
 				System.out.println("no operation was received");
@@ -292,7 +297,7 @@ public class Client extends AbstractClient {
 		sendMessageToServer(new Object[] { EnumServerOperations.DELETE_DISH, dish });
 	}
 	
-	public void sendCreateOrderRequest(Order order, List<DishInOrder> dishesInOrder) {
+	public void sendCreateOrderRequest(Order order, List<Dish> dishesInOrder) {
 	    sendMessageToServer(new Object[] {
 		        EnumServerOperations.INSERT_ORDER, order, dishesInOrder});
 	}
@@ -329,8 +334,8 @@ public class Client extends AbstractClient {
 	
 	
 	//USE THIS TO SEND TO US NEW AMOUNT, THE MATHEMATICAL LOGIC YOU DO.
-	public void setDiscountAmount(String username) {
-		sendMessageToServer(new Object[] { EnumServerOperations.SET_DISCOUNT_AMOUNT, username });
+	public void setDiscountAmount(String username, double amount) {
+		sendMessageToServer(new Object[] { EnumServerOperations.SET_DISCOUNT_AMOUNT, username, amount });
 	}
 	
 	//USE IT TO UPDATE ORDER STATUS, IN PROGESS, READY , COMPLETED .....
