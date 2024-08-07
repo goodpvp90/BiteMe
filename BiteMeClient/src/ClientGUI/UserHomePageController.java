@@ -204,8 +204,22 @@ public class UserHomePageController {
     
     @FXML
     private void handleRegisterUser(ActionEvent event) {
-        System.out.println("Register User button clicked");
-        // Implement navigation to Register User page
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("RegisterUserPage.fxml"));
+            Parent root = loader.load();
+            RegisterUserPageController registerController = loader.getController();
+            
+            // Store the current scene before switching
+            Scene currentScene = registerUserButton.getScene();
+            registerController.setPreviousScene(currentScene);
+            
+            Stage stage = (Stage) registerUserButton.getScene().getWindow();
+            Scene newScene = new Scene(root);
+            stage.setScene(newScene);
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
     
     //Updates the user to be logged off in DB.

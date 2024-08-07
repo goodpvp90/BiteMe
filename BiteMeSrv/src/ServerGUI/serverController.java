@@ -50,7 +50,7 @@ public class serverController {
     public void initialize() {
         // Disable the disconnect and quit buttons initially, and update IP in text
         disconnectButton.setDisable(true);
-        gridPane.setPadding(new Insets(10));
+        quitButton.setDisable(false);
         IPText.setText(getIP());
     }
 

@@ -101,6 +101,10 @@ public class Server extends AbstractServer {
             case LOG_OUT:
             	userController.logout(client,(Object[]) message);
             	break;
+            case CHECK_USER:
+            	String usern = (String) message[1];
+            	userController.checkUserForCreation(client,usern);
+            	break;
             case CREATE_ACCOUNT:
             	userController.createAccount(client, (Object[]) message);
             	break;
