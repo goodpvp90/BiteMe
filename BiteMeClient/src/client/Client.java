@@ -23,6 +23,7 @@ import common.PerformanceReport;
 import common.User;
 import javafx.application.Platform;
 import ClientGUI.ClientLoginController;
+import ClientGUI.CustomerInformationUpdateController;
 import ClientGUI.CustomerOrderCreation;
 import ClientGUI.RegisterUserPageController;
 import ClientGUI.ReportsPageController;
@@ -38,6 +39,7 @@ public class Client extends AbstractClient {
 	private Consumer<IncomeReport> pendingRevenueReportCallback;
 	private ReportsPageController reportsPageController;
 	private RegisterUserPageController registerUserPageController;
+	private CustomerInformationUpdateController customerInformationUpdateController;
 	// Constructor to initialize the client with host and port, and establish
 	// connection
 	public Client(String host, int port) throws IOException {
@@ -89,8 +91,10 @@ public class Client extends AbstractClient {
 	public void setRegisterUserPageController(RegisterUserPageController controller) {
 	    this.registerUserPageController = controller;
 	}
-
-	
+	//Sets the InformationUpdate
+	public void setCustomerInformationUpdateController(CustomerInformationUpdateController controller) {
+	    this.customerInformationUpdateController = controller;
+	}
 	//Sets the ReportsPageController.
     public void setReportsPageController(ReportsPageController controller) {
         this.reportsPageController = controller;
@@ -136,13 +140,25 @@ public class Client extends AbstractClient {
                 }
                 break;
             case CHECK_USER:
+            	//If its Boolean = Not in DB
+            	//If Name(And other) is Null = Need to Update
+            	//If Nothing is Null = User Registered.
                 Object res = message[1];
+                
                 if (registerUserPageController != null) {
                     registerUserPageController.handleServerResponse(res);
                 }
                 break;
             case CREATED_ACCOUNT:
+            	System.out.println("IM BEFORE OBJECT");
             	Object dataUser = (Object)message[1]; //You receive here user object if created
+            	System.out.println("IM AFTER OBJECT");
+            	Platform.runLater(() -> {
+            		System.out.println("IM AFTER RUNLATER OBJECT");
+                    if (customerInformationUpdateController != null) {
+                        customerInformationUpdateController.handleServerResponse(dataUser);
+                    }
+                });
                 break;
             case VIEW_MENU:
             	System.out.println("ENTERED VIEW");

@@ -46,9 +46,9 @@ public class Server extends AbstractServer {
         try {
             Object message = new Object[]{op, msg};
             System.out.println(op.toString());
+            //TODO SYSO
             System.out.println("SENDING TO CLIENT1");
             client.sendToClient(message);
-            System.out.println("SENDING TO CLIENT2");
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -103,6 +103,8 @@ public class Server extends AbstractServer {
             	userController.checkUserForCreation(client,usern);
             	break;
             case CREATE_ACCOUNT:
+            	//TODO ADDED SYSO
+            	System.out.println("I GET HERE AND THEN SEND TO USERCONTROLLER.");
             	userController.createAccount(client, (Object[]) message);
             	break;
             case VIEW_MENU:
