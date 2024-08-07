@@ -64,92 +64,86 @@ public class DBController {
 
 
 	public Object validateLogin(User user) {
-        List<Object> userDetails = new ArrayList<>();
-        String username = user.getUsername(), password = user.getPassword();
-        // Define the SQL query
-        String sql = "SELECT * FROM users WHERE username = ? AND password = ?";
+	    List<Object> userDetails = new ArrayList<>();
+	    String username = user.getUsername(), password = user.getPassword();
+	    // Define the SQL query
+	    String sql = "SELECT * FROM users WHERE username = ? AND password = ?";
 
-        // Establish the database connection
-        try {
-            PreparedStatement statement = connection.prepareStatement(sql);
-            // Set the parameters for the query
-            statement.setString(1, username);
-            statement.setString(2, password);
+	    // Establish the database connection
+	    try {
+	        PreparedStatement statement = connection.prepareStatement(sql);
+	        // Set the parameters for the query
+	        statement.setString(1, username);
+	        statement.setString(2, password);
 
-            // Execute the query
-            try (ResultSet rs = statement.executeQuery()) {
-                if (rs.next()) {
-                    // user exists in the DataBase
-                	//if got true meaning user is already logged in
-                	if(updateIsLoggedStatus(username))
-                		return (Object)"user is already logged in";
-                	
-                    String Email = rs.getString("email");
-                    String phone = rs.getString("phone");
-                    String firstName = rs.getString("firstname");
-                    String lastName = rs.getString("lastname");
-                    //TODO I PUT THIS AS COMMENT AFTER BENS APPROVAL
-//                    EnumBranch homeBranch = EnumBranch.valueOf(rs.getString("home_branch"));
-//                    EnumType type = EnumType.valueOf(rs.getString("type"));
-                    EnumType type = null;
-                    if (rs.getString("type") != null) {
-                        try {
-                            type = EnumType.valueOf(rs.getString("type"));
-                        } catch (IllegalArgumentException e) {
-                            // Handle the case where the type value is invalid
-                            type = null;
-                        }
-                    }
+	        // Execute the query
+	        try (ResultSet rs = statement.executeQuery()) {
+	            if (rs.next()) {
+	                // user exists in the DataBase
+	                boolean isLogged = rs.getBoolean("isLogged");
+	                if (isLogged) {
+	                    return (Object) "User is already logged in";
+	                }
 
-                    EnumBranch homeBranch = null;
-                    if (rs.getString("home_branch") != null) {
-                        try {
-                            homeBranch = EnumBranch.valueOf(rs.getString("home_branch"));
-                        } catch (IllegalArgumentException e) {
-                            // Handle the case where the home_branch value is invalid
-                            homeBranch = null;
-                        }
-                    }
-                    boolean isLogged = rs.getBoolean("isLogged");
+	                String Email = rs.getString("email");
+	                String phone = rs.getString("phone");
+	                String firstName = rs.getString("firstname");
+	                String lastName = rs.getString("lastname");
+	                EnumType type = null;
+	                if (rs.getString("type") != null) {
+	                    try {
+	                        type = EnumType.valueOf(rs.getString("type"));
+	                    } catch (IllegalArgumentException e) {
+	                        type = null;
+	                    }
+	                }
 
-                    userDetails.add(firstName);
-                    userDetails.add(lastName);
-                    userDetails.add(Email);
-                    userDetails.add(phone);
-                    userDetails.add(homeBranch);
-                    userDetails.add(username);
-                    userDetails.add(password);
-                    userDetails.add(isLogged);
-                    userDetails.add(type);
-                    
-                }
-                else {
-                	return (Object)"username or password are incorrect";
-                }
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return (Object)e.toString();
-        }
-        return (Object)userDetails;
-    }
-	
-	
-	private boolean updateIsLoggedStatus(String username) {
-		String query = "UPDATE users SET isLogged = 1 WHERE username = ?";
-		boolean logged = false;
-		try {
-            PreparedStatement preparedStatement = connection.prepareStatement(query);
-            preparedStatement.setString(1, username);
-            int rowsAffected = preparedStatement.executeUpdate();
-            if (rowsAffected == 0)
-				logged = true;
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return logged;
+	                EnumBranch homeBranch = null;
+	                if (rs.getString("home_branch") != null) {
+	                    try {
+	                        homeBranch = EnumBranch.valueOf(rs.getString("home_branch"));
+	                    } catch (IllegalArgumentException e) {
+	                        homeBranch = null;
+	                    }
+	                }
+
+	                userDetails.add(firstName);
+	                userDetails.add(lastName);
+	                userDetails.add(Email);
+	                userDetails.add(phone);
+	                userDetails.add(homeBranch);
+	                userDetails.add(username);
+	                userDetails.add(password);
+	                userDetails.add(isLogged);
+	                userDetails.add(type);
+
+	                // Update the isLogged status
+	                if (!updateIsLoggedStatus(username)) {
+	                    return (Object) "Error updating login status";
+	                }
+	            } else {
+	                return (Object) "username or password are incorrect";
+	            }
+	        }
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	        return (Object) e.toString();
+	    }
+	    return (Object) userDetails;
 	}
-	
+
+	private boolean updateIsLoggedStatus(String username) {
+	    String query = "UPDATE users SET isLogged = 1 WHERE username = ?";
+	    try {
+	        PreparedStatement preparedStatement = connection.prepareStatement(query);
+	        preparedStatement.setString(1, username);
+	        int rowsAffected = preparedStatement.executeUpdate();
+	        return rowsAffected > 0;
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	        return false;
+	    }
+	}
 	
     public boolean logout(String username) {
         String query = "UPDATE users SET isLogged = 0 WHERE username = ?";
@@ -1218,4 +1212,18 @@ public class DBController {
         return null;
     }
 
+    //TODO USED WHEN DISCONNECTING THE SERVER.
+    public void resetAllUserLoggedStatus() {
+        String query = "UPDATE users SET isLogged = 0";
+        try (PreparedStatement stmt = connection.prepareStatement(query)) {
+            int rowsAffected = stmt.executeUpdate();
+            System.out.println(rowsAffected + " users' logged status reset.");
+        } catch (SQLException e) {
+            e.printStackTrace();
+            System.out.println("Error resetting user logged status.");
+        }
+    }
+    
+    
+    
 }

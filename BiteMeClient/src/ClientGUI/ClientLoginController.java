@@ -62,21 +62,21 @@ public class ClientLoginController {
 		client.loginValidation(new User(username,password));	
 	}
 	
-	public void updateUser(Object[] userData) {
+	public void updateUser(Object userData) {
         Platform.runLater(() -> {
-            if (userData[0] instanceof User) {
-                User user = (User) userData[0];
+            if (userData instanceof User) {
+                User user = (User) userData;
+                //TODO Check with guys whats ratherr (Using the function below or no)
                 boolean isRegistered = (user.getType() != null);
                 launchUserHomePageUI(user, isRegistered);
-            } else if (userData[0] instanceof String) {
-                showError((String) userData[0]);
+            } else if (userData instanceof String) {
+                showError((String) userData);
             } else {
                 showError("An unexpected error occurred. Please try again.");
             }
         });
     }
-	
-	
+
 //	private boolean isUnregisteredCustomer(User user) {
 //	    return user.getType().equals(EnumType.CUSTOMER) 
 //	           && (user.getEmail() == null || user.getEmail().isEmpty())
@@ -84,8 +84,7 @@ public class ClientLoginController {
 //	           && (user.getLastName() == null || user.getLastName().isEmpty())
 //	           && (user.getPhone() == null || user.getPhone().isEmpty());
 //	}
-	
-	
+
 	//Quit button sends a msg that client disconnected
 	private void handleQuit() {
 		client.quit();

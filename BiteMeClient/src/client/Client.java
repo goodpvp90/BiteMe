@@ -138,7 +138,8 @@ public class Client extends AbstractClient {
 				}
 				break;
 			case USER:
-				System.out.println(message);
+				//String bulbul = (String)message[1];
+				//System.out.println(bulbul);
 				handleLogin(message);
 	        	break;
 			case LOG_OUT:
@@ -172,15 +173,10 @@ public class Client extends AbstractClient {
                 }
                 break;
             case CREATED_ACCOUNT:
-            	System.out.println("IM BEFORE OBJECT");
             	Object dataUser = (Object)message[1]; //You receive here user object if created
-            	System.out.println("IM AFTER OBJECT");
-            	Platform.runLater(() -> {
-            		System.out.println("IM AFTER RUNLATER OBJECT");
                     if (customerInformationUpdateController != null) {
                         customerInformationUpdateController.handleServerResponse(dataUser);
                     }
-                });
                 break;
             case VIEW_MENU:
             	System.out.println("ENTERED VIEW");
@@ -261,15 +257,7 @@ public class Client extends AbstractClient {
 	private void handleLogin(Object[] message) {
 		//SEND TO CLIENT CONTROLLER
         Object messagePart = message[1];
-        Object[] data;
-        if (messagePart instanceof String) {
-            // Convert to Object[] containing the single string
-            data = new Object[]{messagePart};
-        } else {
-            // Return as is if it's already an Object[]
-            data = (Object[]) messagePart;
-        }
-    	clientLoginController.updateUser(data);
+    	clientLoginController.updateUser(messagePart);
 	}
 
 	// Quit the client and close the connection

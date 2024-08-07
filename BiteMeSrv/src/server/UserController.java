@@ -17,12 +17,8 @@ public class UserController {
 	}
 
 	public void login(ConnectionToClient client, Object[] message) {
-		//TODO SYSO REMOVE
-		System.out.println("I GOT INTO LOGIN USER CONTROLLER");
     	User user = (User)message[1];
         Object result = server.dbController.validateLogin(user);
-      //TODO SYSO REMOVE
-      	System.out.println("IM AFTER DB CONTROLLER");
 		if (result instanceof String) {
 			server.sendMessageToClient(EnumClientOperations.USER,client, result);
 		}
@@ -40,7 +36,7 @@ public class UserController {
 			user.setLogged((boolean)details.get(7));
 			user.setType((EnumType)details.get(8));
 			
-			server.sendMessageToClient(EnumClientOperations.USER,client, new Object[] {(Object)user});
+			server.sendMessageToClient(EnumClientOperations.USER,client,(Object)user);
 		}
     }
     

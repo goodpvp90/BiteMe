@@ -137,15 +137,16 @@ public class serverController {
     	ErrorServerInput.setVisible(false);
     }
     
-    // Turns off the server
+    // Turns off the server And restarts the LOGIN STATUS OF EVERY USER TO 0.
     @FXML
     private void handleDisconnectButton(ActionEvent event) {
         if (server != null) {
             try {
-                server.stopServer(); // Stop the server from listening for new clients
+                resetAllUserLoggedStatus(); 
+                server.stopServer(); 
                 // Close the server
                 server = null;
-                updateStatus("Server disconnected");
+                updateStatus("Server disconnected and all user logged statuses reset");
                 connectButton.setDisable(false); // Enable the connect button
                 disconnectButton.setDisable(true); // Disable the disconnect button    
             } catch (Exception e) {
@@ -160,6 +161,9 @@ public class serverController {
     private void handleQuitButton(ActionEvent event) {
         if (server != null) {
             try {
+            	resetAllUserLoggedStatus();
+            	//So it wont close before resetting loggin of status
+            	Thread.sleep(10);
                 server.stopServer();
             } catch (Exception e) {
                 e.printStackTrace();
@@ -202,6 +206,20 @@ public class serverController {
         });
     }
 
+    private void resetAllUserLoggedStatus() {
+        if (server != null) {
+            try {
+                server.dbController.resetAllUserLoggedStatus();
+                System.out.println("All user logged statuses reset.");
+            } catch (Exception e) {
+                e.printStackTrace();
+                updateStatus("Failed to reset user logged statuses: " + e.getMessage());
+            }
+        }
+    }
+    
+    
+    
     // Receive instance of server and send for him this instance of controller
     public void setProtoServer(Server protoServer) {
         protoServer.setController(this);
