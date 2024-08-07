@@ -1,12 +1,17 @@
 package ClientGUI;
 
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonBar.ButtonData;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import java.io.IOException;
@@ -355,44 +360,73 @@ public class CustomerCheckout {
 
 	
 	
-	 @FXML
-		private void handleConfirmOrderAction(ActionEvent event) {
-			if (isdeservingCompensation) {
-				if (!(choosedUseCompensation)) {
-					showError("Error! Please choose if you want to\n use your compensation discount");
-					return;
-				}
+	@FXML
+	private void handleConfirmOrderAction(ActionEvent event) {
+		if (isdeservingCompensation) {
+			if (!(choosedUseCompensation)) {
+				showError("Error! Please choose if you want to\n use your compensation discount");
+				return;
 			}
-			
-			
-			// Create Order Request Time
-			LocalDateTime orderRequestDateTime=null;
-			Timestamp orderRequestTimestamp=null;			
-			if (returnBooleanPrefGather[0]) { // if early method chosen set time, if not null
-				LocalTime orderTime = LocalTime.of(Integer.valueOf(contactInfo[4]), Integer.valueOf(contactInfo[5]));
-				orderRequestDateTime = LocalDateTime.of(date, orderTime);
-				orderRequestTimestamp = Timestamp.valueOf(orderRequestDateTime);
-			}
-				
-
-			// Create Order Date (current date and time)
-			Timestamp orderDateTimestamp = Timestamp.valueOf(LocalDateTime.now());
-			
-			
-			Order orderNew;
-			if(returnBooleanPrefGather[2])//if delivery send delivery info
-			{// Create new order
-				 orderNew = new Order(user.getUsername(), chosenItemsFromMenu.get(0).getMenuId(), orderDateTimestamp, orderRequestTimestamp, totalPrice, returnBooleanPrefGather[2],
-						contactInfo[0],contactInfo[1],Integer.valueOf(contactInfo[3]),contactInfo[2]);
-			}
-			else
-				 orderNew = new Order(user.getUsername(), chosenItemsFromMenu.get(0).getMenuId(), orderDateTimestamp, orderRequestTimestamp, totalPrice, returnBooleanPrefGather[2],
-						contactInfo[0],contactInfo[1],0,contactInfo[2]);
-		 
-			client.sendCreateOrderRequest(orderNew,chosenItemsFromMenu);
-			client.setDiscountAmount(user.getUsername(),compensation);
-			 Stage currentStage = (Stage) confirmOrderButton.getScene().getWindow();
-	         currentStage.close();
 		}
+
+		// Create Order Request Time
+		LocalDateTime orderRequestDateTime = null;
+		Timestamp orderRequestTimestamp = null;
+		if (returnBooleanPrefGather[0]) { // if early method chosen set time, if not null
+			LocalTime orderTime = LocalTime.of(Integer.valueOf(contactInfo[4]), Integer.valueOf(contactInfo[5]));
+			orderRequestDateTime = LocalDateTime.of(date, orderTime);
+			orderRequestTimestamp = Timestamp.valueOf(orderRequestDateTime);
+		}
+
+		// Create Order Date (current date and time)
+		Timestamp orderDateTimestamp = Timestamp.valueOf(LocalDateTime.now());
+
+		Order orderNew;
+		if (returnBooleanPrefGather[2])// if delivery send delivery info
+		{// Create new order
+			orderNew = new Order(user.getUsername(), chosenItemsFromMenu.get(0).getMenuId(), orderDateTimestamp,
+					orderRequestTimestamp, totalPrice, returnBooleanPrefGather[2], contactInfo[0], contactInfo[1],
+					Integer.valueOf(contactInfo[3]), contactInfo[2]);
+		} else
+			orderNew = new Order(user.getUsername(), chosenItemsFromMenu.get(0).getMenuId(), orderDateTimestamp,
+					orderRequestTimestamp, totalPrice, returnBooleanPrefGather[2], contactInfo[0], contactInfo[1], 0,
+					contactInfo[2]);
+
+		client.sendCreateOrderRequest(orderNew, chosenItemsFromMenu);
+		client.setDiscountAmount(user.getUsername(), compensation);
+		showConfirmationDialog();
+		//launchHomePage();
+	}
+	
+	private void showConfirmationDialog() {
+	    Alert alert = new Alert(AlertType.INFORMATION);
+	    alert.initStyle(StageStyle.UTILITY);
+	    alert.setTitle("Order Confirmation");
+	    alert.setHeaderText(null);
+	    alert.setContentText("Order Created successfully! You will receive an update soon.");
+
+	    ButtonType okButton = new ButtonType("OK", ButtonData.OK_DONE);
+	    alert.getButtonTypes().setAll(okButton);
+
+	    alert.showAndWait().ifPresent(response -> {
+	        if (response == okButton) {
+	            launchHomePage();
+	        }
+	    });
+	}
+	
+	private void launchHomePage() {
+		try {
+        	UserHomePageUI Userapp = new UserHomePageUI(user,true);
+        	Userapp.start(new Stage());
+            Stage currentStage = (Stage) backButton.getScene().getWindow();
+            currentStage.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+            showError("An error occurred while loading the User Home Page.");
+        }
+	}
+	 
+	 
 	 
 }

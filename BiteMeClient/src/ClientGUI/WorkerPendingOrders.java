@@ -1,9 +1,12 @@
 package ClientGUI;
 import java.sql.Timestamp;
 import java.util.Comparator;
+import client.Client;
 import common.DishInOrder;
 import common.EnumOrderStatus;
 import common.Order;
+import common.User;
+import common.Restaurant.Location;
 import javafx.fxml.FXML;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -12,14 +15,19 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
+import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Text;
 import javafx.scene.control.TextField;
 
 public class WorkerPendingOrders {
-	
+	private Client client;
+	private User user = null;
+	@FXML
+    private Text errorText;
     @FXML
     private TableView<Order> orderTableView;
 
@@ -69,7 +77,7 @@ public class WorkerPendingOrders {
         statusColumn.setCellValueFactory(new PropertyValueFactory<>("status"));
 
         // Load data here
-        orderTableView.setItems(getOrders());
+        //orderTableView.setItems(getOrders());
         orderTableView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
                 updateButtonStates(newValue);
@@ -103,8 +111,14 @@ public class WorkerPendingOrders {
 
         orderTableView.getColumns().add(expandColumn);
     }
+    //-----------------------------------------END OF INIT------------------------------------------
+    public void setUser(User user) 
+    {
+        this.user = user;          
+    }
+    
     //FOR TESTING HOW THIS LOOKS*************************************************************
-    private ObservableList<Order> getOrders() {
+    /* private ObservableList<Order> getOrders() {
         ObservableList<Order> orders = FXCollections.observableArrayList();
         // Sample data
         Order stub1 = new Order("Bitch face", 1, Timestamp.valueOf("2023-08-07 10:00:00"), Timestamp.valueOf("2023-08-07 09:00:00"), 29.99, true);
@@ -119,7 +133,7 @@ public class WorkerPendingOrders {
         // Sort orders by orderId
         FXCollections.sort(orders, Comparator.comparingInt(Order::getOrderId));
         return orders;
-    }
+    }*/
   //********************************************************************************************
     
     private void showOrderDetails(Order order) {
@@ -166,7 +180,8 @@ public class WorkerPendingOrders {
     }
 
     @FXML
-    private void handleOrderReadyAction() {
+    private void handleOrderReadyAction()//CLOSE THE ROW WHEN ORDER IS READY DONT FORGET 
+    {   	
         Order selectedOrder = orderTableView.getSelectionModel().getSelectedItem();
         if (selectedOrder != null) {
             if (selectedOrder.isDelivery() && etaTextField.isVisible() && !etaTextField.getText().isEmpty()) {
@@ -194,11 +209,33 @@ public class WorkerPendingOrders {
         }
     }
 
+  //Change Error text and make it visible, appear under continue button
+    //******************************NEED TO ADD IN FXML********************************************
+  	private void showError(String str) {
+  		errorText.setText(str);
+  		errorText.setVisible(true);
+  	} 
     
-    @FXML
-    private void handleBackButtonAction() {
-        // Code to handle back button action, e.g., close the current window
-        Stage stage = (Stage) backButton.getScene().getWindow();
-        stage.close();
-    }
+ // Goes back to the user's home page
+ 	@FXML
+     private void handleBackButtonAction() {			
+ 		try {
+         	UserHomePageUI Userapp = new UserHomePageUI(user,true);
+         	Userapp.start(new Stage());
+             Stage currentStage = (Stage) backButton.getScene().getWindow();
+             currentStage.close();
+         } catch (Exception e) {
+             e.printStackTrace();
+             showError("An error occurred while loading the User Home Page.");
+         }
+     }
+    
+  //Making Quit Button to kill thread and send message to server
+    public void closeApplication() {
+        if (client != null) {
+            client.quit();
+        }
+        Platform.exit();
+        System.exit(0);
+    } 
 }

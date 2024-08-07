@@ -30,5 +30,5 @@
         <Button fx:id="approveOrderButton" disable="true" layoutX="50.0" layoutY="510.0" onAction="#handleApproveOrderAction" prefHeight="30.0" prefWidth="150.0" text="APPROVE ORDER" />
         <Button fx:id="orderReadyButton" disable="true" layoutX="230.0" layoutY="510.0" onAction="#handleOrderReadyAction" prefHeight="30.0" prefWidth="150.0" text="ORDER READY" />
         <Label fx:id="errorLabel" layoutX="620.0" layoutY="570.0" style="-fx-text-fill: red; -fx-font-size: 14px;"/>
-    </children>
+    </children>   
 </AnchorPane>
