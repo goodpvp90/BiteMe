@@ -168,8 +168,20 @@ public class UserHomePageController {
 
     @FXML
     private void handlePendingOrders(ActionEvent event) {
-        System.out.println("Pending Orders button clicked");
-        // Implement navigation to Pending Orders page
+    	try {
+            // Launch CustomerOrderCreationUI future logic
+    		//OFEK changed this one to work on this current version	
+    		WorkerPendingOrdersUI CustCreatApp = new WorkerPendingOrdersUI(user);
+    		//use this when we don't want to test user
+    		//CustomerOrderCreationUI CustCreatApp = new CustomerOrderCreationUI();
+    		CustCreatApp.start(new Stage());
+
+            // Close the current stage
+            Stage currentStage = (Stage) createOrderButton.getScene().getWindow();
+            currentStage.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void changeHelloTextAndHeadline() {
