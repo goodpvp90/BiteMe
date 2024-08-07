@@ -111,22 +111,6 @@ public class DBController {
         return (Object)userDetails;
     }
 	
-	public boolean checkCustomerRegistered(User user) {
-		boolean isRegistered = false;
-        String query = "SELECT registered FROM customers WHERE username = ?";
-        try {
-            PreparedStatement preparedStatement = connection.prepareStatement(query);
-            preparedStatement.setString(1, user.getUsername());
-            ResultSet rs = preparedStatement.executeQuery();
-            if (rs.next()) {
-                isRegistered = rs.getBoolean("registered"); 
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return isRegistered;
-	}
-	
 	
 	private boolean updateIsLoggedStatus(String username) {
 		String query = "UPDATE users SET isLogged = 1 WHERE username = ?";
@@ -156,29 +140,59 @@ public class DBController {
         }
     }
 
+    //Create new user by managers
+    public boolean createUser(String username, String password, String email, String phone, String firstName, String lastName, EnumBranch enumBranch, EnumType type, EnumType customerType, String creditCard) {
+        String sqlUsers = "INSERT INTO users (username, password, email, phone, firstname, lastname, home_branch, type, isLogged) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        String sqlCustomers = "INSERT INTO customers (username, credit_card, type_of_customer) VALUES (?, ?, ?)";
 
-	public boolean createUser(String username, String password, String email, String phone, String firstName, String lastName, EnumBranch enumBranch, EnumType type) {
-	    String sql = "INSERT INTO users (username, password, email, phone, firstname, lastname, home_branch, type, isLogged) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        try {
+            // Start transaction
+            connection.setAutoCommit(false);
 
-	    try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
-	        preparedStatement.setString(1, username);
-	        preparedStatement.setString(2, password);  // Ensure you hash passwords before storing them
-	        preparedStatement.setString(3, email);
-	        preparedStatement.setString(4, phone);
-	        preparedStatement.setString(5, firstName);
-	        preparedStatement.setString(6, lastName);
-	        preparedStatement.setString(7, enumBranch.toString());
-	        preparedStatement.setString(8, type.toString());
-	        preparedStatement.setInt(9, 0);  // isLogged defaults to 0 (false)
-	        
-	        int rowsAffected = preparedStatement.executeUpdate();
-	        return rowsAffected > 0;
+            try (PreparedStatement preparedStatementUsers = connection.prepareStatement(sqlUsers);
+                 PreparedStatement preparedStatementCustomers = connection.prepareStatement(sqlCustomers)) {
 
-	    } catch (SQLException e) {
-	        e.printStackTrace();
-	        return false;
-	    }
-	}
+                // Insert into users table
+                preparedStatementUsers.setString(1, username);
+                preparedStatementUsers.setString(2, password);  // Ensure you hash passwords before storing them
+                preparedStatementUsers.setString(3, email);
+                preparedStatementUsers.setString(4, phone);
+                preparedStatementUsers.setString(5, firstName);
+                preparedStatementUsers.setString(6, lastName);
+                preparedStatementUsers.setString(7, enumBranch.toString());
+                preparedStatementUsers.setString(8, type.toString());
+                preparedStatementUsers.setInt(9, 0);  // isLogged defaults to 0 (false)
+
+                int rowsAffected = preparedStatementUsers.executeUpdate();
+
+                // If the user is of type CUSTOMER, insert into customers table
+                if (type == EnumType.CUSTOMER) {
+                    preparedStatementCustomers.setString(1, username);
+                    preparedStatementCustomers.setString(2, creditCard);
+                    preparedStatementCustomers.setString(3, customerType.toString());
+
+                    preparedStatementCustomers.executeUpdate();
+                }
+
+                // Commit transaction
+                connection.commit();
+
+                return rowsAffected > 0;
+            } catch (SQLException e) {
+                // Rollback transaction on error
+                connection.rollback();
+                e.printStackTrace();
+                return false;
+            } finally {
+                // Reset auto-commit mode
+                connection.setAutoCommit(true);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
 	
 	public void updateOrderStatus(int orderId, EnumOrderStatus status) throws SQLException {
 	    String checkDeliveryQuery = "SELECT delivery FROM orders WHERE order_id = ?";
