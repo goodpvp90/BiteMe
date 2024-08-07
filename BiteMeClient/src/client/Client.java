@@ -29,6 +29,7 @@ import ClientGUI.CustomerInformationUpdateController;
 import ClientGUI.CustomerOrderCreation;
 import ClientGUI.RegisterUserPageController;
 import ClientGUI.ReportsPageController;
+import ClientGUI.WorkerPendingOrders;
 import common.Dish;
 
 public class Client extends AbstractClient {
@@ -43,6 +44,7 @@ public class Client extends AbstractClient {
 	private RegisterUserPageController registerUserPageController;
 	private CustomerInformationUpdateController customerInformationUpdateController;
 	private CustomerCheckout customerCheckout;
+	private WorkerPendingOrders workerPendingOrders;
 	// Constructor to initialize the client with host and port, and establish
 	// connection
 	public Client(String host, int port) throws IOException {
@@ -85,6 +87,11 @@ public class Client extends AbstractClient {
 		
 	}
 	
+	
+	// sets the WorkerPendingOrders instance
+	public void setWorkerPendingOrders(WorkerPendingOrders WorkerPendingOrders) {
+		this.workerPendingOrders = WorkerPendingOrders;
+	}
 	// sets the CustomerOrderCreation instance
 	public void setCustomerOrderCreation(CustomerOrderCreation CustomerOrderCreation) {
 		this.CustomerOrderCreation = CustomerOrderCreation;
@@ -123,6 +130,13 @@ public class Client extends AbstractClient {
 				// Handle array of orders from the server
 	            Object[] orders = (Object[]) message[1];
 	            break;
+			case PENDING_ORDER:
+				//****************
+				List<Order> pendingOrders = (List<Order>)message[1];
+				for (Order order :pendingOrders) {
+					System.out.println(order);
+				}
+				break;
 			case USER:
 					handleLogin(message);
 	        	break;
@@ -277,7 +291,13 @@ public class Client extends AbstractClient {
 		} catch (Exception e) {
 		}
 	}
-		
+	
+	
+	public void sendShowPending(int branchId) {
+	    //GET PENDING ORDERS
+		sendMessageToServer(new Object[] { EnumServerOperations.PENDING_ORDER, branchId });
+	}
+	
 	public void sendCreateAccout(User user) {
 	    // Send a request to create accout
 		sendMessageToServer(new Object[] { EnumServerOperations.CREATE_ACCOUNT, user });
