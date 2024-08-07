@@ -28,7 +28,7 @@ public class RegisterUserPageController {
 
     @FXML
     private Text errorText;
-
+    private User loggedInUser;
     private Scene previousScene;
     private Client client;
 
@@ -39,6 +39,10 @@ public class RegisterUserPageController {
 
     public void setPreviousScene(Scene scene) {
         this.previousScene = scene;
+    }
+    
+    public void setLoggedInUser(User user) {
+        this.loggedInUser = user;
     }
 
     @FXML
@@ -90,7 +94,6 @@ public class RegisterUserPageController {
         // Hide any previous error
         errorText.setVisible(false);
         
-        // TODO:
         System.out.println("Proceeding to next window for user: " + user.getUsername());
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("CustomerInformationUpdate.fxml"));
@@ -99,6 +102,7 @@ public class RegisterUserPageController {
             if (controller != null) {
                 controller.setPreviousScene(backButton.getScene());
                 controller.setUser(user);
+                controller.setLoggedInUser(this.loggedInUser); // Pass the logged-in user
             } else {
                 System.err.println("Failed to get controller from FXMLLoader");
             }

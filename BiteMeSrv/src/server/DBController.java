@@ -88,8 +88,28 @@ public class DBController {
                     String phone = rs.getString("phone");
                     String firstName = rs.getString("firstname");
                     String lastName = rs.getString("lastname");
-                    EnumBranch homeBranch = EnumBranch.valueOf(rs.getString("home_branch"));
-                    EnumType type = EnumType.valueOf(rs.getString("type"));
+                    //TODO I PUT THIS AS COMMENT AFTER BENS APPROVAL
+//                    EnumBranch homeBranch = EnumBranch.valueOf(rs.getString("home_branch"));
+//                    EnumType type = EnumType.valueOf(rs.getString("type"));
+                    EnumType type = null;
+                    if (rs.getString("type") != null) {
+                        try {
+                            type = EnumType.valueOf(rs.getString("type"));
+                        } catch (IllegalArgumentException e) {
+                            // Handle the case where the type value is invalid
+                            type = null;
+                        }
+                    }
+
+                    EnumBranch homeBranch = null;
+                    if (rs.getString("home_branch") != null) {
+                        try {
+                            homeBranch = EnumBranch.valueOf(rs.getString("home_branch"));
+                        } catch (IllegalArgumentException e) {
+                            // Handle the case where the home_branch value is invalid
+                            homeBranch = null;
+                        }
+                    }
                     boolean isLogged = rs.getBoolean("isLogged");
 
                     userDetails.add(firstName);
@@ -145,20 +165,13 @@ public class DBController {
 
  // Create or update user by managers
     public boolean createUser(String id, String username, String password, String email, String phone, String firstName, String lastName, EnumBranch enumBranch, EnumType type, EnumType customerType, String creditCard) {
-    	//TODO SYSO REMOVE
-    	System.out.println("Entering createUser method");
         String sqlUpdateUsers = "UPDATE users SET password = ?, email = ?, phone = ?, firstname = ?, lastname = ?, home_branch = ?, type = ?, id = ? WHERE username = ?";
         String sqlInsertCustomers = "INSERT INTO customers (username, credit_card, type_of_customer) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE credit_card = VALUES(credit_card), type_of_customer = VALUES(type_of_customer)";
-
         try {
             // Start transaction
             connection.setAutoCommit(false);
-          //TODO SYSO REMOVE
-            System.out.println("Starting transaction");
             try (PreparedStatement preparedStatementUpdateUsers = connection.prepareStatement(sqlUpdateUsers);
                  PreparedStatement preparedStatementInsertCustomers = connection.prepareStatement(sqlInsertCustomers)) {
-            	//TODO SYSO REMOVE
-            	System.out.println("Prepared statements created");
                 // Update users table
                 preparedStatementUpdateUsers.setString(1, password);  // Ensure you hash passwords before storing them
                 preparedStatementUpdateUsers.setString(2, email);
@@ -172,8 +185,6 @@ public class DBController {
                 preparedStatementUpdateUsers.setString(9, username);
 
                 int rowsAffected = preparedStatementUpdateUsers.executeUpdate();
-              //TODO SYSO REMOVE
-                System.out.println("Users table updated. Rows affected: " + rowsAffected);
                 // If the user is of type CUSTOMER, insert or update in customers table
                 if (type == EnumType.CUSTOMER) {
                     preparedStatementInsertCustomers.setString(1, username);
@@ -185,25 +196,17 @@ public class DBController {
 
                 // Commit transaction
                 connection.commit();
-              //TODO SYSO REMOVE
-                System.out.println("Transaction committed");
                 return rowsAffected > 0;
             } catch (SQLException e) {
                 // Rollback transaction on error
                 connection.rollback();
-              //TODO SYSO REMOVE
-                System.out.println("SQLException occurred. Rolling back transaction.");
                 e.printStackTrace();
                 return false;
             } finally {
                 // Reset auto-commit mode
                 connection.setAutoCommit(true);
-              //TODO SYSO REMOVE
-                System.out.println("Auto-commit reset to true");
             }
         } catch (SQLException e) {
-        	//TODO SYSO REMOVE
-        	System.out.println("Outer SQLException occurred");
             e.printStackTrace();
             return false;
         }

@@ -58,7 +58,16 @@ public class UserHomePageController {
     
     
     private void updateUI() {
-    	switch(user.getType()) {
+    	if (user.getType() == null) {
+            // Handle unregistered user
+            viewReportsButton.setVisible(false);
+            registerUserButton.setVisible(false);
+            updateMenuButton.setVisible(false);
+            pendingOrdersButton.setVisible(false);
+            createOrderButton.setVisible(false);
+            changeHomeBranchButton.setVisible(false);
+        } 
+    	else {switch(user.getType()) {
     	//CEO AND BM Same buttons but other functionalities and roles.
     	case CEO:
     		break;
@@ -74,13 +83,9 @@ public class UserHomePageController {
     		registerUserButton.setVisible(false);
     		updateMenuButton.setVisible(false);
     		pendingOrdersButton.setVisible(false);
-    		//For Unregistered Customer
-    		if (!isRegistered) {
-    			createOrderButton.setVisible(false);
-    			changeHomeBranchButton.setVisible(false);    			
-    		}
     		break;
     	}
+        }
     	changeHelloTextAndHeadline();
 	}
 
@@ -180,30 +185,37 @@ public class UserHomePageController {
     }
 
     private void changeHelloTextAndHeadline() {
-    	String userType = ""; 
-    	switch(user.getType()) {
-    	case CEO:
-    		userType = "CEO";
-    		break;
-    	case BRANCH_MANAGER:
-    		userType = "Manager";
-    		break;
-    	case WORKER:
-    		userType = "Worker";
-    		break;
-    	case CUSTOMER:
-    		//For Unregisterd too
-    		userType = isRegistered ? "Customer" : "Unregistered Customer";
-    		break;
-    	}
-        headlineText.setText(user.getUsername()+ ", "+userType);
-        if(isRegistered || user.getType() != EnumType.CUSTOMER)
-            welcomeText.setText("Hello " + user.getFirstName()+ ", what would you like to do?");
-        else
-            welcomeText.setText("Hello " + user.getFirstName()+", looks like\n"
-                    + " you have not registered yet.\n"
-                    + "Please make contact with a\n "
+        String userType = "";
+        
+        if (user.getType() == null) {
+            userType = "Unregistered Customer";
+        } else {
+            switch(user.getType()) {
+                case CEO:
+                    userType = "CEO";
+                    break;
+                case BRANCH_MANAGER:
+                    userType = "Manager";
+                    break;
+                case WORKER:
+                    userType = "Worker";
+                    break;
+                case CUSTOMER:
+                    userType = "Customer";
+                    break;
+            }
+        } 
+        headlineText.setText(user.getUsername() + ", " + userType);
+        if (user.getType() == null) {
+            // For unregistered customer
+            welcomeText.setText("Hello, looks like\n"
+                    + "you have not registered yet.\n"
+                    + "Please make contact with a\n"
                     + "manager of your preferred branch.");
+        } else {
+            // For all registered users
+            welcomeText.setText("Hello " + user.getFirstName() + ", what would you like to do?");
+        }
     }
     
     
@@ -217,6 +229,9 @@ public class UserHomePageController {
             // Store the current scene before switching
             Scene currentScene = registerUserButton.getScene();
             registerController.setPreviousScene(currentScene);
+            
+            // Pass the logged-in user information
+            registerController.setLoggedInUser(this.user);
             
             Stage stage = (Stage) registerUserButton.getScene().getWindow();
             Scene newScene = new Scene(root);
