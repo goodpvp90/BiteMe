@@ -13,6 +13,8 @@ import common.IncomeReport;
 import common.Order;
 import common.OrdersReport;
 import common.PerformanceReport;
+import common.QuarterlyReport;
+import common.Restaurant.Location;
 import common.User;
 import ocsf.server.AbstractServer;
 import ocsf.server.ConnectionToClient;
@@ -93,6 +95,7 @@ public class Server extends AbstractServer {
                 orderController.updateOrderStatus(orderId, newStatus);
                 break;
             case LOGIN:
+            	reportController.getQuarterlyReport(new QuarterlyReport(Location.NORTH, 1, 2024), client);
             	handleLogin(client, message);
                 break;
             case LOG_OUT:
@@ -118,6 +121,9 @@ public class Server extends AbstractServer {
             	break;
             case PERFORMANCE_REPORT:
             	reportController.getPerformanceReport((PerformanceReport)message[1], client);
+            	break;
+            case QUARTERLY_REPORT:
+            	reportController.getQuarterlyReport((QuarterlyReport)message[1], client);
             	break;
             case GET_DISCOUNT_AMOUNT:
             	String username = (String)message[1];

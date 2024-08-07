@@ -9,7 +9,9 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import common.DailyPerformanceReport;
@@ -28,6 +30,7 @@ import common.IncomeReport;
 import common.Order;
 import common.OrdersReport;
 import common.PerformanceReport;
+import common.QuarterlyReport;
 import common.Restaurant.Location;
 import common.User;
 
@@ -738,6 +741,8 @@ public class DBController {
             e.printStackTrace();
         }
     }
+    
+    
 
     
     /**
@@ -873,7 +878,182 @@ public class DBController {
         }
         return (Object) report;
     }
+   
+    /**
+     * Retrieves a quarterly report for a specific branch, year, and quarter.
+     * If the report exists, it populates the {@code qreport} object with the report data.
+     * If the report does not exist, it returns a message indicating that the report is not available.
+     * 
+     * @param qreport the {@link QuarterlyReport} object containing the details for which the report is to be fetched.
+     *                It is assumed to have the branch ID, year, and quarter set.
+     * @return an {@code Object} which is either the populated {@link QuarterlyReport} object if the report exists,
+     *         or a {@code String} message indicating that the report does not exist or an error occurred.
+     */
+    public Object getQuarterlyReport(QuarterlyReport qreport){
+        String selectReportSQL = "SELECT * FROM quarterly_report WHERE branch_id = ? AND year = ? AND quarter = ?";
+    	int restaurantId = getRestaurantIdByLocation(qreport.getRestaurant());
+        try (PreparedStatement selectStmt = connection.prepareStatement(selectReportSQL)) {
+            selectStmt.setInt(1, restaurantId);
+            selectStmt.setInt(2, qreport.getYear());
+            selectStmt.setInt(3, qreport.getQuarter());
 
+            ResultSet rs = selectStmt.executeQuery();
+            if (rs.next()) {
+                // Report exists
+            	qreport.setIncome(rs.getInt("income"));
+                qreport.addDaysInRanges("0_20", rs.getInt("0_20"));
+                qreport.addDaysInRanges("21_40", rs.getInt("21_40"));
+                qreport.addDaysInRanges("41_60", rs.getInt("41_60"));
+                qreport.addDaysInRanges("61_80", rs.getInt("61_80"));
+                qreport.addDaysInRanges("81_100", rs.getInt("81_100"));
+                qreport.addDaysInRanges("101_120", rs.getInt("101_120"));
+                qreport.addDaysInRanges("121_140", rs.getInt("121_140"));
+                qreport.addDaysInRanges("141_160", rs.getInt("141_160"));
+                qreport.addDaysInRanges("161_180", rs.getInt("161_180"));
+                qreport.addDaysInRanges("181_200", rs.getInt("181_200"));
+                qreport.addDaysInRanges("201_plus", rs.getInt("201_plus"));
+                return (Object)qreport;
+            }
+        } catch (SQLException e) {
+        	e.printStackTrace();
+        	return (Object)e.toString();
+		}
+        //if got here meaning report don't exist
+        return (Object)"Report dont exist";
+    }
+    
+    /**
+     * Creates a quarterly report for a specific branch, year, and quarter.
+     * If the report already exists, it will not be created again.
+     * This method populates the new report with income and the number of days in each specified range.
+     * 
+     * @param qreport the {@link QuarterlyReport} object containing the details for the report to be created.
+     *                It should have the branch ID, year, and quarter set.
+     * @return {@code true} if the report was successfully created; {@code false} otherwise.
+     */
+    public boolean createQuarterlyReport(QuarterlyReport qreport) {
+    	int restaurantId = getRestaurantIdByLocation(qreport.getRestaurant());
+    	int income = getIncomeForQuarter(restaurantId, qreport.getYear(), qreport.getQuarter());
+        Object result = getDaysInRanges(qreport);
+        if (result == null)
+        	return false;
+		@SuppressWarnings("unchecked")
+		Map<String, Integer> daysInRanges = (Map<String, Integer>)result;
+
+        // Insert new report
+        String insertReportSQL = "INSERT INTO quarterly_report (branch_id, quarter, year, income, `0_20`, `21_40`, `41_60`, `61_80`, `81_100`, `101_120`, `121_140`, `141_160`, `161_180`, `181_200`, `201_plus`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        try (PreparedStatement insertStmt = connection.prepareStatement(insertReportSQL)) {
+            insertStmt.setInt(1, restaurantId);
+            insertStmt.setInt(2, qreport.getQuarter());
+            insertStmt.setInt(3, qreport.getYear());
+            insertStmt.setInt(4, income);
+            insertStmt.setInt(5, daysInRanges.get("0_20"));
+            insertStmt.setInt(6, daysInRanges.get("21_40"));
+            insertStmt.setInt(7, daysInRanges.get("41_60"));
+            insertStmt.setInt(8, daysInRanges.get("61_80"));
+            insertStmt.setInt(9, daysInRanges.get("81_100"));
+            insertStmt.setInt(10, daysInRanges.get("101_120"));
+            insertStmt.setInt(11, daysInRanges.get("121_140"));
+            insertStmt.setInt(12, daysInRanges.get("141_160"));
+            insertStmt.setInt(13, daysInRanges.get("161_180"));
+            insertStmt.setInt(14, daysInRanges.get("181_200"));
+            insertStmt.setInt(15, daysInRanges.get("201_plus"));
+
+            insertStmt.executeUpdate();
+            System.out.println("Quarterly Report created.");
+            return true;
+        } catch (SQLException e) {
+			e.printStackTrace();
+			System.out.println("Error generating new quarterly report");
+			return false;
+		}
+    }
+        
+    /**
+     * Retrieves the total income for a specific branch, year, and quarter.
+     * The income is calculated by summing the income for the months that fall within the given quarter.
+     * 
+     * @param branchId the ID of the branch for which the income is to be retrieved.
+     * @param year the year for which the income is to be calculated.
+     * @param quarter the quarter (1 to 4) for which the income is to be calculated.
+     * @return the total income for the specified branch, year, and quarter.
+     *         Returns 0 if there is an error or no income is found.
+     */
+    private int getIncomeForQuarter(int branchId, int year, int quarter){
+        String incomeSQL = "SELECT SUM(income) FROM incomereport WHERE restaurant = ? AND year = ? AND month IN (?, ?, ?)";
+        try (PreparedStatement stmt = connection.prepareStatement(incomeSQL)) {
+            stmt.setInt(1, branchId);
+            stmt.setInt(2, year);
+            stmt.setInt(3, quarter * 3 - 2); // 1st month of the quarter
+            stmt.setInt(4, quarter * 3 - 1); // 2nd month of the quarter
+            stmt.setInt(5, quarter * 3);     // 3rd month of the quarter
+
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
+        } catch (SQLException e) {
+			e.printStackTrace();
+			System.out.println("Error getting income for quarterly report");
+		}
+        return 0;
+    }
+
+    /**
+     * Retrieves the number of days that fall within specific ranges of total orders for a given branch, year, and quarter.
+     * The ranges are predefined and include: 0-20, 21-40, 41-60, 61-80, 81-100, 101-120, 121-140, 141-160, 161-180, 181-200, and 201+.
+     * 
+     * @param qreport the {@link QuarterlyReport} object containing the details for which the range counts are to be fetched.
+     *                It should have the branch ID, year, and quarter set.
+     * @return an {@code Object} that contains a {@link Map} with the number of days in each range.
+     *         The keys of the map are the range labels (e.g., "0_20", "21_40"), and the values are the counts of days within those ranges.
+     *         Returns {@code null} if there is an error executing the SQL query.
+     */
+    private Object getDaysInRanges(QuarterlyReport qreport){
+        // SQL query to get the number of days in each range of total orders
+        String performanceSQL = "SELECT COUNT(*) AS days, " +
+                "SUM(totalOrders BETWEEN 0 AND 20) AS `0_20`, " +
+                "SUM(totalOrders BETWEEN 21 AND 40) AS `21_40`, " +
+                "SUM(totalOrders BETWEEN 41 AND 60) AS `41_60`, " +
+                "SUM(totalOrders BETWEEN 61 AND 80) AS `61_80`, " +
+                "SUM(totalOrders BETWEEN 81 AND 100) AS `81_100`, " +
+                "SUM(totalOrders BETWEEN 101 AND 120) AS `101_120`, " +
+                "SUM(totalOrders BETWEEN 121 AND 140) AS `121_140`, " +
+                "SUM(totalOrders BETWEEN 141 AND 160) AS `141_160`, " +
+                "SUM(totalOrders BETWEEN 161 AND 180) AS `161_180`, " +
+                "SUM(totalOrders BETWEEN 181 AND 200) AS `181_200`, " +
+                "SUM(totalOrders > 200) AS `201_plus` " +
+                "FROM performancereport " +
+                "WHERE branch_id = ? AND YEAR(date) = ? AND QUARTER(date) = ?";
+        
+        try (PreparedStatement stmt = connection.prepareStatement(performanceSQL)) {
+        	int restaurantId = getRestaurantIdByLocation(qreport.getRestaurant());
+            stmt.setInt(1, restaurantId);
+            stmt.setInt(2, qreport.getYear());
+            stmt.setInt(3, qreport.getQuarter());
+
+            ResultSet rs = stmt.executeQuery();
+            Map<String, Integer> daysInRanges = new HashMap<>();
+            if (rs.next()) {
+                daysInRanges.put("0_20", rs.getInt("0_20"));
+                daysInRanges.put("21_40", rs.getInt("21_40"));
+                daysInRanges.put("41_60", rs.getInt("41_60"));
+                daysInRanges.put("61_80", rs.getInt("61_80"));
+                daysInRanges.put("81_100", rs.getInt("81_100"));
+                daysInRanges.put("101_120", rs.getInt("101_120"));
+                daysInRanges.put("121_140", rs.getInt("121_140"));
+                daysInRanges.put("141_160", rs.getInt("141_160"));
+                daysInRanges.put("161_180", rs.getInt("161_180"));
+                daysInRanges.put("181_200", rs.getInt("181_200"));
+                daysInRanges.put("201_plus", rs.getInt("201_plus"));
+            }
+            return (Object)daysInRanges;
+        } catch (SQLException e) {
+			e.printStackTrace();
+			System.out.println("Error getting Days by range for creating quartyely report");
+		}
+        return null;
+    }
 
     
     public void savePendingNotification(String username, int orderId, String status) throws SQLException {
