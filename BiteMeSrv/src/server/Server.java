@@ -69,7 +69,8 @@ public class Server extends AbstractServer {
 				break;
             case ADD_DISH:
                 Dish dish = (Dish) message[1];
-                orderController.addDish(dish);
+                boolean addResult = orderController.addDish(dish);
+                sendMessageToClient(EnumClientOperations.ADD_DISH, client, addResult);
                 break;
             case INSERT_ORDER:
                 // Extract data from the message
