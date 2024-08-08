@@ -379,4 +379,17 @@ public class Client extends AbstractClient {
 	public void getViewMenu(EnumServerOperations op, int menuId) {
 		sendMessageToServer(new Object[] {op, menuId });
 	}
+	
+	
+	public void deleteDish(Dish dish) {
+		sendMessageToServer(new Object[] { EnumServerOperations.DELETE_DISH, dish });
+	}
+	
+	public void addDish(Dish dish) {
+		sendMessageToServer(new Object[] { EnumServerOperations.ADD_DISH, dish });
+	}
+	
+	public void changeHomeBranch(User user) {
+		sendMessageToServer(new Object[] { EnumServerOperations.CHANGE_HOME_BRANCH, user });
+	}
 }

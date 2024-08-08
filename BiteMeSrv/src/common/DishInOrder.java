@@ -2,7 +2,7 @@ package common;
 
 import java.io.Serializable;
 
-public class DishInOrder implements Serializable {
+public class DishInOrder implements Serializable{
     private int orderId; //Check if needed, currently unused
     private String comment;
     private String optionalPick;
