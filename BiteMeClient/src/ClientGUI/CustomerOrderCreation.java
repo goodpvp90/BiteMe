@@ -2,6 +2,7 @@ package ClientGUI;
 import common.Restaurant.Location;
 import common.User;
 import common.EnumDish;
+import common.EnumServerOperations;
 import common.Dish;
 import common.DishAppetizer;
 import common.DishBeverage;
@@ -166,7 +167,7 @@ public class CustomerOrderCreation {
         		Location returnLocation = convertNumToLocation(ChosenItemsFromMenu.get(0).getMenuId());
                 branchComboBox.setValue(returnLocation);
                 ChosenItemsTableView.getItems().addAll(ChosenItemsFromMenu);
-            	client.getViewMenu(ChosenItemsFromMenu.get(0).getMenuId());
+            	client.getViewMenu(EnumServerOperations.VIEW_MENU, ChosenItemsFromMenu.get(0).getMenuId());
 
         	}
         }
@@ -225,7 +226,7 @@ public class CustomerOrderCreation {
         		MenuID = 3;
         		break; 
         	}    
-        	client.getViewMenu(MenuID);
+        	client.getViewMenu(EnumServerOperations.VIEW_MENU, MenuID);
         	ChosenItemsFromMenu.clear();                  
         	ChosenItemsTableView.getItems().clear();
             categoryComboBox.setValue(null);      
