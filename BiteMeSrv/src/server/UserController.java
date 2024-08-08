@@ -87,4 +87,8 @@ public class UserController {
     		server.sendMessageToClient(EnumClientOperations.CREATED_ACCOUNT,client, (Object)user);
     	}
     }
+    
+    public boolean changeHomeBranch(User user) {
+    	return server.dbController.changeHomeBranch(user);
+    }
 }

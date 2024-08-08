@@ -186,7 +186,7 @@ public class ReportController {
     				System.out.println("GOT HERE");
     				//server.sendMessageToClient(EnumClientOperations.QUARTERLY_REPORT, client, (QuarterlyReport)newGetResult);
     			}else {
-    				server.sendMessageToClient(EnumClientOperations.REPORT_ERROR, client, newGetResult);
+    				server.sendMessageToClient(EnumClientOperations.QUARTERLY_REPORT_ERROR, client, newGetResult);
     			}
     		}
     	}	

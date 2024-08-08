@@ -200,6 +200,7 @@ public class Client extends AbstractClient {
         		}
                  break;
             case MENU_FOR_UPDATE:
+            	@SuppressWarnings("unchecked")
             	List<Dish> menuupdate = (List<Dish>) message[1];
             	updateDeleteMenu.setMenuDishes(menuupdate);
             	break;
@@ -238,6 +239,10 @@ public class Client extends AbstractClient {
             	//TODO do smth
 
             	break;
+            case QUARTERLY_REPORT_ERROR:
+            	//u receive a (Object)string
+            	//TODO do smth
+            	break;
             case UPDATE_DISH:
             	//UPDATE EXISSTING DISH RESPONSE.
             	//TODO do smth
@@ -256,6 +261,10 @@ public class Client extends AbstractClient {
 				for (DishInOrder dishin :dishes) {
 					System.out.println(dishin);
 				}
+            	break;
+            case CHANGE_HOME_BRANCH:
+            	//u receive a boolean if succcseded or not
+            	//TODO do smth
             	break;
 			case NONE:
 				System.out.println("no operation was received");
