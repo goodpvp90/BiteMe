@@ -21,6 +21,7 @@ import common.Dish;
 import common.User;
 import java.time.LocalTime;
 import java.time.Period;
+import common.EnumType;
 
 public class CustomerOrderGatherSelection {
 	private User user = null;
@@ -441,7 +442,13 @@ public class CustomerOrderGatherSelection {
 		if (chooseOptionRobot) {
 			showError("Please choose different delivery type.");
 			return;
+		} 
+		if(user.getType()!=EnumType.BUSINESS && chooseOptionShared) {
+			showError("Only business users can choose shared delivery.\n Please choose different delivery type.");
+			return;
 		}
+
+			
 		launchCheckout();
 	}
 

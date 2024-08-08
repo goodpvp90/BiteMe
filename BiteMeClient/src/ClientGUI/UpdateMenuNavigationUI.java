@@ -25,6 +25,10 @@ public class UpdateMenuNavigationUI extends Application {
         
         UpdateMenuNavigation controller = loader.getController();
         if(user!=null) {controller.setUser(user); }
+        primaryStage.setOnCloseRequest(event -> {
+            event.consume(); // Prevent the window from closing immediately
+            controller.closeApplication();
+        });
         
         primaryStage.show();
     }
