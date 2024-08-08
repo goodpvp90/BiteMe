@@ -29,6 +29,7 @@ import ClientGUI.CustomerInformationUpdateController;
 import ClientGUI.CustomerOrderCreation;
 import ClientGUI.RegisterUserPageController;
 import ClientGUI.ReportsPageController;
+import ClientGUI.UpdateDeleteMenu;
 import ClientGUI.WorkerPendingOrders;
 import common.Dish;
 
@@ -44,6 +45,7 @@ public class Client extends AbstractClient {
 	private RegisterUserPageController registerUserPageController;
 	private CustomerInformationUpdateController customerInformationUpdateController;
 	private CustomerCheckout customerCheckout;
+	private UpdateDeleteMenu updateDeleteMenu;
 	private WorkerPendingOrders workerPendingOrders;
 	// Constructor to initialize the client with host and port, and establish
 	// connection
@@ -116,6 +118,10 @@ public class Client extends AbstractClient {
 	
 	public void getInstanceOfCustomerCheckout(CustomerCheckout customerCheckout) {
 		this.customerCheckout = customerCheckout;
+	}
+	
+	public void getInstanceOfUpdateDeleteMenu(UpdateDeleteMenu updateDeleteMenu) {
+		this.updateDeleteMenu = updateDeleteMenu;
 	}
 	
 	// Handle messages received from the server
@@ -193,6 +199,10 @@ public class Client extends AbstractClient {
         		    System.out.println(dishInfo);
         		}
                  break;
+            case MENU_FOR_UPDATE:
+            	List<Dish> menuupdate = (List<Dish>) message[1];
+            	updateDeleteMenu.setMenuDishes(menuupdate);
+            	break;
             case ADD_DISH:
                 boolean addDishResult = (boolean) message[1];
                 break;
@@ -366,7 +376,7 @@ public class Client extends AbstractClient {
 	}
 
 	// OFEK
-	public void getViewMenu(int menuId) {
-		sendMessageToServer(new Object[] { EnumServerOperations.VIEW_MENU, menuId });
+	public void getViewMenu(EnumServerOperations op, int menuId) {
+		sendMessageToServer(new Object[] {op, menuId });
 	}
 }

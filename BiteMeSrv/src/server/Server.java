@@ -109,6 +109,10 @@ public class Server extends AbstractServer {
                 int menuId = (int) message[1];
                 List<Dish> menu = orderController.viewMenu(menuId);
                 sendMessageToClient(EnumClientOperations.VIEW_MENU, client, menu);
+            case MENU_FOR_UPDATE://FIND SOLUTION FOR DUPLICATED CODE
+                int menuIdd = (int) message[1];
+                List<Dish> menuu = orderController.viewMenu(menuIdd);
+                sendMessageToClient(EnumClientOperations.MENU_FOR_UPDATE, client, menuu);
                 break;
             case PENDING_ORDER:
                 List<Order> pendingOrders = orderController.getPendingOrdersByBranch((int) message[1]);
@@ -207,7 +211,4 @@ public class Server extends AbstractServer {
 	public void setController(serverController controller) {
 		this.controller = controller;
 	}
-
-
-
 }

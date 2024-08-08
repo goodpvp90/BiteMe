@@ -139,10 +139,21 @@ public class UserHomePageController {
 
     @FXML
     private void handleUpdateMenu(ActionEvent event) {
-        System.out.println("Update Menu button clicked");
-        // Implement navigation to Update Menu page
-    }
+    	try {
+            
+    		UpdateMenuNavigationUI UIApp = new UpdateMenuNavigationUI(user);
+    		
+    		UIApp.start(new Stage());
 
+            // Close the current stage
+            Stage currentStage = (Stage) updateMenuButton.getScene().getWindow();
+            currentStage.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    
+    
     @FXML
     private void handleViewReports(ActionEvent event) {
         try {
