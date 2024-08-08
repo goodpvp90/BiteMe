@@ -15,6 +15,11 @@ import java.io.IOException;
 import client.Client;
 import common.User;
 
+/**
+ * Controller class for the Register User Page in the BiteMe application.
+ * This controller manages the initial step of user registration, where a username is checked
+ * for availability or existing partial registration.
+ */
 public class RegisterUserPageController {
 
     @FXML
@@ -32,19 +37,36 @@ public class RegisterUserPageController {
     private Scene previousScene;
     private Client client;
 
+    /**
+     * Initializes the controller. This method is automatically called after the FXML file has been loaded.
+     */
     public void initialize() {
         client = Client.getInstance();
         client.setRegisterUserPageController(this);
     }
 
+    /**
+     * Sets the previous scene to allow returning to the User Home Page.
+     * 
+     * @param scene The scene of the User Home Page
+     */
     public void setPreviousScene(Scene scene) {
         this.previousScene = scene;
     }
     
+    /**
+     * Sets the logged-in user information.
+     * 
+     * @param user The currently logged-in user
+     */
     public void setLoggedInUser(User user) {
         this.loggedInUser = user;
     }
 
+    /**
+     * Handles the action when the back button is clicked.
+     * Returns to the User Home Page.
+     */
     @FXML
     private void handleBack() {
         Stage stage = (Stage) backButton.getScene().getWindow();
@@ -52,6 +74,10 @@ public class RegisterUserPageController {
         stage.setTitle("User Home Page");
     }
 
+    /**
+     * Handles the action when the continue button is clicked.
+     * Validates the entered username and sends a request to the server to check its status.
+     */
     @FXML
     private void handleContinue() {
         errorText.setVisible(false);
@@ -66,12 +92,22 @@ public class RegisterUserPageController {
         }
     }
 
+    /**
+     * Displays an error message to the user.
+     * 
+     * @param message The error message to display
+     */
     private void showError(String message) {
         errorText.setText(message);
         errorText.setVisible(true);
     }
 
-    // This method should be called Client class after receiving the server response
+    /**
+     * Handles the server's response to the username check.
+     * This method is called by the Client class after receiving the server response.
+     * 
+     * @param Customer The response object from the server
+     */
     public void handleServerResponse(Object Customer) {
         Platform.runLater(() -> {
         	if (Customer instanceof Boolean) {
@@ -90,6 +126,11 @@ public class RegisterUserPageController {
         });
         }
 
+    /**
+     * Opens the Customer Information Update window for a user that needs to complete registration.
+     * 
+     * @param user The user object with partial information (Unregistered Customer)
+     */
     private void CustomerInformationUpdateWindow(User user) {
         // Hide any previous error
         errorText.setVisible(false);

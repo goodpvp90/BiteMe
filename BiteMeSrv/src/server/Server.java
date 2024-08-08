@@ -128,7 +128,11 @@ public class Server extends AbstractServer {
             	reportController.getPerformanceReport((PerformanceReport)message[1], client);
             	break;
             case QUARTERLY_REPORT:
+            	//TODO SYSO REMOVE
+            	System.out.println("Received quarterly report request from client"); 
             	reportController.getQuarterlyReport((QuarterlyReport)message[1], client);
+            	System.out.println("Quarterly report processed and sent back to client"); 
+            	//TODO SYSO REMOVE
             	break;
             case GET_DISCOUNT_AMOUNT:
             	String username = (String)message[1];
