@@ -1,6 +1,6 @@
 package common;
 
-public enum EnumClientOperations {
+public enum EnumClientOperations{
 	UPDATE_WELOCME,
 	USER,
 	DISPLAY_ORDERS,
