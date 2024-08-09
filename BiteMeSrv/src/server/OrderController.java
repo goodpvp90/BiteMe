@@ -100,8 +100,8 @@ public class OrderController {
         return server.dbController.getDishesInOrder(orderId);
     }
     
-    public void addDish(Dish dish) {
-        server.dbController.addDish(dish);
+    public boolean addDish(Dish dish) {
+        return server.dbController.addDish(dish);
     }
     
     public boolean deleteDish(Dish dish) {

@@ -1,7 +1,9 @@
 package ClientGUI;
 
 
+import client.Client;
 import common.User;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -30,9 +32,17 @@ public class UpdateMenuNavigation {
 
     private User user;
     
+    private Client client;
+    
     public void setUser(User user) {
     	this.user=user;
 
+    }
+    
+    @FXML
+    void initialize() {
+        // Setup table columns
+    	client = client.getInstance();
     }
     
     @FXML
@@ -65,6 +75,15 @@ public class UpdateMenuNavigation {
         }
     }
 
+    //Making Quit Button to kill thread and send message to server
+    public void closeApplication() {
+        if (client != null) {
+        	client.userLogout(user);
+            }
+        client.userLogout(user);
+        Platform.exit();
+        System.exit(0);
+    }   
     @FXML
     void handleAddNewDishButtonAction(ActionEvent event) {
         System.out.println("Add New Dish button pressed");

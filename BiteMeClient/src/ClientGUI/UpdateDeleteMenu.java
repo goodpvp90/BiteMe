@@ -19,6 +19,8 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.text.Text;
+import javafx.stage.Stage;
+import common.EnumDish;
 
 public class UpdateDeleteMenu {
 
@@ -56,10 +58,10 @@ public class UpdateDeleteMenu {
     private TextField priceField;
 
     @FXML
-    private ComboBox<?> optionalsComboBox;
+    private TextField optionalsField;
 
     @FXML
-    private ComboBox<?> grillComboBox;
+    private ComboBox<String> grillComboBox;
 
     @FXML
     private Text nameText;
@@ -95,11 +97,52 @@ public class UpdateDeleteMenu {
         optionalsColumn.setCellValueFactory(new PropertyValueFactory<>("optionals"));
         //grillColumn.setCellValueFactory(new PropertyValueFactory<>("isGrill")); 
         
+        grillComboBox.getItems().addAll("No", "Yes");
+        grillComboBox.setValue("No");
+        
+        // Add a listener to handle row selection
+        menuTableView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null) { // Ensure newValue is not null
+                Dish selectedDish = (Dish) newValue;
+                // Update the TextFields with the selected dish details
+                nameField.setText(selectedDish.getDishName());
+                priceField.setText(String.valueOf(selectedDish.getPrice()));
+                
+                // Handle optionals
+                if (selectedDish.getOptionals() != null && !selectedDish.getOptionals().isEmpty()) {
+                    optionalsField.setText(formatOptionals(selectedDish.getOptionals()));
+                } else {
+                    optionalsField.setText(""); // Clear field if no optionals
+                }
+                if(selectedDish.getDishType()==EnumDish.MAIN_COURSE) {
+                	grillText.setVisible(true);
+                	grillComboBox.setVisible(true);
+                }
+                else {
+                	grillText.setVisible(false);
+                	grillComboBox.setVisible(false);
+                }
+                	
+            }
+        });
         
     }
     
-   
+    private String formatOptionals(ArrayList<String> optionals) {
+        if (optionals == null || optionals.isEmpty()) {
+            return "";
+        }
+        return String.join(", ", optionals);
+    }
     
+    public void updateMenuTable(List<Dish> dishes) {
+        Platform.runLater(() -> {
+            // Clear existing items and add the fetched dishes
+            menuTableView.getItems().clear();
+            menuTableView.getItems().addAll(dishes);
+        });
+    }
+   
     public void setMenuDishes(List<Dish> chosenItemsFromMenu) {
     	this.chosenItemsFromMenu = chosenItemsFromMenu; 
 
@@ -107,8 +150,11 @@ public class UpdateDeleteMenu {
 
     public void setUser(User user) {
     	this.user=user;
-    	
     	client.getViewMenu(EnumServerOperations.MENU_FOR_UPDATE,UserHomeBranchConvertToInt(user.getHomeBranch()));
+        Platform.runLater(() -> {
+    	menuTableView.getItems().addAll(chosenItemsFromMenu);
+        });
+
     }
     
         
@@ -127,22 +173,39 @@ public class UpdateDeleteMenu {
     	}
     }
     
+    
 
     @FXML
     private void handleBackButtonAction() {
-        // Handle back button action
+    	try {
+    		UpdateMenuNavigationUI Userapp = new UpdateMenuNavigationUI(user);
+        	Userapp.start(new Stage());
+            Stage currentStage = (Stage) backButton.getScene().getWindow();
+            currentStage.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+            showError("An error occurred while loading the Update Menu Nevigation Page.");
+        }
     }
 
     @FXML
     private void handleSaveButtonAction() {
-    	showError("hi "+ chosenItemsFromMenu.size());
-    	menuTableView.getItems().addAll(chosenItemsFromMenu);
+    	showError("hi "+ chosenItemsFromMenu.get(0).getOptionals());
     }
 
     @FXML
     private void handleDeleteButtonAction() {
         // Handle delete button action
     }
+    
+  //Making Quit Button to kill thread and send message to server
+    public void closeApplication() {
+        if (client != null) {
+        	client.userLogout(user);
+            }
+        Platform.exit();
+        System.exit(0);
+    }   
     
     private void showError(String errText) {
     	errorText.setText(errText);

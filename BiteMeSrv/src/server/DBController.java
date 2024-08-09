@@ -205,7 +205,27 @@ public class DBController {
             return false;
         }
     }
-
+    
+    public boolean changeHomeBranch(User user) {
+        PreparedStatement preparedStatement = null;
+    	 // SQL query to update the user's home branch
+        String sql = "UPDATE users SET home_branch = ? WHERE username = ?";
+        try {
+	        // Prepare the statement
+	        preparedStatement = connection.prepareStatement(sql);
+	
+	        // Set the parameters
+	        preparedStatement.setString(1, user.getHomeBranch().toString());
+	        preparedStatement.setString(2, user.getUsername());
+	
+	        // Execute the update
+	        int rowsAffected = preparedStatement.executeUpdate();
+	        return rowsAffected > 0;
+        }catch (SQLException e) {
+	        e.printStackTrace();
+	        return false;
+	    }
+    }
 	
 	public void updateOrderStatus(int orderId, EnumOrderStatus status) throws SQLException {
 	    String checkDeliveryQuery = "SELECT delivery FROM orders WHERE order_id = ?";

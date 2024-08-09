@@ -69,7 +69,8 @@ public class Server extends AbstractServer {
 				break;
             case ADD_DISH:
                 Dish dish = (Dish) message[1];
-                orderController.addDish(dish);
+                boolean addResult = orderController.addDish(dish);
+                sendMessageToClient(EnumClientOperations.ADD_DISH, client, addResult);
                 break;
             case INSERT_ORDER:
                 // Extract data from the message
@@ -149,6 +150,10 @@ public class Server extends AbstractServer {
             	int orderid = (int)message[1];
             	List<DishInOrder> dishes = orderController.getDishesInOrder(orderid);
             	sendMessageToClient(EnumClientOperations.DISHES_IN_ORDER, client, dishes);
+            	break;
+            case CHANGE_HOME_BRANCH:
+            	boolean changeResult = userController.changeHomeBranch((User)message[1]);
+            	sendMessageToClient(EnumClientOperations.CHANGE_HOME_BRANCH, client, changeResult);
             	break;
 			case NONE:
 				System.out.println("No operation was received");
