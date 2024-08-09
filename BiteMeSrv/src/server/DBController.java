@@ -385,7 +385,7 @@ public class DBController {
             try (ResultSet rs = stmt.executeQuery()) {
                 while (rs.next()) {
                     Order order = new Order(rs.getString("username"), rs.getInt("branch_id"),
-                            rs.getTimestamp("order_date"), rs.getTimestamp("order_ready_time"), rs.getDouble("total_price"), rs.getBoolean("delivery"));
+                            rs.getTimestamp("order_date"), rs.getTimestamp("order_ready_time"), rs.getDouble("total_price"), rs.getBoolean("delivery"),EnumOrderStatus.valueOf(rs.getString("status")));
 
                     orders.add(order);
                 }
@@ -407,8 +407,7 @@ public class DBController {
 	    String query = "SELECT o.*, d.receiver_name AS delivery_receiver_name, d.phone_number AS delivery_phone_number " +
 	                   "FROM orders o " +
 	                   "LEFT JOIN delivery d ON o.order_id = d.order_id AND o.delivery = 1 " +
-	                   "WHERE o.branch_id = ? AND o.status = 'PENDING'";
-	    
+	                   "WHERE o.branch_id = ? AND (o.status = 'PENDING' OR o.status = 'IN_PROGRESS')";	    
 	    List<Order> pendingOrders = new ArrayList<>();
 
 	    try (PreparedStatement statement = connection.prepareStatement(query)) {
@@ -421,16 +420,17 @@ public class DBController {
 	                Timestamp orderRequestTime = resultSet.getTimestamp("order_ready_time");
 	                double totalPrice = resultSet.getDouble("total_price");
 	                boolean delivery = resultSet.getBoolean("delivery");
+	                EnumOrderStatus status = EnumOrderStatus.valueOf(resultSet.getString("status"));
 	                Order order;
 	                
 	                if (delivery) {
 	                    String receiverName = resultSet.getString("delivery_receiver_name");
 	                    String phoneNumber = resultSet.getString("delivery_phone_number");
-	                    order = new Order(username, branchId, orderDate, orderRequestTime, totalPrice, delivery);
+	                    order = new Order(username, branchId, orderDate, orderRequestTime, totalPrice, delivery, status);
 	                    order.setReceiverName(receiverName);
 	                    order.setOrderId(orderid);
 	                } else {
-	                    order = new Order(username, branchId, orderDate, orderRequestTime, totalPrice, delivery);
+	                    order = new Order(username, branchId, orderDate, orderRequestTime, totalPrice, delivery, status);
 	                    order.setOrderId(orderid);
 	                    // Fetch the first name and last name from the users table
 	                    String userQuery = "SELECT firstname, lastname FROM users WHERE username = ?";
@@ -1224,7 +1224,8 @@ public class DBController {
                         rs.getTimestamp("order_date"),
                         rs.getTimestamp("order_ready_time"),
                         rs.getDouble("total_price"),
-                        rs.getBoolean("delivery")
+                        rs.getBoolean("delivery"),
+                        EnumOrderStatus.valueOf(rs.getString("status"))
                     );
                 }
             }

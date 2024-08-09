@@ -137,12 +137,22 @@ public class Client extends AbstractClient {
 	            Object[] orders = (Object[]) message[1];
 	            break;
 			case PENDING_ORDER:
-				//****************
 				List<Order> pendingOrders = (List<Order>)message[1];
+				workerPendingOrders.SetPendingOrdersFromDB(pendingOrders);
 				for (Order order :pendingOrders) {
 					System.out.println(order);
 				}
 				break;
+			case DISHES_IN_ORDER:
+				//****************
+	        	List<DishInOrder> dishes = (List<DishInOrder>)message[1];
+				for (DishInOrder dishin :dishes) {
+					System.out.println(
+							"name: " + dishin.getDishName()+", Option: "+dishin.getOptionalPick()
+							+ ", comment: "+dishin.getComment());
+				}
+				workerPendingOrders.SetDishInOrdersFromDB(dishes);
+	        	break;
 			case USER:
 				//String bulbul = (String)message[1];
 				//System.out.println(bulbul);
@@ -162,9 +172,10 @@ public class Client extends AbstractClient {
 			case UPDATE_WELOCME:
 				// Handle non-array messages for updating the top label in clientController
 	            break;
-            case NOTIFICATION:
+            case NOTIFICATION://לעשות פופ אפ שנועל את החלון עד שנבחר בכפתור שלו
                 List<String> notifications = (List<String>) message[1];
                 for (String notification : notifications) {
+                	System.out.println("HI"+notification);
                     //DISPLAY NOTIFICATIONS FROM HERE
                 }
                 break;
@@ -254,14 +265,7 @@ public class Client extends AbstractClient {
             	break;
             case GET_DISCOUNT_AMOUNT: 
             	customerCheckout.setCompensation((double)message[1]);	
-            	break;
-            case DISHES_IN_ORDER:
-            	List<DishInOrder> dishes = (List<DishInOrder>)message[1];
-            	///////////DO WHAT EVER U WANT
-				for (DishInOrder dishin :dishes) {
-					System.out.println(dishin);
-				}
-            	break;
+            	break;           
             case CHANGE_HOME_BRANCH:
             	//u receive a boolean if succcseded or not
             	//TODO do smth

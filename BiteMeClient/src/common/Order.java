@@ -29,14 +29,14 @@ public class Order implements Serializable {
     private boolean delivery; ///////////////Choose supply method 0 pickup
     private EnumOrderStatus status;
 
-    public Order( String username, int branchId, Timestamp orderDate, Timestamp orderRequestTime, double totalPrice, boolean delivery) {
+    public Order( String username, int branchId, Timestamp orderDate, Timestamp orderRequestTime, double totalPrice, boolean delivery, EnumOrderStatus status) {
         this.username = username;
         this.branchId = branchId;
         this.orderDate = orderDate;
         this.orderRequestTime = orderRequestTime;
         this.totalPrice = totalPrice;
         this.delivery = delivery;
-        status=EnumOrderStatus.PENDING;	
+        this.status=status;	
     }
     
     public Order( String username, int branchId, Timestamp orderDate, Timestamp orderRequestTime, double totalPrice, boolean delivery,
