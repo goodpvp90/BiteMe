@@ -239,7 +239,7 @@ public class WorkerPendingOrders {
     }
 
   //Change Error text and make it visible, appear under continue button
-    //******************************NEED TO ADD IN FXML********************************************
+    //*NEED TO ADD IN FXML*******************************************
   	private void showError(String str) {
   		errorText.setText(str);
   		errorText.setVisible(true);

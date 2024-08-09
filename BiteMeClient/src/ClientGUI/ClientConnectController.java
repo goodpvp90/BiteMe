@@ -10,6 +10,11 @@ import javafx.scene.control.TextField;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
+
+/**
+ * Controller class for the Client Connect screen in the BiteMe application.
+ * This is the initial screen where users enter server connection details.
+ */
 public class ClientConnectController {
 
     @FXML
@@ -23,10 +28,20 @@ public class ClientConnectController {
     @FXML
     private Text ErrorTextConnect;
     @FXML
+    
+    /**
+     * Initializes the controller. This method is automatically called after the FXML file has been loaded.
+     */
     private void initialize() {
-        // Initialization code, if needed
+        // Nothing is needed for now Maybe later :)
     }
-
+    
+    /**
+     * Handles the action when the connect button is clicked.
+     * Attempts to establish a connection to the server with the provided IP and port.
+     *
+     * @throws IOException If there's an error during the connection process
+     */
 	@FXML
 	private void handleConnectButtonAction() throws IOException {
 		String serverIp = serverIpTextField.getText();
@@ -38,7 +53,14 @@ public class ClientConnectController {
 			launchClientLoginUI();
 //		}
 	}
-    
+
+    /**
+     * Validates the IP address and port number entered by the user.
+     *
+     * @param ip The IP address entered by the user
+     * @param port The port number entered by the user
+     * @return true if the IP and port are valid, false otherwise
+     */
 	private boolean IPandPortLegal(String ip, int port) {
 		if (port < 1000 || port > 9999) {
 			showError("Port must be a 4-digit number.");
@@ -72,11 +94,20 @@ public class ClientConnectController {
 		return true;
 	}
 
+    /**
+     * Displays an error message to the user.
+     *
+     * @param err The error message to display
+     */
     private void showError(String err) {
     	ErrorTextConnect.setVisible(true);
     	ErrorTextConnect.setText(err);
     }
 
+    /**
+     * Handles the action when the quit button is clicked.
+     * Closes the application.
+     */
     @FXML
     private void handleQuitButtonAction() {
         // Close the application
@@ -84,14 +115,14 @@ public class ClientConnectController {
         stage.close();
     }
     
-    //launching Client Login UI, close the current window and set up new UI.
+    /**
+     * Launches the Client Login UI after successful connection to the server.
+     * Closes the current Client Connect window.
+     */
     private void launchClientLoginUI() {
         try {
-            // Launch ClientLoginUI
             ClientLoginUI loginApp = new ClientLoginUI();
             loginApp.start(new Stage());
-
-            // Close the current stage
             Stage currentStage = (Stage) connectButton.getScene().getWindow();
             currentStage.close();
         } catch (Exception e) {

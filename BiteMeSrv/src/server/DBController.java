@@ -460,7 +460,6 @@ public class DBController {
         String insertOrderQuery = "INSERT INTO orders (username, branch_id, order_date, order_ready_time, order_receive_time, total_price, delivery, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
         String insertDishInOrderQuery = "INSERT INTO dish_in_order (order_id, dish_id, optional, comment, dish_name) VALUES (?, ?, ?, ?, ?)";
         String insertDeliveryQuery = "INSERT INTO delivery (order_id, City, street_and_number, receiver_name, phone_number) VALUES (?, ?, ?, ?, ?)";
-
         try {
             // Start transaction
             connection.setAutoCommit(false);
@@ -487,8 +486,8 @@ public class DBController {
                             for (Dish dishInOrder : dishes) {
                                 dishStmt.setInt(1, orderId);
                                 dishStmt.setInt(2, dishInOrder.getDishId());
-                                dishStmt.setString(3, dishInOrder.getComments());
-                                dishStmt.setString(4, dishInOrder.getOptionalPick());
+                                dishStmt.setString(3, dishInOrder.getOptionalPick());
+                                dishStmt.setString(4, dishInOrder.getComments());
                                 dishStmt.setString(5, dishInOrder.getDishName());
                                 dishStmt.addBatch();
                             }
@@ -1177,8 +1176,35 @@ public class DBController {
 		}
         return null;
     }
-
     
+    /**
+     * Retrieves a list of income values for a specified restaurant and quarter.
+     * 
+     * @param qreport An object of type {@link QuarterlyReport} that contains the restaurant's location, the year, and the quarter (1 to 4).
+     * @return A {@link List} of {@link Double} values representing the incomes for the specified quarter.
+     */
+    public List<Double> getIncomeListForQuarterly(QuarterlyReport qreport){
+        String query = "SELECT income FROM incomereport WHERE restaurant = ? AND year = ? AND month IN (?, ?, ?)";
+        List<Double> incomes = new ArrayList<>();
+        try (PreparedStatement stmt = connection.prepareStatement(query)) {
+        	int restaurantId = getRestaurantIdByLocation(qreport.getRestaurant());
+            stmt.setInt(1, restaurantId);
+            stmt.setInt(2, qreport.getYear());
+            stmt.setInt(3, qreport.getQuarter() * 3 - 2); // 1st month of the quarter
+            stmt.setInt(4, qreport.getQuarter() * 3 - 1); // 2nd month of the quarter
+            stmt.setInt(5, qreport.getQuarter() * 3);     // 3rd month of the quarter
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    incomes.add(rs.getDouble("income"));
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return incomes;
+    }
+        
     public void savePendingNotification(String username, int orderId, String status) throws SQLException {
         String query = "INSERT INTO pendingnotifications (username, orderNumber, status) VALUES (?, ?, ?)";
         try (PreparedStatement stmt = connection.prepareStatement(query)) {

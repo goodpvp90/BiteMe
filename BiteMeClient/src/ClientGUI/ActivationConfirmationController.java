@@ -12,6 +12,11 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 
+/**
+ * Controller class for the Activation Confirmation Page in the BiteMe application.
+ * This controller manages the display of user activation confirmation and provides
+ * a way to return to the User Home Page.
+ */
 public class ActivationConfirmationController {
 
 	@FXML
@@ -23,6 +28,9 @@ public class ActivationConfirmationController {
 	@FXML
 	private Button returnButton;
 
+    /**
+     * Initializes the controller. This method is automatically called after the FXML file has been loaded.
+     */
 	public void initialize() {
 	    headlineText.setText("Customer Activation Confirmation");
 	}
@@ -30,6 +38,11 @@ public class ActivationConfirmationController {
     private User loggedInUser;
     private boolean isRegistered;
 
+    /**
+     * Sets the user information to be displayed in the confirmation message.
+     * 
+     * @param user The activated user object
+     */
     public void setUserInfo(User user) {
         String info = String.format(
             "Customer activated successfully!\n\n" +
@@ -48,11 +61,21 @@ public class ActivationConfirmationController {
         infoText.setText(info);
     }
 
+    /**
+     * Sets the logged-in user information and registration status.
+     * 
+     * @param user The currently logged-in user
+     * @param isRegistered Boolean indicating if the user is now registered
+     */
     public void setLoggedInUser(User user, boolean isRegistered) {
         this.loggedInUser = user;
         this.isRegistered = isRegistered;
     }
 
+    /**
+     * Handles the action when the return button is clicked.
+     * Returns to the User Home Page.
+     */
     @FXML
     private void returnToHomePage() {
         try {

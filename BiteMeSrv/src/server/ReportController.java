@@ -2,11 +2,13 @@ package server;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import common.EnumClientOperations;
+import common.EnumServerOperations;
 import common.IncomeReport;
 import common.MonthlyReport;
 import common.OrdersReport;
@@ -177,14 +179,16 @@ public class ReportController {
     public void getQuarterlyReport(QuarterlyReport qreport, ConnectionToClient client) {
     	Object getResult = server.dbController.getQuarterlyReport(qreport);
     	if (getResult instanceof QuarterlyReport) {
-			server.sendMessageToClient(EnumClientOperations.QUARTERLY_REPORT, client, (QuarterlyReport)getResult);
+    		 List<Double> incomes = server.dbController.getIncomeListForQuarterly(qreport);
+    		 server.sendMessageToClient(EnumClientOperations.QUARTERLY_REPORT, client, new Object[] {(QuarterlyReport)getResult, incomes});
     	}else {
     		boolean createResult = server.dbController.createQuarterlyReport(qreport);
     		if (createResult) {
     			Object newGetResult = server.dbController.getQuarterlyReport(qreport);
     			if (newGetResult instanceof QuarterlyReport) {
     				System.out.println("GOT HERE");
-    				//server.sendMessageToClient(EnumClientOperations.QUARTERLY_REPORT, client, (QuarterlyReport)newGetResult);
+    	    		List<Double> incomes = server.dbController.getIncomeListForQuarterly(qreport);
+    	    		server.sendMessageToClient(EnumClientOperations.QUARTERLY_REPORT, client, new Object[] {(QuarterlyReport)newGetResult, incomes});
     			}else {
     				server.sendMessageToClient(EnumClientOperations.QUARTERLY_REPORT_ERROR, client, newGetResult);
     			}

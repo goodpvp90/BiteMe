@@ -29,6 +29,7 @@ import ClientGUI.CustomerInformationUpdateController;
 import ClientGUI.CustomerOrderCreation;
 import ClientGUI.RegisterUserPageController;
 import ClientGUI.ReportsPageController;
+import ClientGUI.UpdateAddDish;
 import ClientGUI.UpdateDeleteMenu;
 import ClientGUI.WorkerPendingOrders;
 import common.Dish;
@@ -47,6 +48,7 @@ public class Client extends AbstractClient {
 	private CustomerCheckout customerCheckout;
 	private UpdateDeleteMenu updateDeleteMenu;
 	private WorkerPendingOrders workerPendingOrders;
+	private UpdateAddDish updateAddDish;
 	// Constructor to initialize the client with host and port, and establish
 	// connection
 	public Client(String host, int port) throws IOException {
@@ -124,6 +126,10 @@ public class Client extends AbstractClient {
 		this.updateDeleteMenu = updateDeleteMenu;
 	}
 	
+	public void getInstanceOfUpdateAddDish(UpdateAddDish updateAddDish) {
+		this.updateAddDish = updateAddDish;
+	}
+	
 	// Handle messages received from the server
 	@Override
 	protected void handleMessageFromServer(Object msg) {
@@ -154,8 +160,6 @@ public class Client extends AbstractClient {
 				workerPendingOrders.SetDishInOrdersFromDB(dishes);
 	        	break;
 			case USER:
-				//String bulbul = (String)message[1];
-				//System.out.println(bulbul);
 				handleLogin(message);
 	        	break;
 			case LOG_OUT:
@@ -211,15 +215,20 @@ public class Client extends AbstractClient {
         		}
                  break;
             case MENU_FOR_UPDATE:
+            	System.out.println("INNNNNNNNNNNNN");
             	@SuppressWarnings("unchecked")
             	List<Dish> menuupdate = (List<Dish>) message[1];
+            	for (Dish dish:menuupdate) {
+            			System.out.println(dish.isGrill());
+            	}
             	updateDeleteMenu.setMenuDishes(menuupdate);
+            	
             	break;
             case ADD_DISH:
-                boolean addDishResult = (boolean) message[1];
+            	updateAddDish.setSucceededAdd((boolean) message[1]);
                 break;
             case DELETE_DISH:
-                boolean deleteDishResult = (boolean) message[1];
+            	updateDeleteMenu.SetSuccessDelete((boolean) message[1]);
                 break;
             case REPORT_ERROR:
             	String errorMsg = (String)message[1];
@@ -246,10 +255,20 @@ public class Client extends AbstractClient {
                     reportsPageController.handlePerformanceReportResponse(performanceReport);
                 }
             case QUARTERLY_REPORT:
-            	QuarterlyReport qreport = (QuarterlyReport)message[1];
-            	//TODO do smth
-
-            	break;
+            	//TODO SYSO REMOVE
+                System.out.println("Received quarterly report from server" ); // Add this line for debugging
+                Object[] data = (Object[])message[1];
+                //this is what you do to see the array of incomes
+                for (Double i : (List<Double>)data[1])
+       			 	System.out.println(i);
+                QuarterlyReport qreport = (QuarterlyReport) data[0];
+                if (reportsPageController != null) {
+                    reportsPageController.handleQuarterlyReportResponse(qreport);
+                } else {
+                	//TODO SYSO REMOVE
+                    System.out.println("reportsPageController is null"); // Add this line for debugging
+                }
+                break;
             case QUARTERLY_REPORT_ERROR:
             	//u receive a (Object)string
             	//TODO do smth
