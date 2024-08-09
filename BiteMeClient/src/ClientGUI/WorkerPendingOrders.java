@@ -212,7 +212,7 @@ public class WorkerPendingOrders {
     }
 
   //Change Error text and make it visible, appear under continue button
-    //******************************NEED TO ADD IN FXML********************************************
+    //*NEED TO ADD IN FXML*******************************************
   	private void showError(String str) {
   		errorText.setText(str);
   		errorText.setVisible(true);
@@ -221,9 +221,8 @@ public class WorkerPendingOrders {
  // Goes back to the user's home page
  	@FXML
      private void handleBackButtonAction() {	
- 		//client.sendShowPending(1);
- 		client.sendShowDishesInOrder(22);
-/* 		try {
+// 		client.sendShowPending(1);
+ 		try {
          	UserHomePageUI Userapp = new UserHomePageUI(user,true);
          	Userapp.start(new Stage());
              Stage currentStage = (Stage) backButton.getScene().getWindow();
@@ -231,7 +230,7 @@ public class WorkerPendingOrders {
          } catch (Exception e) {
              e.printStackTrace();
              showError("An error occurred while loading the User Home Page.");
-         }*/
+         }
      }
     
   //Making Quit Button to kill thread and send message to server
