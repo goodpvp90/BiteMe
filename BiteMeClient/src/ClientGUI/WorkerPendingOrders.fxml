@@ -30,7 +30,6 @@
         <TextField fx:id="etaTextField" layoutX="50.0" layoutY="470.0" prefWidth="200.0" promptText="Estimated Time of Arrival" visible="false" />
         <Button fx:id="approveOrderButton" disable="true" layoutX="215.0" layoutY="500.0" onAction="#handleApproveOrderAction" prefHeight="30.0" prefWidth="150.0" text="APPROVE ORDER" />
         <Button fx:id="orderReadyButton" disable="true" layoutX="395.0" layoutY="500.0" onAction="#handleOrderReadyAction" prefHeight="30.0" prefWidth="150.0" text="ORDER READY" />
-        <Label fx:id="errorLabel" layoutX="620.0" layoutY="570.0" style="-fx-text-fill: red; -fx-font-size: 14px;" />
       <Text fx:id="errorText" fill="RED" layoutX="50.0" layoutY="566.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" textAlignment="CENTER" visible="false" wrappingWidth="700.0">
          <font>
             <Font size="16.0" />

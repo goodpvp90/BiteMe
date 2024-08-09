@@ -1,12 +1,15 @@
 package ClientGUI;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.List;
+
 import client.Client;
+import common.Dish;
 import common.DishInOrder;
 import common.EnumOrderStatus;
 import common.Order;
 import common.User;
-import common.Restaurant.Location;
 import javafx.fxml.FXML;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -22,45 +25,39 @@ import javafx.collections.ObservableList;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.scene.control.TextField;
+import common.EnumBranch;
 
 public class WorkerPendingOrders {
 	private Client client;
 	private User user = null;
+	List<Order> pendingOrders = new ArrayList<>();
+	List<DishInOrder> PendingDishInOrders = new ArrayList<>();
 	@FXML
     private Text errorText;
     @FXML
     private TableView<Order> orderTableView;
-
     @FXML
     private TableColumn<Order, Integer> orderIdColumn;
-
     @FXML
     private TableColumn<Order, String> ordererColumn;
-
     @FXML
     private TableColumn<Order, Timestamp> orderDateColumn;
-
     @FXML
     private TableColumn<Order, Double> totalPriceColumn;
-
     @FXML
     private TableColumn<Order, Boolean> deliveryColumn;
-
     @FXML
-    private TableColumn<Order, EnumOrderStatus> statusColumn;
-    
+    private TableColumn<Order, EnumOrderStatus> statusColumn;  
     @FXML
     private Button approveOrderButton;
-
     @FXML
-    private Button orderReadyButton;
-    
+    private Button orderReadyButton;    
     @FXML
     private TextField etaTextField;;
-
     @FXML
     private Button backButton;
-
+    
+    ////////////////////////////////////////////////////////////////////////////////////////////
     @FXML
     private void initialize() {
         // Set up the columns in the table
@@ -94,9 +91,13 @@ public class WorkerPendingOrders {
         expandColumn.setCellFactory(param -> new TableCell<>() {
             private final Button expandButton = new Button("Expand");
             {
-                expandButton.setOnAction(event -> {
-                    Order order = getTableView().getItems().get(getIndex());
-                    showOrderDetails(order);
+            	expandButton.setOnAction(event -> {
+                    // Get the Order object associated with the row
+                    Order Selectedorder = getTableView().getItems().get(getIndex());
+                    if (Selectedorder != null) {
+                        // Pass the orderId to the showOrderDetails method
+                        showOrderDetails(Selectedorder.getOrderId());
+                    }
                 });
             }
 
@@ -116,68 +117,94 @@ public class WorkerPendingOrders {
     //-----------------------------------------END OF INIT------------------------------------------
     public void setUser(User user) 
     {
-        this.user = user;          
+        this.user = user;     
+        pendingOrdersLoader();        
+    }
+    /////***********************************************************//////////////*******************
+    public void pendingOrdersLoader()
+    {    	
+    	EnumBranch homeBranch = user.getHomeBranch();   	    	
+    	
+        int homeBranchID;      
+    	switch(homeBranch)
+    	{
+    	case EnumBranch.NORTH:
+    		homeBranchID = 1;
+    		break;
+    	case EnumBranch.CENTER:
+    		homeBranchID = 2;
+    		break;
+    	case EnumBranch.SOUTH:
+    		homeBranchID = 3;	
+    		break;
+    	default:
+    		homeBranchID = 0;
+    		break;
+    	}    	
+    	if(homeBranchID==0)
+    		showError("Branch Initialization Error!"); 	
+    	client.sendShowPending(homeBranchID);  
+    	Platform.runLater(() -> {
+		orderTableView.getItems().addAll(pendingOrders);   		 
+    	});  	
     }
     
-    //FOR TESTING HOW THIS LOOKS*************************************************************
-    /* private ObservableList<Order> getOrders() {
-        ObservableList<Order> orders = FXCollections.observableArrayList();
-        // Sample data
-        Order stub1 = new Order("Bitch face", 1, Timestamp.valueOf("2023-08-07 10:00:00"), Timestamp.valueOf("2023-08-07 09:00:00"), 29.99, true);
-        stub1.setOrderId(1);
-        Order stub2 = new Order("Fuck nugget", 2, Timestamp.valueOf("2023-08-07 11:00:00"), Timestamp.valueOf("2023-08-07 10:00:00"), 69.99, false);
-        stub2.setOrderId(2);
-        stub1.setStatus(EnumOrderStatus.PENDING); // Set status
-        stub2.setStatus(EnumOrderStatus.PENDING); // Set status
-        orders.add(stub1);
-        orders.add(stub2);
-
-        // Sort orders by orderId
-        FXCollections.sort(orders, Comparator.comparingInt(Order::getOrderId));
-        return orders;
-    }*/
-  //********************************************************************************************
+    public void SetPendingOrdersFromDB(List<Order> DBOrderList)
+	{
+    	pendingOrders.clear();                            	 
+    	pendingOrders = DBOrderList;   	
+	}
     
-    private void showOrderDetails(Order order) {
+    public void SetDishInOrdersFromDB(List<DishInOrder> DBDishInOrdersList)
+	{
+    	PendingDishInOrders.clear();                            	 
+    	PendingDishInOrders = DBDishInOrdersList;   	
+	}
+    
+    // Create a new stage to show order details
+    private void showOrderDetails(int orderID) {
         // Create a new stage to show order details
         Stage detailStage = new Stage();
         VBox vbox = new VBox();
-
         TableView<DishInOrder> dishTableView = new TableView<>();
+        
         TableColumn<DishInOrder, String> nameColumn = new TableColumn<>("Name");
         TableColumn<DishInOrder, String> optionalPickColumn = new TableColumn<>("Optional Pick");
         TableColumn<DishInOrder, String> commentColumn = new TableColumn<>("Comment");
-
+        
         nameColumn.setCellValueFactory(new PropertyValueFactory<>("dishName"));
         optionalPickColumn.setCellValueFactory(new PropertyValueFactory<>("optionalPick"));
         commentColumn.setCellValueFactory(new PropertyValueFactory<>("comment"));
-
+        
         dishTableView.getColumns().addAll(nameColumn, optionalPickColumn, commentColumn);
-
-        // Load dishes (Replace this with real data from your database)
-        dishTableView.setItems(getDishesForOrder(order));
-
+        
+        // Set up the scene before fetching data
         vbox.getChildren().add(dishTableView);
         detailStage.setScene(new Scene(vbox));
         detailStage.setTitle("Order Details");
         detailStage.show();
+        
+        // Fetch the dish data from the server
+        client.sendShowDishesInOrder(orderID);        
+        // When the data arrives, populate the table view
+        PendingDishInOrders.clear(); // Clear any previous data       
+        Platform.runLater(() -> {
+            dishTableView.setItems(FXCollections.observableArrayList(PendingDishInOrders));
+        });
+
     }
 
-    private ObservableList<DishInOrder> getDishesForOrder(Order order) {
-        ObservableList<DishInOrder> dishes = FXCollections.observableArrayList();
-        // Sample data (Replace this with real data from your database)
-        dishes.add(new DishInOrder("Salad", 1, "No onions", "Extra Dressing"));
-        dishes.add(new DishInOrder("Steak", 2, "Add mushrooms", "Medium Rare"));
-        return dishes;
-    }
     
     @FXML
     private void handleApproveOrderAction() {
-        Order selectedOrder = orderTableView.getSelectionModel().getSelectedItem();
-        if (selectedOrder != null) {
-            selectedOrder.setStatus(EnumOrderStatus.IN_PROGRESS);
-            updateButtonStates(selectedOrder);
-            orderTableView.refresh(); // Refresh the table view to show updated status
+ 		Order selectedOrder = orderTableView.getSelectionModel().getSelectedItem();
+        if (selectedOrder != null) {       	
+        	client.updateOrderStatus(selectedOrder.getOrderId(),EnumOrderStatus.IN_PROGRESS);
+        	Platform.runLater(() -> {
+        	orderTableView.refresh();
+        	});
+            //selectedOrder.setStatus(EnumOrderStatus.IN_PROGRESS);
+            updateButtonStates(selectedOrder);           
         }
     }
 
@@ -221,7 +248,6 @@ public class WorkerPendingOrders {
  // Goes back to the user's home page
  	@FXML
      private void handleBackButtonAction() {	
-// 		client.sendShowPending(1);
  		try {
          	UserHomePageUI Userapp = new UserHomePageUI(user,true);
          	Userapp.start(new Stage());
@@ -233,11 +259,11 @@ public class WorkerPendingOrders {
          }
      }
     
-  //Making Quit Button to kill thread and send message to server
+ 	//Making Quit Button to kill thread and send message to server
     public void closeApplication() {
         if (client != null) {
-            client.quit();
-        }
+        	client.userLogout(user);
+            }
         Platform.exit();
         System.exit(0);
     } 

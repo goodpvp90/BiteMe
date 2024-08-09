@@ -168,7 +168,6 @@ public class CustomerOrderCreation {
                 branchComboBox.setValue(returnLocation);
                 ChosenItemsTableView.getItems().addAll(ChosenItemsFromMenu);
             	client.getViewMenu(EnumServerOperations.VIEW_MENU, ChosenItemsFromMenu.get(0).getMenuId());
-
         	}
         }
         else
@@ -226,6 +225,7 @@ public class CustomerOrderCreation {
         		MenuID = 3;
         		break; 
         	}    
+
         	client.getViewMenu(EnumServerOperations.VIEW_MENU, MenuID);
         	ChosenItemsFromMenu.clear();                  
         	ChosenItemsTableView.getItems().clear();
