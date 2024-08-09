@@ -144,8 +144,6 @@ public class Client extends AbstractClient {
 				}
 				break;
 			case USER:
-				//String bulbul = (String)message[1];
-				//System.out.println(bulbul);
 				handleLogin(message);
 	        	break;
 			case LOG_OUT:
@@ -235,10 +233,16 @@ public class Client extends AbstractClient {
                     reportsPageController.handlePerformanceReportResponse(performanceReport);
                 }
             case QUARTERLY_REPORT:
-            	QuarterlyReport qreport = (QuarterlyReport)message[1];
-            	//TODO do smth
-
-            	break;
+            	//TODO SYSO REMOVE
+                System.out.println("Received quarterly report from server"); // Add this line for debugging
+                QuarterlyReport qreport = (QuarterlyReport) message[1];
+                if (reportsPageController != null) {
+                    reportsPageController.handleQuarterlyReportResponse(qreport);
+                } else {
+                	//TODO SYSO REMOVE
+                    System.out.println("reportsPageController is null"); // Add this line for debugging
+                }
+                break;
             case QUARTERLY_REPORT_ERROR:
             	//u receive a (Object)string
             	//TODO do smth

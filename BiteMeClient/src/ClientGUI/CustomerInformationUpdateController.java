@@ -17,6 +17,10 @@ import common.User;
 import common.EnumBranch;
 import common.EnumType;
 
+/**
+ * Controller class for the Customer Information Update Page in the BiteMe application.
+ * This controller manages the process of completing or updating user registration information.
+ */
 public class CustomerInformationUpdateController {
 
     @FXML
@@ -51,19 +55,39 @@ public class CustomerInformationUpdateController {
     private User user;
     private User loggedInUser;
 
+    
+    /**
+     * Initializes the controller. This method is automatically called after the FXML file has been loaded.
+     */
     public void initialize() {
         client = Client.getInstance();
         client.setCustomerInformationUpdateController(this);
     }
 
+    /**
+     * Sets the previous scene to allow returning to the Register User Page.
+     * 
+     * @param scene The scene of the Register User Page
+     */
     public void setPreviousScene(Scene scene) {
         this.previousScene = scene;
     }
     
+    /**
+     * Sets the logged-in user information.
+     * 
+     * @param loggedInUser The currently logged-in user (typically a BM or CEO)
+     */
     public void setLoggedInUser(User loggedInUser) {
         this.loggedInUser = loggedInUser;
     }
 
+    /**
+     * Sets the user information to be updated or completed.
+     * Pre-fills the form fields with existing user information.
+     * 
+     * @param user The user object to be updated
+     */
     public void setUser(User user) {
         this.user = user;
         // Pre-fill the fields with existing user information
@@ -74,12 +98,20 @@ public class CustomerInformationUpdateController {
         // Don't pre-fill credit card for security reasons
     }
 
+    /**
+     * Handles the action when the back button is clicked.
+     * Returns to the Register User Page.
+     */
     @FXML
     private void handleBack() {
         Stage stage = (Stage) backButton.getScene().getWindow();
         stage.setScene(previousScene);
     }
 
+    /**
+     * Handles the action when the update button is clicked.
+     * Validates the entered information and sends an update request to the server.
+     */
     @FXML
     private void handleUpdate() {
         try {
@@ -146,11 +178,19 @@ public class CustomerInformationUpdateController {
         }
     }
     
-    //If i enter nothing so i wont have any problems (Because of Trim)
+    /**
+     * Retrieves text from a TextField safely, handling null values.
+     * 
+     * @param field The TextField to get text from
+     * @return The trimmed text from the field, or an empty string if null
+     */
     private String getTextSafely(TextField field) {
         return field.getText() == null ? "" : field.getText().trim();
     }
     
+    /**
+     * Opens the Activation Confirmation window after successful user information update.
+     */
     private void openActivationConfirmationWindow() {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("ActivationConfirmation.fxml"));
@@ -173,11 +213,21 @@ public class CustomerInformationUpdateController {
         }
     }
 
+    /**
+     * Displays an error message to the user.
+     * 
+     * @param message The error message to display
+     */
     private void showError(String message) {
         errorText.setText(message);
         errorText.setVisible(true);
     }
 
+    /**
+     * Handles the server's response to the user information update request.
+     * 
+     * @param response The response object from the server
+     */
     public void handleServerResponse(Object response) {
         if (response instanceof User) {
             User updatedUser = (User) response;

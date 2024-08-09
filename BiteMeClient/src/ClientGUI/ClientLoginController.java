@@ -18,6 +18,10 @@ import javafx.scene.control.TextField;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
+/**
+ * Controller class for the Client Login screen in the BiteMe application.
+ * This screen handles user authentication after successful connection to the server.
+ */
 public class ClientLoginController {
 
 	@FXML
@@ -39,6 +43,10 @@ public class ClientLoginController {
 
 	private User user = null;
 
+    /**
+     * Initializes the controller. This method is automatically called after the FXML file has been loaded.
+     * Sets up button actions and initializes the client instance.
+     */
 	@FXML
 	private void initialize() {
 		loginButton.setOnAction(event -> handleLogin());
@@ -49,6 +57,10 @@ public class ClientLoginController {
 		client.getInstanceOfClientLoginController(this);
 	}
 
+    /**
+     * Handles the login process when the login button is clicked.
+     * Validates user input and sends login request to the server.
+     */
 	private void handleLogin() {
 
 		String username = usernameField.getText();
@@ -61,7 +73,12 @@ public class ClientLoginController {
 		}
 		client.loginValidation(new User(username,password));	
 	}
-	
+
+    /**
+     * Updates the UI based on the server's response to the login attempt.
+     * 
+     * @param userData The response object from the server, either a User object or an error message
+     */
 	public void updateUser(Object userData) {
         Platform.runLater(() -> {
             if (userData instanceof User) {
@@ -85,13 +102,20 @@ public class ClientLoginController {
 //	           && (user.getPhone() == null || user.getPhone().isEmpty());
 //	}
 
-	//Quit button sends a msg that client disconnected
+    /**
+     * Handles the action when the quit button is clicked.
+     * Closes the connection and exits the application.
+     */
 	private void handleQuit() {
 		client.quit();
 		System.exit(0);
 	}
+	
 	//TODO Talk to Ben how to implement it so itll be not copied always.
-	//By clickin "X" same effect like clicking Quit Button
+    /**
+     * Closes the application, ensuring proper disconnection from the server.
+     * This method is called when the user clicks the window's close button.
+     */
     public void closeApplication() {
         if (client != null) {
             client.quit();
@@ -99,13 +123,23 @@ public class ClientLoginController {
         Platform.exit();
         System.exit(0);
     }
-	
+    
+    /**
+     * Displays an error message to the user.
+     *
+     * @param message The error message to display
+     */	
 	private void showError(String message) {
 	        errorText.setText(message);
 	        errorText.setVisible(true);
 	}
 	
-	
+	/**
+     * Launches the User Home Page UI after successful login.
+     * 
+     * @param user The authenticated User object
+     * @param isRegistered Boolean indicating if the user is fully registered
+     */
     private void launchUserHomePageUI(User user, boolean isRegistered) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("UserHomePage.fxml"));
@@ -130,8 +164,12 @@ public class ClientLoginController {
             showError("An error occurred while loading the User Home Page.");
         }
     }
+    
+    /**
+     * Resets the client state and UI elements.
+     * This method is called when returning to the login screen from other parts of the application.
+     */
     public void resetClient() {
-        // Reset the client state if necessary
         client = Client.getInstance();
         try {
             if (!client.isConnected()) {
@@ -142,8 +180,6 @@ public class ClientLoginController {
             showError("Failed to connect to the server.");
         }
         client.getInstanceOfClientLoginController(this);
-        
-        // Clear the input fields
         usernameField.clear();
         passwordField.clear();
         errorText.setVisible(false);

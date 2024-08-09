@@ -16,6 +16,11 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
+/**
+ * Controller class for the User Home Page in the BiteMe application.
+ * This controller manages the display and functionality of the User Home Page,
+ * which varies based on the user's type and registration status.
+ */
 public class UserHomePageController {
 
 	private User user;
@@ -49,14 +54,22 @@ public class UserHomePageController {
     private Text headlineText;
 
     private boolean isRegistered;
-    
+
+    /**
+     * Sets the user for this controller and updates the UI accordingly.
+     *
+     * @param user The User object representing the current user.
+     * @param isRegistered A boolean indicating whether the user is registered.
+     */
     public void setUser(User user, boolean isRegistered) {
         this.user = user;
         this.isRegistered = isRegistered;
         updateUI();
     }
     
-    
+    /**
+     * Updates the UI based on the user's type and registration status.
+     */  
     private void updateUI() {
     	if (user.getType() == null) {
             // Handle unregistered user
@@ -88,17 +101,20 @@ public class UserHomePageController {
         }
     	changeHelloTextAndHeadline();
 	}
-
+    
+    /**
+     * Initializes the controller. This method is automatically called after the FXML file has been loaded.
+     */
 	@FXML
     private void initialize() {
-        // Initialize the client
         client = Client.getInstance();
-        // Initialize any necessary components or data
-
     }
-	
-	
-	
+		
+    /**
+     * Handles the logout action.
+     *
+     * @param event The ActionEvent triggered by clicking the logout button.
+     */
 	@FXML
 	private void handleLogout(ActionEvent event) {
 	    // Send logout request to the server
@@ -119,6 +135,11 @@ public class UserHomePageController {
 	    }
 	}
 
+    /**
+     * Handles the create order action.
+     *
+     * @param event The ActionEvent triggered by clicking the create order button.
+     */
     @FXML
     private void handleCreateOrder(ActionEvent event) {
     	try {
@@ -137,6 +158,11 @@ public class UserHomePageController {
         }
     }
 
+    /**
+     * Handles the update menu action.
+     *
+     * @param event The ActionEvent triggered by clicking the update menu button.
+     */
     @FXML
     private void handleUpdateMenu(ActionEvent event) {
     	try {
@@ -153,7 +179,11 @@ public class UserHomePageController {
         }
     }
     
-    
+    /**
+     * Handles the view reports action.
+     *
+     * @param event The ActionEvent triggered by clicking the view reports button.
+     */   
     @FXML
     private void handleViewReports(ActionEvent event) {
         try {
@@ -170,13 +200,23 @@ public class UserHomePageController {
             e.printStackTrace();
         }
     }
-    
+
+    /**
+     * Handles the change home branch action.
+     *
+     * @param event The ActionEvent triggered by clicking the change home branch button.
+     */
     @FXML
     private void handleChangeHomeBranch(ActionEvent event) {
         System.out.println("Change Home Branch button clicked");
         // Implement navigation to Change Home Branch page or functionality
     }
 
+    /**
+     * Handles the pending orders action.
+     *
+     * @param event The ActionEvent triggered by clicking the pending orders button.
+     */
     @FXML
     private void handlePendingOrders(ActionEvent event) {
     	try {
@@ -195,6 +235,9 @@ public class UserHomePageController {
         }
     }
 
+    /**
+     * Updates the welcome text and headline based on the user's type and registration status.
+     */
     private void changeHelloTextAndHeadline() {
         String userType = "";
         
@@ -229,21 +272,22 @@ public class UserHomePageController {
         }
     }
     
-    
+    /**
+     * Handles the register user action.
+     *
+     * @param event The ActionEvent triggered by clicking the register user button.
+     */   
     @FXML
     private void handleRegisterUser(ActionEvent event) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("RegisterUserPage.fxml"));
             Parent root = loader.load();
-            RegisterUserPageController registerController = loader.getController();
-            
+            RegisterUserPageController registerController = loader.getController();            
             // Store the current scene before switching
             Scene currentScene = registerUserButton.getScene();
-            registerController.setPreviousScene(currentScene);
-            
+            registerController.setPreviousScene(currentScene);            
             // Pass the logged-in user information
-            registerController.setLoggedInUser(this.user);
-            
+            registerController.setLoggedInUser(this.user);            
             Stage stage = (Stage) registerUserButton.getScene().getWindow();
             Scene newScene = new Scene(root);
             stage.setScene(newScene);
@@ -254,14 +298,18 @@ public class UserHomePageController {
         }
     }
     
-    //Updates the user to be logged off in DB.
+    /**
+     * Logs out the user from the database.
+     */
     public void logoutUser() {
         if (user != null && client != null) {
             client.userLogout(user);
         }
     }
     
-	//Making Quit Button to kill thread and send message to server
+    /**
+     * Closes the application, ensuring proper logout and client shutdown.
+     */
     public void closeApplication() 
     {
     	Platform.runLater(() ->
