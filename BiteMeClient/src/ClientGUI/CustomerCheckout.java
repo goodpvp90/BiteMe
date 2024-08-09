@@ -345,9 +345,8 @@ public class CustomerCheckout {
 					deliveryPrice=15;
 					break;
 					}
-				
+				sharedDeliveryInfoText.setText("Approved, Delivery cost "+ deliveryPrice);
 			}
-			sharedDeliveryInfoText.setText("Approved, Delivery cost "+ deliveryPrice);
 		}
 		//Update total price with delivery price
 		totalPrice+=deliveryPrice;

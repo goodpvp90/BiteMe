@@ -371,7 +371,7 @@ public class CustomerOrderGatherSelection {
         if (cityAddressTextField.getText().isEmpty()) {
             showError("City address cannot be empty.");
             return false;
-        } else if (!cityAddressTextField.getText().matches("[a-zA-Z]+")) {
+        } else if (!cityAddressTextField.getText().matches("[a-zA-Z -]+")) {
             showError("City address must contain only letters.");
             return false;
         }

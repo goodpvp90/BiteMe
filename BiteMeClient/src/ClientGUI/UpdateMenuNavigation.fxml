@@ -22,7 +22,7 @@
             <Font size="18.0" />
          </font>
       </Button>
-      <Button fx:id="addNewDishButton" layoutX="137.0" layoutY="279.0" mnemonicParsing="false" prefHeight="73.0" prefWidth="175.0" text="Add a new dish&#10; to the menu" textAlignment="CENTER">
+      <Button fx:id="addNewDishButton" layoutX="137.0" layoutY="279.0" mnemonicParsing="false" prefHeight="73.0" prefWidth="175.0" text="Add a new dish&#10; to the menu" textAlignment="CENTER" onAction = "#handleAddNewDishButtonAction">
          <font>
             <Font size="18.0" />
          </font>

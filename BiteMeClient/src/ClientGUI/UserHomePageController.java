@@ -173,8 +173,16 @@ public class UserHomePageController {
     
     @FXML
     private void handleChangeHomeBranch(ActionEvent event) {
-        System.out.println("Change Home Branch button clicked");
-        // Implement navigation to Change Home Branch page or functionality
+    	try {
+    		HomeBranchChangeUI UIApp = new HomeBranchChangeUI(user);
+    		UIApp.start(new Stage());
+
+            // Close the current stage
+            Stage currentStage = (Stage) changeHomeBranchButton.getScene().getWindow();
+            currentStage.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @FXML

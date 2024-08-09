@@ -40,13 +40,13 @@ public class UpdateMenuNavigation {
     }
     
     @FXML
-    void initialize() {
+    private void initialize() {
         // Setup table columns
     	client = client.getInstance();
     }
     
     @FXML
-    void handleBackButtonAction(ActionEvent event) {
+    private void handleBackButtonAction(ActionEvent event) {
     	try {
         	UserHomePageUI Userapp = new UserHomePageUI(user,true);
         	Userapp.start(new Stage());
@@ -63,7 +63,7 @@ public class UpdateMenuNavigation {
     	errorText.setVisible(true);
     }
     @FXML
-    void handleUpdateDeleteButtonAction(ActionEvent event) {
+    private void handleUpdateDeleteButtonAction(ActionEvent event) {
     	try {
     		UpdateDeleteMenuUI Userapp = new UpdateDeleteMenuUI(user);
         	Userapp.start(new Stage());
@@ -75,18 +75,27 @@ public class UpdateMenuNavigation {
         }
     }
 
+    @FXML
+    private void handleAddNewDishButtonAction(ActionEvent event) {
+    	try {
+    		UpdateAddDishUI Userapp = new UpdateAddDishUI(user);
+        	Userapp.start(new Stage());
+            Stage currentStage = (Stage) addNewDishButton.getScene().getWindow();
+            currentStage.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+            showError("An error occurred while loading the Add Dish Page.");
+        }
+    }
+    
     //Making Quit Button to kill thread and send message to server
     public void closeApplication() {
         if (client != null) {
         	client.userLogout(user);
+            client.quit();
             }
-        client.userLogout(user);
         Platform.exit();
         System.exit(0);
     }   
-    @FXML
-    void handleAddNewDishButtonAction(ActionEvent event) {
-        System.out.println("Add New Dish button pressed");
-        // Add your logic here for the add new dish button
-    }
+   
 }

@@ -29,6 +29,7 @@ import ClientGUI.CustomerInformationUpdateController;
 import ClientGUI.CustomerOrderCreation;
 import ClientGUI.RegisterUserPageController;
 import ClientGUI.ReportsPageController;
+import ClientGUI.UpdateAddDish;
 import ClientGUI.UpdateDeleteMenu;
 import ClientGUI.WorkerPendingOrders;
 import common.Dish;
@@ -47,6 +48,7 @@ public class Client extends AbstractClient {
 	private CustomerCheckout customerCheckout;
 	private UpdateDeleteMenu updateDeleteMenu;
 	private WorkerPendingOrders workerPendingOrders;
+	private UpdateAddDish updateAddDish;
 	// Constructor to initialize the client with host and port, and establish
 	// connection
 	public Client(String host, int port) throws IOException {
@@ -122,6 +124,10 @@ public class Client extends AbstractClient {
 	
 	public void getInstanceOfUpdateDeleteMenu(UpdateDeleteMenu updateDeleteMenu) {
 		this.updateDeleteMenu = updateDeleteMenu;
+	}
+	
+	public void getInstanceOfUpdateAddDish(UpdateAddDish updateAddDish) {
+		this.updateAddDish = updateAddDish;
 	}
 	
 	// Handle messages received from the server
@@ -201,13 +207,17 @@ public class Client extends AbstractClient {
                  break;
             case MENU_FOR_UPDATE:
             	List<Dish> menuupdate = (List<Dish>) message[1];
+            	for (Dish dish:menuupdate) {
+            			System.out.println(dish.isGrill());
+            	}
             	updateDeleteMenu.setMenuDishes(menuupdate);
+            	
             	break;
             case ADD_DISH:
-                boolean addDishResult = (boolean) message[1];
+            	updateAddDish.setSucceededAdd((boolean) message[1]);
                 break;
             case DELETE_DISH:
-                boolean deleteDishResult = (boolean) message[1];
+            	updateDeleteMenu.SetSuccessDelete((boolean) message[1]);
                 break;
             case REPORT_ERROR:
             	String errorMsg = (String)message[1];
