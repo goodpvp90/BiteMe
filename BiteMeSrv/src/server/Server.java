@@ -7,6 +7,7 @@ import ServerGUI.serverController;
 import common.Dish;
 import common.DishInOrder;
 import common.EnumClientOperations;
+import common.EnumDish;
 import common.EnumOrderStatus;
 import common.EnumServerOperations;
 import common.IncomeReport;
@@ -109,11 +110,7 @@ public class Server extends AbstractServer {
             case VIEW_MENU:
                 int menuId = (int) message[1];
                 List<Dish> menu = orderController.viewMenu(menuId);
-                sendMessageToClient(EnumClientOperations.VIEW_MENU, client, menu);
-            case MENU_FOR_UPDATE://FIND SOLUTION FOR DUPLICATED CODE
-                int menuIdd = (int) message[1];
-                List<Dish> menuu = orderController.viewMenu(menuIdd);
-                sendMessageToClient(EnumClientOperations.MENU_FOR_UPDATE, client, menuu);
+                sendMessageToClient(EnumClientOperations.valueOf(operation.toString()), client, menu);
                 break;
             case PENDING_ORDER:
                 List<Order> pendingOrders = orderController.getPendingOrdersByBranch((int) message[1]);

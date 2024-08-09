@@ -204,6 +204,7 @@ public class Client extends AbstractClient {
         		}
                  break;
             case MENU_FOR_UPDATE:
+            	System.out.println("INNNNNNNNNNNNN");
             	@SuppressWarnings("unchecked")
             	List<Dish> menuupdate = (List<Dish>) message[1];
             	for (Dish dish:menuupdate) {
@@ -244,8 +245,12 @@ public class Client extends AbstractClient {
                 }
             case QUARTERLY_REPORT:
             	//TODO SYSO REMOVE
-                System.out.println("Received quarterly report from server"); // Add this line for debugging
-                QuarterlyReport qreport = (QuarterlyReport) message[1];
+                System.out.println("Received quarterly report from server" ); // Add this line for debugging
+                Object[] data = (Object[])message[1];
+                //this is what you do to see the array of incomes
+                for (Double i : (List<Double>)data[1])
+       			 	System.out.println(i);
+                QuarterlyReport qreport = (QuarterlyReport) data[0];
                 if (reportsPageController != null) {
                     reportsPageController.handleQuarterlyReportResponse(qreport);
                 } else {
