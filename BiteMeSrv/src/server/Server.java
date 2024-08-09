@@ -200,6 +200,7 @@ public class Server extends AbstractServer {
 	@Override
 	protected void serverStopped() {
 		controller.updateStatus("Server has stopped listening for connections.");
+		sendToAllClients(EnumClientOperations.SERVER_DISCONNECTED);
 		dbController.closeConnection();
 		reportController.shutdown();
 	}

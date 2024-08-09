@@ -289,6 +289,10 @@ public class Client extends AbstractClient {
             	//u receive a boolean if succcseded or not
             	//TODO do smth
             	break;
+            case SERVER_DISCONNECTED:
+            	//TODO do smth
+
+            	break;
 			case NONE:
 				System.out.println("no operation was received");
 				break;
