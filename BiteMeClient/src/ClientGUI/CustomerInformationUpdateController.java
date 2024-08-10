@@ -4,6 +4,7 @@ import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
@@ -43,6 +44,9 @@ public class CustomerInformationUpdateController {
 
     @FXML
     private TextField creditCardField;
+    
+    @FXML
+    private ComboBox<EnumBranch> branchComboBox;
 
     @FXML
     private Button updateButton;
@@ -61,6 +65,7 @@ public class CustomerInformationUpdateController {
      */
     public void initialize() {
         client = Client.getInstance();
+        branchComboBox.getItems().addAll(EnumBranch.values());
         client.setCustomerInformationUpdateController(this);
     }
 
@@ -153,8 +158,13 @@ public class CustomerInformationUpdateController {
                 user.setEmail(email);
                 user.setPhone(phone);
                 user.setCreditCard(creditCard);
-                // Set home branch based on logged-in user
-                user.setHomeBranch(loggedInUser.getHomeBranch());                
+                // Set home branch based on DB
+                EnumBranch selectedBranch = branchComboBox.getValue();
+                if (selectedBranch == null) {
+                    showError("Please select a branch");
+                    return;
+                }
+                user.setHomeBranch(selectedBranch);             
                 user.setType(EnumType.CUSTOMER);
                 user.setCustomerType(EnumType.REGULAR);
                 if (!creditCard.isEmpty()) {

@@ -8,6 +8,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 
 import java.io.IOException;
+import java.util.List;
 
 import client.Client;
 import common.EnumType;
@@ -122,20 +123,24 @@ public class ReportsPageController {
      */
     @FXML
     private void handleBackButton(ActionEvent event) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("UserHomePage.fxml"));
-            Parent root = loader.load();
-            UserHomePageController controller = loader.getController();
-            // Pass the user and registration status
-            controller.setUser(this.user, this.isRegistered); 
-            Stage stage = (Stage) backButton.getScene().getWindow();
-            Scene scene = new Scene(root, 700, 600);
-            stage.setScene(scene);
-            stage.setTitle("User Home Page");
-            stage.show();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+    	 try {
+             // Retrieve the existing stage for UserHomePageUI
+             Stage userHomePageStage = UserHomePageUI.getStage();
+
+             if (userHomePageStage != null) {
+                 userHomePageStage.show();  // Show the hidden stage again
+             } else {
+                 // If the stage is somehow null, recreate and show it
+                 UserHomePageUI Userapp = new UserHomePageUI(user, true);
+                 Userapp.start(new Stage());
+             }
+
+             // Close the current stage
+             Stage currentStage = (Stage) backButton.getScene().getWindow();
+             currentStage.close();
+         } catch (Exception e) {
+             e.printStackTrace();
+         }
     }
 
     /**
@@ -424,36 +429,26 @@ public class ReportsPageController {
         }
     }
 
-    /**
-     * Processes the response from the server for a quarterly report request.
-     *
-     * @param response The Object containing the server's response.
-     */
-    public void handleQuarterlyReportResponse(Object response) {
+    
+    public void handleQuarterlyReportResponse(QuarterlyReport qreport, List<Double> monthlyIncomes) {
         System.out.println("Received quarterly report response");
         Platform.runLater(() -> {
-            if (response instanceof QuarterlyReport) {
-                QuarterlyReport report = (QuarterlyReport) response;
-                openQuarterlyReportWindow(report);
-            } else if (response instanceof String) {
-                showErrorMessage((String) response);
+            if (qreport != null && monthlyIncomes != null && monthlyIncomes.size() == 3) {
+                openQuarterlyReportWindow(qreport, monthlyIncomes);
             } else {
-                showErrorMessage("An unexpected error occurred while fetching the report.");
+                showErrorMessage("Invalid data received for quarterly report.");
             }
         });
     }
-    /**
-     * Opens a new window to display the quarterly report.
-     *
-     * @param report The QuarterlyReport to be displayed.
-     */
-    private void openQuarterlyReportWindow(QuarterlyReport report) {
+
+    
+    private void openQuarterlyReportWindow(QuarterlyReport report, List<Double> monthlyIncomes) {
         System.out.println("Attempting to open Quarterly Report window");
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("QuarterlyReport.fxml"));
             Parent root = loader.load();
             QuarterlyReportController controller = loader.getController();
-            controller.setReportData(report, this);
+            controller.setReportData(report, this, monthlyIncomes);
             Stage stage = new Stage();
             stage.setScene(new Scene(root));
             stage.show();

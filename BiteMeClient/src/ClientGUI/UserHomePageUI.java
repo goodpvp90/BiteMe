@@ -16,6 +16,7 @@ public class UserHomePageUI extends Application {
 	private User user;
 	private boolean isRegistered; 
 	private Client client;
+	private static Stage userHomePageStage; 
 	
 	/**
      * Constructor for UserHomePageUI.
@@ -49,6 +50,7 @@ public class UserHomePageUI extends Application {
         });
         primaryStage.setTitle("User Home Page");
         primaryStage.setScene(new Scene(root, 700, 600));
+        userHomePageStage = primaryStage;
         primaryStage.show();
     }
 
@@ -61,5 +63,10 @@ public class UserHomePageUI extends Application {
      */
     public static void main(String[] args) {
         launch(args);
+    }
+    
+ // Static method to retrieve the stage
+    public static Stage getStage() {
+        return userHomePageStage;
     }
 }

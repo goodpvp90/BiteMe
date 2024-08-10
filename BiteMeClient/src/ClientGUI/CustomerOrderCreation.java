@@ -353,19 +353,29 @@ public class CustomerOrderCreation {
 		tempMenuFromDB.clear();                            	 
 		tempMenuFromDB = DBlist; 
 	}
-	// Goes back to the user's home page
+	
 	@FXML
-    private void handleBackButtonAction() {			
-		try {
-        	UserHomePageUI Userapp = new UserHomePageUI(user,true);
-        	Userapp.start(new Stage());
-            Stage currentStage = (Stage) backButton.getScene().getWindow();
-            currentStage.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-            showError("An error occurred while loading the User Home Page.");
-        }
-    }
+	private void handleBackButtonAction() {			
+	    try {
+	        // Retrieve the existing stage for UserHomePageUI
+	        Stage userHomePageStage = UserHomePageUI.getStage();
+
+	        if (userHomePageStage != null) {
+	            userHomePageStage.show();  // Show the hidden stage again
+	        } else {
+	            // If the stage is somehow null, recreate and show it
+	            UserHomePageUI Userapp = new UserHomePageUI(user, true);
+	            Userapp.start(new Stage());
+	        }
+
+	        // Close the current stage
+	        Stage currentStage = (Stage) backButton.getScene().getWindow();
+	        currentStage.close();
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	        showError("An error occurred while loading the User Home Page.");
+	    }
+	}
     
   //Change Error text and make it visible, appear under continue button
   	private void showError(String str) {

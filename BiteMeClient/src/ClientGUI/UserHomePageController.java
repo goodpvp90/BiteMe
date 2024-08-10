@@ -1,10 +1,15 @@
 package ClientGUI;
 
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.text.Text;
 
 import java.io.IOException;
+import java.util.List;
 
 import client.Client;
 import common.EnumType;
@@ -15,6 +20,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 
 /**
  * Controller class for the User Home Page in the BiteMe application.
@@ -91,7 +97,8 @@ public class UserHomePageController {
     	case WORKER:
     		viewReportsButton.setVisible(false);
     		registerUserButton.setVisible(false);
-            changeHomeBranchButton.setVisible(false);
+        changeHomeBranchButton.setVisible(false);
+
     		break;
     	case CUSTOMER:
     		viewReportsButton.setVisible(false);
@@ -154,7 +161,7 @@ public class UserHomePageController {
 
             // Close the current stage
             Stage currentStage = (Stage) createOrderButton.getScene().getWindow();
-            currentStage.close();
+            currentStage.hide();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -175,7 +182,7 @@ public class UserHomePageController {
 
             // Close the current stage
             Stage currentStage = (Stage) updateMenuButton.getScene().getWindow();
-            currentStage.close();
+            currentStage.hide();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -188,16 +195,11 @@ public class UserHomePageController {
      */   
     @FXML
     private void handleViewReports(ActionEvent event) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("ReportsPage.fxml"));
-            Parent root = loader.load();
-            ReportsPageController reportsController = loader.getController();
-            //Sending the data for next page so if i would want to go back then i wont lose DATA
-            reportsController.setUser(this.user, this.isRegistered);
-            reportsController.setUserType(user.getType());
-            Stage stage = (Stage) viewReportsButton.getScene().getWindow();
-            stage.setScene(new Scene(root, 700, 600));
-            stage.setTitle("Reports Page");
+    	try {
+    		RegisterUserPageUI UIRegisterApp = new RegisterUserPageUI(user);
+    		UIRegisterApp.start(new Stage());
+            Stage currentStage = (Stage) changeHomeBranchButton.getScene().getWindow();
+            currentStage.hide();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -216,7 +218,7 @@ public class UserHomePageController {
 
             // Close the current stage
             Stage currentStage = (Stage) changeHomeBranchButton.getScene().getWindow();
-            currentStage.close();
+            currentStage.hide();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -239,7 +241,7 @@ public class UserHomePageController {
 
             // Close the current stage
             Stage currentStage = (Stage) createOrderButton.getScene().getWindow();
-            currentStage.close();
+            currentStage.hide();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -288,24 +290,33 @@ public class UserHomePageController {
      */   
     @FXML
     private void handleRegisterUser(ActionEvent event) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("RegisterUserPage.fxml"));
-            Parent root = loader.load();
-            RegisterUserPageController registerController = loader.getController();            
-            // Store the current scene before switching
-            Scene currentScene = registerUserButton.getScene();
-            registerController.setPreviousScene(currentScene);            
-            // Pass the logged-in user information
-            registerController.setLoggedInUser(this.user);            
-            Stage stage = (Stage) registerUserButton.getScene().getWindow();
-            Scene newScene = new Scene(root);
-            stage.setScene(newScene);
-            stage.setTitle("Register User");
-            stage.show();
-        } catch (IOException e) {
+    	try {
+    		RegisterUserPageUI UIAppReg = new RegisterUserPageUI(user);
+    		UIAppReg.start(new Stage());
+
+            // Close the current stage
+            Stage currentStage = (Stage) changeHomeBranchButton.getScene().getWindow();
+            currentStage.hide();
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
+    
+    public void showNotificationDialog(List<String> text) {
+		Alert alert = new Alert(AlertType.INFORMATION);
+		alert.initStyle(StageStyle.UTILITY);
+		alert.setTitle("INCOMING NOTIFICATION");
+		alert.setHeaderText("You got a message!");
+		String content = String.join("\n", text);
+	    alert.setContentText(content);
+	    ButtonType okButton = new ButtonType("CLOSE", ButtonData.OK_DONE);
+		alert.getButtonTypes().setAll(okButton);
+		alert.showAndWait().ifPresent(response -> {
+			if (response == okButton) {
+				alert.close(); // Close the dialog window
+			}
+		});
+	}
     
     /**
      * Logs out the user from the database.

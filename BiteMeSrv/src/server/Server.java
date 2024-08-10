@@ -187,7 +187,8 @@ public class Server extends AbstractServer {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        sendMessageToClient(EnumClientOperations.NOTIFICATION, client, notifications);
+        if(!notifications.isEmpty())
+        	sendMessageToClient(EnumClientOperations.NOTIFICATION, client, notifications);
 	}
 	
     public ConnectionToClient getClientByUsername(String username) {
