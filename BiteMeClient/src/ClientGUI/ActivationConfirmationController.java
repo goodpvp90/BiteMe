@@ -50,13 +50,15 @@ public class ActivationConfirmationController {
             "Name: %s %s\n" +
             "Email: %s\n" +
             "Phone: %s\n" +
-            "Status: %s",
+            "Status: %s\n" +
+            "Branch: %s",
             user.getId(),
             user.getFirstName(),
             user.getLastName(),
             user.getEmail(),
             user.getPhone(),
-            user.getCustomerType() == EnumType.PRIVATE ? "Private" : "Regular"
+            user.getCustomerType() == EnumType.PRIVATE ? "Private" : "Regular",
+            user.getHomeBranch()
         );
         infoText.setText(info);
     }

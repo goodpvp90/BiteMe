@@ -83,13 +83,16 @@ public class UserHomePageController {
     	else {switch(user.getType()) {
     	//CEO AND BM Same buttons but other functionalities and roles.
     	case CEO:
+    		changeHomeBranchButton.setDisable(true);
     		break;
     	case BRANCH_MANAGER:
+    		changeHomeBranchButton.setDisable(true);
     		//viewReportsButton.setOnAction(this::handleViewReportsForBranch);
     		break;
     	case WORKER:
     		viewReportsButton.setVisible(false);
     		registerUserButton.setVisible(false);
+    		changeHomeBranchButton.setDisable(true);
     		break;
     	case CUSTOMER:
     		viewReportsButton.setVisible(false);

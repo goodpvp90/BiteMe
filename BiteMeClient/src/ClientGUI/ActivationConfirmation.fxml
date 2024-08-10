@@ -5,7 +5,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="700.0" stylesheets="@client.css" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ClientGUI.ActivationConfirmationController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="650.0" prefWidth="700.0" stylesheets="@client.css" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ClientGUI.ActivationConfirmationController">
    <children>
       <VBox alignment="CENTER" layoutX="0.0" layoutY="60.0" prefWidth="700.0" spacing="20.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
          <children>
@@ -14,6 +14,6 @@
          </children>
       </VBox>
       
-      <Button fx:id="returnButton" layoutX="254.0" layoutY="500.0" mnemonicParsing="false" onAction="#returnToHomePage" prefHeight="50.0" prefWidth="193.0" text="Return to Home Page" />
+      <Button fx:id="returnButton" layoutX="254.0" layoutY="550.0" mnemonicParsing="false" onAction="#returnToHomePage" prefHeight="50.0" prefWidth="193.0" text="Return to Home Page" />
    </children>
 </AnchorPane>
