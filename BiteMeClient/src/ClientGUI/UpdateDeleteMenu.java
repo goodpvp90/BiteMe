@@ -64,8 +64,6 @@ public class UpdateDeleteMenu {
     @FXML
     private TextField priceField;
 
-    @FXML
-    private TextField optionalsField;
 
     @FXML
     private ComboBox<String> grillComboBox;
@@ -76,8 +74,6 @@ public class UpdateDeleteMenu {
     @FXML
     private Text priceText;
 
-    @FXML
-    private Text optionalsText;
 
     @FXML
     private Text grillText;
@@ -91,7 +87,16 @@ public class UpdateDeleteMenu {
     
     private boolean successDelete;
     
-	public List<Dish> chosenItemsFromMenu = new ArrayList<>(); 
+    private boolean successEdit;
+    
+	public List<Dish> chosenItemsFromMenu = new ArrayList<>();
+	
+	private boolean whichOptionChoosed = false; //false to delete true to edit
+	
+	//if update didn't succeed use this as backup
+	private String prevDishName;
+	private double prevDishPrice;
+	private boolean prevIsGrill;
 
 
     @FXML
@@ -104,7 +109,7 @@ public class UpdateDeleteMenu {
     	nameColumn.setCellValueFactory(new PropertyValueFactory<>("dishName"));
         priceColumn.setCellValueFactory(new PropertyValueFactory<>("price"));
         // Set up the optionalsColumn to display formatted optionals
-        optionalsColumn.setCellValueFactory(cellData -> new SimpleStringProperty(formatOptionals(cellData.getValue().getOptionals())));     
+        optionalsColumn.setCellValueFactory(cellData -> new SimpleStringProperty(formatOptionals(cellData.getValue().getOptionals())));
         // Set up the grillColumn to show "Yes" or "No"
         grillColumn.setCellValueFactory(cellData -> new SimpleBooleanProperty(cellData.getValue().isGrill()));
 
@@ -121,12 +126,13 @@ public class UpdateDeleteMenu {
         });        
         //Sort Type column in table
         menuTableView.getItems().clear();
-        menuTableView.getSortOrder().add(typeColumn);
-        typeColumn.setSortType(TableColumn.SortType.ASCENDING); // or DESCENDING for reverse order
+        
         
         grillComboBox.getItems().addAll("No", "Yes");
         
         resetFields();
+        
+        
         
         // Add a listener to handle row selection
         menuTableView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
@@ -137,12 +143,6 @@ public class UpdateDeleteMenu {
                 nameField.setText(selectedDish.getDishName());
                 priceField.setText(String.valueOf(selectedDish.getPrice()));
                 
-                // Handle optionals
-                if (selectedDish.getOptionals() != null && !selectedDish.getOptionals().isEmpty()) {
-                    optionalsField.setText(formatOptionals(selectedDish.getOptionals()));
-                } else {
-                    optionalsField.setText(""); // Clear field if no optionals
-                }
                 
                 //Set the is grill value
             	String griilOrNot = (selectedDish.isGrill()?"Yes":"No");
@@ -157,7 +157,7 @@ public class UpdateDeleteMenu {
                 	grillComboBox.setVisible(false);
                 }
                 	
-            }  // Sort the table by the Type column upon opening
+            }  
 
         });
         
@@ -168,7 +168,6 @@ public class UpdateDeleteMenu {
     	// Set the TextFields to be empty initially
         nameField.setText("");
         priceField.setText("");
-        optionalsField.setText("");
         grillComboBox.setValue("No");
         
         // Hide the grill-related UI elements initially
@@ -190,11 +189,16 @@ public class UpdateDeleteMenu {
             menuTableView.getItems().addAll(dishes);
             resetFields();
             
+            //sort Type column
+            menuTableView.getSortOrder().add(typeColumn);
+            typeColumn.setSortType(TableColumn.SortType.ASCENDING);
+           
         });
     }
    
     public void setMenuDishes(List<Dish> chosenItemsFromMenu) {
-    	this.chosenItemsFromMenu = chosenItemsFromMenu; 
+    	this.chosenItemsFromMenu = chosenItemsFromMenu;
+    	
 
     }
 
@@ -203,6 +207,8 @@ public class UpdateDeleteMenu {
     	client.getViewMenu(EnumServerOperations.MENU_FOR_UPDATE,UserHomeBranchConvertToInt(user.getHomeBranch()));
         Platform.runLater(() -> {
     	menuTableView.getItems().addAll(chosenItemsFromMenu);
+    	menuTableView.getSortOrder().add(typeColumn);
+        typeColumn.setSortType(TableColumn.SortType.ASCENDING); // or DESCENDING for reverse order
         });
 
     }
@@ -240,11 +246,71 @@ public class UpdateDeleteMenu {
 
     @FXML
     private void handleSaveButtonAction() {
-    	showError("hi "+ chosenItemsFromMenu.get(0).getOptionals());
+    	whichOptionChoosed=true;
+        Dish selectedDish = menuTableView.getSelectionModel().getSelectedItem();
+        
+        String name = nameField.getText();
+        String price = priceField.getText();
+        boolean grill = (grillComboBox.getValue().equals("Yes")?true:false);
+        if (selectedDish != null && checkIfLegalFieldsEdit(name,price)) {
+        	if(checkIfNotTheSameDetails(selectedDish,name,Double.valueOf(price),grill)) {
+        	//backup in case it didn't succeed
+        	prevDishName = selectedDish.getDishName();
+        	prevDishPrice = selectedDish.getPrice();
+        	prevIsGrill = selectedDish.isGrill();
+        	selectedDish.setDishName(name);
+        	selectedDish.setPrice(Double.valueOf(price));
+        	selectedDish.setGrill(grill);
+        	
+        	client.updateDish(selectedDish);
+        	}
+        	else //do nothing, same details entered
+        		return;
+        		
+        }
+        else
+        	showError("Please select a dish to edit");
+
+    }
+    
+    //check if the details entered are different from the current dish details
+    private boolean checkIfNotTheSameDetails(Dish dish, String name, double price,boolean isGrill) {
+		return !(dish.getDishName().equals(name) && dish.getPrice() == price && dish.isGrill() == isGrill);
+    }
+
+    
+    private boolean checkIfLegalFieldsEdit(String name, String price) {
+    	 // Case 1: Name is empty
+        if (name == null || name.trim().isEmpty()) {
+            showError("Dish name cannot be empty.");
+            return false;
+        }
+
+        // Case 2: Name contains invalid characters (only allows letters, numbers, and spaces)
+        if (!name.matches("[a-zA-Z0-9 ]+")) {
+            showError("Dish name can only contain letters, numbers, -, and spaces.");
+            return false;
+        }
+
+        // Case 3: Price is empty
+        if (price == null || price.trim().isEmpty()) {
+            showError("Price cannot be empty.");
+            return false;
+        }
+
+        // Case 4: Price contains non-numeric characters (only allows numbers)
+        if (!price.matches("\\d+(\\.\\d{1,2})?")) {
+            showError("Price must be a number with up to 2 decimal places.");
+            return false;
+        }
+
+        // All checks passed, input is valid
+        return true;
     }
 
     @FXML
     private void handleDeleteButtonAction() {
+    	whichOptionChoosed=false;
         Dish selectedDish = menuTableView.getSelectionModel().getSelectedItem();
         if (selectedDish != null) {
 			chosenItemsFromMenu.remove(selectedDish);
@@ -256,29 +322,48 @@ public class UpdateDeleteMenu {
     
     
     
-    // Add this method or similar to handle server response
     public void SetSuccessDelete(boolean successDelete) {
     	this.successDelete=successDelete;
-    	Platform.runLater(() -> checkDeleteSuccessAndProceed());
+    	Platform.runLater(() -> checkSuccessAndProceed());
     }
+    
+    public void SetSuccessEdit(boolean successEdit) {
+    	this.successEdit=successEdit;
+    	
+    	Platform.runLater(() ->client.getViewMenu
+    			(EnumServerOperations.MENU_FOR_UPDATE,UserHomeBranchConvertToInt(user.getHomeBranch())));
+    	
+    	Platform.runLater(() -> checkSuccessAndProceed());
 
-	private void checkDeleteSuccessAndProceed() {
-		if (successDelete) {
-			showSuccessDeleteDialog();
+    }
+    
+    
+	private void checkSuccessAndProceed() {
+		if (successDelete || successEdit) {
+			if(successDelete)
+				showSuccessDialog("Delete Dish Complete","deleted");
+			if(successEdit)
+				showSuccessDialog("Edit Dish Complete","edited");
+				
 			// Refresh the table view
 			updateMenuTable(chosenItemsFromMenu);
-			
+			successDelete=false;
+			successEdit=false;
 		} else {
-			showError("Failed to delete the dish.");
+			if(!successDelete && !whichOptionChoosed)
+				showError("Failed to delete dish.");
+			if(!successEdit && whichOptionChoosed) {
+				showError("Failed to edit dish.");
+			}
 		}
 	}
 
-	private void showSuccessDeleteDialog() {
+	private void showSuccessDialog(String title, String contentAction) {
 		Alert alert = new Alert(AlertType.INFORMATION);
 		alert.initStyle(StageStyle.UTILITY);
-		alert.setTitle("Added Dish Complete");
+		alert.setTitle(title);
 		alert.setHeaderText(null);
-		alert.setContentText("Dish deleted successfully!");
+		alert.setContentText("Dish " + contentAction + " successfully!");
 
 		ButtonType okButton = new ButtonType("OK", ButtonData.OK_DONE);
 		alert.getButtonTypes().setAll(okButton);
@@ -294,7 +379,6 @@ public class UpdateDeleteMenu {
     public void closeApplication() {
         if (client != null) {
         	client.userLogout(user);
-            client.quit();
             }
         Platform.exit();
         System.exit(0);

@@ -280,9 +280,7 @@ public class Client extends AbstractClient {
             	//TODO do smth
             	break;
             case UPDATE_DISH:
-            	//U GET BOOLEAN IF SUCCESSEEDD TO UPDATE
-            	//fff
-            	//TODO do smth
+            	updateDeleteMenu.SetSuccessEdit((boolean) message[1]);
             	break;
             case UPDATE_ORDER_STATUS:
             	//HERE U GET RESPONSE IF UPDATE STATUS IS SUCCESFULL

@@ -263,8 +263,7 @@ public class UserHomePageController {
                     userType = "Worker";
                     break;
                 case CUSTOMER:
-                    userType = "Customer";
-                    break;
+                	userType = "Customer";
             }
         } 
         headlineText.setText(user.getUsername() + ", " + userType);

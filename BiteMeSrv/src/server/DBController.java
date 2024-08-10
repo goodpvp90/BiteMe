@@ -775,11 +775,11 @@ public class DBController {
         String updateSql = "UPDATE dishes SET dish_type = ?, dish_name = ?, price = ?, is_grill = ? WHERE dish_id = ?";
 
         try (PreparedStatement updateStmt = connection.prepareStatement(updateSql)) {
-            updateStmt.setString(2, dish.getDishType().toString());
-            updateStmt.setString(3, dish.getDishName());
-            updateStmt.setDouble(4, dish.getPrice());
-            updateStmt.setBoolean(5, dish.isGrill());
-            updateStmt.setInt(6, dish.getDishId());
+            updateStmt.setString(1, dish.getDishType().toString());
+            updateStmt.setString(2, dish.getDishName());
+            updateStmt.setDouble(3, dish.getPrice());
+            updateStmt.setBoolean(4, dish.isGrill());
+            updateStmt.setInt(5, dish.getDishId());
 
             int rowsAffected = updateStmt.executeUpdate();
             return rowsAffected > 0;
