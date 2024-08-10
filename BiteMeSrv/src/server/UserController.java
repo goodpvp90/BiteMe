@@ -16,11 +16,12 @@ public class UserController {
 		this.server = server;
 	}
 
-	public void login(ConnectionToClient client, Object[] message) {
+	public boolean login(ConnectionToClient client, Object[] message) {
     	User user = (User)message[1];
         Object result = server.dbController.validateLogin(user);
 		if (result instanceof String) {
 			server.sendMessageToClient(EnumClientOperations.USER,client, result);
+			return false;
 		}
 		else {
 			@SuppressWarnings("unchecked")
@@ -34,11 +35,14 @@ public class UserController {
 			user.setLogged((boolean)details.get(7));
 			user.setType((EnumType)details.get(8));
 			
-			if (user.getType() == EnumType.CUSTOMER)
-				user.setType(server.dbController.getCustomerType(user.getUsername()));
-			client.setInfo("user", user); //Store information into client object
-			
+			if (user.getType() == EnumType.CUSTOMER) {
+				user.setCustomerType(server.dbController.getCustomerType(user.getUsername()));
+			}
+			//client.setInfo("user", user); //Store information into client object
+        	server.addToClients(user.getUsername(),client);
+
 			server.sendMessageToClient(EnumClientOperations.USER,client,(Object)user);
+			return true;
 		}
     }
     
@@ -49,6 +53,7 @@ public class UserController {
         if (logoutSuccess) {
             user.setLogged(false);
             server.sendMessageToClient(EnumClientOperations.LOG_OUT, client, (Object) user);
+            server.removeFromClients(user.getUsername());
         } else {
             server.sendMessageToClient(EnumClientOperations.LOG_OUT, client, "Failed to log out user.");
         }

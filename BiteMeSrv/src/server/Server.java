@@ -2,7 +2,13 @@ package server;
 
 import java.io.*;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
 import ServerGUI.serverController;
 import common.Dish;
 import common.DishInOrder;
@@ -29,7 +35,10 @@ public class Server extends AbstractServer {
 	private ReportController reportController;
 	private OrderController orderController;
 	private UserController userController;
-	
+    //private Thread[] clientThreadList = getClientConnections();
+    //private Map<String,ConnectionToClient> clients;
+	public Map<String, ConnectionToClient> clients = new ConcurrentHashMap<>();
+
 	// Private constructor
 	public Server(int port, String url, String username, String password) {
 		super(port);
@@ -37,6 +46,7 @@ public class Server extends AbstractServer {
 		reportController = new ReportController(this);
 		orderController = new OrderController(this);
 		userController = new UserController(this);
+		//clients = new HashMap<>();
 		try {
 			dbController.connect(url, username, password);
 		} catch (ClassNotFoundException | SQLException e) {
@@ -64,6 +74,7 @@ public class Server extends AbstractServer {
 			Object[] message = (Object[]) msg;
 			operation = (EnumServerOperations) message[0];
         	System.out.println(operation);
+        	System.out.println(areConnectionsEqual(clients.get("ben"),client));
 			switch (operation) {
 			case USER_CONDITION:
 				controller.displayClientDetails((String[]) message[1]);
@@ -83,7 +94,8 @@ public class Server extends AbstractServer {
                 List<Dish> dishesInOrder = (List<Dish>) message[2];
                 // Call the method to create the order
                 try {
-                    sendMessageToClient(EnumClientOperations.INSERT_ORDER,client, orderController.createOrder(newOrder, dishesInOrder));
+                	boolean order = orderController.createOrder(newOrder, dishesInOrder, client);
+                    sendMessageToClient(EnumClientOperations.INSERT_ORDER,client, order);
                 } catch (Exception e) {
                     result = "Error creating order: " + e.getMessage();
                 }
@@ -155,11 +167,10 @@ public class Server extends AbstractServer {
             	sendMessageToClient(EnumClientOperations.DISHES_IN_ORDER, client, dishes);
             	break;
             case CHANGE_HOME_BRANCH:
+            	System.out.println(System.identityHashCode(client));
+            	System.out.println(areConnectionsEqual(clients.get("ben"),client));
             	boolean changeResult = userController.changeHomeBranch((User)message[1]);
             	sendMessageToClient(EnumClientOperations.CHANGE_HOME_BRANCH, client, changeResult);
-            	break;
-            case NOTIFICATION:
-            	
             	break;
 			case NONE:
 				System.out.println("No operation was received");
@@ -169,6 +180,12 @@ public class Server extends AbstractServer {
 			System.out.println("Received unknown message type from client: " + msg);
 	}
 	
+	//=======================================================
+    public boolean areConnectionsEqual(ConnectionToClient client1, ConnectionToClient client2) {
+        return clients.entrySet().stream()
+            .anyMatch(entry -> entry.getValue().equals(client1) && entry.getValue().equals(client2));
+    }
+    //==========================================================
 	private void viewMenu(ConnectionToClient client, Object[] message, EnumServerOperations operation) {
         int menuId = (int) message[1];
         List<Dish> menu = orderController.viewMenu(menuId);
@@ -180,27 +197,31 @@ public class Server extends AbstractServer {
         String username = user.getUsername();
         List<String> notifications = null;
        	System.out.println("LOGIN SHOWED ON SERVER");
-        userController.login(client, (Object[]) message);
-        try {
-            notifications = dbController.getPendingNotifications(username);
-            dbController.deletePendingNotifications(username);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        if(!notifications.isEmpty())
-        	sendMessageToClient(EnumClientOperations.NOTIFICATION, client, notifications);
-	}
-	
-    public ConnectionToClient getClientByUsername(String username) {
-        Thread[] clientThreadList = getClientConnections();
-        for (Thread clientThread : clientThreadList) {
-            ConnectionToClient client = (ConnectionToClient) clientThread;
-            User user = (User) client.getInfo("user");
-            if (user != null && user.getUsername().equals(username)) {
-                return client;
+        boolean loginReuslt = userController.login(client, (Object[]) message);
+        if (loginReuslt) {
+        	client.setInfo("user", username);
+        	try {
+                notifications = dbController.getPendingNotifications(username);
+                dbController.deletePendingNotifications(username);
+            } catch (SQLException e) {
+                e.printStackTrace();
             }
+            if(!notifications.isEmpty())
+            	sendMessageToClient(EnumClientOperations.NOTIFICATION, client, notifications);
         }
-        return null;
+	}
+    
+    public void addToClients(String key, ConnectionToClient client) {
+        clients.put(key, client);
+    }
+
+    public void removeFromClients(String key) {
+        clients.remove(key);
+    }
+    
+    // Retrieve a client from the map by key
+    public ConnectionToClient getClient(String key) {
+        return clients.get(key);
     }
     
 	@Override
