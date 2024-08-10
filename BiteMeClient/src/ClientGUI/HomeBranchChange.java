@@ -1,7 +1,10 @@
 package ClientGUI;
 
 import javafx.fxml.FXML;
+import javafx.geometry.Pos;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.ListCell;
+import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.scene.control.Button;
@@ -33,12 +36,40 @@ public class HomeBranchChange {
     
     private Client client;
     
+    private EnumBranch beckupIfDidntSuccessBranch;
+    
+    
     @FXML
     public void initialize() {
+    	client = client.getInstance();
+    	client.getInstanceOfHomeBranchChange(this);
+    	
         // Initialize ComboBox items here
         homeBranchComboBox.getItems().addAll("North", "Center", "South");
         homeBranchComboBox.setValue("North");
+        
+        
+     // Center the text and set the font size in the ComboBox
+        homeBranchComboBox.setButtonCell(createCenteredCell());
+        homeBranchComboBox.setCellFactory(param -> createCenteredCell());
     }
+    
+	// Method to create a ListCell with centered text and larger font size
+	private ListCell<String> createCenteredCell() {
+		return new ListCell<>() {
+			@Override
+			protected void updateItem(String item, boolean empty) {
+				super.updateItem(item, empty);
+				if (empty || item == null) {
+					setText(null);
+				} else {
+					setText(item);
+					setFont(Font.font(16)); // Adjust font size as needed
+					setAlignment(Pos.CENTER); // Center the text
+				}
+			}
+		};
+	}
     
     public void setUser(User user) {
     	this.user=user;
@@ -60,7 +91,7 @@ public class HomeBranchChange {
     } 
     
     private EnumBranch convertStrToEnumBranch(String branchName) {
-        switch (branchName.toUpperCase()) {
+        switch (branchName) {
             case "North":
                 return EnumBranch.NORTH;
             case "Center":
@@ -79,16 +110,26 @@ public class HomeBranchChange {
 		// Handle ComboBox selection action
 
 		EnumBranch choice = convertStrToEnumBranch(homeBranchComboBox.getValue());
-
+		
 		if (!choice.equals(user.getHomeBranch())) {
-			
-			//add client method
-			showSuccess(convertLocEnumToStr(choice));
-		} else {
-			errorText.setVisible(false);
-			successText.setVisible(false);
+			beckupIfDidntSuccessBranch= user.getHomeBranch();
+			user.setHomeBranch(choice);
+			client.changeHomeBranch(user);
 		}
+
 	}
+	
+	//receive information from the client if change user branch succeed
+    public void checkSuccessChangeHomeBranch(boolean result) {
+    	if(result) {
+			showSuccess(homeBranchComboBox.getValue());
+			}
+    	else {
+    		//if the set didn't succeed we want to set previous home branch
+    		user.setHomeBranch(beckupIfDidntSuccessBranch);
+		}
+
+    }
     
     @FXML
     void handleBackButtonAction(ActionEvent event) {
@@ -122,7 +163,6 @@ public class HomeBranchChange {
     public void closeApplication() {
         if (client != null) {
         	client.userLogout(user);
-            client.quit();
             }
         Platform.exit();
         System.exit(0);
