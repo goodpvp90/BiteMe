@@ -5,55 +5,40 @@ import javafx.scene.chart.BarChart;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.Label;
 import javafx.scene.control.Tooltip;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
+
+import java.util.List;
+
 import common.QuarterlyReport;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import javafx.application.Platform;
 
-/**
- * Controller class for the Quarterly Report view.
- * Handles the display and interaction of quarterly report data.
- */
 public class QuarterlyReportController {
 
-    @FXML
-    private BarChart<String, Number> reportChart;
-
-    @FXML
-    private Label reportIncome;
+    @FXML private BarChart<String, Number> reportChart;
+    @FXML private Label reportIncome;
+    @FXML private Label monthlyIncome;
 
     private ReportsPageController parentController;
     private QuarterlyReport report;
+    private List<Double> monthlyIncomes;
 
-    /**
-     * Initializes the controller. This method is automatically called after the FXML file has been loaded.
-     * It schedules the window title update and close handler setup to run on the JavaFX Application Thread.
-     */
     public void initialize() {
-        Platform.runLater(() -> {
-            updateWindowTitle();
-            setupCloseHandler();
-        });
+        // Set bold font for labels
+        Font boldFont = Font.font(reportIncome.getFont().getFamily(), FontWeight.BOLD, reportIncome.getFont().getSize());
+        reportIncome.setFont(boldFont);
+        monthlyIncome.setFont(boldFont);
     }
 
-    /**
-     * Sets the report data and updates the chart.
-     * This method is called from the ReportsPageController to provide the report data and set up the parent controller reference.
-     *
-     * @param report The QuarterlyReport data to be displayed
-     * @param controller The parent ReportsPageController
-     */
-    public void setReportData(QuarterlyReport report, ReportsPageController controller) {
+    public void setReportData(QuarterlyReport report, ReportsPageController controller, List<Double> monthlyIncomes) {
         this.parentController = controller;
         this.report = report;
+        this.monthlyIncomes = monthlyIncomes;
         updateChart();
     }
 
-    /**
-     * Updates the chart with the current report data.
-     * This method clears the existing chart data, creates a new reports with the report data,
-     * and adds tooltips to each data point.
-     */
     private void updateChart() {
         reportChart.getData().clear();
         XYChart.Series<String, Number> series = new XYChart.Series<>();
@@ -72,7 +57,33 @@ public class QuarterlyReportController {
         }
 
         reportChart.getData().add(series);
-        reportIncome.setText("Total Income: $" + report.getIncome());
+
+        // Update the income labels
+        updateIncomeLabels();
+    }
+
+    private void updateIncomeLabels() {
+        // Update total income label
+        reportIncome.setText(String.format("Total Income: $%d", report.getIncome()));
+
+        // Update monthly income label
+        StringBuilder monthlyIncomeText = new StringBuilder();
+        String[] monthNames = getMonthNames(report.getQuarter());
+        for (int i = 0; i < monthlyIncomes.size(); i++) {
+            if (i > 0) monthlyIncomeText.append("   ");
+            monthlyIncomeText.append(String.format("%s: $%.2f", monthNames[i], monthlyIncomes.get(i)));
+        }
+        monthlyIncome.setText("|     "+monthlyIncomeText.toString());
+    }
+
+    private String[] getMonthNames(int quarter) {
+        switch (quarter) {
+            case 1: return new String[]{"January", "February", "March"};
+            case 2: return new String[]{"April", "May", "June"};
+            case 3: return new String[]{"July", "August", "September"};
+            case 4: return new String[]{"October", "November", "December"};
+            default: return new String[]{"Month 1", "Month 2", "Month 3"};
+        }
     }
 
     /**
