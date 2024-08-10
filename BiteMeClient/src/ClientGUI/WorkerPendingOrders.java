@@ -13,6 +13,7 @@ import common.User;
 import javafx.fxml.FXML;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -53,7 +54,7 @@ public class WorkerPendingOrders {
     @FXML
     private Button orderReadyButton;    
     @FXML
-    private TextField etaTextField;;
+    private ComboBox<String> etaComboBox;
     @FXML
     private Button backButton;
     
@@ -74,19 +75,23 @@ public class WorkerPendingOrders {
         totalPriceColumn.setCellValueFactory(new PropertyValueFactory<>("totalPrice"));
         deliveryColumn.setCellValueFactory(new PropertyValueFactory<>("delivery"));
         statusColumn.setCellValueFactory(new PropertyValueFactory<>("status"));
-
-        // Load data here
-        //orderTableView.setItems(getOrders());
         orderTableView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
                 updateButtonStates(newValue);
+                etaComboBox.setValue(null);
             }
         });
-        etaTextField.textProperty().addListener((observable, oldValue, newValue) -> {
-            // Enable or disable the ORDER READY button based on ETA input
-            orderReadyButton.setDisable(newValue.trim().isEmpty());
+        //*******************************    
+        etaComboBox.setItems(FXCollections.observableArrayList(
+                "In about 20 minutes",
+                "In about 1 hour",
+                "Above one hour"
+        ));
+        etaComboBox.valueProperty().addListener((observable, oldValue, newValue) -> {
+            orderReadyButton.setDisable(newValue == null || newValue.isEmpty());
         });
-        // Add expandable column
+        etaComboBox.setVisible(false);
+        //*******************************
         TableColumn<Order, Void> expandColumn = new TableColumn<>("Expand");
         expandColumn.setCellFactory(param -> new TableCell<>() {
             private final Button expandButton = new Button("Expand");
@@ -96,11 +101,10 @@ public class WorkerPendingOrders {
                     Order Selectedorder = getTableView().getItems().get(getIndex());
                     if (Selectedorder != null) {
                         // Pass the orderId to the showOrderDetails method
-                        showOrderDetails(Selectedorder.getOrderId());
+                        showOrderDetails(Selectedorder.getOrderId()); 
                     }
                 });
             }
-
             @Override
             protected void updateItem(Void item, boolean empty) {
                 super.updateItem(item, empty);
@@ -111,15 +115,7 @@ public class WorkerPendingOrders {
                 }
             }
         });
-
         orderTableView.getColumns().add(expandColumn);
-        
-        etaTextField.textProperty().addListener((observable, oldValue, newValue) -> {
-            Order selectedOrder = orderTableView.getSelectionModel().getSelectedItem();
-            if (selectedOrder != null && selectedOrder.isDelivery()) {
-                orderReadyButton.setDisable(newValue.isEmpty());
-            }
-        });
     }
     //-----------------------------------------END OF INIT------------------------------------------
     public void setUser(User user) 
@@ -170,7 +166,8 @@ public class WorkerPendingOrders {
     
     // Create a new stage to show order details
     private void showOrderDetails(int orderID) {
-        // Create a new stage to show order details
+    	client.sendShowDishesInOrder(orderID); 
+    	Platform.runLater(() -> {
         Stage detailStage = new Stage();
         VBox vbox = new VBox();
         TableView<DishInOrder> dishTableView = new TableView<>();
@@ -192,10 +189,8 @@ public class WorkerPendingOrders {
         detailStage.show();
         
         // Fetch the dish data from the server
-        client.sendShowDishesInOrder(orderID);        
-        // When the data arrives, populate the table view
-        PendingDishInOrders.clear(); // Clear any previous data       
-        Platform.runLater(() -> {
+                   
+        
             dishTableView.setItems(FXCollections.observableArrayList(PendingDishInOrders));
         });
 
@@ -210,7 +205,6 @@ public class WorkerPendingOrders {
             selectedOrder.setStatus(EnumOrderStatus.IN_PROGRESS);
             orderTableView.refresh();
             updateButtonStates(selectedOrder);           
-            //client.executeNotifyUser(selectedOrder.getOrderId(),"Your order has been approved and is being prepared!");
         }
         else
         	showError("Order selection error!!!");
@@ -221,24 +215,22 @@ public class WorkerPendingOrders {
         Order selectedOrder = orderTableView.getSelectionModel().getSelectedItem();
         if (selectedOrder != null) {
             if (selectedOrder.isDelivery()) {
-                if (etaTextField.isVisible() && !etaTextField.getText().isEmpty()) {
-                    client.updateOrderStatus(selectedOrder.getOrderId(), EnumOrderStatus.READY, "Your order is ready and the delivery is on its way!\n Estimated time of arrival will be:");
-                    //לעשות שזה קולט את הזמן שהוזן על ידי העובד
-             //       client.executeNotifyUser(selectedOrder.getOrderId(),"Your order is ready and the delivery is on its way!\n Estimated time of arrival will be:");
+                etaComboBox.setVisible(true);
+                if (etaComboBox.getValue() != null && !etaComboBox.getValue().equals("-Choose Comment-")) {
+                    client.updateOrderStatus(selectedOrder.getOrderId(), EnumOrderStatus.READY, "Your order is ready and the delivery is on its way!\n Estimated time of arrival will be: "+etaComboBox.getValue());
                 } else {
                     showError("ETA must be provided for delivery orders.");
-                    return; // Prevent further execution
+                    return; 
                 }
             } else {
-                // If it's not a delivery order, allow status update without checking etaTextField
+                // If it's not a delivery order, allow status update without checking etaComboBox
                 client.updateOrderStatus(selectedOrder.getOrderId(), EnumOrderStatus.READY,"Your order is ready for pickup!");
-              //  client.executeNotifyUser(selectedOrder.getOrderId(),"Your order is ready for pickup!");
             }
             // Remove order from the table after setting status to READY
             selectedOrder.setStatus(EnumOrderStatus.READY);
             orderTableView.getItems().remove(selectedOrder);
             orderTableView.refresh();
-            etaTextField.clear();
+            etaComboBox.setValue(null);          
       		errorText.setVisible(false);
             updateButtonStates(selectedOrder);
         } else {
@@ -250,25 +242,25 @@ public class WorkerPendingOrders {
         if (selectedOrder != null) {
             EnumOrderStatus status = selectedOrder.getStatus();
             boolean isDelivery = selectedOrder.isDelivery();
-
             approveOrderButton.setDisable(status != EnumOrderStatus.PENDING);
             orderReadyButton.setDisable(status != EnumOrderStatus.IN_PROGRESS);
-            etaTextField.setVisible(isDelivery && status == EnumOrderStatus.IN_PROGRESS);
+            etaComboBox.setVisible(isDelivery && status == EnumOrderStatus.IN_PROGRESS);
+            etaComboBox.setValue(null);
         } else {
             approveOrderButton.setDisable(true);
             orderReadyButton.setDisable(true);
-            etaTextField.setVisible(false);
+            etaComboBox.setVisible(false);
+            etaComboBox.setValue(null);
         }
     }
 
-  //Change Error text and make it visible, appear under continue button
-    //*NEED TO ADD IN FXML*******************************************
+    //Change Error text and make it visible, appear under continue button
   	private void showError(String str) {
   		errorText.setText(str);
   		errorText.setVisible(true);
   	} 
     
- // Goes back to the user's home page
+  	// Goes back to the user's home page
   	@FXML
   	private void handleBackButtonAction() {    
   	    try {
@@ -282,7 +274,6 @@ public class WorkerPendingOrders {
   	            UserHomePageUI Userapp = new UserHomePageUI(user, true);
   	            Userapp.start(new Stage());
   	        }
-
   	        // Close the current stage
   	        Stage currentStage = (Stage) backButton.getScene().getWindow();
   	        currentStage.close();
