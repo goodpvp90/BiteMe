@@ -1,189 +1,148 @@
-/* client.css */
-
-/*CLIENTCONNECT PAGE UI FROM NOW */
-
-.button {
-    -fx-background-color: #0073e6;
-    -fx-text-fill: white;
-    -fx-font-size: 14px;
-    -fx-padding: 10px;
-    -fx-border-radius: 5px;
-    -fx-background-radius: 5px;
+/* Cool gradient background */
+.blue-gradient-1 {
+    -fx-background-color: linear-gradient(to bottom right, #0f2027, #203a43, #2c5364);
 }
 
-.button:hover {
-    -fx-background-color: #005bb5;
+/* Header styles */
+.header {
+    -fx-background-color: rgba(255, 255, 255, 0.1);
+    -fx-padding: 15px 20px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.3), 0, 5, 0, 0);
+    -fx-min-width: 100%; /* Ensures the header spans the full width */
 }
 
-.button:pressed {
-    -fx-background-color: #003f7f;
-}
-
-.logout-button {
-    -fx-background-color: #e74c3c;
-}
-
-.logout-button:hover {
-    -fx-background-color: #c0392b;
-}
-
-.logout-button:pressed {
-    -fx-background-color: #a93226;
-}
-
-/*CLIENTLOGIN PAGE UI FROM NOW */
-
-.login-label {
-    -fx-font-size: 16px;
-}
-
-.text-field, .password-field {
-    -fx-font-size: 14px;
-    -fx-padding: 5px;
-}
-
+/* Headline text in header */
 #headlineText {
+    -fx-font-size: 35px;
     -fx-font-weight: bold;
+    -fx-fill: white;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.8), 5, 0, 0, 2);
 }
 
-#subtitleText {
-    -fx-fill: #555555;
-}
-
-/*USER HOME PAGE UI FROM NOW*/
-
-.anchor-pane {
-    -fx-background-color: #f0f0f0;
-}
-
-#headlineText {
-    -fx-font-size: 36px;
-    -fx-font-weight: bold;
-    -fx-fill: #333333;
-    -fx-text-alignment: center;
-}
-
+/* Welcome text style */
 #welcomeText {
     -fx-font-size: 18px;
-    -fx-fill: #555555;
-    -fx-text-alignment: center;
+    -fx-font-style: italic;
+    -fx-fill: #d3d3d3; /* Light gray color */
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.6), 3, 0, 0, 1);
 }
 
-.button {
-    -fx-background-color: #0073e6;
+/* Logout button in header (for UserHomePage) */
+#logoutButton {
+    -fx-background-color: rgba(244, 67, 54, 0.8);
     -fx-text-fill: white;
     -fx-font-size: 14px;
-    -fx-padding: 10px;
+    -fx-font-weight: bold;
+    -fx-padding: 8px 15px;
     -fx-border-radius: 5px;
     -fx-background-radius: 5px;
-    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 3, 0, 0, 1);
-    -fx-transition: all 0.3s ease;
-}
-
-.button:hover {
-    -fx-background-color: #005bb5;
-    -fx-effect: dropshadow(three-pass-box, rgba(0,115,230,0.8), 10, 0, 0, 0),
-                innershadow(three-pass-box, rgba(255,255,255,0.6), 5, 0.7, 0, 0);
-    -fx-scale-x: 1.05;
-    -fx-scale-y: 1.05;
-}
-
-.button:pressed {
-    -fx-background-color: #003f7f;
-    -fx-scale-x: 0.95;
-    -fx-scale-y: 0.95;
-    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.4), 3, 0, 0, 1);
-}
-
-#logoutButton {
-    -fx-background-color: #e74c3c;
 }
 
 #logoutButton:hover {
-    -fx-background-color: #c0392b;
-    -fx-effect: dropshadow(three-pass-box, rgba(231,76,60,0.8), 10, 0, 0, 0),
-                innershadow(three-pass-box, rgba(255,255,255,0.6), 5, 0.7, 0, 0);
+    -fx-background-color: rgba(244, 67, 54, 1);
 }
 
-#logoutButton:pressed {
-    -fx-background-color: #a93226;
-    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.4), 3, 0, 0, 1);
-}
-
-.vbox {
-    -fx-alignment: center;
-}
-
-
-/*REGISTER USER PAGE UI FROM NOW*/
-
-.logout-button {
-    -fx-background-color: #e74c3c;
+/* Main action buttons - Uniform size */
+#createOrderButton, #updateMenuButton, #viewReportsButton,
+#changeHomeBranchButton, #pendingOrdersButton, #registerUserButton,
+#loginButton, #connectButton, #quitButton {
+    -fx-background-color: rgba(33, 150, 243, 0.8);
     -fx-text-fill: white;
-    -fx-font-size: 14px;
-    -fx-padding: 10px;
-    -fx-border-radius: 5px;
-    -fx-background-radius: 5px;
-    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 3, 0, 0, 1);
-    -fx-transition: all 0.3s ease;
-}
-
-.logout-button:hover {
-    -fx-background-color: #c0392b;
-    -fx-effect: dropshadow(three-pass-box, rgba(231,76,60,0.8), 10, 0, 0, 0),
-                innershadow(three-pass-box, rgba(255,255,255,0.6), 5, 0.7, 0, 0);
-    -fx-scale-x: 1.05;
-    -fx-scale-y: 1.05;
-}
-
-.logout-button:pressed {
-    -fx-background-color: #a93226;
-    -fx-scale-x: 0.95;
-    -fx-scale-y: 0.95;
-    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.4), 3, 0, 0, 1);
-}
-
-/*REPORTS PAGE UI FROM NOW*/
-
-
-
-
-/*ACTIVATION CONFIRMATION PAGE FROM NOW ON */
-.headline-text {
-    -fx-font-size: 28px;
-    -fx-font-weight: bold;
-    -fx-fill: #333333;
-    -fx-text-alignment: center;
-}
-
-.info-text {
     -fx-font-size: 16px;
-    -fx-fill: #555555;
+    -fx-font-weight: bold;
+    -fx-pref-width: 180px;
+    -fx-pref-height: 100px;
     -fx-text-alignment: center;
-}
-
-#returnButton {
-    -fx-background-color: #0073e6;
-    -fx-text-fill: white;
-    -fx-font-size: 14px;
-    -fx-padding: 10px;
+    -fx-alignment: center;
+    -fx-content-display: top;
+    -fx-graphic-text-gap: 10;
     -fx-border-radius: 5px;
     -fx-background-radius: 5px;
-    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 3, 0, 0, 1);
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.3), 5, 0, 0, 1);
+    -fx-cursor: hand;
     -fx-transition: all 0.3s ease;
 }
 
-#returnButton:hover {
-    -fx-background-color: #005bb5;
-    -fx-effect: dropshadow(three-pass-box, rgba(0,115,230,0.8), 10, 0, 0, 0),
-                innershadow(three-pass-box, rgba(255,255,255,0.6), 5, 0.7, 0, 0);
-    -fx-scale-x: 1.05;
-    -fx-scale-y: 1.05;
+#createOrderButton:hover, #updateMenuButton:hover, #viewReportsButton:hover,
+#changeHomeBranchButton:hover, #pendingOrdersButton:hover, #registerUserButton:hover,
+#loginButton:hover, #connectButton:hover, #quitButton:hover {
+    -fx-background-color: rgba(33, 150, 243, 1);
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.5), 10, 0, 0, 2);
+    -fx-translate-y: -2px;
 }
 
-#returnButton:pressed {
-    -fx-background-color: #003f7f;
-    -fx-scale-x: 0.95;
-    -fx-scale-y: 0.95;
-    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.4), 3, 0, 0, 1);
+#createOrderButton:pressed, #updateMenuButton:pressed, #viewReportsButton:pressed,
+#changeHomeBranchButton:pressed, #pendingOrdersButton:pressed, #registerUserButton:pressed,
+#loginButton:pressed, #connectButton:pressed, #quitButton:pressed {
+    -fx-background-color: rgba(33, 150, 243, 0.6);
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.3), 3, 0, 0, 0);
+    -fx-translate-y: 1px;
+}
+
+/* Quit button (different color) */
+#quitButton {
+    -fx-background-color: rgba(244, 67, 54, 0.8);
+}
+
+#quitButton:hover {
+    -fx-background-color: rgba(244, 67, 54, 1);
+}
+
+#quitButton:pressed {
+    -fx-background-color: rgba(244, 67, 54, 0.6);
+}
+
+/* Login page specific styles */
+.login-label {
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+}
+
+.text-field, .password-field {
+    -fx-background-color: rgba(255, 255, 255, 0.2);
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-prompt-text-fill: rgba(255, 255, 255, 0.7);
+    -fx-border-color: rgba(255, 255, 255, 0.3);
+    -fx-border-width: 1px;
+    -fx-border-radius: 5px;
+    -fx-background-radius: 5px;
+    -fx-padding: 10px;
+}
+
+.text-field:focused, .password-field:focused {
+    -fx-background-color: rgba(255, 255, 255, 0.3);
+    -fx-border-color: rgba(255, 255, 255, 0.5);
+}
+
+/* Error text style */
+#errorText, #ErrorTextConnect {
+    -fx-fill: #ff6b6b;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+}
+
+/* ClientConnect page specific styles */
+#serverIpTextField, #serverPortTextField {
+    -fx-background-color: rgba(255, 255, 255, 0.2);
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-prompt-text-fill: rgba(255, 255, 255, 0.7);
+    -fx-border-color: rgba(255, 255, 255, 0.3);
+    -fx-border-width: 1px;
+    -fx-border-radius: 5px;
+    -fx-background-radius: 5px;
+    -fx-padding: 10px;
+    -fx-alignment: center; 
+}
+
+#serverIpTextField:focused, #serverPortTextField:focused {
+    -fx-background-color: rgba(255, 255, 255, 0.3);
+    -fx-border-color: rgba(255, 255, 255, 0.5);
+}
+
+/* Style for the text above the input fields */
+.input-label {
+    -fx-fill: white;
+    -fx-font-size: 18px; 
 }

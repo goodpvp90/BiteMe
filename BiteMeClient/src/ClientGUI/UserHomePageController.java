@@ -123,7 +123,7 @@ public class UserHomePageController {
     }
 		
     /**
-     * Handles the logout action.
+     * Handles the logout action, And returns to Clien Login Screen.
      *
      * @param event The ActionEvent triggered by clicking the logout button.
      */
@@ -131,19 +131,14 @@ public class UserHomePageController {
 	private void handleLogout(ActionEvent event) {
 	    // Send logout request to the server
 	    client.userLogout(user);
-
-	    // Navigate back to the ClientLoginUI
 	    try {
-	        // Get the current stage
 	        Stage stage = (Stage) logoutButton.getScene().getWindow();
-	        // Load the login scene
 	        Scene loginScene = ClientLoginUI.loadLoginScene();
 	        stage.setScene(loginScene);
 	        stage.setTitle("Client Login");
 	        stage.show();
 	    } catch (IOException e) {
 	        e.printStackTrace();
-	        // Handle the exception (show an error message to the user)
 	    }
 	}
 
