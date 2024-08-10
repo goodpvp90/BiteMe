@@ -32,6 +32,7 @@ import ClientGUI.RegisterUserPageController;
 import ClientGUI.ReportsPageController;
 import ClientGUI.UpdateAddDish;
 import ClientGUI.UpdateDeleteMenu;
+import ClientGUI.UserHomePageController;
 import ClientGUI.WorkerPendingOrders;
 import common.Dish;
 
@@ -51,9 +52,10 @@ public class Client extends AbstractClient {
 	private WorkerPendingOrders workerPendingOrders;
 	private UpdateAddDish updateAddDish;
 	private HomeBranchChange homeBranchChange;
+	private UserHomePageController userHomePageController;
 	// Constructor to initialize the client with host and port, and establish
 	// connection
-	public Client(String host, int port) throws IOException {
+	private Client(String host, int port) throws IOException {
 		super(host, port);
 		openConnection();
 
@@ -136,6 +138,10 @@ public class Client extends AbstractClient {
 		this.homeBranchChange=homeBranchChange;
 	}
 	
+	public void getUserHomePageController(UserHomePageController userHomePageController) {
+		this.userHomePageController=userHomePageController;
+	}
+	
 	// Handle messages received from the server
 	@Override
 	protected void handleMessageFromServer(Object msg) {
@@ -149,6 +155,7 @@ public class Client extends AbstractClient {
 	            Object[] orders = (Object[]) message[1];
 	            break;
 			case PENDING_ORDER:
+				@SuppressWarnings("unchecked")
 				List<Order> pendingOrders = (List<Order>)message[1];
 				workerPendingOrders.SetPendingOrdersFromDB(pendingOrders);
 				for (Order order :pendingOrders) {
@@ -176,8 +183,8 @@ public class Client extends AbstractClient {
 	        	break;
 			case INSERT_ORDER:
 				//HERE YOU RECEIVE BACK Order, and list of dishes in order.
-				Object order = (Object)message[1];
-				Object dishesinorder = (Object)message[2];
+				//Object order = (Object)message[1];
+				//Object dishesinorder = (Object)message[2];
 				break;
 			case UPDATE_WELOCME:
 				// Handle non-array messages for updating the top label in clientController
@@ -187,6 +194,7 @@ public class Client extends AbstractClient {
                 for (String notification : notifications) {
                 	System.out.println("HI DDDDD"+notification);
                     //DISPLAY NOTIFICATIONS FROM HERE
+                //userHomePageController.showNotificationDialog(notifications);
                 }
                 break;
             case CHECK_USER:
@@ -206,7 +214,6 @@ public class Client extends AbstractClient {
                     }
                 break;
             case VIEW_MENU:
-            	System.out.println("ENTERED VIEW");
             	List<Dish> menu = (List<Dish>) message[1];
             	for (Dish dish:menu) {
             		System.out.println(dish);

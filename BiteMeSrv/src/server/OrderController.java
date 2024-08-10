@@ -14,32 +14,29 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class OrderController {
-
-
     private Server server;
-
     
     public OrderController(Server server) {
 		this.server = server;
 	}
 
 	// Create a new order
-    public String createOrder(Order order, List<Dish> dishesInOrder) {
+    public boolean createOrder(Order order, List<Dish> dishesInOrder, ConnectionToClient client) {
         try {
+        	System.out.println(server.areConnectionsEqual(server.clients.get("ben"),client));
             server.dbController.createOrder(order, dishesInOrder);
-            return "Order created successfully";
+        	System.out.println(server.areConnectionsEqual(server.clients.get("ben"),client));
+            return true;
         } catch (SQLException e) {
             e.printStackTrace();
-            return "Error creating order: " + e.getMessage();
+            return false;
         }
     }
 
     // Update an existing order's status
     public String updateOrderStatus(int orderId, EnumOrderStatus status, String msg) {
         try {
-            server.dbController.updateOrderStatus(orderId, status);
-            notifyUser(orderId, msg);
-            
+            server.dbController.updateOrderStatus(orderId, status);            
             switch(status) {
             case IN_PROGRESS:
                 // Check if status is IN_PROGRESS and update the start time
@@ -56,20 +53,6 @@ public class OrderController {
                 notifyUser(orderId, msg);
             	break;
             }
-            // Check if status is IN_PROGRESS and update the start time
-            if (status == EnumOrderStatus.IN_PROGRESS) {
-
-            }
-            if (status == EnumOrderStatus.READY) {
-                //server.dbController.updateOrderReceiveTimeAndInsertDiscount(orderId, new Timestamp(System.currentTimeMillis()));
-                notifyUser(orderId, msg);
-            }
-            // Check if status is COMPLETED and update the receive time
-            if (status == EnumOrderStatus.COMPLETED) {
-                server.dbController.updateOrderReceiveTimeAndInsertDiscount(orderId, new Timestamp(System.currentTimeMillis()));
-                //LOGIC OF DISCOUNT TO INSERT INTO DB
-                notifyUser(orderId, msg);
-            }
             
             return "Order status updated successfully";
         } catch (SQLException e) {
@@ -83,12 +66,10 @@ public class OrderController {
         try {
             Order order = server.dbController.getOrderById(orderId);
             String username = order.getUsername();
-            ConnectionToClient client = server.getClientByUsername(username);
-            System.out.println("???????????????????");
+            ConnectionToClient client = server.getClient(username);
             if (client != null) {
             	List<String> not = new ArrayList<String>();
             	not.add(message);
-            	System.out.println("does it do it");
             	server.sendMessageToClient(EnumClientOperations.NOTIFICATION, client, not);
             }else 
                 server.dbController.savePendingNotification(username, orderId, message);
