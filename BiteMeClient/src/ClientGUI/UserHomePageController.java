@@ -9,6 +9,7 @@ import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.text.Text;
 
 import java.io.IOException;
+import java.util.List;
 
 import client.Client;
 import common.EnumType;
@@ -302,13 +303,14 @@ public class UserHomePageController {
         }
     }
     
-    private void showNotificationDialog(String text) {
+    public void showNotificationDialog(List<String> text) {
 		Alert alert = new Alert(AlertType.INFORMATION);
 		alert.initStyle(StageStyle.UTILITY);
 		alert.setTitle("INCOMING NOTIFICATION");
 		alert.setHeaderText("You got a message!");
-		alert.setContentText(text);
-		ButtonType okButton = new ButtonType("CLOSE", ButtonData.OK_DONE);
+		String content = String.join("\n", text);
+	    alert.setContentText(content);
+	    ButtonType okButton = new ButtonType("CLOSE", ButtonData.OK_DONE);
 		alert.getButtonTypes().setAll(okButton);
 		alert.showAndWait().ifPresent(response -> {
 			if (response == okButton) {
