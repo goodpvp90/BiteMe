@@ -69,9 +69,25 @@ public class RegisterUserPageController {
      */
     @FXML
     private void handleBack() {
-        Stage stage = (Stage) backButton.getScene().getWindow();
-        stage.setScene(previousScene);
-        stage.setTitle("User Home Page");
+        try {
+            // Retrieve the existing stage for UserHomePageUI
+            Stage userHomePageStage = UserHomePageUI.getStage();
+
+            if (userHomePageStage != null) {
+                userHomePageStage.show();  // Show the hidden stage again
+            } else {
+                // If the stage is somehow null, recreate and show it
+                UserHomePageUI Userapp = new UserHomePageUI(loggedInUser, true);
+                Userapp.start(new Stage());
+            }
+
+            // Close the current stage
+            Stage currentStage = (Stage) backButton.getScene().getWindow();
+            currentStage.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+            showError("An error occurred while loading the User Home Page.");
+        }
     }
 
     /**
@@ -156,4 +172,13 @@ public class RegisterUserPageController {
             showError("Error loading the Customer Information Update window: " + e.getMessage());
         }
     }
+    
+  //Making Quit Button to kill thread and send message to server
+    public void closeApplication() {
+        if (client != null) {
+        	client.userLogout(loggedInUser);
+            }
+        Platform.exit();
+        System.exit(0);
+    } 
    }

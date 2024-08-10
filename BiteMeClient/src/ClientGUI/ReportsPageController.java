@@ -122,20 +122,24 @@ public class ReportsPageController {
      */
     @FXML
     private void handleBackButton(ActionEvent event) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("UserHomePage.fxml"));
-            Parent root = loader.load();
-            UserHomePageController controller = loader.getController();
-            // Pass the user and registration status
-            controller.setUser(this.user, this.isRegistered); 
-            Stage stage = (Stage) backButton.getScene().getWindow();
-            Scene scene = new Scene(root, 700, 600);
-            stage.setScene(scene);
-            stage.setTitle("User Home Page");
-            stage.show();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+    	 try {
+             // Retrieve the existing stage for UserHomePageUI
+             Stage userHomePageStage = UserHomePageUI.getStage();
+
+             if (userHomePageStage != null) {
+                 userHomePageStage.show();  // Show the hidden stage again
+             } else {
+                 // If the stage is somehow null, recreate and show it
+                 UserHomePageUI Userapp = new UserHomePageUI(user, true);
+                 Userapp.start(new Stage());
+             }
+
+             // Close the current stage
+             Stage currentStage = (Stage) backButton.getScene().getWindow();
+             currentStage.close();
+         } catch (Exception e) {
+             e.printStackTrace();
+         }
     }
 
     /**

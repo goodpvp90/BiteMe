@@ -47,9 +47,19 @@ public class UpdateMenuNavigation {
     
     @FXML
     private void handleBackButtonAction(ActionEvent event) {
-    	try {
-        	UserHomePageUI Userapp = new UserHomePageUI(user,true);
-        	Userapp.start(new Stage());
+        try {
+            // Retrieve the existing stage for UserHomePageUI
+            Stage userHomePageStage = UserHomePageUI.getStage();
+
+            if (userHomePageStage != null) {
+                userHomePageStage.show();  // Show the hidden stage again
+            } else {
+                // If the stage is somehow null, recreate and show it
+                UserHomePageUI Userapp = new UserHomePageUI(user, true);
+                Userapp.start(new Stage());
+            }
+
+            // Close the current stage
             Stage currentStage = (Stage) backButton.getScene().getWindow();
             currentStage.close();
         } catch (Exception e) {
