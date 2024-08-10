@@ -200,7 +200,7 @@ public class UpdateDeleteMenu {
 
     public void setUser(User user) {
     	this.user=user;
-    	client.getViewMenu(EnumServerOperations.VIEW_MENU,UserHomeBranchConvertToInt(user.getHomeBranch()));
+    	client.getViewMenu(EnumServerOperations.MENU_FOR_UPDATE,UserHomeBranchConvertToInt(user.getHomeBranch()));
         Platform.runLater(() -> {
     	menuTableView.getItems().addAll(chosenItemsFromMenu);
         });

@@ -109,10 +109,11 @@ public class Server extends AbstractServer {
             	userController.createAccount(client, (Object[]) message);
             	break;
             case VIEW_MENU:
-                int menuId = (int) message[1];
-                List<Dish> menu = orderController.viewMenu(menuId);
-                sendMessageToClient(EnumClientOperations.valueOf(operation.toString()), client, menu);
+            	viewMenu(client, message, operation);
                 break;
+            case MENU_FOR_UPDATE:
+            	viewMenu(client, message, operation);
+            	break;
             case PENDING_ORDER:
                 List<Order> pendingOrders = orderController.getPendingOrdersByBranch((int) message[1]);
                 sendMessageToClient(EnumClientOperations.PENDING_ORDER, client, pendingOrders);
@@ -159,6 +160,12 @@ public class Server extends AbstractServer {
 			}
 		} else
 			System.out.println("Received unknown message type from client: " + msg);
+	}
+	
+	private void viewMenu(ConnectionToClient client, Object[] message, EnumServerOperations operation) {
+        int menuId = (int) message[1];
+        List<Dish> menu = orderController.viewMenu(menuId);
+        sendMessageToClient(EnumClientOperations.valueOf(operation.toString()), client, menu);
 	}
 	
 	private void handleLogin(ConnectionToClient client, Object[] message) {
