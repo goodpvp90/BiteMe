@@ -428,4 +428,9 @@ public class Client extends AbstractClient {
 	public void changeHomeBranch(User user) {
 		sendMessageToServer(new Object[] { EnumServerOperations.CHANGE_HOME_BRANCH, user });
 	}
+	
+	public void executeNotifyUser(int orderId, String message)
+	{
+		sendMessageToServer(new Object[] { EnumServerOperations.NOTIFICATION, orderId, message });
+	}
 }

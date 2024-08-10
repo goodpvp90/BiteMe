@@ -113,6 +113,13 @@ public class WorkerPendingOrders {
         });
 
         orderTableView.getColumns().add(expandColumn);
+        
+        etaTextField.textProperty().addListener((observable, oldValue, newValue) -> {
+            Order selectedOrder = orderTableView.getSelectionModel().getSelectedItem();
+            if (selectedOrder != null && selectedOrder.isDelivery()) {
+                orderReadyButton.setDisable(newValue.isEmpty());
+            }
+        });
     }
     //-----------------------------------------END OF INIT------------------------------------------
     public void setUser(User user) 
@@ -199,27 +206,43 @@ public class WorkerPendingOrders {
     private void handleApproveOrderAction() {
  		Order selectedOrder = orderTableView.getSelectionModel().getSelectedItem();
         if (selectedOrder != null) {       	
-        	client.updateOrderStatus(selectedOrder.getOrderId(),EnumOrderStatus.IN_PROGRESS);
-        	Platform.runLater(() -> {
-        	orderTableView.refresh();
-        	});
-            //selectedOrder.setStatus(EnumOrderStatus.IN_PROGRESS);
+        	client.updateOrderStatus(selectedOrder.getOrderId(),EnumOrderStatus.IN_PROGRESS);        	
+            selectedOrder.setStatus(EnumOrderStatus.IN_PROGRESS);
+            orderTableView.refresh();
             updateButtonStates(selectedOrder);           
+            client.executeNotifyUser(selectedOrder.getOrderId(),"Your order has been approved and is being prepared!");
         }
+        else
+        	showError("Order selection error!!!");
     }
 
     @FXML
-    private void handleOrderReadyAction()//CLOSE THE ROW WHEN ORDER IS READY DONT FORGET 
-    {   	
+    private void handleOrderReadyAction() {
         Order selectedOrder = orderTableView.getSelectionModel().getSelectedItem();
         if (selectedOrder != null) {
-            if (selectedOrder.isDelivery() && etaTextField.isVisible() && !etaTextField.getText().isEmpty()) {
-                // Here you can handle the ETA input
-                // For example, set it as a property of the order or process it as needed
+            if (selectedOrder.isDelivery()) {
+                if (etaTextField.isVisible() && !etaTextField.getText().isEmpty()) {
+                    client.updateOrderStatus(selectedOrder.getOrderId(), EnumOrderStatus.READY);
+                    //לעשות שזה קולט את הזמן שהוזן על ידי העובד
+                    client.executeNotifyUser(selectedOrder.getOrderId(),"Your order is ready and the delivery is on its way!\n Estimated time of arrival will be:");
+                } else {
+                    showError("ETA must be provided for delivery orders.");
+                    return; // Prevent further execution
+                }
+            } else {
+                // If it's not a delivery order, allow status update without checking etaTextField
+                client.updateOrderStatus(selectedOrder.getOrderId(), EnumOrderStatus.READY);
+                client.executeNotifyUser(selectedOrder.getOrderId(),"Your order is ready for pickup!");
             }
+            // Remove order from the table after setting status to READY
             selectedOrder.setStatus(EnumOrderStatus.READY);
+            orderTableView.getItems().remove(selectedOrder);
+            orderTableView.refresh();
+            etaTextField.clear();
+      		errorText.setVisible(false);
             updateButtonStates(selectedOrder);
-            orderTableView.refresh(); // Refresh the table view to show updated status
+        } else {
+            showError("Order selection error!!!");
         }
     }
     
