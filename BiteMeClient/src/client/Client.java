@@ -185,7 +185,7 @@ public class Client extends AbstractClient {
             case NOTIFICATION://לעשות פופ אפ שנועל את החלון עד שנבחר בכפתור שלו
                 List<String> notifications = (List<String>) message[1];
                 for (String notification : notifications) {
-                	System.out.println("HI"+notification);
+                	System.out.println("HI DDDDD"+notification);
                     //DISPLAY NOTIFICATIONS FROM HERE
                 }
                 break;
@@ -280,7 +280,7 @@ public class Client extends AbstractClient {
             	//TODO do smth
             	break;
             case UPDATE_DISH:
-            	//UPDATE EXISSTING DISH RESPONSE.
+            	//U GET BOOLEAN IF SUCCESSEEDD TO UPDATE
             	//TODO do smth
             	break;
             case UPDATE_ORDER_STATUS:
@@ -412,8 +412,8 @@ public class Client extends AbstractClient {
 	
 	//USE IT TO UPDATE ORDER STATUS, IN PROGESS, READY , COMPLETED .....
 	// IT HAS A LOT OF LOGIC IN BACKEND, by status we update time and etc..
-	public void updateOrderStatus(int orderId, EnumOrderStatus status) {
-		sendMessageToServer(new Object[] { EnumServerOperations.UPDATE_ORDER_STATUS, orderId, status});
+	public void updateOrderStatus(int orderId, EnumOrderStatus status, String msg) {
+		sendMessageToServer(new Object[] { EnumServerOperations.UPDATE_ORDER_STATUS, orderId, status, msg});
 	}
 
 	// OFEK
@@ -437,5 +437,9 @@ public class Client extends AbstractClient {
 	public void executeNotifyUser(int orderId, String message)
 	{
 		sendMessageToServer(new Object[] { EnumServerOperations.NOTIFICATION, orderId, message });
+	}
+	
+	public void updateDish(Dish dish) {
+		sendMessageToServer(new Object[] { EnumServerOperations.UPDATE_DISH, dish });
 	}
 }

@@ -35,21 +35,40 @@ public class OrderController {
     }
 
     // Update an existing order's status
-    public String updateOrderStatus(int orderId, EnumOrderStatus status) {
+    public String updateOrderStatus(int orderId, EnumOrderStatus status, String msg) {
         try {
             server.dbController.updateOrderStatus(orderId, status);
+            notifyUser(orderId, msg);
             
+            switch(status) {
+            case IN_PROGRESS:
+                // Check if status is IN_PROGRESS and update the start time
+                server.dbController.updateOrderStartTime(orderId);
+                notifyUser(orderId, msg);
+            	break;
+            case READY:
+                notifyUser(orderId, msg);
+            	break;
+            case COMPLETED:
+            	//TO EXPLAIN WHEN COMPELED HAPPENS IF PICKUP OR DELIVERY
+                server.dbController.updateOrderReceiveTimeAndInsertDiscount(orderId, new Timestamp(System.currentTimeMillis()));
+                //LOGIC OF DISCOUNT TO INSERT INTO DB
+                notifyUser(orderId, msg);
+            	break;
+            }
             // Check if status is IN_PROGRESS and update the start time
             if (status == EnumOrderStatus.IN_PROGRESS) {
-                server.dbController.updateOrderStartTime(orderId);
-                notifyUser(orderId, "Your order is now in progress");
+
             }
-            
+            if (status == EnumOrderStatus.READY) {
+                //server.dbController.updateOrderReceiveTimeAndInsertDiscount(orderId, new Timestamp(System.currentTimeMillis()));
+                notifyUser(orderId, msg);
+            }
             // Check if status is COMPLETED and update the receive time
             if (status == EnumOrderStatus.COMPLETED) {
                 server.dbController.updateOrderReceiveTimeAndInsertDiscount(orderId, new Timestamp(System.currentTimeMillis()));
                 //LOGIC OF DISCOUNT TO INSERT INTO DB
-                notifyUser(orderId, "Your order is ready!");
+                notifyUser(orderId, msg);
             }
             
             return "Order status updated successfully";
@@ -65,9 +84,11 @@ public class OrderController {
             Order order = server.dbController.getOrderById(orderId);
             String username = order.getUsername();
             ConnectionToClient client = server.getClientByUsername(username);
+            System.out.println("???????????????????");
             if (client != null) {
             	List<String> not = new ArrayList<String>();
             	not.add(message);
+            	System.out.println("does it do it");
             	server.sendMessageToClient(EnumClientOperations.NOTIFICATION, client, not);
             }else 
                 server.dbController.savePendingNotification(username, orderId, message);
@@ -108,6 +129,10 @@ public class OrderController {
     
     public boolean deleteDish(Dish dish) {
         return server.dbController.deleteDish(dish);
+    }
+    
+    public boolean updateDish(Dish dish) {
+    	return server.dbController.updateDish(dish);
     }
 
 	public List<Dish> viewMenu(int menuId) {
