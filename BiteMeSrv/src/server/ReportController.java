@@ -45,7 +45,7 @@ public class ReportController {
         LocalDateTime now = LocalDateTime.now();
         //for testing do not delete
         //LocalDateTime nextExecutionTime = now.plusMinutes(1);
-        LocalDateTime nextExecutionTime = now.plusMonths(1).withDayOfMonth(1).withHour(0).withMinute(0).withSecond(0).withNano(0);
+        LocalDateTime nextExecutionTime = now.plusMonths(1);
         Duration delay = Duration.between(now, nextExecutionTime);
 
         scheduler.schedule(() -> {
@@ -139,30 +139,6 @@ public class ReportController {
             server.sendMessageToClient(EnumClientOperations.valueOf(reportType), client, result);
         }
     }
-
-    
-    /**
-     * Shuts down the scheduler to stop any scheduled tasks.
-     * This method allows the scheduler to complete any ongoing tasks within a 5-second timeout.
-     * If the scheduler does not terminate within the timeout, it will be forcefully shut down.
-     * If the scheduler still does not terminate, an error message is printed.
-     * 
-     * If the current thread is interrupted while waiting for termination, the scheduler is
-     * forcefully shut down immediately and the interrupt status of the thread is restored.
-     */
-    public void shutdown() {
-        scheduler.shutdown();
-        try {
-            if (!scheduler.awaitTermination(5, TimeUnit.SECONDS)) {
-                scheduler.shutdownNow();
-                if (!scheduler.awaitTermination(5, TimeUnit.SECONDS))
-                    System.err.println("Scheduler did not terminate");
-            }
-        } catch (InterruptedException ie) {
-            scheduler.shutdownNow();
-            Thread.currentThread().interrupt();
-        }
-    }
     
     /**
      * Retrieves or creates a quarterly report for the given {@link QuarterlyReport} object and sends it to the specified client.
@@ -195,5 +171,29 @@ public class ReportController {
     		}
     	}	
     }
+    
+    /**
+     * Shuts down the scheduler to stop any scheduled tasks.
+     * This method allows the scheduler to complete any ongoing tasks within a 5-second timeout.
+     * If the scheduler does not terminate within the timeout, it will be forcefully shut down.
+     * If the scheduler still does not terminate, an error message is printed.
+     * 
+     * If the current thread is interrupted while waiting for termination, the scheduler is
+     * forcefully shut down immediately and the interrupt status of the thread is restored.
+     */
+    public void shutdown() {
+        scheduler.shutdown();
+        try {
+            if (!scheduler.awaitTermination(5, TimeUnit.SECONDS)) {
+                scheduler.shutdownNow();
+                if (!scheduler.awaitTermination(5, TimeUnit.SECONDS))
+                    System.err.println("Scheduler did not terminate");
+            }
+        } catch (InterruptedException ie) {
+            scheduler.shutdownNow();
+            Thread.currentThread().interrupt();
+        }
+    }
+
 
 }

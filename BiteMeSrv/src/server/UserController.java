@@ -25,8 +25,6 @@ public class UserController {
 		else {
 			@SuppressWarnings("unchecked")
 			ArrayList<Object> details = (ArrayList<Object>) result;
-
-			client.setInfo("user", result); //Store information into client object
       
 			user.setFirstName((String)details.get(0));
 			user.setLastName((String)details.get(1));
@@ -35,6 +33,8 @@ public class UserController {
 			user.setHomeBranch((EnumBranch)details.get(4));
 			user.setLogged((boolean)details.get(7));
 			user.setType((EnumType)details.get(8));
+			
+			client.setInfo("user", user); //Store information into client object
 			
 			server.sendMessageToClient(EnumClientOperations.USER,client,(Object)user);
 		}

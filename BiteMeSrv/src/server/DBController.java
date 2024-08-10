@@ -42,7 +42,7 @@ public class DBController {
 	private Connection connection;
 
 	public void connect(String jdbc_url, String username, String password) throws ClassNotFoundException, SQLException {
-		String url = jdbc_url + "?serverTimezone=UTC&useSSL=false&allowPublicKeyRetrieval=true";
+		String url = jdbc_url + "?serverTimezone=Asia/Jerusalem&useSSL=false&allowPublicKeyRetrieval=true";
 		// Load MySQL JDBC Driver
 		Class.forName("com.mysql.cj.jdbc.Driver");
 		// Establish the connection
@@ -463,7 +463,7 @@ public class DBController {
         try {
             // Start transaction
             connection.setAutoCommit(false);
-
+            System.out.println("AAAA" + order.getOrderDate());
             // Insert the new order
             try (PreparedStatement stmt = connection.prepareStatement(insertOrderQuery, Statement.RETURN_GENERATED_KEYS)) {
                 stmt.setString(1, order.getUsername());
