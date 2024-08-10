@@ -206,11 +206,11 @@ public class WorkerPendingOrders {
     private void handleApproveOrderAction() {
  		Order selectedOrder = orderTableView.getSelectionModel().getSelectedItem();
         if (selectedOrder != null) {       	
-        	client.updateOrderStatus(selectedOrder.getOrderId(),EnumOrderStatus.IN_PROGRESS);        	
+        	client.updateOrderStatus(selectedOrder.getOrderId(),EnumOrderStatus.IN_PROGRESS,"Your order has been approved and is being prepared!");        	
             selectedOrder.setStatus(EnumOrderStatus.IN_PROGRESS);
             orderTableView.refresh();
             updateButtonStates(selectedOrder);           
-            client.executeNotifyUser(selectedOrder.getOrderId(),"Your order has been approved and is being prepared!");
+            //client.executeNotifyUser(selectedOrder.getOrderId(),"Your order has been approved and is being prepared!");
         }
         else
         	showError("Order selection error!!!");
@@ -222,17 +222,17 @@ public class WorkerPendingOrders {
         if (selectedOrder != null) {
             if (selectedOrder.isDelivery()) {
                 if (etaTextField.isVisible() && !etaTextField.getText().isEmpty()) {
-                    client.updateOrderStatus(selectedOrder.getOrderId(), EnumOrderStatus.READY);
+                    client.updateOrderStatus(selectedOrder.getOrderId(), EnumOrderStatus.READY, "Your order is ready and the delivery is on its way!\n Estimated time of arrival will be:");
                     //לעשות שזה קולט את הזמן שהוזן על ידי העובד
-                    client.executeNotifyUser(selectedOrder.getOrderId(),"Your order is ready and the delivery is on its way!\n Estimated time of arrival will be:");
+             //       client.executeNotifyUser(selectedOrder.getOrderId(),"Your order is ready and the delivery is on its way!\n Estimated time of arrival will be:");
                 } else {
                     showError("ETA must be provided for delivery orders.");
                     return; // Prevent further execution
                 }
             } else {
                 // If it's not a delivery order, allow status update without checking etaTextField
-                client.updateOrderStatus(selectedOrder.getOrderId(), EnumOrderStatus.READY);
-                client.executeNotifyUser(selectedOrder.getOrderId(),"Your order is ready for pickup!");
+                client.updateOrderStatus(selectedOrder.getOrderId(), EnumOrderStatus.READY,"Your order is ready for pickup!");
+              //  client.executeNotifyUser(selectedOrder.getOrderId(),"Your order is ready for pickup!");
             }
             // Remove order from the table after setting status to READY
             selectedOrder.setStatus(EnumOrderStatus.READY);

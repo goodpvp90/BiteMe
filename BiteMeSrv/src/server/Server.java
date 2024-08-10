@@ -73,6 +73,10 @@ public class Server extends AbstractServer {
                 boolean addResult = orderController.addDish(dish);
                 sendMessageToClient(EnumClientOperations.ADD_DISH, client, addResult);
                 break;
+            case UPDATE_DISH:
+                boolean updateResult = orderController.updateDish((Dish) message[1]);
+                sendMessageToClient(EnumClientOperations.UPDATE_DISH, client, updateResult);
+            	break;
             case INSERT_ORDER:
                 // Extract data from the message
                 Order newOrder = (Order) message[1];
@@ -92,10 +96,10 @@ public class Server extends AbstractServer {
             case UPDATE_ORDER_STATUS:
                 int orderId = (int) message[1];
                 EnumOrderStatus newStatus = (EnumOrderStatus) message[2];
-                orderController.updateOrderStatus(orderId, newStatus);
+                String update_msg = (String)message[3];
+                orderController.updateOrderStatus(orderId, newStatus, update_msg);
                 break;
             case LOGIN:
-            	orderController.updateOrderStatus(19, EnumOrderStatus.READY);
             	handleLogin(client, message);
                 break;
             case LOG_OUT:
@@ -153,6 +157,9 @@ public class Server extends AbstractServer {
             case CHANGE_HOME_BRANCH:
             	boolean changeResult = userController.changeHomeBranch((User)message[1]);
             	sendMessageToClient(EnumClientOperations.CHANGE_HOME_BRANCH, client, changeResult);
+            	break;
+            case NOTIFICATION:
+            	
             	break;
 			case NONE:
 				System.out.println("No operation was received");
