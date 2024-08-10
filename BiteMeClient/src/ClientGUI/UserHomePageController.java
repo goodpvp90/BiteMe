@@ -29,6 +29,7 @@ import javafx.stage.StageStyle;
  */
 public class UserHomePageController {
 
+	
 	private User user;
 	private Client client;
 	
@@ -117,6 +118,8 @@ public class UserHomePageController {
 	@FXML
     private void initialize() {
         client = Client.getInstance();
+        
+        
     }
 		
     /**
@@ -196,8 +199,8 @@ public class UserHomePageController {
     @FXML
     private void handleViewReports(ActionEvent event) {
     	try {
-    		RegisterUserPageUI UIRegisterApp = new RegisterUserPageUI(user);
-    		UIRegisterApp.start(new Stage());
+    		ReportsPageUI UIReeportApp = new ReportsPageUI(user);
+    		UIReeportApp.start(new Stage());
             Stage currentStage = (Stage) changeHomeBranchButton.getScene().getWindow();
             currentStage.hide();
         } catch (Exception e) {

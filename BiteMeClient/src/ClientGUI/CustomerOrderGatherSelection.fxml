@@ -8,9 +8,9 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane prefHeight="552" prefWidth="800" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ClientGUI.CustomerOrderGatherSelection">
+<AnchorPane prefHeight="600" prefWidth="800" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ClientGUI.CustomerOrderGatherSelection">
     <Button fx:id="backButton" layoutX="10.0" layoutY="10.0" onAction="#handleBackButtonAction" prefHeight="30.0" prefWidth="110.0" text="BACK" />
-    <Button fx:id="checkoutButton" layoutX="660.0" layoutY="482.0" onAction="#handleCheckoutButtonAction" prefHeight="55.0" prefWidth="125.0" text="CHECKOUT" />
+    <Button fx:id="checkoutButton" layoutX="660.0" layoutY="520.0" onAction="#handleCheckoutButtonAction" prefHeight="55.0" prefWidth="125.0" text="CHECKOUT" />
     <Text fx:id="selectSupplyMethodText" layoutX="235.0" layoutY="60.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Select Supply Method">
         <font>
             <Font name="System Bold" size="32.0" />
@@ -79,7 +79,7 @@
     </Text>
    <Text fx:id="cityText" layoutX="54.0" layoutY="377.0" strokeType="OUTSIDE" strokeWidth="0.0" text="City" visible="false" />
    <Text fx:id="streetText" layoutX="53.0" layoutY="411.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Street &amp; number:" visible="false" />
-   <Text fx:id="errorText" fill="RED" layoutX="359.0" layoutY="498.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Error Text" textAlignment="RIGHT" visible="false" wrappingWidth="294.80328369140625">
+   <Text fx:id="errorText" fill="RED" layoutX="98.0" layoutY="550.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Error Text" textAlignment="RIGHT" visible="false" wrappingWidth="555.4699401855469">
       <font>
          <Font size="14.0" />
       </font>

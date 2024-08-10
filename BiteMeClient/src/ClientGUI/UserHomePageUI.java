@@ -49,7 +49,7 @@ public class UserHomePageUI extends Application {
             controller.closeApplication();
         });
         primaryStage.setTitle("User Home Page");
-        primaryStage.setScene(new Scene(root, 700, 600));
+        primaryStage.setScene(new Scene(root));
         userHomePageStage = primaryStage;
         primaryStage.show();
     }

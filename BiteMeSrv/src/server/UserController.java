@@ -35,7 +35,7 @@ public class UserController {
 			user.setType((EnumType)details.get(8));
 			
 			if (user.getType() == EnumType.CUSTOMER)
-				user.setType(server.dbController.getCustomerType(user.getUsername()));
+				user.setCustomerType(server.dbController.getCustomerType(user.getUsername()));
 			client.setInfo("user", user); //Store information into client object
 			
 			server.sendMessageToClient(EnumClientOperations.USER,client,(Object)user);

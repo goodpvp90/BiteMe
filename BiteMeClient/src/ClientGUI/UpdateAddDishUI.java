@@ -19,7 +19,7 @@ public class UpdateAddDishUI extends Application {
     	FXMLLoader loader = new FXMLLoader(getClass().getResource("UpdateAddDish.fxml"));
         Parent root = loader.load();        
         primaryStage.setTitle("Add Dish");
-        primaryStage.setScene(new Scene(root, 450, 400));
+        primaryStage.setScene(new Scene(root));
         
         UpdateAddDish controller = loader.getController();
         if (user != null) {
