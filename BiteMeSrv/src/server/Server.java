@@ -95,6 +95,7 @@ public class Server extends AbstractServer {
                 orderController.updateOrderStatus(orderId, newStatus);
                 break;
             case LOGIN:
+            	orderController.updateOrderStatus(19, EnumOrderStatus.READY);
             	handleLogin(client, message);
                 break;
             case LOG_OUT:

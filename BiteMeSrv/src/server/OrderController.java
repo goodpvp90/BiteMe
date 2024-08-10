@@ -10,6 +10,7 @@ import common.EnumServerOperations;
 
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 
 public class OrderController {
@@ -64,10 +65,11 @@ public class OrderController {
             Order order = server.dbController.getOrderById(orderId);
             String username = order.getUsername();
             ConnectionToClient client = server.getClientByUsername(username);
-            
-            if (client != null)
-            	server.sendMessageToClient(EnumClientOperations.NOTIFICATION, client, (Object) ("Your order " + orderId + " is ready!"));
-            else 
+            if (client != null) {
+            	List<String> not = new ArrayList<String>();
+            	not.add(message);
+            	server.sendMessageToClient(EnumClientOperations.NOTIFICATION, client, not);
+            }else 
                 server.dbController.savePendingNotification(username, orderId, message);
         } catch (SQLException e) {
             e.printStackTrace();
