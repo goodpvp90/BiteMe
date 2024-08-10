@@ -29,6 +29,7 @@ import javafx.stage.StageStyle;
  */
 public class UserHomePageController {
 
+	
 	private User user;
 	private Client client;
 	
@@ -89,16 +90,16 @@ public class UserHomePageController {
     	else {switch(user.getType()) {
     	//CEO AND BM Same buttons but other functionalities and roles.
     	case CEO:
-    		changeHomeBranchButton.setDisable(true);
+            changeHomeBranchButton.setVisible(false);
     		break;
     	case BRANCH_MANAGER:
-    		changeHomeBranchButton.setDisable(true);
-    		//viewReportsButton.setOnAction(this::handleViewReportsForBranch);
+            changeHomeBranchButton.setVisible(false);
     		break;
     	case WORKER:
     		viewReportsButton.setVisible(false);
     		registerUserButton.setVisible(false);
-    		changeHomeBranchButton.setDisable(true);
+        changeHomeBranchButton.setVisible(false);
+
     		break;
     	case CUSTOMER:
     		viewReportsButton.setVisible(false);
@@ -117,6 +118,8 @@ public class UserHomePageController {
 	@FXML
     private void initialize() {
         client = Client.getInstance();
+        
+        
     }
 		
     /**
@@ -196,8 +199,8 @@ public class UserHomePageController {
     @FXML
     private void handleViewReports(ActionEvent event) {
     	try {
-    		RegisterUserPageUI UIRegisterApp = new RegisterUserPageUI(user);
-    		UIRegisterApp.start(new Stage());
+    		ReportsPageUI UIReeportApp = new ReportsPageUI(user);
+    		UIReeportApp.start(new Stage());
             Stage currentStage = (Stage) changeHomeBranchButton.getScene().getWindow();
             currentStage.hide();
         } catch (Exception e) {
@@ -267,8 +270,7 @@ public class UserHomePageController {
                     userType = "Worker";
                     break;
                 case CUSTOMER:
-                    userType = "Customer";
-                    break;
+                	userType = "Customer";
             }
         } 
         headlineText.setText(user.getUsername() + ", " + userType);

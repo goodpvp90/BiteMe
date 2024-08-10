@@ -7,9 +7,9 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane prefHeight="600.0" prefWidth="700.0" stylesheets="@client.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ClientGUI.ClientConnectController">
+<AnchorPane prefHeight="600.0" prefWidth="800.0" stylesheets="@client.css" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ClientGUI.ClientConnectController">
    <children>
-      <VBox alignment="CENTER" spacing="20.0" AnchorPane.topAnchor="60.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+      <VBox alignment="CENTER" spacing="20.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="60.0">
          <children>
             <Text fx:id="headlineText" text="Client Connect">
                <font>
@@ -28,9 +28,9 @@
                </font>
             </Text>
             <TextField fx:id="serverPortTextField" maxWidth="300.0" promptText="Enter port number" text="5555" />
-            <Text fx:id="ErrorTextConnect" fill="RED" visible="false">
+            <Text fx:id="ErrorTextConnect" fill="RED" textAlignment="CENTER" visible="false" wrappingWidth="719.3332848548889">
                <font>
-                  <Font size="14.0" />
+                  <Font size="16.0" />
                </font>
             </Text>
             <Button fx:id="connectButton" mnemonicParsing="false" onAction="#handleConnectButtonAction" prefHeight="50.0" prefWidth="130.0" text="Connect" />

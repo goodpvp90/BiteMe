@@ -180,6 +180,7 @@ public class UpdateAddDish {
 	        isGrillComboBox.setVisible(false);
 	    }
 	}
+	
 	private void addDishToDB(String dishName, double dishPrice, int dishMenuID, boolean isGrill) {
 
 		EnumDish dishTypePick = dishTypeComboBox.getValue();
@@ -222,7 +223,6 @@ public class UpdateAddDish {
     public void closeApplication() {
         if (client != null) {
         	client.userLogout(user);
-            client.quit();
             }
         Platform.exit();
         System.exit(0);
@@ -251,7 +251,7 @@ public class UpdateAddDish {
         }
 
         // Case 2: Name contains invalid characters (only allows letters, numbers, and spaces)
-        if (!name.matches("[a-zA-Z0-9 -]+")) {
+        if (!name.matches("[a-zA-Z0-9 ]+")) {
             showError("Dish name can only contain letters, numbers, -, and spaces.");
             return false;
         }

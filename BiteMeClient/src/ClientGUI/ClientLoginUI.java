@@ -48,7 +48,7 @@ public class ClientLoginUI extends Application {
     public static Scene loadLoginScene() throws IOException {
         FXMLLoader loader = new FXMLLoader(ClientLoginUI.class.getResource("ClientLogin.fxml"));
         AnchorPane root = loader.load(); 
-        Scene scene = new Scene(root, 700, 600); 
+        Scene scene = new Scene(root); 
         ClientLoginController loginController = loader.getController();
         loginController.resetClient();
         scene.setUserData(loginController);        

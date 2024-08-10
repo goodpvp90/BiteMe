@@ -8,6 +8,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 
 import java.io.IOException;
+import java.util.List;
 
 import client.Client;
 import common.EnumType;
@@ -428,36 +429,26 @@ public class ReportsPageController {
         }
     }
 
-    /**
-     * Processes the response from the server for a quarterly report request.
-     *
-     * @param response The Object containing the server's response.
-     */
-    public void handleQuarterlyReportResponse(Object response) {
+    
+    public void handleQuarterlyReportResponse(QuarterlyReport qreport, List<Double> monthlyIncomes) {
         System.out.println("Received quarterly report response");
         Platform.runLater(() -> {
-            if (response instanceof QuarterlyReport) {
-                QuarterlyReport report = (QuarterlyReport) response;
-                openQuarterlyReportWindow(report);
-            } else if (response instanceof String) {
-                showErrorMessage((String) response);
+            if (qreport != null && monthlyIncomes != null && monthlyIncomes.size() == 3) {
+                openQuarterlyReportWindow(qreport, monthlyIncomes);
             } else {
-                showErrorMessage("An unexpected error occurred while fetching the report.");
+                showErrorMessage("Invalid data received for quarterly report.");
             }
         });
     }
-    /**
-     * Opens a new window to display the quarterly report.
-     *
-     * @param report The QuarterlyReport to be displayed.
-     */
-    private void openQuarterlyReportWindow(QuarterlyReport report) {
+
+    
+    private void openQuarterlyReportWindow(QuarterlyReport report, List<Double> monthlyIncomes) {
         System.out.println("Attempting to open Quarterly Report window");
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("QuarterlyReport.fxml"));
             Parent root = loader.load();
             QuarterlyReportController controller = loader.getController();
-            controller.setReportData(report, this);
+            controller.setReportData(report, this, monthlyIncomes);
             Stage stage = new Stage();
             stage.setScene(new Scene(root));
             stage.show();

@@ -15,6 +15,8 @@ import javafx.stage.StageStyle;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import java.io.IOException;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -276,50 +278,73 @@ public class CustomerCheckout {
 	
 	@FXML
 	private void handleYesCompensationButton(ActionEvent event) {
-		changedYesNofunctions(false);
-		if(compensation<=totalPrice) {
-			lateOrderDeliveryInfoText.setText("Discount confirmed: " + compensation);
-			priceTempAfterComp=totalPrice;
-			totalPrice-=compensation;
-			compensation=0;
-		}
-		else {
-			lateOrderDeliveryInfoText.setText("Discount confirmed: " + totalPrice);
-			compensation-=totalPrice;
-			priceTempAfterComp= totalPrice;
-			totalPrice=0;
-		}
+	    changedYesNofunctions(false);
 
-		if(returnBooleanPrefGather[2])//if delivery chosen
-			priceTextInfo.setText(String.format("%.2f", totalPrice) +
-					" (Delivery price included: " + deliveryPrice+")");
-		else
-			priceTextInfo.setText(String.format("%.2f", totalPrice));
-			
+	    // Convert compensation and totalPrice to BigDecimal for precise rounding
+	    BigDecimal compensationDecimal = new BigDecimal(compensation).setScale(2, RoundingMode.HALF_UP);
+	    BigDecimal totalPriceDecimal = new BigDecimal(totalPrice).setScale(2, RoundingMode.HALF_UP);
+
+	    if (compensationDecimal.compareTo(totalPriceDecimal) <= 0) {
+	        lateOrderDeliveryInfoText.setText("Discount confirmed: " + compensationDecimal);
+	        priceTempAfterComp = totalPriceDecimal.doubleValue();
+	        totalPriceDecimal = totalPriceDecimal.subtract(compensationDecimal);
+	        compensationDecimal = BigDecimal.ZERO;
+	    } else {
+	        lateOrderDeliveryInfoText.setText("Discount confirmed: " + totalPriceDecimal);
+	        compensationDecimal = compensationDecimal.subtract(totalPriceDecimal);
+	        priceTempAfterComp = totalPriceDecimal.doubleValue();
+	        totalPriceDecimal = BigDecimal.ZERO;
+	    }
+
+	    // Update the compensation and totalPrice with the rounded values
+	    compensation = compensationDecimal.doubleValue();
+	    totalPrice = totalPriceDecimal.doubleValue();
+
+	    // Format the totalPrice for display
+	    if (returnBooleanPrefGather[2]) { // if delivery chosen
+	        priceTextInfo.setText(String.format("%.2f", totalPrice) + 
+	                " (Delivery price included: " + deliveryPrice + ")");
+	    } else {
+	        priceTextInfo.setText(String.format("%.2f", totalPrice));
+	    }
 	}
 	
-	@FXML
-	private void handleNoCompensationButton(ActionEvent event) {
-		changedYesNofunctions(true);
-		if (priceTempAfterComp != 0) {
-			if (compensation <= totalPrice) {
-				compensation=priceTempAfterComp-totalPrice;
-				totalPrice=priceTempAfterComp;
-				}
-			else {
-				compensation += priceTempAfterComp+totalPrice;
-				totalPrice = priceTempAfterComp;
-			}
-			priceTempAfterComp=0;
-		}
-		lateOrderDeliveryInfoText.setText("Discount was not chosen");
-		
-		if(returnBooleanPrefGather[2])//if delivery chosen
-			priceTextInfo.setText(String.format("%.2f", totalPrice) +
-					" (Delivery price included: " + deliveryPrice+")");
-		else
-			priceTextInfo.setText(String.format("%.2f", totalPrice));
-	}
+
+@FXML
+private void handleNoCompensationButton(ActionEvent event) {
+    changedYesNofunctions(true);
+
+    // Convert compensation and totalPrice to BigDecimal for precise rounding
+    BigDecimal compensationDecimal = new BigDecimal(compensation).setScale(2, RoundingMode.HALF_UP);
+    BigDecimal totalPriceDecimal = new BigDecimal(totalPrice).setScale(2, RoundingMode.HALF_UP);
+    BigDecimal priceTempAfterCompDecimal = new BigDecimal(priceTempAfterComp).setScale(2, RoundingMode.HALF_UP);
+
+    if (priceTempAfterCompDecimal.compareTo(BigDecimal.ZERO) != 0) {
+        if (compensationDecimal.compareTo(totalPriceDecimal) <= 0) {
+            compensationDecimal = priceTempAfterCompDecimal.subtract(totalPriceDecimal);
+            totalPriceDecimal = priceTempAfterCompDecimal;
+        } else {
+            compensationDecimal = compensationDecimal.add(priceTempAfterCompDecimal.add(totalPriceDecimal));
+            totalPriceDecimal = priceTempAfterCompDecimal;
+        }
+        priceTempAfterCompDecimal = BigDecimal.ZERO;
+    }
+
+    // Update the compensation and totalPrice with the rounded values
+    compensation = compensationDecimal.doubleValue();
+    totalPrice = totalPriceDecimal.doubleValue();
+    priceTempAfterComp = priceTempAfterCompDecimal.doubleValue();
+
+    lateOrderDeliveryInfoText.setText("Discount was not chosen");
+
+    // Format the totalPrice for display
+    if (returnBooleanPrefGather[2]) { // if delivery chosen
+        priceTextInfo.setText(String.format("%.2f", totalPrice) + 
+                " (Delivery price included: " + deliveryPrice + ")");
+    } else {
+        priceTextInfo.setText(String.format("%.2f", totalPrice));
+    }
+}
 	@FXML
 	private void changedYesNofunctions(boolean hide) {
 		errorText.setVisible(false);

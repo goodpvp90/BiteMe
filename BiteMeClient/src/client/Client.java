@@ -267,19 +267,16 @@ public class Client extends AbstractClient {
                 if (reportsPageController != null) {
                     reportsPageController.handlePerformanceReportResponse(performanceReport);
                 }
+                break;
             case QUARTERLY_REPORT:
-            	//TODO SYSO REMOVE
-                System.out.println("Received quarterly report from server" ); // Add this line for debugging
-                Object[] data = (Object[])message[1];
-                //this is what you do to see the array of incomes
-                for (Double i : (List<Double>)data[1])
-       			 	System.out.println(i);
+                Object[] data = (Object[]) message[1];
                 QuarterlyReport qreport = (QuarterlyReport) data[0];
+                @SuppressWarnings("unchecked")
+                List<Double> monthlyIncomes = (List<Double>) data[1];
                 if (reportsPageController != null) {
-                    reportsPageController.handleQuarterlyReportResponse(qreport);
+                    reportsPageController.handleQuarterlyReportResponse(qreport, monthlyIncomes);
                 } else {
-                	//TODO SYSO REMOVE
-                    System.out.println("reportsPageController is null"); // Add this line for debugging
+                    System.out.println("reportsPageController is null");
                 }
                 break;
             case QUARTERLY_REPORT_ERROR:
@@ -287,9 +284,7 @@ public class Client extends AbstractClient {
             	//TODO do smth
             	break;
             case UPDATE_DISH:
-            	//U GET BOOLEAN IF SUCCESSEEDD TO UPDATE
-            	//fff
-            	//TODO do smth
+            	updateDeleteMenu.SetSuccessEdit((boolean) message[1]);
             	break;
             case UPDATE_ORDER_STATUS:
             	//HERE U GET RESPONSE IF UPDATE STATUS IS SUCCESFULL
