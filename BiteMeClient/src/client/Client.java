@@ -27,6 +27,7 @@ import ClientGUI.ClientLoginController;
 import ClientGUI.CustomerCheckout;
 import ClientGUI.CustomerInformationUpdateController;
 import ClientGUI.CustomerOrderCreation;
+import ClientGUI.HomeBranchChange;
 import ClientGUI.RegisterUserPageController;
 import ClientGUI.ReportsPageController;
 import ClientGUI.UpdateAddDish;
@@ -49,6 +50,7 @@ public class Client extends AbstractClient {
 	private UpdateDeleteMenu updateDeleteMenu;
 	private WorkerPendingOrders workerPendingOrders;
 	private UpdateAddDish updateAddDish;
+	private HomeBranchChange homeBranchChange;
 	// Constructor to initialize the client with host and port, and establish
 	// connection
 	public Client(String host, int port) throws IOException {
@@ -128,6 +130,10 @@ public class Client extends AbstractClient {
 	
 	public void getInstanceOfUpdateAddDish(UpdateAddDish updateAddDish) {
 		this.updateAddDish = updateAddDish;
+	}
+	
+	public void getInstanceOfHomeBranchChange(HomeBranchChange homeBranchChange) {
+		this.homeBranchChange=homeBranchChange;
 	}
 	
 	// Handle messages received from the server
@@ -286,8 +292,7 @@ public class Client extends AbstractClient {
             	customerCheckout.setCompensation((double)message[1]);	
             	break;           
             case CHANGE_HOME_BRANCH:
-            	//u receive a boolean if succcseded or not
-            	//TODO do smth
+            	homeBranchChange.checkSuccessChangeHomeBranch((boolean)message[1]);
             	break;
             case SERVER_DISCONNECTED:
             	//TODO do smth
