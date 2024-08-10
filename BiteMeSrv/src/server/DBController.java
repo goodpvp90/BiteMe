@@ -145,6 +145,31 @@ public class DBController {
 	    }
 	}
 	
+    /**
+     * Retrieves the type of customer for a given username from the database.
+     *
+     * @param username the username of the customer
+     * @return the type of customer as an EnumType, or null if the customer is not found
+     */
+	public EnumType getCustomerType(String username) {
+        String sql = "SELECT type_of_customer FROM customers WHERE username = ?";
+		try {
+			PreparedStatement preparedStatement = connection.prepareStatement(sql);
+	        preparedStatement.setString(1, username);
+
+	        // Execute the query
+	        ResultSet resultSet = preparedStatement.executeQuery();
+
+	        // Process the result set
+	        if (resultSet.next()) {
+	            return EnumType.valueOf(resultSet.getString("type_of_customer"));
+	        }
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    }
+		return null;
+	}
+	
     public boolean logout(String username) {
         String query = "UPDATE users SET isLogged = 0 WHERE username = ?";
         try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
@@ -463,7 +488,6 @@ public class DBController {
         try {
             // Start transaction
             connection.setAutoCommit(false);
-            System.out.println("AAAA" + order.getOrderDate());
             // Insert the new order
             try (PreparedStatement stmt = connection.prepareStatement(insertOrderQuery, Statement.RETURN_GENERATED_KEYS)) {
                 stmt.setString(1, order.getUsername());
@@ -775,11 +799,11 @@ public class DBController {
         String updateSql = "UPDATE dishes SET dish_type = ?, dish_name = ?, price = ?, is_grill = ? WHERE dish_id = ?";
 
         try (PreparedStatement updateStmt = connection.prepareStatement(updateSql)) {
-            updateStmt.setString(2, dish.getDishType().toString());
-            updateStmt.setString(3, dish.getDishName());
-            updateStmt.setDouble(4, dish.getPrice());
-            updateStmt.setBoolean(5, dish.isGrill());
-            updateStmt.setInt(6, dish.getDishId());
+            updateStmt.setString(1, dish.getDishType().toString());
+            updateStmt.setString(2, dish.getDishName());
+            updateStmt.setDouble(3, dish.getPrice());
+            updateStmt.setBoolean(4, dish.isGrill());
+            updateStmt.setInt(5, dish.getDishId());
 
             int rowsAffected = updateStmt.executeUpdate();
             return rowsAffected > 0;
