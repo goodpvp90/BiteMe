@@ -26,7 +26,7 @@ public class ClientConnectUI extends Application {
     public void start(Stage primaryStage) throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("ClientConnect.fxml"));
         AnchorPane root = loader.load();
-        Scene scene = new Scene(root, 700, 600);
+        Scene scene = new Scene(root);
         primaryStage.setTitle("Client Connect");
         primaryStage.setScene(scene);
         primaryStage.show();

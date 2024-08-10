@@ -1,5 +1,6 @@
 package ClientGUI;
 
+import common.User;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -14,16 +15,13 @@ import javafx.stage.Stage;
  */
 public class ReportsPageUI extends Application {
 
+	private User user;
+    
 	
-    /**
-     * The main entry point for the Reports Page UI.
-     * This method is called by the JavaFX runtime to initialize and display the Reports Page.
-     *
-     * @param primaryStage The primary stage for this application, onto which
-     * the application scene can be set.
-     * @throws Exception If there's an error during the initialization or loading 
-     * of the FXML file.
-     */
+	public ReportsPageUI(User user) {
+		this.user=user;
+	}
+	
     @Override
     public void start(Stage primaryStage) throws Exception {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("ReportsPage.fxml"));
@@ -33,9 +31,12 @@ public class ReportsPageUI extends Application {
         primaryStage.setOnCloseRequest(event -> {
             event.consume(); // Prevent the window from closing immediately
 			controller.closeApplication();
-        });       
+        });   
+        
+        controller.setUser(user, true);
+        controller.setUserType(user.getType());
         primaryStage.setTitle("Reports Page");
-        primaryStage.setScene(new Scene(root, 700, 600));
+        primaryStage.setScene(new Scene(root));
         primaryStage.show();
     }
     

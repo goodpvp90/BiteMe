@@ -12,14 +12,14 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane prefHeight="600.0" prefWidth="700.0" stylesheets="@client.css" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ClientGUI.ReportsPageController">
+<AnchorPane prefHeight="600.0" prefWidth="800" stylesheets="@client.css" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ClientGUI.ReportsPageController">
    <children>
       <Button fx:id="backButton" layoutX="20.0" layoutY="20.0" minHeight="30.0" minWidth="70.0" mnemonicParsing="false" onAction="#handleBackButton" styleClass="logout-button" text="Back" />
       
       <ComboBox fx:id="branchDropdown" layoutX="550.0" layoutY="20.0" promptText="Select Branch" />
       
       <VBox alignment="TOP_CENTER" layoutX="0.0" layoutY="60.0" prefWidth="700.0" spacing="20" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
-         <Text fx:id="headlineText" strokeType="OUTSIDE" strokeWidth="0.0" text="Report Menu">
+         <Text fx:id="headlineText" strokeType="OUTSIDE" strokeWidth="0.0" text="Report Menu" textAlignment="CENTER">
             <font>
                <Font size="36.0" />
             </font>
@@ -57,7 +57,7 @@
             </rowConstraints>
          </GridPane>
          
-         <Label fx:id="errorMessageLabel" alignment="CENTER" maxWidth="600" textFill="RED" wrapText="true">
+         <Label fx:id="errorMessageLabel" alignment="CENTER" maxWidth="715.0" prefHeight="20.0" prefWidth="715.0" textAlignment="CENTER" textFill="RED" wrapText="true">
             <font>
                <Font size="14.0" />
             </font>

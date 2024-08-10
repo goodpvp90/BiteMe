@@ -5,34 +5,34 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane prefHeight="400" prefWidth="450" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ClientGUI.UpdateMenuNavigation">
+<AnchorPane prefHeight="600" prefWidth="800" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ClientGUI.UpdateMenuNavigation">
    <children>
-      <Text fx:id="actionPromptText" layoutX="98.0" layoutY="153.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Please choose an action to perform:">
+      <Text fx:id="actionPromptText" layoutX="274.0" layoutY="161.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Please choose an action to perform:">
          <font>
             <Font size="16.0" />
          </font>
       </Text>
-      <Button fx:id="backButton" layoutX="23.0" layoutY="20.0" mnemonicParsing="false" text="Back" onAction="#handleBackButtonAction">
+      <Button fx:id="backButton" layoutX="23.0" layoutY="20.0" mnemonicParsing="false" onAction="#handleBackButtonAction" text="Back">
          <font>
             <Font size="16.0" />
          </font>
       </Button>
-      <Button fx:id="updateDeleteButton" layoutX="137.0" layoutY="184.0" mnemonicParsing="false" prefHeight="73.0" prefWidth="175.0" text="Update/Delete&#10; existing dishes" textAlignment="CENTER" onAction = "#handleUpdateDeleteButtonAction">
+      <Button fx:id="updateDeleteButton" layoutX="312.0" layoutY="197.0" mnemonicParsing="false" onAction="#handleUpdateDeleteButtonAction" prefHeight="73.0" prefWidth="175.0" text="Update/Delete&#10; existing dishes" textAlignment="CENTER">
          <font>
             <Font size="18.0" />
          </font>
       </Button>
-      <Button fx:id="addNewDishButton" layoutX="137.0" layoutY="279.0" mnemonicParsing="false" prefHeight="73.0" prefWidth="175.0" text="Add a new dish&#10; to the menu" textAlignment="CENTER" onAction = "#handleAddNewDishButtonAction">
+      <Button fx:id="addNewDishButton" layoutX="312.0" layoutY="294.0" mnemonicParsing="false" onAction="#handleAddNewDishButtonAction" prefHeight="73.0" prefWidth="175.0" text="Add a new dish&#10; to the menu" textAlignment="CENTER">
          <font>
             <Font size="18.0" />
          </font>
       </Button>
-      <Text fx:id="titleText" layoutX="59.0" layoutY="106.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Update Menu Selection">
+      <Text fx:id="titleText" layoutX="242.0" layoutY="107.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Update Menu Selection">
          <font>
             <Font name="System Bold" size="30.0" />
          </font>
       </Text>
-      <Text fx:id="errorText" fill="RED" layoutX="40.0" layoutY="379.0" strokeType="OUTSIDE" strokeWidth="0.0" text="ErrorText" textAlignment="CENTER" wrappingWidth="395.00525665283203" visible = "false">
+      <Text fx:id="errorText" fill="RED" layoutX="42.0" layoutY="418.0" strokeType="OUTSIDE" strokeWidth="0.0" text="ErrorText" textAlignment="CENTER" visible="false" wrappingWidth="715.6719131469727">
          <font>
             <Font size="16.0" />
          </font>

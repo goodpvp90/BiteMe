@@ -44,7 +44,7 @@ public class CustomerOrderCreationUI extends Application {
             event.consume(); // Prevent the window from closing immediately
             controller.closeApplication();
         });
-        primaryStage.setScene(new Scene(root, 800, 600));
+        primaryStage.setScene(new Scene(root));
         primaryStage.show();
     }
 

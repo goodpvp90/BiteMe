@@ -7,7 +7,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane prefHeight="600.0" prefWidth="700.0" stylesheets="@client.css" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ClientGUI.RegisterUserPageController">
+<AnchorPane prefHeight="600.0" prefWidth="800" stylesheets="@client.css" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ClientGUI.RegisterUserPageController">
    <children>
       <Button fx:id="backButton" layoutX="20.0" layoutY="20.0" minHeight="30.0" minWidth="70.0" mnemonicParsing="false" onAction="#handleBack" styleClass="logout-button" text="Back" />
       
@@ -25,12 +25,12 @@
             </Text>
          </children>
       </VBox>
-      <TextField fx:id="usernameField" alignment="CENTER" layoutX="191.0" layoutY="270.0" maxWidth="323.0" prefHeight="48.0" prefWidth="323.0" promptText="Enter username here" />
-      <Text fx:id="errorText" fill="RED" layoutX="191.0" layoutY="350.0" strokeType="OUTSIDE" strokeWidth="0.0" textAlignment="CENTER" visible="false" wrappingWidth="323.0">
+      <TextField fx:id="usernameField" alignment="CENTER" layoutX="238.0" layoutY="211.0" maxWidth="323.0" prefHeight="48.0" prefWidth="323.0" promptText="Enter username here" />
+      <Text fx:id="errorText" fill="RED" layoutX="33.0" layoutY="294.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Error" textAlignment="CENTER" visible="false" wrappingWidth="733.6666564941406">
          <font>
-            <Font size="14.0" />
+            <Font size="16.0" />
          </font>
       </Text>
-      <Button fx:id="continueButton" layoutX="286.0" layoutY="392.0" mnemonicParsing="false" onAction="#handleContinue" prefHeight="50.0" prefWidth="130.0" text="Continue" />
+      <Button fx:id="continueButton" layoutX="335.0" layoutY="319.0" mnemonicParsing="false" onAction="#handleContinue" prefHeight="50.0" prefWidth="130.0" text="Continue" />
    </children>
 </AnchorPane>

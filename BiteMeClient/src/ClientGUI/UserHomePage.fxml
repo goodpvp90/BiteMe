@@ -5,7 +5,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="700.0" stylesheets="@client.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ClientGUI.UserHomePageController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800" stylesheets="@client.css" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ClientGUI.UserHomePageController">
    <children>
       <Button fx:id="logoutButton" layoutX="20.0" layoutY="20.0" minHeight="30.0" minWidth="70.0" mnemonicParsing="false" onAction="#handleLogout" text="Logout" />
       
@@ -16,16 +16,16 @@
          </children>
       </VBox>
       
-      <Button fx:id="createOrderButton" layoutX="100.0" layoutY="250.0" mnemonicParsing="false" onAction="#handleCreateOrder" prefHeight="80.0" prefWidth="130.0" text="Create&#10;Order" />
+      <Button fx:id="createOrderButton" layoutX="150.0" layoutY="211.0" mnemonicParsing="false" onAction="#handleCreateOrder" prefHeight="80.0" prefWidth="130.0" text="Create&#10;Order" />
       
-      <Button fx:id="updateMenuButton" layoutX="285.0" layoutY="250.0" mnemonicParsing="false" onAction="#handleUpdateMenu" prefHeight="80.0" prefWidth="130.0" text="Update&#10;Menu" />
+      <Button fx:id="updateMenuButton" layoutX="335.0" layoutY="211.0" mnemonicParsing="false" onAction="#handleUpdateMenu" prefHeight="80.0" prefWidth="130.0" text="Update&#10;Menu" />
       
-      <Button fx:id="viewReportsButton" layoutX="470.0" layoutY="250.0" mnemonicParsing="false" onAction="#handleViewReports" prefHeight="80.0" prefWidth="130.0" text="View&#10;Reports" />
+      <Button fx:id="viewReportsButton" layoutX="520.0" layoutY="211.0" mnemonicParsing="false" onAction="#handleViewReports" prefHeight="80.0" prefWidth="130.0" text="View&#10;Reports" />
       
-      <Button fx:id="changeHomeBranchButton" layoutX="100.0" layoutY="400.0" mnemonicParsing="false" onAction="#handleChangeHomeBranch" prefHeight="80.0" prefWidth="130.0" text="Change Home&#10;Branch" />
+      <Button fx:id="changeHomeBranchButton" layoutX="150.0" layoutY="361.0" mnemonicParsing="false" onAction="#handleChangeHomeBranch" prefHeight="80.0" prefWidth="130.0" text="Change Home&#10;Branch" />
       
-      <Button fx:id="pendingOrdersButton" layoutX="285.0" layoutY="400.0" mnemonicParsing="false" onAction="#handlePendingOrders" prefHeight="80.0" prefWidth="130.0" text="Pending&#10;Orders" />
+      <Button fx:id="pendingOrdersButton" layoutX="335.0" layoutY="361.0" mnemonicParsing="false" onAction="#handlePendingOrders" prefHeight="80.0" prefWidth="130.0" text="Pending&#10;Orders" />
       
-      <Button fx:id="registerUserButton" layoutX="470.0" layoutY="400.0" mnemonicParsing="false" onAction="#handleRegisterUser" prefHeight="80.0" prefWidth="130.0" text="Register&#10;User" />
+      <Button fx:id="registerUserButton" layoutX="520.0" layoutY="361.0" mnemonicParsing="false" onAction="#handleRegisterUser" prefHeight="80.0" prefWidth="130.0" text="Register&#10;User" />
    </children>
 </AnchorPane>

@@ -87,7 +87,7 @@ public class ActivationConfirmationController {
             controller.setUser(loggedInUser, isRegistered);
 
             Stage currentStage = (Stage) infoText.getScene().getWindow();
-            Scene scene = new Scene(root, 700, 600);
+            Scene scene = new Scene(root);
             currentStage.setScene(scene);
             currentStage.setTitle("User Home Page");
         } catch (Exception e) {
