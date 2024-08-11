@@ -178,6 +178,10 @@ public class Server extends AbstractServer {
             	List<Order> orders = orderController.getOrdersByUsername((String)message[1]);
             	sendMessageToClient(EnumClientOperations.USERS_ORDERS, client, orders);
             	break;
+            case ORDER_ON_TIME:
+            	int orderarriveid = (int)message[1];
+            	sendMessageToClient(EnumClientOperations.ORDER_ON_TIME, client, dbController.isOrderArrivedOnTime(orderarriveid)); 	
+            	break;
 			case NONE:
 				System.out.println("No operation was received");
 				break;

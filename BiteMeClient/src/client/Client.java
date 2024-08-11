@@ -58,7 +58,7 @@ public class Client extends AbstractClient {
 	private HomeBranchChange homeBranchChange;
 	private UserHomePageController userHomePageController;
 	private final Lock lock = new ReentrantLock();
-    private final Condition condition = lock.newCondition();
+	private final Condition condition = lock.newCondition();
 	private MyOrders myOrders;
 	// Constructor to initialize the client with host and port, and establish
 	// connection
@@ -327,7 +327,9 @@ public class Client extends AbstractClient {
             	break;
             case SERVER_DISCONNECTED:
             	//TODO do smth
-
+            	break;
+            case ORDER_ON_TIME:
+            	myOrder.OrderCompleteHandle((boolean)message[1]);
             	break;
 			case NONE:
 				System.out.println("no operation was received");
@@ -395,6 +397,10 @@ public class Client extends AbstractClient {
 		sendMessageToServer(new Object[] { EnumServerOperations.DISHES_IN_ORDER, orderid });
 	}
 	
+	public void sendOrderArriveOnTime(int orderId) {
+	    //GET PENDING ORDERS
+		sendMessageToServer(new Object[] { EnumServerOperations.ORDER_ON_TIME, orderId });
+	}
 	
 	public void sendShowPending(int branchId) {
 	    //GET PENDING ORDERS

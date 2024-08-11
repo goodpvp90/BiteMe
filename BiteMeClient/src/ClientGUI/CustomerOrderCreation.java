@@ -389,6 +389,6 @@ public class CustomerOrderCreation {
 		client.removeClientInOrder();
 		if (client != null) {
 			client.userLogout(user, true);
-		};
+		}
 	}      
 }
