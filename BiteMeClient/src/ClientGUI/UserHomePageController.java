@@ -74,7 +74,7 @@ public class UserHomePageController {
     public void setUser(User user, boolean isRegistered) {
         this.user = user;
         this.isRegistered = isRegistered;
-        updateUI();
+        updateUI();      
     }
     
     /**
@@ -118,11 +118,15 @@ public class UserHomePageController {
     /**
      * Initializes the controller. This method is automatically called after the FXML file has been loaded.
      */
-	@FXML
+    @FXML
     private void initialize() {
         client = Client.getInstance();
-        
-        
+        if (client != null) {
+            client.getUserHomePageController(this);
+            System.out.println("Client and UserHomePageController initialized successfully.");
+        } else {
+            System.out.println("Failed to initialize Client.");
+        }
     }
 		
     /**
@@ -315,21 +319,28 @@ public class UserHomePageController {
         }
     }
     
+    //temp
     public void showNotificationDialog(List<String> text) {
-		Alert alert = new Alert(AlertType.INFORMATION);
-		alert.initStyle(StageStyle.UTILITY);
-		alert.setTitle("INCOMING NOTIFICATION");
-		alert.setHeaderText("You got a message!");
-		String content = String.join("\n", text);
-	    alert.setContentText(content);
-	    ButtonType okButton = new ButtonType("CLOSE", ButtonData.OK_DONE);
-		alert.getButtonTypes().setAll(okButton);
-		alert.showAndWait().ifPresent(response -> {
-			if (response == okButton) {
-				alert.close(); // Close the dialog window
-			}
-		});
-	}
+  		Platform.runLater(() -> {
+            if (text == null || text.isEmpty()) {
+                System.out.println("No notifications to show.");
+                return;
+            }            
+            Alert alert = new Alert(AlertType.INFORMATION);
+            alert.initStyle(StageStyle.UTILITY);
+            alert.setTitle("You got a message!");
+            alert.setHeaderText(null);
+            String content = String.join("\n", text);
+            alert.setContentText(content);
+            ButtonType okButton = new ButtonType("CLOSE", ButtonData.OK_DONE);
+            alert.getButtonTypes().setAll(okButton);
+            alert.showAndWait().ifPresent(response -> {
+                if (response == okButton) {
+                    alert.close(); // Close the dialog window
+                }
+            });
+        });
+     }
     
     /**
      * Logs out the user from the database.

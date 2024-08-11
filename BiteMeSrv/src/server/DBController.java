@@ -1246,7 +1246,7 @@ public class DBController {
             stmt.setString(1, username);
             try (ResultSet rs = stmt.executeQuery()) {
                 while (rs.next()) {
-                    notifications.add("Order " + rs.getInt("orderNumber") + ": " + rs.getString("status"));
+                    notifications.add(rs.getString("status"));
                 }
             }
         }

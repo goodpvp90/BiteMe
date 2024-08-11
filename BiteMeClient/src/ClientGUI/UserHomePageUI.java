@@ -1,6 +1,4 @@
 package ClientGUI;
-
-import client.Client;
 import common.User;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -15,7 +13,6 @@ import javafx.stage.Stage;
 public class UserHomePageUI extends Application {
 	private User user;
 	private boolean isRegistered; 
-	private Client client;
 	private static Stage userHomePageStage; 
 	
 	/**

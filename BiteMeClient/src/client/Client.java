@@ -1,14 +1,11 @@
 package client;
-
 import ocsf.client.*;
-
-
 import java.io.*;
 import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.locks.Condition;
 import java.util.function.Consumer;
-
 import common.Dish;
 import common.DishInOrder;
 import common.EnumClientOperations;
@@ -34,13 +31,16 @@ import ClientGUI.UpdateAddDish;
 import ClientGUI.UpdateDeleteMenu;
 import ClientGUI.UserHomePageController;
 import ClientGUI.WorkerPendingOrders;
-import common.Dish;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
+import java.util.concurrent.locks.Condition;
 
 public class Client extends AbstractClient {
 	// Default port to connect to the server
 	final public static int DEFAULT_PORT = 8080;
 	private static Client instance;
 	// Controller for Client GUI functionality
+	
 	private ClientLoginController clientLoginController;
 	private CustomerOrderCreation  CustomerOrderCreation;
 	private Consumer<IncomeReport> pendingRevenueReportCallback;
@@ -53,6 +53,8 @@ public class Client extends AbstractClient {
 	private UpdateAddDish updateAddDish;
 	private HomeBranchChange homeBranchChange;
 	private UserHomePageController userHomePageController;
+	private final Lock lock = new ReentrantLock();
+    private final Condition condition = lock.newCondition();
 	// Constructor to initialize the client with host and port, and establish
 	// connection
 	private Client(String host, int port) throws IOException {
@@ -139,7 +141,14 @@ public class Client extends AbstractClient {
 	}
 	
 	public void getUserHomePageController(UserHomePageController userHomePageController) {
-		this.userHomePageController=userHomePageController;
+		 lock.lock();
+	        try {
+	            this.userHomePageController = userHomePageController;
+	            // Signal the condition that the controller is ready
+	            condition.signalAll();
+	        } finally {
+	            lock.unlock();
+	        }
 	}
 	
 	// Handle messages received from the server
@@ -189,13 +198,10 @@ public class Client extends AbstractClient {
 			case UPDATE_WELOCME:
 				// Handle non-array messages for updating the top label in clientController
 	            break;
-            case NOTIFICATION://לעשות פופ אפ שנועל את החלון עד שנבחר בכפתור שלו
-                List<String> notifications = (List<String>) message[1];
-                for (String notification : notifications) {
-                	System.out.println("HI DDDDD"+notification);
-                    //DISPLAY NOTIFICATIONS FROM HERE
-                //userHomePageController.showNotificationDialog(notifications);
-                }
+            case NOTIFICATION:          	
+            	List<String> notifications = (List<String>) message[1];              
+                waitForController();
+                userHomePageController.showNotificationDialog(notifications);               	                
                 break;
             case CHECK_USER:
             	//If its Boolean = Not in DB
@@ -307,6 +313,20 @@ public class Client extends AbstractClient {
 			}
 		}
 	}
+	
+	public void waitForController() {
+        lock.lock();
+        try {
+            while (userHomePageController == null) {
+                // Wait until the controller is set
+                condition.await();
+            }
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt(); // Restore interrupted status
+        } finally {
+            lock.unlock();
+        }
+    }
 	
 	private void handleLogin(Object[] message) {
 		//SEND TO CLIENT CONTROLLER

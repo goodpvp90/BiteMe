@@ -12,13 +12,16 @@ import common.Order;
 import common.User;
 import javafx.fxml.FXML;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -26,6 +29,8 @@ import javafx.collections.ObservableList;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.scene.control.TextField;
+import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.ButtonBar.ButtonData;
 import common.EnumBranch;
 
 public class WorkerPendingOrders {
@@ -56,7 +61,7 @@ public class WorkerPendingOrders {
     @FXML
     private ComboBox<String> etaComboBox;
     @FXML
-    private Button backButton;
+    private Button backButton;   
     
     ////////////////////////////////////////////////////////////////////////////////////////////
     @FXML
@@ -85,7 +90,7 @@ public class WorkerPendingOrders {
         etaComboBox.setItems(FXCollections.observableArrayList(
                 "In about 20 minutes",
                 "In about 1 hour",
-                "Above one hour"
+                "In Above 1 hour"
         ));
         etaComboBox.valueProperty().addListener((observable, oldValue, newValue) -> {
             orderReadyButton.setDisable(newValue == null || newValue.isEmpty());
@@ -201,7 +206,7 @@ public class WorkerPendingOrders {
     private void handleApproveOrderAction() {
  		Order selectedOrder = orderTableView.getSelectionModel().getSelectedItem();
         if (selectedOrder != null) {       	
-        	client.updateOrderStatus(selectedOrder.getOrderId(),EnumOrderStatus.IN_PROGRESS,"Your order has been approved and is being prepared!");        	
+        	client.updateOrderStatus(selectedOrder.getOrderId(),EnumOrderStatus.IN_PROGRESS,"Order " + selectedOrder.getOrderId()+": Your order has been approved and is being prepared!");        	
             selectedOrder.setStatus(EnumOrderStatus.IN_PROGRESS);
             orderTableView.refresh();
             updateButtonStates(selectedOrder);           
@@ -217,14 +222,14 @@ public class WorkerPendingOrders {
             if (selectedOrder.isDelivery()) {
                 etaComboBox.setVisible(true);
                 if (etaComboBox.getValue() != null && !etaComboBox.getValue().equals("-Choose Comment-")) {
-                    client.updateOrderStatus(selectedOrder.getOrderId(), EnumOrderStatus.READY, "Your order is ready and the delivery is on its way!\n Estimated time of arrival will be: "+etaComboBox.getValue());
+                    client.updateOrderStatus(selectedOrder.getOrderId(), EnumOrderStatus.READY, "Order " + selectedOrder.getOrderId()+": Your order is ready and the delivery is on its way!\n Estimated time of arrival will be "+etaComboBox.getValue());
                 } else {
                     showError("ETA must be provided for delivery orders.");
                     return; 
                 }
             } else {
                 // If it's not a delivery order, allow status update without checking etaComboBox
-                client.updateOrderStatus(selectedOrder.getOrderId(), EnumOrderStatus.READY,"Your order is ready for pickup!");
+                client.updateOrderStatus(selectedOrder.getOrderId(), EnumOrderStatus.READY,"Order " + selectedOrder.getOrderId()+": Your order is ready for pickup!");
             }
             // Remove order from the table after setting status to READY
             selectedOrder.setStatus(EnumOrderStatus.READY);
@@ -259,6 +264,28 @@ public class WorkerPendingOrders {
   		errorText.setText(str);
   		errorText.setVisible(true);
   	} 
+  	//TEMP
+  	 public void showNotificationDialog(List<String> text) {
+  		Platform.runLater(() -> {
+            if (text == null || text.isEmpty()) {
+                System.out.println("No notifications to show.");
+                return;
+            }            
+            Alert alert = new Alert(AlertType.INFORMATION);
+            alert.initStyle(StageStyle.UTILITY);
+            alert.setTitle("You got a message!");
+            alert.setHeaderText(null);
+            String content = String.join("\n", text);
+            alert.setContentText(content);
+            ButtonType okButton = new ButtonType("CLOSE", ButtonData.OK_DONE);
+            alert.getButtonTypes().setAll(okButton);
+            alert.showAndWait().ifPresent(response -> {
+                if (response == okButton) {
+                    alert.close(); // Close the dialog window
+                }
+            });
+        });
+     }
     
   	// Goes back to the user's home page
   	@FXML
