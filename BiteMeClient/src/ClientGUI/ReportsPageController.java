@@ -497,11 +497,8 @@ public class ReportsPageController {
      * Closes the application, performing necessary cleanup.
      */
     public void closeApplication() {
-        if (client != null) {
-            System.out.println("Closing application from ReportsPage");
-            client.quit();
-        }
-        Platform.exit();
-        System.exit(0);
+    	if (client != null) {
+			client.userLogout(user, true);
+		};
     }
 }

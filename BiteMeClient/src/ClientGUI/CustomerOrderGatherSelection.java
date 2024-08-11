@@ -17,6 +17,8 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
+
+import client.Client;
 import common.Dish;
 import common.User;
 import java.time.LocalTime;
@@ -129,6 +131,8 @@ public class CustomerOrderGatherSelection {
     @FXML
     private  Text errorRobotText;
     
+    private Client client;
+    
     private boolean earlyChoosed = false;
     private boolean deliveryChoosed = false;
     private boolean chooseTime = false;
@@ -140,7 +144,8 @@ public class CustomerOrderGatherSelection {
 
 	@FXML
 	private void initialize() {
-		
+		client = client.getInstance();
+		client.getCustomerOrderGatherSelection(this);
 		//Set the hours and minute combo box with elements
 		ObservableList<String> hoursList = FXCollections.observableArrayList();
         ObservableList<String> minutesList = FXCollections.observableArrayList();
@@ -485,5 +490,9 @@ public class CustomerOrderGatherSelection {
         }
 	}
 	
-	// Add methods for handling other actions in this window
+	public void closeApplication() {
+		if (client != null) {
+			client.userLogout(user, true);
+		};
+	}  
 }

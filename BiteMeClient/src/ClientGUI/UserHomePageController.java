@@ -136,7 +136,7 @@ public class UserHomePageController {
 	@FXML
 	private void handleLogout(ActionEvent event) {
 	    // Send logout request to the server
-	    client.userLogout(user);
+	    client.userLogout(user,false);
 	    try {
 	        Stage stage = (Stage) logoutButton.getScene().getWindow();
 	        Scene loginScene = ClientLoginUI.loadLoginScene();
@@ -341,29 +341,21 @@ public class UserHomePageController {
         });
      }
     
-    /**
-     * Logs out the user from the database.
-     */
-    public void logoutUser() {
-        if (user != null && client != null) {
-            client.userLogout(user);
-        }
-    }
+//    /**
+//     * Logs out the user from the database.
+//     */
+//    public void logoutUser() {
+//        if (user != null && client != null) {
+//            client.userLogout(user);
+//        }
+//    }
     
     /**
      * Closes the application, ensuring proper logout and client shutdown.
      */
-    public void closeApplication() 
-    {
-    	Platform.runLater(() ->
-    	{
-        if (client != null) 
-        {
-            System.out.println("Closing application from UserHomePage");
-            client.userLogout(user);
-            client.quit();
-        }
-        Platform.exit();
-        System.exit(0);
-    });
-}}
+	public void closeApplication() {
+		if (client != null) {
+			client.userLogout(user, true);
+		}
+	}
+}
