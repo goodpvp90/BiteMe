@@ -252,7 +252,7 @@ public class UpdateAddDish {
 
         // Case 2: Name contains invalid characters (only allows letters, numbers, and spaces)
         if (!name.matches("[a-zA-Z0-9 ]+")) {
-            showError("Dish name can only contain letters, numbers, -, and spaces.");
+            showError("Dish name can only contain letters, numbers, and spaces.");
             return false;
         }
 

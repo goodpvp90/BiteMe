@@ -28,6 +28,7 @@
                <Button fx:id="changeHomeBranchButton" mnemonicParsing="false" onAction="#handleChangeHomeBranch" text="Change Home&#10;Branch" />
                <Button fx:id="pendingOrdersButton" mnemonicParsing="false" onAction="#handlePendingOrders" text="Pending&#10;Orders" />
                <Button fx:id="registerUserButton" mnemonicParsing="false" onAction="#handleRegisterUser" text="Register&#10;User" />
+               <Button fx:id="myOrdersButton" layoutX="150.0" layoutY="462.0" mnemonicParsing="false" prefHeight="80.0" prefWidth="130.0" text="My Orders" onAction="#handleMyOrders" />
             </HBox>
          </VBox>
       </VBox>
