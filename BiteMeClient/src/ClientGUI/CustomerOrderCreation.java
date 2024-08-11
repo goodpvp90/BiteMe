@@ -387,6 +387,6 @@ public class CustomerOrderCreation {
 	public void closeApplication() {
 		if (client != null) {
 			client.userLogout(user, true);
-		};
+		}
 	}      
 }
