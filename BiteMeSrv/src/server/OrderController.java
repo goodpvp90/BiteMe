@@ -23,9 +23,7 @@ public class OrderController {
 	// Create a new order
     public boolean createOrder(Order order, List<Dish> dishesInOrder, ConnectionToClient client) {
         try {
-        	System.out.println(server.areConnectionsEqual(server.clients.get("ben"),client));
             server.dbController.createOrder(order, dishesInOrder);
-        	System.out.println(server.areConnectionsEqual(server.clients.get("ben"),client));
             return true;
         } catch (SQLException e) {
             e.printStackTrace();
