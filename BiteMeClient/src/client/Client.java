@@ -406,8 +406,13 @@ public class Client extends AbstractClient {
 		sendMessageToServer(new Object[] { EnumServerOperations.LOGIN, user });
 	}
 	
-	public void userLogout(User user) {
-		sendMessageToServer(new Object[] { EnumServerOperations.LOG_OUT, user });
+	public void userLogout(User user, boolean kill) {
+		if(!kill) {
+			sendMessageToServer(new Object[] { EnumServerOperations.LOG_OUT, user });
+		}
+		else {
+			quit();
+		}
 	}
 	
 	public void getIncomeReport(IncomeReport report) {
