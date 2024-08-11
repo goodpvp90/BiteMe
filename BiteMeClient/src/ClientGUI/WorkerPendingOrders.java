@@ -315,4 +315,4 @@ public class WorkerPendingOrders {
 			  client.userLogout(user, true);
     }
   }
-}
+
