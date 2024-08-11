@@ -324,11 +324,12 @@ public class Client extends AbstractClient {
             	break;
             case INTERRUPT_ORDER_CREATION:
             	//TODO OFEK DO SMTH
+            	userHomePageController.showCreateOrderDuringUpdateMenuDialog();
             	break;
             case SERVER_DISCONNECTED:
             	//TODO do smth
             	break;
-            case ORDER_ON_TIME:
+            case ORDER_ON_TIME:           	
             	myOrders.OrderCompleteHandle((boolean)message[1]);
             	break;
 			case NONE:
@@ -337,6 +338,8 @@ public class Client extends AbstractClient {
 			}
 		}
 	}
+	
+	
 	
 	public void waitForController() {
         lock.lock();
@@ -475,7 +478,7 @@ public class Client extends AbstractClient {
 		sendMessageToServer(new Object[] { EnumServerOperations.UPDATE_ORDER_STATUS, orderId, status, msg});
 	}
 
-	// OFEK
+	
 	public void getViewMenu(EnumServerOperations op, int menuId) {
 		sendMessageToServer(new Object[] {op, menuId });
 	}
@@ -505,7 +508,7 @@ public class Client extends AbstractClient {
 	public void getUsersOrders(String Username) {
 		sendMessageToServer(new Object[] { EnumServerOperations.USERS_ORDERS, Username});
 	}
-	//TODO OFEK
+	
 	public void addClientInOrder() {
 		sendMessageToServer(new Object[] { EnumServerOperations.IN_ORDER_CREATION});
 	}

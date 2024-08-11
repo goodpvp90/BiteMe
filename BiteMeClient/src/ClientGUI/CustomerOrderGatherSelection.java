@@ -491,6 +491,7 @@ public class CustomerOrderGatherSelection {
 	}
 	
 	public void closeApplication() {
+		client.removeClientInOrder();
 		if (client != null) {
 			client.userLogout(user, true);
 		}
