@@ -72,6 +72,8 @@ public class WorkerPendingOrders {
     	client.setWorkerPendingOrders(this);
         orderIdColumn.setCellValueFactory(new PropertyValueFactory<>("orderId"));
         ordererColumn.setCellValueFactory(cellData -> {
+        	if(cellData.getValue().isDelivery()==true)
+        		return new SimpleStringProperty(cellData.getValue().getReceiverName());
             String[] nameParts = cellData.getValue().getUsername().split(" ");
             String firstName = nameParts.length > 0 ? nameParts[0] : "";
             String lastName = nameParts.length > 1 ? nameParts[1] : "";
@@ -87,7 +89,7 @@ public class WorkerPendingOrders {
                 etaComboBox.setValue(null);
             }
         });
-        //*******************************    
+        //***********    
         etaComboBox.setItems(FXCollections.observableArrayList(
                 "In about 20 minutes",
                 "In about 1 hour",
@@ -97,7 +99,7 @@ public class WorkerPendingOrders {
             orderReadyButton.setDisable(newValue == null || newValue.isEmpty());
         });
         etaComboBox.setVisible(false);
-        //*******************************
+        //***********
         TableColumn<Order, Void> expandColumn = new TableColumn<>("Expand");
         expandColumn.setCellFactory(param -> new TableCell<>() {
             private final Button expandButton = new Button("Expand");
@@ -129,7 +131,7 @@ public class WorkerPendingOrders {
         this.user = user;     
         pendingOrdersLoader();        
     }
-    /////***********************************************************//////////////*******************
+    /////********************//////////////******
     public void pendingOrdersLoader()
     {    	
     	EnumBranch homeBranch = user.getHomeBranch();   	    	
@@ -213,11 +215,12 @@ public class WorkerPendingOrders {
             updateButtonStates(selectedOrder);           
         }
         else
-        	showError("Order selection error!!!");
+        	showError("Order selection error!!!");        
     }
 
     @FXML
     private void handleOrderReadyAction() {
+    	//אם זה פיקאפ אז סטאטוס משתנה לCOMPLETED
         Order selectedOrder = orderTableView.getSelectionModel().getSelectedItem();
         if (selectedOrder != null) {
             if (selectedOrder.isDelivery()) {
@@ -230,7 +233,7 @@ public class WorkerPendingOrders {
                 }
             } else {
                 // If it's not a delivery order, allow status update without checking etaComboBox
-                client.updateOrderStatus(selectedOrder.getOrderId(), EnumOrderStatus.READY,"Order " + selectedOrder.getOrderId()+": Your order is ready for pickup!");
+                client.updateOrderStatus(selectedOrder.getOrderId(), EnumOrderStatus.COMPLETED,"Order " + selectedOrder.getOrderId()+": Your order is ready for pickup!");
             }
             // Remove order from the table after setting status to READY
             selectedOrder.setStatus(EnumOrderStatus.READY);
@@ -313,8 +316,6 @@ public class WorkerPendingOrders {
     
  	//Making Quit Button to kill thread and send message to server
     public void closeApplication() {
-    	if (client != null) {
-			client.userLogout(user, true);
-		}
-    	} 
+    	if (client != null) 
+			  client.userLogout(user, true);
 }

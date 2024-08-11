@@ -9,7 +9,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -348,12 +347,11 @@ public class DBController {
 	}
 	
 	
-	// Update order receive time, used when user accepts he received the order and insert the correct discount.
 	public void updateOrderReceiveTimeAndInsertDiscount(int orderId, Timestamp orderReceiveTime) {
 	    String selectQuery = "SELECT order_ready_time, total_price, username FROM orders WHERE order_id = ?";
 	    String updateOrderQuery = "UPDATE orders SET order_receive_time = ? WHERE order_id = ?";
 	    String getDiscountQuery = "SELECT discount_amount FROM discounts WHERE username = ?";
-	    String updateDiscountQuery = "INSERT INTO discounts (username, discount_amount) VALUES (?, ?) ON DUPLICATE KEY UPDATE discount_amount = ?";
+	    String updateDiscountQuery = "INSERT INTO discounts (username, discount_amount) VALUES (?, ?) ON DUPLICATE KEY UPDATE discount_amount = VALUES(discount_amount)";
 	    
 	    try (PreparedStatement selectStmt = connection.prepareStatement(selectQuery);
 	         PreparedStatement updateOrderStmt = connection.prepareStatement(updateOrderQuery);
@@ -372,8 +370,8 @@ public class DBController {
 	            // Update the order receive time
 	            updateOrderStmt.setTimestamp(1, orderReceiveTime);
 	            updateOrderStmt.setInt(2, orderId);
-	            updateOrderStmt.executeUpdate();
-	            
+	            int orderUpdateResult = updateOrderStmt.executeUpdate();
+	                      
 	            if (orderReadyTime != null && orderReceiveTime != null && orderReceiveTime.after(orderReadyTime)) {
 	                // Calculate the discount amount
 	                double newDiscountAmount = totalPrice * 0.50;
@@ -388,18 +386,52 @@ public class DBController {
 	                
 	                // Calculate the total discount amount
 	                double totalDiscountAmount = currentDiscountAmount + newDiscountAmount;
-	                
+
 	                // Update the discount table
 	                updateDiscountStmt.setString(1, username);
 	                updateDiscountStmt.setDouble(2, totalDiscountAmount);
-	                updateDiscountStmt.setDouble(3, totalDiscountAmount);
-	                updateDiscountStmt.executeUpdate();
+	                int discountUpdateResult = updateDiscountStmt.executeUpdate();
 	            }
+	        } else {
+	            System.out.println("ResultSet is empty. No data found for orderId: " + orderId);
 	        }
 	    } catch (SQLException e) {
+	        System.out.println("SQLException caught: " + e.getMessage());
 	        e.printStackTrace();
 	    }
 	}
+
+    public boolean isOrderArrivedOnTime(int orderId) {
+        String selectQuery = "SELECT order_ready_time, order_receive_time FROM orders WHERE order_id = ?";
+
+        try (PreparedStatement selectStmt = connection.prepareStatement(selectQuery)) {
+            // Set the orderId parameter
+            selectStmt.setInt(1, orderId);
+            ResultSet rs = selectStmt.executeQuery();
+
+            if (rs.next()) {
+                Timestamp orderReadyTime = rs.getTimestamp("order_ready_time");
+                Timestamp orderReceiveTime = rs.getTimestamp("order_receive_time");
+
+                // Print retrieved timestamps for debugging
+                System.out.println("Order ID: " + orderId);
+                System.out.println("Order ready time: " + orderReadyTime);
+                System.out.println("Order receive time: " + orderReceiveTime);
+
+                // Check if the order arrived on time
+                if (orderReadyTime != null && orderReceiveTime != null) {
+                    return orderReceiveTime.after(orderReadyTime); // true if on time or early, false if late
+                }
+            } else {
+                System.out.println("No data found for orderId: " + orderId);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return false; // Default to false if there is an issue (e.g., missing data)
+    }
+
 
     
     // Get orders for a specific username
@@ -456,6 +488,7 @@ public class DBController {
 	                    order = new Order(username, branchId, orderDate, orderRequestTime, totalPrice, delivery, status);
 	                    order.setReceiverName(receiverName);
 	                    order.setOrderId(orderid);
+	                    System.out.println(order.getReceiverName());
 	                } else {
 	                    order = new Order(username, branchId, orderDate, orderRequestTime, totalPrice, delivery, status);
 	                    order.setOrderId(orderid);
