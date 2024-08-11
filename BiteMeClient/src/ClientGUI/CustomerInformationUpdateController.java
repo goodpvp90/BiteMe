@@ -150,6 +150,12 @@ public class CustomerInformationUpdateController {
             if (!email.matches("^[A-Za-z0-9+_.-]+@(.+)$")) {
                 showError("Please enter a valid email address");
                 return;
+            }
+            // ID REGEX
+            if (!id.matches("[a-zA-Z0-9]+"))
+            { 
+            	showError("Please enter a valid ID ");
+                return;
             }else {
                 // Update user information
                 user.setId(id);
@@ -158,7 +164,7 @@ public class CustomerInformationUpdateController {
                 user.setEmail(email);
                 user.setPhone(phone);
                 user.setCreditCard(creditCard);
-                // Set home branch based on DB
+                // Set home branch based on DB Branches
                 EnumBranch selectedBranch = branchComboBox.getValue();
                 if (selectedBranch == null) {
                     showError("Please select a branch");

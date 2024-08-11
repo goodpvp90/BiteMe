@@ -17,20 +17,23 @@
          
          <Text fx:id="welcomeText" text="" textAlignment="CENTER" wrappingWidth="799.1875" />
          
-         <VBox alignment="CENTER" spacing="20">
-            <HBox alignment="CENTER" spacing="20">
+         <HBox styleClass="button-container">
+            <VBox styleClass="button-column">
                <Button fx:id="createOrderButton" mnemonicParsing="false" onAction="#handleCreateOrder" text="Create&#10;Order" />
-               <Button fx:id="updateMenuButton" mnemonicParsing="false" onAction="#handleUpdateMenu" text="Update&#10;Menu" />
-               <Button fx:id="viewReportsButton" mnemonicParsing="false" onAction="#handleViewReports" text="View&#10;Reports" />
-            </HBox>
-            
-            <HBox alignment="CENTER" spacing="20">
                <Button fx:id="changeHomeBranchButton" mnemonicParsing="false" onAction="#handleChangeHomeBranch" text="Change Home&#10;Branch" />
+               <Button fx:id="myOrdersButton" mnemonicParsing="false" onAction="#handleMyOrders" text="My Orders" />
+            </VBox>
+            
+            <VBox styleClass="button-column">
+               <Button fx:id="updateMenuButton" mnemonicParsing="false" onAction="#handleUpdateMenu" text="Update&#10;Menu" />
                <Button fx:id="pendingOrdersButton" mnemonicParsing="false" onAction="#handlePendingOrders" text="Pending&#10;Orders" />
+            </VBox>
+            
+            <VBox styleClass="button-column">
+               <Button fx:id="viewReportsButton" mnemonicParsing="false" onAction="#handleViewReports" text="View&#10;Reports" />
                <Button fx:id="registerUserButton" mnemonicParsing="false" onAction="#handleRegisterUser" text="Register&#10;User" />
-               <Button fx:id="myOrdersButton" layoutX="150.0" layoutY="462.0" mnemonicParsing="false" prefHeight="80.0" prefWidth="130.0" text="My Orders" onAction="#handleMyOrders" />
-            </HBox>
-         </VBox>
+            </VBox>
+         </HBox>
       </VBox>
    </children>
 </AnchorPane>

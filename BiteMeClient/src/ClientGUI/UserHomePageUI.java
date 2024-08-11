@@ -15,7 +15,6 @@ import javafx.stage.Stage;
 public class UserHomePageUI extends Application {
 	private User user;
 	private boolean isRegistered; 
-	private Client client;
 	private static Stage userHomePageStage; 
 	
 	/**
