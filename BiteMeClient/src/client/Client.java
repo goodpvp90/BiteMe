@@ -40,6 +40,7 @@ public class Client extends AbstractClient {
 	// Default port to connect to the server
 	final public static int DEFAULT_PORT = 8080;
 	private static Client instance;
+	private EnumPageForDishInOrder pageForDishInOrder;
 	// Controller for Client GUI functionality
 	private ClientLoginController clientLoginController;
 	private CustomerOrderCreation  CustomerOrderCreation;
@@ -170,7 +171,14 @@ public class Client extends AbstractClient {
 							"name: " + dishin.getDishName()+", Option: "+dishin.getOptionalPick()
 							+ ", comment: "+dishin.getComment());
 				}
-				workerPendingOrders.SetDishInOrdersFromDB(dishes);
+				switch(pageForDishInOrder) {
+				case WORKER:
+					workerPendingOrders.SetDishInOrdersFromDB(dishes);
+					break;
+				case CUSTOMER:
+					//ido
+					break;
+				}
 	        	break;
 			case USER:
 				handleLogin(message);
@@ -342,8 +350,14 @@ public class Client extends AbstractClient {
 		}
 	}
 	
-	public void sendShowDishesInOrder(int orderid) {
-	    //GET PENDING ORDERS
+	public enum EnumPageForDishInOrder{
+		WORKER,
+		CUSTOMER;
+	}
+	
+	public void sendShowDishesInOrder(int orderid, EnumPageForDishInOrder page) {
+		pageForDishInOrder = page;
+		//GET PENDING ORDERS
 		sendMessageToServer(new Object[] { EnumServerOperations.DISHES_IN_ORDER, orderid });
 	}
 	
@@ -444,5 +458,9 @@ public class Client extends AbstractClient {
 	
 	public void updateDish(Dish dish) {
 		sendMessageToServer(new Object[] { EnumServerOperations.UPDATE_DISH, dish });
+	}
+	
+	public void getUsersOrders(String Username) {
+		sendMessageToServer(new Object[] { EnumServerOperations.USERS_ORDERS, Username});
 	}
 }
