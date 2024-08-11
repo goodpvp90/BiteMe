@@ -142,7 +142,7 @@ public class MyOrders {
     @FXML
     private void handleApproveOrderAction() {
     	Order selectedOrder = orderTableView.getSelectionModel().getSelectedItem();
-    	sendOrderArriveOnTime(selectedOrder.getOrderId());
+    	client.sendOrderArriveOnTime(selectedOrder.getOrderId());
     }
     
     public void OrderCompleteHandle(boolean show) {
