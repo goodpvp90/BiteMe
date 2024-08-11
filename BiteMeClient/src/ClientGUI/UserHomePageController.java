@@ -156,6 +156,7 @@ public class UserHomePageController {
     @FXML
     private void handleCreateOrder(ActionEvent event) {
     	try {
+    		client.addClientInOrder();
             // Launch CustomerOrderCreationUI future logic
     		//OFEK changed this one to work on this current version	
     		CustomerOrderCreationUI CustCreatApp = new CustomerOrderCreationUI(user,null);

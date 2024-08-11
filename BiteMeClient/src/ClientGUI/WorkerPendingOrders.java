@@ -1,12 +1,9 @@
 package ClientGUI;
 import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
-
 import client.Client;
 import client.Client.EnumPageForDishInOrder;
-import common.Dish;
 import common.DishInOrder;
 import common.EnumOrderStatus;
 import common.Order;
@@ -26,10 +23,8 @@ import javafx.stage.StageStyle;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
-import javafx.scene.control.TextField;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonBar.ButtonData;
 import common.EnumBranch;
@@ -72,6 +67,8 @@ public class WorkerPendingOrders {
     	client.setWorkerPendingOrders(this);
         orderIdColumn.setCellValueFactory(new PropertyValueFactory<>("orderId"));
         ordererColumn.setCellValueFactory(cellData -> {
+        	if(cellData.getValue().isDelivery()==true)
+        		return new SimpleStringProperty(cellData.getValue().getReceiverName());
             String[] nameParts = cellData.getValue().getUsername().split(" ");
             String firstName = nameParts.length > 0 ? nameParts[0] : "";
             String lastName = nameParts.length > 1 ? nameParts[1] : "";
@@ -87,7 +84,7 @@ public class WorkerPendingOrders {
                 etaComboBox.setValue(null);
             }
         });
-        //*******************************    
+        //***********    
         etaComboBox.setItems(FXCollections.observableArrayList(
                 "In about 20 minutes",
                 "In about 1 hour",
@@ -97,7 +94,7 @@ public class WorkerPendingOrders {
             orderReadyButton.setDisable(newValue == null || newValue.isEmpty());
         });
         etaComboBox.setVisible(false);
-        //*******************************
+        //***********
         TableColumn<Order, Void> expandColumn = new TableColumn<>("Expand");
         expandColumn.setCellFactory(param -> new TableCell<>() {
             private final Button expandButton = new Button("Expand");
@@ -129,7 +126,7 @@ public class WorkerPendingOrders {
         this.user = user;     
         pendingOrdersLoader();        
     }
-    /////***********************************************************//////////////*******************
+    /////********************//////////////******
     public void pendingOrdersLoader()
     {    	
     	EnumBranch homeBranch = user.getHomeBranch();   	    	
@@ -172,7 +169,7 @@ public class WorkerPendingOrders {
     
     // Create a new stage to show order details
     private void showOrderDetails(int orderID) {
-    	client.sendShowDishesInOrder(orderID, EnumPageForDishInOrder.WORKER); 
+    	client.sendShowDishesInOrder(orderID,EnumPageForDishInOrder.WORKER); 
     	Platform.runLater(() -> {
         Stage detailStage = new Stage();
         VBox vbox = new VBox();
@@ -213,11 +210,12 @@ public class WorkerPendingOrders {
             updateButtonStates(selectedOrder);           
         }
         else
-        	showError("Order selection error!!!");
+        	showError("Order selection error!!!");        
     }
 
     @FXML
     private void handleOrderReadyAction() {
+    	//אם זה פיקאפ אז סטאטוס משתנה לCOMPLETED
         Order selectedOrder = orderTableView.getSelectionModel().getSelectedItem();
         if (selectedOrder != null) {
             if (selectedOrder.isDelivery()) {
@@ -230,7 +228,7 @@ public class WorkerPendingOrders {
                 }
             } else {
                 // If it's not a delivery order, allow status update without checking etaComboBox
-                client.updateOrderStatus(selectedOrder.getOrderId(), EnumOrderStatus.READY,"Order " + selectedOrder.getOrderId()+": Your order is ready for pickup!");
+                client.updateOrderStatus(selectedOrder.getOrderId(), EnumOrderStatus.COMPLETED,"Order " + selectedOrder.getOrderId()+": Your order is ready for pickup!");
             }
             // Remove order from the table after setting status to READY
             selectedOrder.setStatus(EnumOrderStatus.READY);
@@ -315,5 +313,6 @@ public class WorkerPendingOrders {
     public void closeApplication() {
     	if (client != null) {
 			client.userLogout(user, true);
-		}    } 
+		}    
+    } 
 }

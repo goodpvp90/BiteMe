@@ -101,15 +101,21 @@ public class OrderController {
     }
     
     public boolean addDish(Dish dish) {
-        return server.dbController.addDish(dish);
+    	boolean result = server.dbController.addDish(dish);
+        server.notifyUpdatedMenu();
+        return result;
     }
     
     public boolean deleteDish(Dish dish) {
-        return server.dbController.deleteDish(dish);
+    	boolean result =  server.dbController.deleteDish(dish);
+        server.notifyUpdatedMenu();
+        return result;
     }
     
     public boolean updateDish(Dish dish) {
-    	return server.dbController.updateDish(dish);
+    	boolean result =  server.dbController.updateDish(dish);
+        server.notifyUpdatedMenu();
+        return result;
     }
 
 	public List<Dish> viewMenu(int menuId) {
