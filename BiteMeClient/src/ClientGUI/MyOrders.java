@@ -218,8 +218,11 @@ public class MyOrders {
 		if (client != null) {
 			client.userLogout(user);
 		}
-		Platform.exit();
-		System.exit(0);
+		
+        Platform.runLater(() -> {
+    		Platform.exit();
+    		System.exit(0);
+    		});
 	}  
     
 }
