@@ -12,10 +12,12 @@ import java.util.concurrent.ConcurrentHashMap;
 import ServerGUI.serverController;
 import common.Dish;
 import common.DishInOrder;
+import common.EnumBranch;
 import common.EnumClientOperations;
 import common.EnumDish;
 import common.EnumOrderStatus;
 import common.EnumServerOperations;
+import common.EnumType;
 import common.IncomeReport;
 import common.Order;
 import common.OrdersReport;
@@ -32,10 +34,9 @@ public class Server extends AbstractServer {
 	private ReportController reportController;
 	private OrderController orderController;
 	private UserController userController;
-    //private Thread[] clientThreadList = getClientConnections();
-    //private Map<String,ConnectionToClient> clients;
 	private Map<String, ConnectionToClient> clients = new HashMap<>();
 	private List<ConnectionToClient> clientsInOrderCreation = new ArrayList<>();
+	private Map<User,ConnectionToClient> workersInPendingOrders = new HashMap<>();
 	
 	// Private constructor
 	public Server(int port, String url, String username, String password) {
@@ -99,6 +100,7 @@ public class Server extends AbstractServer {
                 // Call the method to create the order
                 try {
                 	boolean order = orderController.createOrder(newOrder, dishesInOrder, client);
+                	notifyWorker(dbController.getLocationByBranchId(newOrder.getBranchId()));
                     sendMessageToClient(EnumClientOperations.INSERT_ORDER,client, order);
                 } catch (Exception e) {
                     result = "Error creating order: " + e.getMessage();
@@ -182,6 +184,14 @@ public class Server extends AbstractServer {
             	int orderarriveid = (int)message[1];
             	sendMessageToClient(EnumClientOperations.ORDER_ON_TIME, client, dbController.isOrderArrivedOnTime(orderarriveid)); 	
             	break;
+            case IN_PENDING_ORDERS:
+            	addToWorkersInPendingOrders((User)message[1], client);
+                for (User userr : workersInPendingOrders.keySet())
+                	System.out.println(userr.equals((User)message[1]));
+            	break;
+            case OUT_PENDING_ORDERS:
+            	removeFromWorkersInPendingOrders((User)message[1]);
+            	break;
 			case NONE:
 				System.out.println("No operation was received");
 				break;
@@ -245,6 +255,27 @@ public class Server extends AbstractServer {
     public void notifyUpdatedMenu() {
     	for (ConnectionToClient c : clientsInOrderCreation)
     		sendMessageToClient(EnumClientOperations.INTERRUPT_ORDER_CREATION, c, "STOP CREATING ORDER");
+    }
+    
+    public void addToWorkersInPendingOrders(User key, ConnectionToClient client) {
+    	System.out.println("ADDING");
+    	workersInPendingOrders.put(key, client);
+    }
+
+    public void removeFromWorkersInPendingOrders(User key) {
+    	workersInPendingOrders.remove(key);
+    }
+    
+    public ConnectionToClient getWorkerInPendingOrders(User key) {
+        return workersInPendingOrders.get(key);
+    }
+    
+    public void notifyWorker(EnumBranch branchLoc) {
+        for (User user : workersInPendingOrders.keySet()) {
+            if(user.getHomeBranch() == branchLoc) {
+            	sendMessageToClient(EnumClientOperations.INTERRUPT_PENDING_ORDERS, workersInPendingOrders.get(user), "RELOAD PENDING PAGE");
+            }
+        }
     }
     
 	@Override

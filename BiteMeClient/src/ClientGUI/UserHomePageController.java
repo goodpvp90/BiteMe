@@ -250,6 +250,7 @@ public class UserHomePageController {
      */
     @FXML
     private void handlePendingOrders(ActionEvent event) {
+    	client.addWorkerInPendingOrders(user);
     	try {
             // Launch CustomerOrderCreationUI future logic
     		//OFEK changed this one to work on this current version	
