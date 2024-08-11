@@ -1,6 +1,4 @@
 package ClientGUI;
-
-import client.Client;
 import common.User;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;

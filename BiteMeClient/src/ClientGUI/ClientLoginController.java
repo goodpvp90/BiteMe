@@ -169,6 +169,8 @@ public class ClientLoginController {
      * Resets the client state and UI elements.
      * This method is called when returning to the login screen from other parts of the application.
      */
+       
+    
     public void resetClient() {
         client = Client.getInstance();
         try {
