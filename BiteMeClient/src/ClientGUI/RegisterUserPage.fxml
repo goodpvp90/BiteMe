@@ -3,34 +3,23 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.VBox?>
-<?import javafx.scene.text.Font?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane prefHeight="600.0" prefWidth="800" stylesheets="@client.css" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ClientGUI.RegisterUserPageController">
+<AnchorPane prefHeight="600.0" prefWidth="800.0" styleClass="blue-gradient-1, register-user-page" stylesheets="@client.css" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ClientGUI.RegisterUserPageController">
    <children>
-      <Button fx:id="backButton" layoutX="20.0" layoutY="20.0" minHeight="30.0" minWidth="70.0" mnemonicParsing="false" onAction="#handleBack" styleClass="logout-button" text="Back" />
+      <HBox alignment="CENTER_LEFT" spacing="20" styleClass="header" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <Text fx:id="headlineText" styleClass="headline-text" text="Register User" />
+         <HBox HBox.hgrow="ALWAYS" />
+         <Button fx:id="backButton" mnemonicParsing="false" onAction="#handleBack" styleClass="logout-button" text="Back" />
+      </HBox>
       
-      <VBox alignment="CENTER" layoutX="0.0" layoutY="60.0" prefWidth="700.0" spacing="20.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
-         <children>
-            <Text fx:id="headlineText" strokeType="OUTSIDE" strokeWidth="0.0" text="Register User">
-               <font>
-                  <Font size="36.0" />
-               </font>
-            </Text>
-            <Text layoutX="100.0" layoutY="150.0" text="Please Enter the username of the Deactivated customer" textAlignment="CENTER" wrappingWidth="400.0">
-               <font>
-                  <Font size="18.0" />
-               </font>
-            </Text>
-         </children>
-      </VBox>
-      <TextField fx:id="usernameField" alignment="CENTER" layoutX="238.0" layoutY="211.0" maxWidth="323.0" prefHeight="48.0" prefWidth="323.0" promptText="Enter username here" />
-      <Text fx:id="errorText" fill="RED" layoutX="33.0" layoutY="294.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Error" textAlignment="CENTER" visible="false" wrappingWidth="733.6666564941406">
-         <font>
-            <Font size="16.0" />
-         </font>
-      </Text>
-      <Button fx:id="continueButton" layoutX="335.0" layoutY="319.0" mnemonicParsing="false" onAction="#handleContinue" prefHeight="50.0" prefWidth="130.0" text="Continue" />
+      <Text fx:id="welcomeText" layoutY="117.0" text="Please Enter the username of the Deactivated customer" textAlignment="CENTER" wrappingWidth="799.1875" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.8125" AnchorPane.topAnchor="97.576171875" />
+      
+      <Text fx:id="errorText" fill="RED" layoutX="33.0" layoutY="345.107421875" textAlignment="CENTER" visible="false" wrappingWidth="733.6666564941406" AnchorPane.leftAnchor="33.0" AnchorPane.rightAnchor="34.0" AnchorPane.topAnchor="330.0" />
+      
+      <TextField fx:id="usernameField" layoutX="239.0" layoutY="233.0" maxWidth="323.0" prefHeight="48.0" promptText="Enter username here" AnchorPane.leftAnchor="239.0" AnchorPane.rightAnchor="239.0" AnchorPane.topAnchor="233.0" />
+      
+      <Button fx:id="continueButton" alignment="CENTER" layoutX="309.0" layoutY="381.0" mnemonicParsing="false" onAction="#handleContinue" prefHeight="134.0" prefWidth="180.0" styleClass="home-button" text="Continue" AnchorPane.bottomAnchor="119.0" AnchorPane.leftAnchor="309.0" AnchorPane.rightAnchor="311.0" />
    </children>
 </AnchorPane>

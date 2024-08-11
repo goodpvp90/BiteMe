@@ -1,33 +1,58 @@
-/* Cool gradient background */
+/* Global Styles */
+/* These styles apply to all pages */
+
 .blue-gradient-1 {
     -fx-background-color: linear-gradient(to bottom right, #0f2027, #203a43, #2c5364);
 }
 
-/* Header styles */
 .header {
     -fx-background-color: rgba(255, 255, 255, 0.1);
     -fx-padding: 15px 20px;
     -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.3), 0, 5, 0, 0);
-    -fx-min-width: 100%; /* Ensures the header spans the full width */
+    -fx-min-width: 100%;
 }
 
-/* Headline text in header */
-#headlineText {
+#headlineText, .headline-text {
     -fx-font-size: 35px;
     -fx-font-weight: bold;
     -fx-fill: white;
     -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.8), 5, 0, 0, 2);
 }
 
-/* Welcome text style */
-#welcomeText {
+#welcomeText, .instruction-text {
     -fx-font-size: 18px;
     -fx-font-style: italic;
-    -fx-fill: #d3d3d3; /* Light gray color */
+    -fx-fill: #d3d3d3;
     -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.6), 3, 0, 0, 1);
 }
 
-/* Logout button in header (for UserHomePage) */
+.text-field, .password-field {
+    -fx-background-color: rgba(255, 255, 255, 0.2);
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-prompt-text-fill: rgba(255, 255, 255, 0.7);
+    -fx-border-color: rgba(255, 255, 255, 0.3);
+    -fx-border-width: 1px;
+    -fx-border-radius: 5px;
+    -fx-background-radius: 5px;
+    -fx-padding: 10px;
+    -fx-alignment: center;
+}
+
+.text-field:focused, .password-field:focused {
+    -fx-background-color: rgba(255, 255, 255, 0.3);
+    -fx-border-color: rgba(255, 255, 255, 0.5);
+}
+
+#errorText, #ErrorTextConnect {
+    -fx-fill: #ff6b6b;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+}
+
+/* UserHomePage Styles */
+/* Styles specific to UserHomePage.fxml */
+
 #logoutButton {
     -fx-background-color: rgba(244, 67, 54, 0.8);
     -fx-text-fill: white;
@@ -42,10 +67,10 @@
     -fx-background-color: rgba(244, 67, 54, 1);
 }
 
-/* Main action buttons - Uniform size */
+/* Common button styles for UserHomePage and other pages */
 #createOrderButton, #updateMenuButton, #viewReportsButton,
 #changeHomeBranchButton, #pendingOrdersButton, #registerUserButton,
-#loginButton, #connectButton, #quitButton {
+#loginButton, #connectButton, #quitButton, #myOrdersButton {
     -fx-background-color: rgba(33, 150, 243, 0.8);
     -fx-text-fill: white;
     -fx-font-size: 16px;
@@ -65,7 +90,7 @@
 
 #createOrderButton:hover, #updateMenuButton:hover, #viewReportsButton:hover,
 #changeHomeBranchButton:hover, #pendingOrdersButton:hover, #registerUserButton:hover,
-#loginButton:hover, #connectButton:hover, #quitButton:hover {
+#loginButton:hover, #connectButton:hover, #quitButton:hover, #myOrdersButton:hover {
     -fx-background-color: rgba(33, 150, 243, 1);
     -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.5), 10, 0, 0, 2);
     -fx-translate-y: -2px;
@@ -73,56 +98,33 @@
 
 #createOrderButton:pressed, #updateMenuButton:pressed, #viewReportsButton:pressed,
 #changeHomeBranchButton:pressed, #pendingOrdersButton:pressed, #registerUserButton:pressed,
-#loginButton:pressed, #connectButton:pressed, #quitButton:pressed {
+#loginButton:pressed, #connectButton:pressed, #quitButton:pressed, #myOrdersButton:pressed {
     -fx-background-color: rgba(33, 150, 243, 0.6);
     -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.3), 3, 0, 0, 0);
     -fx-translate-y: 1px;
 }
 
-/* Quit button (different color) */
-#quitButton {
-    -fx-background-color: rgba(244, 67, 54, 0.8);
+.button-container {
+    -fx-spacing: 20;
+    -fx-alignment: center;
 }
 
-#quitButton:hover {
-    -fx-background-color: rgba(244, 67, 54, 1);
+.button-column {
+    -fx-spacing: 20;
+    -fx-alignment: top-center;
 }
 
-#quitButton:pressed {
-    -fx-background-color: rgba(244, 67, 54, 0.6);
-}
+/* ClientLogin Styles */
+/* Styles specific to ClientLogin.fxml */
 
-/* Login page specific styles */
 .login-label {
     -fx-text-fill: white;
     -fx-font-size: 14px;
 }
 
-.text-field, .password-field {
-    -fx-background-color: rgba(255, 255, 255, 0.2);
-    -fx-text-fill: white;
-    -fx-font-size: 14px;
-    -fx-prompt-text-fill: rgba(255, 255, 255, 0.7);
-    -fx-border-color: rgba(255, 255, 255, 0.3);
-    -fx-border-width: 1px;
-    -fx-border-radius: 5px;
-    -fx-background-radius: 5px;
-    -fx-padding: 10px;
-}
+/* ClientConnect Styles */
+/* Styles specific to ClientConnect.fxml */
 
-.text-field:focused, .password-field:focused {
-    -fx-background-color: rgba(255, 255, 255, 0.3);
-    -fx-border-color: rgba(255, 255, 255, 0.5);
-}
-
-/* Error text style */
-#errorText, #ErrorTextConnect {
-    -fx-fill: #ff6b6b;
-    -fx-font-size: 14px;
-    -fx-font-weight: bold;
-}
-
-/* ClientConnect page specific styles */
 #serverIpTextField, #serverPortTextField {
     -fx-background-color: rgba(255, 255, 255, 0.2);
     -fx-text-fill: white;
@@ -141,8 +143,304 @@
     -fx-border-color: rgba(255, 255, 255, 0.5);
 }
 
-/* Style for the text above the input fields */
 .input-label {
     -fx-fill: white;
     -fx-font-size: 18px; 
 }
+
+/* RegisterUserPage Styles */
+/* Styles specific to RegisterUserPage.fxml */
+
+.register-user-page {
+    -fx-background-color: linear-gradient(to bottom right, #0f2027, #203a43, #2c5364);
+}
+
+.register-user-page .header {
+    -fx-background-color: rgba(255, 255, 255, 0.1);
+    -fx-padding: 15px 20px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.3), 0, 5, 0, 0);
+}
+
+.register-user-page .headline-text {
+    -fx-font-size: 35px;
+    -fx-font-weight: bold;
+    -fx-fill: white;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.8), 5, 0, 0, 2);
+}
+
+.register-user-page #welcomeText {
+    -fx-font-size: 18px;
+    -fx-font-style: italic;
+    -fx-fill: #d3d3d3;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.6), 3, 0, 0, 1);
+}
+
+.register-user-page #usernameField {
+    -fx-background-color: rgba(255, 255, 255, 0.2);
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-prompt-text-fill: rgba(255, 255, 255, 0.7);
+    -fx-border-color: rgba(255, 255, 255, 0.3);
+    -fx-border-width: 1px;
+    -fx-border-radius: 5px;
+    -fx-background-radius: 5px;
+    -fx-padding: 10px;
+}
+
+.register-user-page #usernameField:focused {
+    -fx-background-color: rgba(255, 255, 255, 0.3);
+    -fx-border-color: rgba(255, 255, 255, 0.5);
+}
+
+.register-user-page .home-button {
+    -fx-background-color: rgba(33, 150, 243, 0.8);
+    -fx-text-fill: white;
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-pref-width: 180px;
+    -fx-pref-height: 100px;
+    -fx-text-alignment: center;
+    -fx-alignment: center;
+    -fx-content-display: top;
+    -fx-graphic-text-gap: 10;
+    -fx-border-radius: 5px;
+    -fx-background-radius: 5px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.3), 5, 0, 0, 1);
+    -fx-cursor: hand;
+}
+
+.register-user-page .home-button:hover {
+    -fx-background-color: rgba(33, 150, 243, 1);
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.5), 10, 0, 0, 2);
+    -fx-translate-y: -2px;
+}
+
+.register-user-page .home-button:pressed {
+    -fx-background-color: rgba(33, 150, 243, 0.6);
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.3), 3, 0, 0, 0);
+    -fx-translate-y: 1px;
+}
+
+.register-user-page .logout-button {
+    -fx-background-color: rgba(244, 67, 54, 0.8);
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-padding: 8px 15px;
+    -fx-border-radius: 5px;
+    -fx-background-radius: 5px;
+    -fx-min-width: 100px;
+    -fx-min-height: 40px;
+    -fx-cursor: hand;
+}
+
+.register-user-page .logout-button:hover {
+    -fx-background-color: rgba(244, 67, 54, 1);
+}
+
+.register-user-page .logout-button:pressed {
+    -fx-background-color: rgba(244, 67, 54, 0.6);
+}
+
+.register-user-page #errorText {
+    -fx-fill: #ff6b6b;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+}
+
+/* Quit button (different color) */
+#quitButton {
+    -fx-background-color: rgba(244, 67, 54, 0.8);
+}
+
+#quitButton:hover {
+    -fx-background-color: rgba(244, 67, 54, 1);
+}
+
+#quitButton:pressed {
+    -fx-background-color: rgba(244, 67, 54, 0.6);
+}
+
+
+
+/* CustomerInformationUpdate Styles */
+/* Styles specific to CustomerInformationUpdate.fxml */
+
+.customer-information-update-page {
+    -fx-background-color: linear-gradient(to bottom right, #0f2027, #203a43, #2c5364);
+}
+
+.customer-information-update-page .header {
+    -fx-background-color: rgba(255, 255, 255, 0.1);
+    -fx-padding: 15px 20px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.3), 0, 5, 0, 0);
+    -fx-min-width: 100%;
+}
+
+.customer-information-update-page .headline-text {
+    -fx-font-size: 28px;
+    -fx-font-weight: bold;
+    -fx-fill: white;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.8), 5, 0, 0, 2);
+}
+
+.customer-information-update-page .instruction-text {
+    -fx-font-size: 18px;
+    -fx-fill: #d3d3d3;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.6), 3, 0, 0, 1);
+}
+
+.customer-information-update-page .warning-text {
+    -fx-font-size: 14px;
+    -fx-fill: #ff6b6b;
+    -fx-font-weight: bold;
+}
+
+.customer-information-update-page .label-text {
+    -fx-fill: white;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+}
+
+.customer-information-update-page .text-field,
+.customer-information-update-page .combo-box {
+    -fx-background-color: rgba(255, 255, 255, 0.2);
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-prompt-text-fill: rgba(255, 255, 255, 0.7);
+    -fx-border-color: rgba(255, 255, 255, 0.3);
+    -fx-border-width: 1px;
+    -fx-border-radius: 5px;
+    -fx-background-radius: 5px;
+    -fx-padding: 10px;
+}
+
+.customer-information-update-page .text-field:focused,
+.customer-information-update-page .combo-box:focused {
+    -fx-background-color: rgba(255, 255, 255, 0.3);
+    -fx-border-color: rgba(255, 255, 255, 0.5);
+}
+
+.customer-information-update-page .combo-box .arrow-button {
+    -fx-background-color: transparent;
+}
+
+.customer-information-update-page .combo-box .arrow {
+    -fx-background-color: white;
+}
+
+.customer-information-update-page .combo-box .list-cell {
+    -fx-background-color: transparent;
+    -fx-text-fill: white;
+}
+
+.customer-information-update-page .combo-box-popup .list-view {
+    -fx-background-color: rgba(15, 32, 39, 0.95);
+}
+
+.customer-information-update-page .combo-box-popup .list-cell {
+    -fx-background-color: transparent;
+    -fx-text-fill: white;
+}
+
+.customer-information-update-page .combo-box-popup .list-cell:hover {
+    -fx-background-color: rgba(255, 255, 255, 0.2);
+}
+
+.customer-information-update-page .error-text {
+    -fx-fill: #ff6b6b;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+}
+
+.customer-information-update-page .action-button {
+    -fx-background-color: rgba(33, 150, 243, 0.8);
+    -fx-text-fill: white;
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-border-radius: 5px;
+    -fx-background-radius: 5px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.3), 5, 0, 0, 1);
+    -fx-cursor: hand;
+}
+
+.customer-information-update-page .action-button:hover {
+    -fx-background-color: rgba(33, 150, 243, 1);
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.5), 10, 0, 0, 2);
+    -fx-translate-y: -2px;
+}
+
+.customer-information-update-page .action-button:pressed {
+    -fx-background-color: rgba(33, 150, 243, 0.6);
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.3), 3, 0, 0, 0);
+    -fx-translate-y: 1px;
+}
+
+.customer-information-update-page .logout-button {
+    -fx-background-color: rgba(244, 67, 54, 0.8);
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-padding: 8px 15px;
+    -fx-border-radius: 5px;
+    -fx-background-radius: 5px;
+}
+
+.customer-information-update-page .logout-button:hover {
+    -fx-background-color: rgba(244, 67, 54, 1);
+}
+
+/* End of CustomerInformationUpdate Styles */
+
+
+/* ActivationConfirmation Styles */
+/* Styles specific to ActivationConfirmation.fxml */
+
+.activation-confirmation-page {
+    -fx-background-color: linear-gradient(to bottom right, #0f2027, #203a43, #2c5364);
+}
+
+.activation-confirmation-page .header {
+    -fx-background-color: rgba(255, 255, 255, 0.1);
+    -fx-padding: 15px 20px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.3), 0, 5, 0, 0);
+    -fx-min-width: 100%;
+}
+
+.activation-confirmation-page .headline-text {
+    -fx-font-size: 28px;
+    -fx-font-weight: bold;
+    -fx-fill: white;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.8), 5, 0, 0, 2);
+}
+
+.activation-confirmation-page .info-text {
+    -fx-font-size: 18px;
+    -fx-fill: #d3d3d3;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.6), 3, 0, 0, 1);
+}
+
+.activation-confirmation-page .action-button {
+    -fx-background-color: rgba(33, 150, 243, 0.8);
+    -fx-text-fill: white;
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-border-radius: 5px;
+    -fx-background-radius: 5px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.3), 5, 0, 0, 1);
+    -fx-cursor: hand;
+}
+
+.activation-confirmation-page .action-button:hover {
+    -fx-background-color: rgba(33, 150, 243, 1);
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.5), 10, 0, 0, 2);
+    -fx-translate-y: -2px;
+}
+
+.activation-confirmation-page .action-button:pressed {
+    -fx-background-color: rgba(33, 150, 243, 0.6);
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.3), 3, 0, 0, 0);
+    -fx-translate-y: 1px;
+}
+
+/* End of ActivationConfirmation Styles */
