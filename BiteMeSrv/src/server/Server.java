@@ -167,10 +167,12 @@ public class Server extends AbstractServer {
             	sendMessageToClient(EnumClientOperations.DISHES_IN_ORDER, client, dishes);
             	break;
             case CHANGE_HOME_BRANCH:
-            	System.out.println(System.identityHashCode(client));
-            	System.out.println(areConnectionsEqual(clients.get("ben"),client));
             	boolean changeResult = userController.changeHomeBranch((User)message[1]);
             	sendMessageToClient(EnumClientOperations.CHANGE_HOME_BRANCH, client, changeResult);
+            	break;
+            case USERS_ORDERS:
+            	List<Order> orders = orderController.getOrdersByUsername((String)message[1]);
+            	sendMessageToClient(EnumClientOperations.CHANGE_HOME_BRANCH, client, orders);
             	break;
 			case NONE:
 				System.out.println("No operation was received");
