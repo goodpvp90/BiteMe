@@ -443,7 +443,7 @@ public class CustomerOrderGatherSelection {
 			showError("Please choose different delivery type.");
 			return;
 		} 
-		if((user.getType()!=EnumType.CUSTOMER || user.getCustomerType()!=EnumType.BUSINESS) && chooseOptionShared) {
+		if(user.getCustomerType()!=EnumType.BUSINESS && chooseOptionShared) {
 			showError("Only business users can choose shared delivery.\n Please choose different delivery type.");
 			return;
 		}
