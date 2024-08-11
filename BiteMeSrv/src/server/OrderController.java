@@ -47,8 +47,6 @@ public class OrderController {
             case COMPLETED:
             	//TO EXPLAIN WHEN COMPELED HAPPENS IF PICKUP OR DELIVERY
                 server.dbController.updateOrderReceiveTimeAndInsertDiscount(orderId, new Timestamp(System.currentTimeMillis()));
-                //LOGIC OF DISCOUNT TO INSERT INTO DB
-                notifyUser(orderId, msg);
             	break;
             }
             
