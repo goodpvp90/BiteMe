@@ -209,12 +209,6 @@ public class Client extends AbstractClient {
 			case USER:
 				handleLogin(message);
 	        	break;
-			case LOG_OUT:
-				// UPDATE HERE WHAT NEEDED, its here for example
-				// you receive object user if loggedout succesfully or string if not logged.
-	        	Object loggedoutuser = (Object)message[1];
-	        	//clientLoginController.updateUser(loggedoutuser);
-	        	break;
 			case INSERT_ORDER:
 				//HERE YOU RECEIVE BACK Order, and list of dishes in order.
 				//Object order = (Object)message[1];
@@ -327,6 +321,9 @@ public class Client extends AbstractClient {
             	break;           
             case CHANGE_HOME_BRANCH:
             	homeBranchChange.checkSuccessChangeHomeBranch((boolean)message[1]);
+            	break;
+            case INTERRUPT_ORDER_CREATION:
+            	//TODO OFEK DO SMTH
             	break;
             case SERVER_DISCONNECTED:
             	//TODO do smth
@@ -507,5 +504,13 @@ public class Client extends AbstractClient {
 	
 	public void getUsersOrders(String Username) {
 		sendMessageToServer(new Object[] { EnumServerOperations.USERS_ORDERS, Username});
+	}
+	//TODO OFEK
+	public void addClientInOrder() {
+		sendMessageToServer(new Object[] { EnumServerOperations.IN_ORDER_CREATION});
+	}
+	
+	public void removeClientInOrder() {
+		sendMessageToServer(new Object[] { EnumServerOperations.OUT_ORDER_CREATION});
 	}
 }

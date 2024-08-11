@@ -1,4 +1,4 @@
-	package server;
+package server;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -50,11 +50,9 @@ public class UserController {
 
         if (logoutSuccess) {
             user.setLogged(false);
-            server.sendMessageToClient(EnumClientOperations.LOG_OUT, client, logoutSuccess);
             server.removeFromClients(user.getUsername());
-        } else {
-            server.sendMessageToClient(EnumClientOperations.LOG_OUT, client, logoutSuccess);
         }
+
     }
     
     public void checkUserForCreation(ConnectionToClient client, String username) {
