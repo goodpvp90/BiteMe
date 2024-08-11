@@ -1,9 +1,11 @@
 package ClientGUI;
 
 import java.io.IOException;
+import java.net.ConnectException;
 
 import client.Client;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
@@ -42,17 +44,38 @@ public class ClientConnectController {
      *
      * @throws IOException If there's an error during the connection process
      */
-	@FXML
-	private void handleConnectButtonAction() throws IOException {
-		String serverIp = serverIpTextField.getText();
-		int serverPort = Integer.parseInt(serverPortTextField.getText());
-		System.out.println(serverPort);
+    @FXML
+    private void handleConnectButtonAction() {
+        String serverIp = serverIpTextField.getText();
+        int serverPort = Integer.parseInt(serverPortTextField.getText());
 
+        if (IPandPortLegal(serverIp, serverPort)) {
+            new Thread(() -> {
+                try {
+                	showError("Proccessing...");
+                    Client.initialize(serverIp, serverPort);
+                    Platform.runLater(() -> launchClientLoginUI());
+                } catch (IOException e) {
+                    Platform.runLater(() -> showError("Connection to server failed, please try again"));
+               
+                }
+            }).start();
+        } else {
+            showError("The IP address or port number is invalid. Please check and try again.");
+        }
+    }
 //		if (IPandPortLegal(serverIp, serverPort)) {
-			Client.initialize(serverIp, serverPort);
-			launchClientLoginUI();
+//			try {
+//			Client.initialize(serverIp, serverPort);
+//			}
+//			catch(ConnectException e) {
+//				showError("Connect to server port failed, please try again");
+//				return;
+//			}
+//
+//			launchClientLoginUI();
 //		}
-	}
+
 
     /**
      * Validates the IP address and port number entered by the user.
