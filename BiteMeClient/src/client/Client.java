@@ -428,12 +428,7 @@ public class Client extends AbstractClient {
 	}
 	
 	public void userLogout(User user, boolean kill) {
-		if(!kill) {
-			sendMessageToServer(new Object[] { EnumServerOperations.LOG_OUT, user });
-		}
-		else {
-			quit();
-		}
+		sendMessageToServer(new Object[] { EnumServerOperations.LOG_OUT, user, kill });
 	}
 	
 	public void getIncomeReport(IncomeReport report) {

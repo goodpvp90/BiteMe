@@ -50,10 +50,10 @@ public class UserController {
 
         if (logoutSuccess) {
             user.setLogged(false);
-            server.sendMessageToClient(EnumClientOperations.LOG_OUT, client, (Object) user);
+            server.sendMessageToClient(EnumClientOperations.LOG_OUT, client, logoutSuccess);
             server.removeFromClients(user.getUsername());
         } else {
-            server.sendMessageToClient(EnumClientOperations.LOG_OUT, client, "Failed to log out user.");
+            server.sendMessageToClient(EnumClientOperations.LOG_OUT, client, logoutSuccess);
         }
     }
     
