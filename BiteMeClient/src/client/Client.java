@@ -157,7 +157,6 @@ public class Client extends AbstractClient {
 		if (msg instanceof Object[]) {
 			Object[] message = (Object[]) msg;
 			operation = (EnumClientOperations) message[0];
-			System.out.println(operation);
 			switch (operation) {
 			case USERS_ORDERS:
 				List<Order> UserOrders = (List<Order>)message[1];
@@ -165,6 +164,7 @@ public class Client extends AbstractClient {
 					System.out.println(order);
 				}
 				myOrders.setOrders(UserOrders);
+			
 	            break;
 
 			case PENDING_ORDER:
@@ -187,7 +187,8 @@ public class Client extends AbstractClient {
 				case WORKER:
 					workerPendingOrders.SetDishInOrdersFromDB(dishes);
 					break;
-				case CUSTOMER://///////////////////////
+				case CUSTOMER:
+					myOrders.SetDishInOrdersFromDB(dishes);
 					break;
 				}
 	        	break;
