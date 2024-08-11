@@ -37,7 +37,7 @@ public class Server extends AbstractServer {
 	private UserController userController;
     //private Thread[] clientThreadList = getClientConnections();
     //private Map<String,ConnectionToClient> clients;
-	public Map<String, ConnectionToClient> clients = new ConcurrentHashMap<>();
+	public Map<String, ConnectionToClient> clients = new HashMap<>();
 
 	// Private constructor
 	public Server(int port, String url, String username, String password) {
