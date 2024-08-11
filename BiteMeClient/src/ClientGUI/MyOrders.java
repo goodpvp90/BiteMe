@@ -1,5 +1,7 @@
 package ClientGUI;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
@@ -16,15 +18,20 @@ import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 
 public class MyOrders {
 
@@ -41,15 +48,9 @@ public class MyOrders {
     @FXML
     private TableColumn<Order, Integer> orderIdColumn;
     @FXML
-    private TableColumn<Order, String> ordererColumn;
-    @FXML
     private TableColumn<Order, Timestamp> orderDateColumn;
     @FXML
-    private TableColumn<Order, Double> totalPriceColumn;
-    @FXML
-    private TableColumn<Order, Boolean> deliveryColumn;
-    @FXML
-    private TableColumn<Order, EnumOrderStatus> statusColumn;  
+    private TableColumn<Order, Double> totalPriceColumn; 
     @FXML
     private Button approveOrderButton;
     @FXML
@@ -62,17 +63,9 @@ public class MyOrders {
     	client = Client.getInstance();
     	client.getInstanceOfMyOrders(this);
         orderIdColumn.setCellValueFactory(new PropertyValueFactory<>("orderId"));
-        ordererColumn.setCellValueFactory(cellData -> {
-            String[] nameParts = cellData.getValue().getUsername().split(" ");
-            String firstName = nameParts.length > 0 ? nameParts[0] : "";
-            String lastName = nameParts.length > 1 ? nameParts[1] : "";
-            return new SimpleStringProperty(firstName + " " + lastName);
-        });
         orderDateColumn.setCellValueFactory(new PropertyValueFactory<>("orderDate"));
         totalPriceColumn.setCellValueFactory(new PropertyValueFactory<>("totalPrice"));
-        deliveryColumn.setCellValueFactory(new PropertyValueFactory<>("delivery"));
-        statusColumn.setCellValueFactory(new PropertyValueFactory<>("status"));
-
+        
     	
         TableColumn<Order, Void> expandColumn = new TableColumn<>("Expand");
         expandColumn.setCellFactory(param -> new TableCell<>() {
@@ -140,7 +133,16 @@ public class MyOrders {
     
     @FXML
     private void handleApproveOrderAction() {
- 		Order selectedOrder = orderTableView.getSelectionModel().getSelectedItem();
+    	OrderCompleteHandle(true);
+    }
+    
+    public void OrderCompleteHandle(boolean show) {
+    	Order selectedOrder = orderTableView.getSelectionModel().getSelectedItem();
+    	
+    	//if customer deserves compensation
+    	//if(show)
+    		showSorryForDelayDialog(selectedOrder);
+    	
         if (selectedOrder != null) {       	
         	client.updateOrderStatus(selectedOrder.getOrderId(),EnumOrderStatus.COMPLETED,"");        	
             readyOrders.remove(selectedOrder);
@@ -192,6 +194,11 @@ public class MyOrders {
         optionalPickColumn.setCellValueFactory(new PropertyValueFactory<>("optionalPick"));
         commentColumn.setCellValueFactory(new PropertyValueFactory<>("comment"));
         
+        // Set preferred width for the columns
+        nameColumn.setPrefWidth(100);
+        optionalPickColumn.setPrefWidth(100);
+        commentColumn.setPrefWidth(200);
+        
         dishTableView.getColumns().addAll(nameColumn, optionalPickColumn, commentColumn);
         
         // Set up the scene before fetching data
@@ -207,6 +214,25 @@ public class MyOrders {
         });
 
     }
+    private void showSorryForDelayDialog(Order selectedOrder) {
+    	double halfPrice = (selectedOrder.getTotalPrice())/2;
+    	BigDecimal compensation = new BigDecimal(halfPrice).setScale(2, RoundingMode.HALF_UP);
+	    Alert alert = new Alert(AlertType.INFORMATION);
+	    alert.initStyle(StageStyle.UTILITY);
+	    alert.setTitle("Order Delay");
+	    alert.setHeaderText(null);
+	    alert.setContentText("We're sorry for the delay.\n"
+	    		+ "You'll receive "+ compensation +" as compensation for your next order.");
+
+	    ButtonType okButton = new ButtonType("OK", ButtonData.OK_DONE);
+	    alert.getButtonTypes().setAll(okButton);
+
+	    alert.showAndWait().ifPresent(response -> {
+	        if (response == okButton) {
+				alert.close(); // Close the dialog window
+	        }
+	    });
+	}
     
     private void showError(String errmsg) {
 		errorText.setText(errmsg);

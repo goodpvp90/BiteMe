@@ -10,21 +10,18 @@
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600" prefWidth="800" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ClientGUI.MyOrders">
     <children>
-        <Label layoutX="330.0" layoutY="10.0" style="-fx-font-size: 24; -fx-font-weight: bold;" text="My Orders" textAlignment="CENTER">
+        <Label layoutX="330.0" layoutY="10.0" style="-fx-font-size: 24; -fx-font-weight: bold;" text="My Orders" textAlignment="CENTER" underline="true">
             <font>
                 <Font name="Aharoni Bold" size="28.0" />
             </font>
         </Label>
         <Button fx:id="backButton" layoutX="10.0" layoutY="10.0" onAction="#handleBackButtonAction" prefHeight="30.0" prefWidth="110.0" text="BACK" />
 
-        <TableView fx:id="orderTableView" layoutX="34.0" layoutY="61.0" prefHeight="400.0" prefWidth="732.0">
+        <TableView fx:id="orderTableView" layoutX="204.0" layoutY="55.0" prefHeight="400.0" prefWidth="391.0">
             <columns>
                 <TableColumn fx:id="orderIdColumn" prefWidth="50.0" text="ID" />
-                <TableColumn fx:id="ordererColumn" prefWidth="120.0" text="Orderer" />
                 <TableColumn fx:id="orderDateColumn" prefWidth="150.0" text="Order Date" />
                 <TableColumn fx:id="totalPriceColumn" prefWidth="100.0" text="Price" />
-                <TableColumn fx:id="deliveryColumn" prefWidth="100.0" text="Delivery" />
-                <TableColumn fx:id="statusColumn" prefWidth="110.0" text="Status" />
             </columns>
         </TableView>
         
@@ -33,9 +30,9 @@
                 <Font size="16.0" />
             </font>
         </Text>
-      <Button fx:id="approveOrderButton" layoutX="340.0" layoutY="489.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="119.0" text="Approved" onAction = "#handleApproveOrderAction">
+      <Button fx:id="approveOrderButton" layoutX="340.0" layoutY="491.0" mnemonicParsing="false" onAction="#handleApproveOrderAction" prefHeight="44.0" prefWidth="119.0" text="Confirm Order">
          <font>
-            <Font size="18.0" />
+            <Font size="14.0" />
          </font>
       </Button>
     </children>

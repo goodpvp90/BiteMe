@@ -58,7 +58,7 @@ public class Client extends AbstractClient {
 	private HomeBranchChange homeBranchChange;
 	private UserHomePageController userHomePageController;
 	private final Lock lock = new ReentrantLock();
-  private final Condition condition = lock.newCondition()
+	private final Condition condition = lock.newCondition();
 	private MyOrders myOrders;
 	// Constructor to initialize the client with host and port, and establish
 	// connection
