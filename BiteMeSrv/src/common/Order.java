@@ -24,7 +24,6 @@ public class Order implements Serializable {
     private Timestamp orderDate;
     private Timestamp orderRequestTime;
     private Timestamp orderReceiveTime;
-    private Timestamp orderFutureTime;
     private double totalPrice;
     private boolean delivery; ///////////////Choose supply method 0 pickup
     private EnumOrderStatus status;
@@ -113,14 +112,6 @@ public class Order implements Serializable {
 		this.orderReceiveTime = orderReceiveTime;
 	}
 	
-	public void setOrderFutureTime(Timestamp orderFutureTime) {
-		this.orderFutureTime = orderFutureTime;
-	}
-	
-	public Timestamp getOrderFutureTime() {
-		return orderFutureTime;
-	}
-
 	public double getTotalPrice() {
 		return totalPrice;
 	}
@@ -185,7 +176,6 @@ public class Order implements Serializable {
 	            ", branchId=" + branchId +
 	            ", orderDate=" + orderDate +
 	            ", orderRequestTime=" + orderRequestTime +
-	            ", orderFutureTime=" + orderFutureTime +
 	            ", totalPrice=" + totalPrice +
 	            ", delivery=" + delivery +
 	            ", status=" + status +

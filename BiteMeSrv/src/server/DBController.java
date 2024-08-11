@@ -411,7 +411,8 @@ public class DBController {
                 while (rs.next()) {
                     Order order = new Order(rs.getString("username"), rs.getInt("branch_id"),
                             rs.getTimestamp("order_date"), rs.getTimestamp("order_ready_time"), rs.getDouble("total_price"), rs.getBoolean("delivery"),EnumOrderStatus.valueOf(rs.getString("status")));
-
+                    order.setOrderId(rs.getInt("order_id"));
+                    order.setOrderReceiveTime(rs.getTimestamp("order_receive_time"));
                     orders.add(order);
                 }
             }
