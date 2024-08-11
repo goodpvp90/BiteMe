@@ -109,8 +109,7 @@ public class UserHomePageController {
     	default://if CEO or Branch Manager
             changeHomeBranchButton.setVisible(false);
             myOrdersButton.setVisible(false);
-    	}
-    	
+    	}	
         }
     	changeHelloTextAndHeadline();
 	}

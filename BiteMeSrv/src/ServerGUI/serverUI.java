@@ -9,11 +9,18 @@ import javafx.stage.Stage;
 public class serverUI extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
-        Parent root = FXMLLoader.load(getClass().getResource("server.fxml"));
-        Scene scene = new Scene(root, 700, 600);
+    	FXMLLoader loader = new FXMLLoader(getClass().getResource("server.fxml"));
+        Parent root = loader.load();
+        serverController controller = loader.getController();
+        Scene scene = new Scene(root);
         scene.getStylesheets().add(getClass().getResource("server.css").toExternalForm());
-        primaryStage.setTitle("Server GUI");
+        primaryStage.setTitle("Server");
         primaryStage.setScene(scene);
+        
+        primaryStage.setOnCloseRequest(event -> {
+            event.consume(); // Prevent the window from closing immediately
+            controller.closeApplication();
+        });
         primaryStage.show();
     }
 

@@ -167,10 +167,12 @@ public class Server extends AbstractServer {
             	sendMessageToClient(EnumClientOperations.DISHES_IN_ORDER, client, dishes);
             	break;
             case CHANGE_HOME_BRANCH:
-            	System.out.println(System.identityHashCode(client));
-            	System.out.println(areConnectionsEqual(clients.get("ben"),client));
             	boolean changeResult = userController.changeHomeBranch((User)message[1]);
             	sendMessageToClient(EnumClientOperations.CHANGE_HOME_BRANCH, client, changeResult);
+            	break;
+            case USERS_ORDERS:
+            	List<Order> orders = orderController.getOrdersByUsername((String)message[1]);
+            	sendMessageToClient(EnumClientOperations.USERS_ORDERS, client, orders);
             	break;
 			case NONE:
 				System.out.println("No operation was received");
@@ -237,6 +239,7 @@ public class Server extends AbstractServer {
 	@Override
 	protected void serverStopped() {
 		controller.updateStatus("Server has stopped listening for connections.");
+		dbController.resetAllUserLoggedStatus();
 		sendToAllClients(EnumClientOperations.SERVER_DISCONNECTED);
 		dbController.closeConnection();
 		reportController.shutdown();

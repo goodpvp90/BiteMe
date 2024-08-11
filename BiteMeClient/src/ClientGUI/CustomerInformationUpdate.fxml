@@ -4,45 +4,44 @@
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.VBox?>
-<?import javafx.scene.text.Font?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane prefHeight="750.0" prefWidth="700.0" stylesheets="@client.css" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ClientGUI.CustomerInformationUpdateController">
+<AnchorPane prefHeight="600.0" prefWidth="800.0" styleClass="blue-gradient-1, customer-information-update-page" stylesheets="@client.css" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ClientGUI.CustomerInformationUpdateController">
    <children>
-      <Button fx:id="backButton" layoutX="20.0" layoutY="20.0" minHeight="30.0" minWidth="70.0" mnemonicParsing="false" onAction="#handleBack" styleClass="logout-button" text="Back" />
+      <HBox alignment="CENTER_LEFT" spacing="20" styleClass="header" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <Text fx:id="headlineText" styleClass="headline-text" text="Customer Information Update" />
+         <HBox HBox.hgrow="ALWAYS" />
+         <Button fx:id="backButton" mnemonicParsing="false" onAction="#handleBack" styleClass="logout-button" text="Back" />
+      </HBox>
       
-      <VBox alignment="CENTER" layoutX="0.0" layoutY="60.0" prefWidth="700.0" spacing="20.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
-         <children>
-            <Text fx:id="headlineText" strokeType="OUTSIDE" strokeWidth="0.0" text="Customer Information Update">
-               <font>
-                  <Font size="36.0" />
-               </font>
-            </Text>
-            <Text layoutX="100.0" layoutY="150.0" text="Please enter the customer's information" textAlignment="CENTER" wrappingWidth="400.0">
-               <font>
-                  <Font size="18.0" />
-               </font>
-            </Text>
-            <Text fill="RED" layoutX="100.0" layoutY="180.0" text="*Please note, adding a credit card will change the status of the customer to Private" textAlignment="CENTER" wrappingWidth="400.0">
-               <font>
-                  <Font size="14.0" />
-               </font>
-            </Text>
-         </children>
-      </VBox>
-      <TextField fx:id="idField" layoutX="191.0" layoutY="250.0" maxWidth="323.0" prefHeight="48.0" prefWidth="323.0" promptText="ID" />
-      <TextField fx:id="firstNameField" layoutX="191.0" layoutY="310.0" maxWidth="323.0" prefHeight="48.0" prefWidth="323.0" promptText="First Name" />
-      <TextField fx:id="lastNameField" layoutX="191.0" layoutY="370.0" maxWidth="323.0" prefHeight="48.0" prefWidth="323.0" promptText="Last Name" />
-      <TextField fx:id="emailField" layoutX="191.0" layoutY="430.0" maxWidth="323.0" prefHeight="48.0" prefWidth="323.0" promptText="Email" />
-      <TextField fx:id="phoneNumberField" layoutX="191.0" layoutY="490.0" maxWidth="323.0" prefHeight="48.0" prefWidth="323.0" promptText="Phone Number" />
-      <TextField fx:id="creditCardField" layoutX="191.0" layoutY="607.0" maxWidth="323.0" prefHeight="48.0" prefWidth="323.0" promptText="Credit Card (optional)" />
-      <ComboBox fx:id="branchComboBox" layoutX="189.0" layoutY="550.0" maxWidth="323.0" prefHeight="48.0" prefWidth="323.0" promptText="Select Branch" />
-      <Text fx:id="errorText" fill="RED" layoutX="191.0" layoutY="680.0" strokeType="OUTSIDE" strokeWidth="0.0" textAlignment="CENTER" visible="false" wrappingWidth="323.0">
-         <font>
-            <Font size="14.0" />
-         </font>
-      </Text>
-      <Button fx:id="updateButton" layoutX="257.0" layoutY="696.0" mnemonicParsing="false" onAction="#handleUpdate" prefHeight="50.0" prefWidth="191.0" text="Activate Customer" />
+      <Text layoutX="23.0" layoutY="102.0" styleClass="instruction-text" text="Please enter the customer's information" textAlignment="CENTER" wrappingWidth="760.0" AnchorPane.leftAnchor="23.0" AnchorPane.rightAnchor="17.0" AnchorPane.topAnchor="82.576171875" />
+      
+      <Text layoutX="-1.0" layoutY="395.107421875" styleClass="warning-text" text="*Please note, adding a credit card will change the status of the customer to Private" textAlignment="CENTER" wrappingWidth="800.0" AnchorPane.leftAnchor="-1.0" AnchorPane.rightAnchor="1.0" AnchorPane.topAnchor="380.0" />
+      
+      <Text layoutX="31.0" layoutY="212.0" styleClass="label-text" text="ID:" AnchorPane.leftAnchor="31.0" AnchorPane.topAnchor="199.05078125" />
+      <TextField fx:id="idField" layoutX="116.0" layoutY="188.0" maxWidth="323.0" prefHeight="42.0" prefWidth="261.0" promptText="ID" AnchorPane.leftAnchor="116.0" AnchorPane.topAnchor="188.0" />
+      
+      <Text layoutX="30.0" layoutY="277.0" styleClass="label-text" text="First Name:" AnchorPane.leftAnchor="30.0" AnchorPane.topAnchor="264.05078125" />
+      <TextField fx:id="firstNameField" layoutX="116.0" layoutY="253.0" maxWidth="323.0" prefHeight="42.0" prefWidth="261.0" promptText="First Name" AnchorPane.leftAnchor="116.0" AnchorPane.topAnchor="253.0" />
+      
+      <Text layoutX="31.0" layoutY="340.0" styleClass="label-text" text="Last Name:" AnchorPane.leftAnchor="31.0" AnchorPane.topAnchor="327.05078125" />
+      <TextField fx:id="lastNameField" layoutX="116.0" layoutY="315.0" maxWidth="323.0" prefHeight="42.0" prefWidth="261.0" promptText="Last Name" AnchorPane.leftAnchor="116.0" AnchorPane.topAnchor="315.0" />
+      
+      <Text layoutX="396.0" layoutY="214.0" styleClass="label-text" text="Email:" AnchorPane.leftAnchor="396.0" AnchorPane.topAnchor="199.0" />
+      <TextField fx:id="emailField" layoutX="504.0" layoutY="187.0" maxWidth="323.0" prefHeight="42.0" prefWidth="261.0" promptText="Email" AnchorPane.leftAnchor="504.0" AnchorPane.topAnchor="187.0" />
+      
+      <Text layoutX="397.0" layoutY="288.0" styleClass="label-text" text="Phone Number:" AnchorPane.leftAnchor="397.0" AnchorPane.topAnchor="272.892578125" />
+      <TextField fx:id="phoneNumberField" layoutX="504.0" layoutY="252.0" maxWidth="323.0" prefHeight="42.0" prefWidth="261.0" promptText="Phone Number" AnchorPane.leftAnchor="504.0" AnchorPane.topAnchor="252.0" />
+      
+      <Text layoutX="400.0" layoutY="351.0" styleClass="label-text" text="Branch:" AnchorPane.leftAnchor="400.0" AnchorPane.topAnchor="335.892578125" />
+      <ComboBox fx:id="branchComboBox" layoutX="504.0" layoutY="310.0" maxWidth="323.0" prefHeight="50.0" prefWidth="261.0" promptText="Select Branch" AnchorPane.leftAnchor="504.0" AnchorPane.topAnchor="310.0" />
+      
+      <Text layoutX="207.0" layoutY="435.0" styleClass="label-text" text="Credit Card:" AnchorPane.leftAnchor="207.0" AnchorPane.topAnchor="419.892578125" />
+      <TextField fx:id="creditCardField" layoutX="296.0" layoutY="408.0" maxWidth="323.0" prefHeight="42.0" prefWidth="203.0" promptText="Credit Card (optional)" AnchorPane.leftAnchor="296.0" AnchorPane.topAnchor="408.0" />
+      
+      <Text fx:id="errorText" layoutX="33.0" layoutY="477.107421875" styleClass="error-text" textAlignment="CENTER" visible="false" wrappingWidth="709.0" AnchorPane.leftAnchor="33.0" AnchorPane.topAnchor="462.0" />
+      
+      <Button fx:id="updateButton" layoutX="305.0" layoutY="511.0" mnemonicParsing="false" onAction="#handleUpdate" prefHeight="50.0" prefWidth="191.0" styleClass="action-button" text="Activate Customer" AnchorPane.leftAnchor="305.0" AnchorPane.topAnchor="511.0" />
    </children>
 </AnchorPane>

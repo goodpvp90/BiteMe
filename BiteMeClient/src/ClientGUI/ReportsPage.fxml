@@ -17,13 +17,13 @@
       <Button fx:id="backButton" layoutX="20.0" layoutY="20.0" minHeight="30.0" minWidth="70.0" mnemonicParsing="false" onAction="#handleBackButton" styleClass="logout-button" text="Back" />
       
       <ComboBox fx:id="branchDropdown" layoutX="550.0" layoutY="20.0" promptText="Select Branch" />
+      <Text fx:id="headlineText" layoutX="280.0" layoutY="49.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Report Menu" textAlignment="CENTER">
+         <font>
+            <Font size="36.0" />
+         </font>
+      </Text>
       
-      <VBox alignment="TOP_CENTER" layoutX="0.0" layoutY="60.0" prefWidth="700.0" spacing="20" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
-         <Text fx:id="headlineText" strokeType="OUTSIDE" strokeWidth="0.0" text="Report Menu" textAlignment="CENTER">
-            <font>
-               <Font size="36.0" />
-            </font>
-         </Text>
+      <VBox alignment="CENTER" layoutY="102.0" prefWidth="700.0" spacing="20" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
          
          <GridPane fx:id="reportsGridPane" alignment="CENTER" hgap="20" vgap="20">
             <columnConstraints>

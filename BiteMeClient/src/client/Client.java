@@ -25,6 +25,7 @@ import ClientGUI.CustomerCheckout;
 import ClientGUI.CustomerInformationUpdateController;
 import ClientGUI.CustomerOrderCreation;
 import ClientGUI.HomeBranchChange;
+import ClientGUI.MyOrders;
 import ClientGUI.RegisterUserPageController;
 import ClientGUI.ReportsPageController;
 import ClientGUI.UpdateAddDish;
@@ -39,6 +40,7 @@ public class Client extends AbstractClient {
 	// Default port to connect to the server
 	final public static int DEFAULT_PORT = 8080;
 	private static Client instance;
+	private EnumPageForDishInOrder pageForDishInOrder;
 	// Controller for Client GUI functionality
 	
 	private ClientLoginController clientLoginController;
@@ -54,7 +56,8 @@ public class Client extends AbstractClient {
 	private HomeBranchChange homeBranchChange;
 	private UserHomePageController userHomePageController;
 	private final Lock lock = new ReentrantLock();
-    private final Condition condition = lock.newCondition();
+  private final Condition condition = lock.newCondition()
+	private MyOrders myOrders;
 	// Constructor to initialize the client with host and port, and establish
 	// connection
 	private Client(String host, int port) throws IOException {
@@ -151,6 +154,11 @@ public class Client extends AbstractClient {
 	        }
 	}
 	
+	public void getInstanceOfMyOrders(MyOrders myOrders) {
+		this.myOrders=myOrders;
+	}
+
+	
 	// Handle messages received from the server
 	@Override
 	protected void handleMessageFromServer(Object msg) {
@@ -159,10 +167,15 @@ public class Client extends AbstractClient {
 			Object[] message = (Object[]) msg;
 			operation = (EnumClientOperations) message[0];
 			switch (operation) {
-			case DISPLAY_ORDERS:
-				// Handle array of orders from the server
-	            Object[] orders = (Object[]) message[1];
+			case USERS_ORDERS:
+				List<Order> UserOrders = (List<Order>)message[1];
+				for (Order order :UserOrders) {
+					System.out.println(order);
+				}
+				myOrders.setOrders(UserOrders);
+			
 	            break;
+
 			case PENDING_ORDER:
 				@SuppressWarnings("unchecked")
 				List<Order> pendingOrders = (List<Order>)message[1];
@@ -179,7 +192,14 @@ public class Client extends AbstractClient {
 							"name: " + dishin.getDishName()+", Option: "+dishin.getOptionalPick()
 							+ ", comment: "+dishin.getComment());
 				}
-				workerPendingOrders.SetDishInOrdersFromDB(dishes);
+				switch(pageForDishInOrder) {
+				case WORKER:
+					workerPendingOrders.SetDishInOrdersFromDB(dishes);
+					break;
+				case CUSTOMER:
+					myOrders.SetDishInOrdersFromDB(dishes);
+					break;
+				}
 	        	break;
 			case USER:
 				handleLogin(message);
@@ -362,8 +382,14 @@ public class Client extends AbstractClient {
 		}
 	}
 	
-	public void sendShowDishesInOrder(int orderid) {
-	    //GET PENDING ORDERS
+	public enum EnumPageForDishInOrder{
+		WORKER,
+		CUSTOMER;
+	}
+	
+	public void sendShowDishesInOrder(int orderid, EnumPageForDishInOrder page) {
+		pageForDishInOrder = page;
+		//GET PENDING ORDERS
 		sendMessageToServer(new Object[] { EnumServerOperations.DISHES_IN_ORDER, orderid });
 	}
 	
@@ -464,5 +490,9 @@ public class Client extends AbstractClient {
 	
 	public void updateDish(Dish dish) {
 		sendMessageToServer(new Object[] { EnumServerOperations.UPDATE_DISH, dish });
+	}
+	
+	public void getUsersOrders(String Username) {
+		sendMessageToServer(new Object[] { EnumServerOperations.USERS_ORDERS, Username});
 	}
 }

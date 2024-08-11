@@ -5,6 +5,7 @@ import java.util.Comparator;
 import java.util.List;
 
 import client.Client;
+import client.Client.EnumPageForDishInOrder;
 import common.Dish;
 import common.DishInOrder;
 import common.EnumOrderStatus;
@@ -171,7 +172,7 @@ public class WorkerPendingOrders {
     
     // Create a new stage to show order details
     private void showOrderDetails(int orderID) {
-    	client.sendShowDishesInOrder(orderID); 
+    	client.sendShowDishesInOrder(orderID, EnumPageForDishInOrder.WORKER); 
     	Platform.runLater(() -> {
         Stage detailStage = new Stage();
         VBox vbox = new VBox();

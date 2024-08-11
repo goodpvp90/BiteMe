@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import client.Client;
+import client.Client.EnumPageForDishInOrder;
 import common.DishInOrder;
 import common.EnumOrderStatus;
 import common.Order;
@@ -29,8 +30,10 @@ public class MyOrders {
 
 	private Client client;
 	private User user = null;
-	List<Order> pendingOrders = new ArrayList<>();
+	List<Order> Orders = new ArrayList<>();
 	List<DishInOrder> PendingDishInOrders = new ArrayList<>();
+	List<Order> readyOrders = new ArrayList<>();
+
 	@FXML
     private Text errorText;
     @FXML
@@ -57,7 +60,7 @@ public class MyOrders {
     private void initialize() {
     	 // Set up the columns in the table
     	client = Client.getInstance();
-    	//client.setWorkerPendingOrders(this); //NEED TO GET CUSTOMER ORDERS
+    	client.getInstanceOfMyOrders(this);
         orderIdColumn.setCellValueFactory(new PropertyValueFactory<>("orderId"));
         ordererColumn.setCellValueFactory(cellData -> {
             String[] nameParts = cellData.getValue().getUsername().split(" ");
@@ -69,9 +72,7 @@ public class MyOrders {
         totalPriceColumn.setCellValueFactory(new PropertyValueFactory<>("totalPrice"));
         deliveryColumn.setCellValueFactory(new PropertyValueFactory<>("delivery"));
         statusColumn.setCellValueFactory(new PropertyValueFactory<>("status"));
-//        orderTableView.getSelectionModel().selectedItemProperty().addListener() -> {
-//        
-//        });
+
     	
         TableColumn<Order, Void> expandColumn = new TableColumn<>("Expand");
         expandColumn.setCellFactory(param -> new TableCell<>() {
@@ -106,10 +107,49 @@ public class MyOrders {
     public void setUser(User user) 
     {
         this.user = user;
+        OrdersLoader();
     }
     
+    public void setOrders(List<Order> DBOrderList) {
+    	Orders.clear();                            	 
+    	Orders = DBOrderList;
+    	Platform.runLater(() -> {FilterReadyOrder();});    
+    }
+    
+    public void SetDishInOrdersFromDB(List<DishInOrder> DBDishInOrdersList)
+	{
+    	PendingDishInOrders.clear();                            	 
+    	PendingDishInOrders = DBDishInOrdersList;   	
+	}
+    
+    public void OrdersLoader()
+    {    
+    	client.getUsersOrders(user.getUsername());
+	}
+    	 
+    public void FilterReadyOrder() {
+    	for(Order CurrentOrder:Orders) {
+    		if (CurrentOrder.getStatus()==(EnumOrderStatus.READY)) {
+    			readyOrders.add(CurrentOrder);
+    		}
+    	}
+    	orderTableView.getItems().addAll(readyOrders);
+    	
+    }
+    
+    
     @FXML
-    void handleApprovedButtonAction(ActionEvent event) {
+    private void handleApproveOrderAction() {
+ 		Order selectedOrder = orderTableView.getSelectionModel().getSelectedItem();
+        if (selectedOrder != null) {       	
+        	client.updateOrderStatus(selectedOrder.getOrderId(),EnumOrderStatus.COMPLETED,"");        	
+            readyOrders.remove(selectedOrder);
+            orderTableView.getItems().clear();
+        	orderTableView.getItems().addAll(readyOrders);
+            
+        }
+        else
+        	showError("Order selection error!!!");
     }
 
     
@@ -138,7 +178,7 @@ public class MyOrders {
     
     
     private void showOrderDetails(int orderID) {
-    	client.sendShowDishesInOrder(orderID); 
+    	client.sendShowDishesInOrder(orderID,EnumPageForDishInOrder.CUSTOMER); 
     	Platform.runLater(() -> {
         Stage detailStage = new Stage();
         VBox vbox = new VBox();

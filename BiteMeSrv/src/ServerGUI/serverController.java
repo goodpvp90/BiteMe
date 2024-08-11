@@ -159,11 +159,13 @@ public class serverController {
     // Quits the server and closes the application
     @FXML
     private void handleQuitButton(ActionEvent event) {
-        if (server != null) {
+    	safeClose();
+    }
+    
+    private void safeClose() {
+    	if (server != null) {
             try {
-            	resetAllUserLoggedStatus();
             	//So it wont close before resetting loggin of status
-            	Thread.sleep(10);
                 server.stopServer();
             } catch (Exception e) {
                 e.printStackTrace();
@@ -172,7 +174,7 @@ public class serverController {
         }
         Platform.exit();
     }
-
+    
     
     private String getIP() {
         try {
@@ -218,6 +220,9 @@ public class serverController {
         }
     }
     
+    public void closeApplication() {
+    	safeClose();
+    }
     
     
     // Receive instance of server and send for him this instance of controller
