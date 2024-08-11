@@ -1,6 +1,7 @@
 package common;
 
 public enum EnumClientOperations{
+	USERS_ORDERS,
 	UPDATE_WELOCME,
 	USER,
 	DISPLAY_ORDERS,

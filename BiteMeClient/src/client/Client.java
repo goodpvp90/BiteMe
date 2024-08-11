@@ -28,6 +28,7 @@ import ClientGUI.CustomerCheckout;
 import ClientGUI.CustomerInformationUpdateController;
 import ClientGUI.CustomerOrderCreation;
 import ClientGUI.HomeBranchChange;
+import ClientGUI.MyOrders;
 import ClientGUI.RegisterUserPageController;
 import ClientGUI.ReportsPageController;
 import ClientGUI.UpdateAddDish;
@@ -54,6 +55,7 @@ public class Client extends AbstractClient {
 	private UpdateAddDish updateAddDish;
 	private HomeBranchChange homeBranchChange;
 	private UserHomePageController userHomePageController;
+	private MyOrders myOrders;
 	// Constructor to initialize the client with host and port, and establish
 	// connection
 	private Client(String host, int port) throws IOException {
@@ -143,6 +145,11 @@ public class Client extends AbstractClient {
 		this.userHomePageController=userHomePageController;
 	}
 	
+	public void getInstanceOfMyOrders(MyOrders myOrders) {
+		this.myOrders=myOrders;
+	}
+
+	
 	// Handle messages received from the server
 	@Override
 	protected void handleMessageFromServer(Object msg) {
@@ -150,11 +157,16 @@ public class Client extends AbstractClient {
 		if (msg instanceof Object[]) {
 			Object[] message = (Object[]) msg;
 			operation = (EnumClientOperations) message[0];
+			System.out.println(operation);
 			switch (operation) {
-			case DISPLAY_ORDERS:
-				// Handle array of orders from the server
-	            Object[] orders = (Object[]) message[1];
+			case USERS_ORDERS:
+				List<Order> UserOrders = (List<Order>)message[1];
+				for (Order order :UserOrders) {
+					System.out.println(order);
+				}
+				myOrders.setOrders(UserOrders);
 	            break;
+
 			case PENDING_ORDER:
 				@SuppressWarnings("unchecked")
 				List<Order> pendingOrders = (List<Order>)message[1];
@@ -175,8 +187,7 @@ public class Client extends AbstractClient {
 				case WORKER:
 					workerPendingOrders.SetDishInOrdersFromDB(dishes);
 					break;
-				case CUSTOMER:
-					//ido
+				case CUSTOMER://///////////////////////
 					break;
 				}
 	        	break;
