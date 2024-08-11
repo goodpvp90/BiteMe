@@ -495,15 +495,7 @@ public class DBController {
                 stmt.setString(1, order.getUsername());
                 stmt.setInt(2, order.getBranchId());
                 stmt.setTimestamp(3, order.getOrderDate());
-                
-                
-                Timestamp orderRequestTime = order.getOrderRequestTime();
-                Calendar cal = Calendar.getInstance();
-                cal.setTimeInMillis(orderRequestTime.getTime());
-                cal.add(Calendar.MINUTE, 20);
-                Timestamp newOrderRequestTime = new Timestamp(cal.getTimeInMillis());
-                System.out.println("ASADASDASDASD"+newOrderRequestTime);
-                stmt.setTimestamp(4, newOrderRequestTime);
+                stmt.setTimestamp(4, order.getOrderRequestTime());
                 stmt.setTimestamp(5, order.getOrderReceiveTime());
                 stmt.setDouble(6, order.getTotalPrice());
                 stmt.setBoolean(7, order.isDelivery());

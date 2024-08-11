@@ -92,13 +92,16 @@ public class UserHomePageController {
             myOrdersButton.setVisible(false);
             
         } 
-    	else {switch(user.getType()) {
-    	//CEO AND BM Same buttons but other functionalities and roles.
+    	else {switch(user.getType()) {    	
+    	case CEO:
+    		updateMenuButton.setVisible(false);
+    		//pendingOrdersButton.setVisible(false);
+	        changeHomeBranchButton.setVisible(false);
+    		break;
     	case WORKER:
     		viewReportsButton.setVisible(false);
     		registerUserButton.setVisible(false);
 	        changeHomeBranchButton.setVisible(false);
-	        myOrdersButton.setVisible(false);
     		break;
     	case CUSTOMER:
     		viewReportsButton.setVisible(false);
@@ -108,7 +111,6 @@ public class UserHomePageController {
     		break;
     	default://if CEO or Branch Manager
             changeHomeBranchButton.setVisible(false);
-            myOrdersButton.setVisible(false);
     	}	
         }
     	changeHelloTextAndHeadline();
@@ -283,7 +285,17 @@ public class UserHomePageController {
                     userType = "Worker";
                     break;
                 case CUSTOMER:
-                	userType = "Customer";
+                	switch(user.getCustomerType()) {
+                	case BUSINESS:
+                		userType = "Business Customer";
+                        break;
+                	case PRIVATE: 
+                		userType = "Private Customer";
+                        break;
+                	default:
+                    	userType = "Customer";
+                        break;
+                	}
             }
         } 
         headlineText.setText(user.getUsername() + ", " + userType);
