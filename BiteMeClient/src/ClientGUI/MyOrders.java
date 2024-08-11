@@ -116,11 +116,19 @@ public class MyOrders {
 	}
     
     public void OrdersLoader()
-    {    
+    {
     	client.getUsersOrders(user.getUsername());
 	}
+    
+    @FXML
+    public void handleRefreshButton(ActionEvent event)
+    {
+    	orderTableView.getItems().clear();
+    	OrdersLoader();
+    }
     	 
     public void FilterReadyOrder() {
+    	readyOrders.clear();
     	for(Order CurrentOrder:Orders) {
     		if (CurrentOrder.getStatus()==(EnumOrderStatus.READY)) {
     			readyOrders.add(CurrentOrder);
@@ -133,14 +141,15 @@ public class MyOrders {
     
     @FXML
     private void handleApproveOrderAction() {
-    	OrderCompleteHandle(true);
+    	Order selectedOrder = orderTableView.getSelectionModel().getSelectedItem();
+    	sendOrderArriveOnTime(selectedOrder.getOrderId());
     }
     
     public void OrderCompleteHandle(boolean show) {
     	Order selectedOrder = orderTableView.getSelectionModel().getSelectedItem();
     	
     	//if customer deserves compensation
-    	//if(show)
+    	if(show)
     		showSorryForDelayDialog(selectedOrder);
     	
         if (selectedOrder != null) {       	

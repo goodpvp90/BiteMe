@@ -95,7 +95,7 @@ public class UserHomePageController {
     	else {switch(user.getType()) {    	
     	case CEO:
     		updateMenuButton.setVisible(false);
-    		pendingOrdersButton.setVisible(false);
+    		//pendingOrdersButton.setVisible(false);
 	        changeHomeBranchButton.setVisible(false);
     		break;
     	case WORKER:
