@@ -58,7 +58,7 @@ public class Client extends AbstractClient {
 	private HomeBranchChange homeBranchChange;
 	private UserHomePageController userHomePageController;
 	private final Lock lock = new ReentrantLock();
-  private final Condition condition = lock.newCondition()
+    private final Condition condition = lock.newCondition();
 	private MyOrders myOrders;
 	// Constructor to initialize the client with host and port, and establish
 	// connection
@@ -398,6 +398,10 @@ public class Client extends AbstractClient {
 		sendMessageToServer(new Object[] { EnumServerOperations.DISHES_IN_ORDER, orderid });
 	}
 	
+	public void sendOrderArriveOnTime(int orderId) {
+	    //GET PENDING ORDERS
+		sendMessageToServer(new Object[] { EnumServerOperations.ORDER_ON_TIME, orderId });
+	}
 	
 	public void sendShowPending(int branchId) {
 	    //GET PENDING ORDERS
@@ -433,15 +437,9 @@ public class Client extends AbstractClient {
 	}
 	
 	public void userLogout(User user, boolean kill) {
-		if(!kill) {
-			System.out.println("Here don't kill");
-			sendMessageToServer(new Object[] { EnumServerOperations.LOG_OUT, user });
-		}
-		else {
-			System.out.println("Here QUIT");
-			sendMessageToServer(new Object[] { EnumServerOperations.LOG_OUT, user });
+		sendMessageToServer(new Object[] { EnumServerOperations.LOG_OUT, user });
+		if (kill)
 			quit();
-		}
 	}
 	
 	public void getIncomeReport(IncomeReport report) {

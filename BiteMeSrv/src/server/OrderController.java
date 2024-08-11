@@ -37,15 +37,13 @@ public class OrderController {
             server.dbController.updateOrderStatus(orderId, status);            
             switch(status) {
             case IN_PROGRESS:
-                // Check if status is IN_PROGRESS and update the start time
-                server.dbController.updateOrderStartTime(orderId);
+                 server.dbController.updateOrderStartTime(orderId);
                 notifyUser(orderId, msg);
             	break;
             case READY:
                 notifyUser(orderId, msg);
             	break;
             case COMPLETED:
-            	//TO EXPLAIN WHEN COMPELED HAPPENS IF PICKUP OR DELIVERY
                 server.dbController.updateOrderReceiveTimeAndInsertDiscount(orderId, new Timestamp(System.currentTimeMillis()));
             	break;
             }
