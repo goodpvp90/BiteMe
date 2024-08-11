@@ -423,19 +423,21 @@ private void handleNoCompensationButton(ActionEvent event) {
 	}
 	
 	private void showConfirmationDialog() {
-	    Alert alert = new Alert(AlertType.INFORMATION);
+	    Alert alert = new Alert(Alert.AlertType.INFORMATION);
 	    alert.initStyle(StageStyle.UTILITY);
 	    alert.setTitle("Order Confirmation");
 	    alert.setHeaderText(null);
-	    alert.setContentText("Order Created successfully! You will receive an update soon.");
+	    alert.setContentText("Order created successfully! You will receive an update soon.");
 
 	    ButtonType okButton = new ButtonType("OK", ButtonData.OK_DONE);
 	    alert.getButtonTypes().setAll(okButton);
 
-	    alert.showAndWait().ifPresent(response -> {
+	    alert.showAndWait().ifPresentOrElse(response -> {
 	        if (response == okButton) {
 	            launchHomePage();
 	        }
+	    }, () -> {
+	        launchHomePage();  // Handle the X button press
 	    });
 	}
 	

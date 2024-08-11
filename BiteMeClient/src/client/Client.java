@@ -332,7 +332,7 @@ public class Client extends AbstractClient {
             	//TODO do smth
             	break;
             case ORDER_ON_TIME:
-            	myOrder.OrderCompleteHandle((boolean)message[1]);
+            	myOrders.OrderCompleteHandle((boolean)message[1]);
             	break;
 			case NONE:
 				System.out.println("no operation was received");

@@ -142,25 +142,23 @@ public class MyOrders {
     @FXML
     private void handleApproveOrderAction() {
     	Order selectedOrder = orderTableView.getSelectionModel().getSelectedItem();
-    	sendOrderArriveOnTime(selectedOrder.getOrderId());
+    	client.updateOrderStatus(selectedOrder.getOrderId(),EnumOrderStatus.COMPLETED,"");        	
+    	client.sendOrderArriveOnTime(selectedOrder.getOrderId());
     }
     
     public void OrderCompleteHandle(boolean show) {
     	Order selectedOrder = orderTableView.getSelectionModel().getSelectedItem();
-    	
     	//if customer deserves compensation
     	if(show)
     		showSorryForDelayDialog(selectedOrder);
     	
-        if (selectedOrder != null) {       	
-        	client.updateOrderStatus(selectedOrder.getOrderId(),EnumOrderStatus.COMPLETED,"");        	
+    	else {       	
             readyOrders.remove(selectedOrder);
             orderTableView.getItems().clear();
         	orderTableView.getItems().addAll(readyOrders);
             
         }
-        else
-        	showError("Order selection error!!!");
+   
     }
 
     
@@ -224,24 +222,34 @@ public class MyOrders {
 
     }
     private void showSorryForDelayDialog(Order selectedOrder) {
-    	double halfPrice = (selectedOrder.getTotalPrice())/2;
-    	BigDecimal compensation = new BigDecimal(halfPrice).setScale(2, RoundingMode.HALF_UP);
-	    Alert alert = new Alert(AlertType.INFORMATION);
-	    alert.initStyle(StageStyle.UTILITY);
-	    alert.setTitle("Order Delay");
-	    alert.setHeaderText(null);
-	    alert.setContentText("We're sorry for the delay.\n"
-	    		+ "You'll receive "+ compensation +" as compensation for your next order.");
+        
+        double halfPrice = (selectedOrder.getTotalPrice()) / 2;
+        BigDecimal compensation = new BigDecimal(halfPrice).setScale(2, RoundingMode.HALF_UP);
+        
+        Platform.runLater(() -> {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.initStyle(StageStyle.UTILITY);
+            alert.setTitle("Order Delay");
+            alert.setHeaderText(null);
+            alert.setContentText("We're sorry for the delay.\n"
+                    + "You'll receive " + compensation + " as compensation for your next order.");
 
-	    ButtonType okButton = new ButtonType("OK", ButtonData.OK_DONE);
-	    alert.getButtonTypes().setAll(okButton);
+            ButtonType okButton = new ButtonType("OK", ButtonData.OK_DONE);
+            alert.getButtonTypes().setAll(okButton);
 
-	    alert.showAndWait().ifPresent(response -> {
-	        if (response == okButton) {
-				alert.close(); // Close the dialog window
-	        }
-	    });
-	}
+            alert.showAndWait().ifPresentOrElse(response -> {
+                if (response == okButton) {
+                	readyOrders.remove(selectedOrder);
+                	orderTableView.getItems().clear();
+                	orderTableView.getItems().addAll(readyOrders); 
+                	}
+            }, () -> {
+            	readyOrders.remove(selectedOrder);
+            	orderTableView.getItems().clear(); 
+            	orderTableView.getItems().addAll(readyOrders);
+            	});
+        });
+    }
     
     private void showError(String errmsg) {
 		errorText.setText(errmsg);
