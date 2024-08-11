@@ -22,10 +22,11 @@
       
       <Button fx:id="viewReportsButton" layoutX="520.0" layoutY="211.0" mnemonicParsing="false" onAction="#handleViewReports" prefHeight="80.0" prefWidth="130.0" text="View&#10;Reports" />
       
-      <Button fx:id="changeHomeBranchButton" layoutX="150.0" layoutY="361.0" mnemonicParsing="false" onAction="#handleChangeHomeBranch" prefHeight="80.0" prefWidth="130.0" text="Change Home&#10;Branch" />
+      <Button fx:id="changeHomeBranchButton" layoutX="150.0" layoutY="337.0" mnemonicParsing="false" onAction="#handleChangeHomeBranch" prefHeight="80.0" prefWidth="130.0" text="Change Home&#10;Branch" />
       
-      <Button fx:id="pendingOrdersButton" layoutX="335.0" layoutY="361.0" mnemonicParsing="false" onAction="#handlePendingOrders" prefHeight="80.0" prefWidth="130.0" text="Pending&#10;Orders" />
+      <Button fx:id="pendingOrdersButton" layoutX="335.0" layoutY="337.0" mnemonicParsing="false" onAction="#handlePendingOrders" prefHeight="80.0" prefWidth="130.0" text="Pending&#10;Orders" />
       
-      <Button fx:id="registerUserButton" layoutX="520.0" layoutY="361.0" mnemonicParsing="false" onAction="#handleRegisterUser" prefHeight="80.0" prefWidth="130.0" text="Register&#10;User" />
+      <Button fx:id="registerUserButton" layoutX="520.0" layoutY="337.0" mnemonicParsing="false" onAction="#handleRegisterUser" prefHeight="80.0" prefWidth="130.0" text="Register&#10;User" />
+      <Button fx:id="myOrdersButton" layoutX="150.0" layoutY="462.0" mnemonicParsing="false" prefHeight="80.0" prefWidth="130.0" text="My Orders" onAction="#handleMyOrders" />
    </children>
 </AnchorPane>

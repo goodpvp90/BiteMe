@@ -55,6 +55,9 @@ public class UserHomePageController {
     private Button registerUserButton;
 
     @FXML
+    private Button myOrdersButton;
+    
+    @FXML
     private Text welcomeText;
     
     @FXML
@@ -86,20 +89,16 @@ public class UserHomePageController {
             pendingOrdersButton.setVisible(false);
             createOrderButton.setVisible(false);
             changeHomeBranchButton.setVisible(false);
+            myOrdersButton.setVisible(false);
+            
         } 
     	else {switch(user.getType()) {
     	//CEO AND BM Same buttons but other functionalities and roles.
-    	case CEO:
-            changeHomeBranchButton.setVisible(false);
-    		break;
-    	case BRANCH_MANAGER:
-            changeHomeBranchButton.setVisible(false);
-    		break;
     	case WORKER:
     		viewReportsButton.setVisible(false);
     		registerUserButton.setVisible(false);
-        changeHomeBranchButton.setVisible(false);
-
+	        changeHomeBranchButton.setVisible(false);
+	        myOrdersButton.setVisible(false);
     		break;
     	case CUSTOMER:
     		viewReportsButton.setVisible(false);
@@ -107,7 +106,11 @@ public class UserHomePageController {
     		updateMenuButton.setVisible(false);
     		pendingOrdersButton.setVisible(false);
     		break;
+    	default://if CEO or Branch Manager
+            changeHomeBranchButton.setVisible(false);
+            myOrdersButton.setVisible(false);
     	}
+    	
         }
     	changeHelloTextAndHeadline();
 	}
@@ -170,6 +173,18 @@ public class UserHomePageController {
         }
     }
 
+    @FXML
+    private void handleMyOrders(ActionEvent event) {
+    	try {
+    		MyOrdersUI UIMyOrderApp = new MyOrdersUI(user);
+    		UIMyOrderApp.start(new Stage());
+            Stage currentStage = (Stage) myOrdersButton.getScene().getWindow();
+            currentStage.hide();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    
     /**
      * Handles the update menu action.
      *
