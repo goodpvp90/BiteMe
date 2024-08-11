@@ -1,12 +1,9 @@
 package ClientGUI;
 import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
-
 import client.Client;
 import client.Client.EnumPageForDishInOrder;
-import common.Dish;
 import common.DishInOrder;
 import common.EnumOrderStatus;
 import common.Order;
@@ -26,10 +23,8 @@ import javafx.stage.StageStyle;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
-import javafx.scene.control.TextField;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonBar.ButtonData;
 import common.EnumBranch;
@@ -174,7 +169,7 @@ public class WorkerPendingOrders {
     
     // Create a new stage to show order details
     private void showOrderDetails(int orderID) {
-    	client.sendShowDishesInOrder(orderID, EnumPageForDishInOrder.WORKER); 
+    	client.sendShowDishesInOrder(orderID,EnumPageForDishInOrder.WORKER); 
     	Platform.runLater(() -> {
         Stage detailStage = new Stage();
         VBox vbox = new VBox();
@@ -318,4 +313,5 @@ public class WorkerPendingOrders {
     public void closeApplication() {
     	if (client != null) 
 			  client.userLogout(user, true);
+  }
 }

@@ -357,6 +357,7 @@ public class CustomerOrderCreation {
 	@FXML
 	private void handleBackButtonAction() {			
 	    try {
+	    	client.removeClientInOrder();
 	        // Retrieve the existing stage for UserHomePageUI
 	        Stage userHomePageStage = UserHomePageUI.getStage();
 
@@ -385,6 +386,7 @@ public class CustomerOrderCreation {
     
   //Making Quit Button to kill thread and send message to server
 	public void closeApplication() {
+		client.removeClientInOrder();
 		if (client != null) {
 			client.userLogout(user, true);
 		}

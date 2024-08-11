@@ -21,15 +21,12 @@ import common.Order;
 import common.OrdersReport;
 import common.PerformanceReport;
 import common.QuarterlyReport;
-import common.Restaurant.Location;
 import common.User;
 import ocsf.server.AbstractServer;
 import ocsf.server.ConnectionToClient;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
+
 
 public class Server extends AbstractServer {
-	private static Server instance;
 	public DBController dbController;
 	private serverController controller;
 	private ReportController reportController;
@@ -37,8 +34,9 @@ public class Server extends AbstractServer {
 	private UserController userController;
     //private Thread[] clientThreadList = getClientConnections();
     //private Map<String,ConnectionToClient> clients;
-	public Map<String, ConnectionToClient> clients = new HashMap<>();
-
+	private Map<String, ConnectionToClient> clients = new HashMap<>();
+	private List<ConnectionToClient> clientsInOrderCreation = new ArrayList<>();
+	
 	// Private constructor
 	public Server(int port, String url, String username, String password) {
 		super(port);
@@ -87,6 +85,12 @@ public class Server extends AbstractServer {
             case UPDATE_DISH:
                 boolean updateResult = orderController.updateDish((Dish) message[1]);
                 sendMessageToClient(EnumClientOperations.UPDATE_DISH, client, updateResult);
+            	break;
+            case IN_ORDER_CREATION:
+            	addClientToClientsInOrderCreation(client);
+            	break;
+            case OUT_ORDER_CREATION:
+            	removeClientsInOrderCreation(client);
             	break;
             case INSERT_ORDER:
                 // Extract data from the message
@@ -230,6 +234,19 @@ public class Server extends AbstractServer {
         return clients.get(key);
     }
     
+    public void addClientToClientsInOrderCreation(ConnectionToClient client) {
+    	clientsInOrderCreation.add(client);
+    }
+    
+    public void removeClientsInOrderCreation(ConnectionToClient client) {
+    	clientsInOrderCreation.remove(client);
+    }
+    
+    public void notifyUpdatedMenu() {
+    	for (ConnectionToClient c : clientsInOrderCreation)
+    		sendMessageToClient(EnumClientOperations.INTERRUPT_ORDER_CREATION, c, "STOP CREATING ORDER");
+    }
+    
 	@Override
 	protected void clientDisconnected(ConnectionToClient client) {
 		controller.displayClientDetails((new String[] { "Client disconnected: " + client }));
@@ -253,7 +270,6 @@ public class Server extends AbstractServer {
 		try {
 			stopListening();
 			close();
-			instance = null;
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
