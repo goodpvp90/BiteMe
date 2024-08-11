@@ -25,8 +25,8 @@
             </VBox>
             
             <VBox styleClass="button-column">
-               <Button fx:id="updateMenuButton" mnemonicParsing="false" onAction="#handleUpdateMenu" text="Update&#10;Menu" />
                <Button fx:id="pendingOrdersButton" mnemonicParsing="false" onAction="#handlePendingOrders" text="Pending&#10;Orders" />
+               <Button fx:id="updateMenuButton" mnemonicParsing="false" onAction="#handleUpdateMenu" text="Update&#10;Menu" />
             </VBox>
             
             <VBox styleClass="button-column">

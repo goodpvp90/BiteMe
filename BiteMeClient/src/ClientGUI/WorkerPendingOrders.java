@@ -315,5 +315,6 @@ public class WorkerPendingOrders {
   	    client.removeWorkerInPendingOrders(user);
     	if (client != null) 
 			  client.userLogout(user, true);
+    }
   }
-}
+
