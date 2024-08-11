@@ -435,7 +435,6 @@ public class Client extends AbstractClient {
 	public void userLogout(User user, boolean kill) {
 		if(!kill) {
 			System.out.println("Here don't kill");
-
 			sendMessageToServer(new Object[] { EnumServerOperations.LOG_OUT, user });
 		}
 		else {
