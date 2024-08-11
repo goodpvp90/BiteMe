@@ -41,7 +41,11 @@ public class CustomerCheckoutUI extends Application {
         if(date!=null) controller.setDate(date);
 
         
-        
+      //Handler for "X" button in the top screen
+        primaryStage.setOnCloseRequest(event -> {
+            event.consume(); // Prevent the window from closing immediately
+            controller.closeApplication();
+        });
         primaryStage.show();
     }
 

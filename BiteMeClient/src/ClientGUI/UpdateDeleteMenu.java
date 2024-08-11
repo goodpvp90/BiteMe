@@ -376,11 +376,9 @@ public class UpdateDeleteMenu {
 	
   //Making Quit Button to kill thread and send message to server
     public void closeApplication() {
-        if (client != null) {
-        	client.userLogout(user);
-            }
-        Platform.exit();
-        System.exit(0);
+		if (client != null) {
+			client.userLogout(user, true);
+		}
     }   
     
     private void showError(String errText) {
