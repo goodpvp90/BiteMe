@@ -2,31 +2,35 @@
 
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800" stylesheets="@client.css" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ClientGUI.UserHomePageController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" styleClass="blue-gradient-1" stylesheets="@client.css" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ClientGUI.UserHomePageController">
    <children>
-      <Button fx:id="logoutButton" layoutX="20.0" layoutY="20.0" minHeight="30.0" minWidth="70.0" mnemonicParsing="false" onAction="#handleLogout" text="Logout" />
-      
-      <VBox alignment="CENTER" layoutX="0.0" layoutY="60.0" prefWidth="700.0" spacing="10.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
-         <children>
-            <Text fx:id="headlineText" strokeType="OUTSIDE" strokeWidth="0.0" text="a, Manager" />
-            <Text fx:id="welcomeText" strokeType="OUTSIDE" strokeWidth="0.0" text="Hello nadir, what would you like to do?" />
-         </children>
+      <VBox spacing="20" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <HBox alignment="CENTER_LEFT" spacing="20" styleClass="header">
+            <Text fx:id="headlineText" text="" wrappingWidth="618.98291015625" />
+            <HBox HBox.hgrow="ALWAYS" />
+            <Button fx:id="logoutButton" mnemonicParsing="false" onAction="#handleLogout" text="Logout" />
+         </HBox>
+         
+         <Text fx:id="welcomeText" text="" textAlignment="CENTER" wrappingWidth="799.1875" />
+         
+         <VBox alignment="CENTER" spacing="20">
+            <HBox alignment="CENTER" spacing="20">
+               <Button fx:id="createOrderButton" mnemonicParsing="false" onAction="#handleCreateOrder" text="Create&#10;Order" />
+               <Button fx:id="updateMenuButton" mnemonicParsing="false" onAction="#handleUpdateMenu" text="Update&#10;Menu" />
+               <Button fx:id="viewReportsButton" mnemonicParsing="false" onAction="#handleViewReports" text="View&#10;Reports" />
+            </HBox>
+            
+            <HBox alignment="CENTER" spacing="20">
+               <Button fx:id="changeHomeBranchButton" mnemonicParsing="false" onAction="#handleChangeHomeBranch" text="Change Home&#10;Branch" />
+               <Button fx:id="pendingOrdersButton" mnemonicParsing="false" onAction="#handlePendingOrders" text="Pending&#10;Orders" />
+               <Button fx:id="registerUserButton" mnemonicParsing="false" onAction="#handleRegisterUser" text="Register&#10;User" />
+               <Button fx:id="myOrdersButton" layoutX="150.0" layoutY="462.0" mnemonicParsing="false" prefHeight="80.0" prefWidth="130.0" text="My Orders" onAction="#handleMyOrders" />
+            </HBox>
+         </VBox>
       </VBox>
-      
-      <Button fx:id="createOrderButton" layoutX="150.0" layoutY="211.0" mnemonicParsing="false" onAction="#handleCreateOrder" prefHeight="80.0" prefWidth="130.0" text="Create&#10;Order" />
-      
-      <Button fx:id="updateMenuButton" layoutX="335.0" layoutY="211.0" mnemonicParsing="false" onAction="#handleUpdateMenu" prefHeight="80.0" prefWidth="130.0" text="Update&#10;Menu" />
-      
-      <Button fx:id="viewReportsButton" layoutX="520.0" layoutY="211.0" mnemonicParsing="false" onAction="#handleViewReports" prefHeight="80.0" prefWidth="130.0" text="View&#10;Reports" />
-      
-      <Button fx:id="changeHomeBranchButton" layoutX="150.0" layoutY="337.0" mnemonicParsing="false" onAction="#handleChangeHomeBranch" prefHeight="80.0" prefWidth="130.0" text="Change Home&#10;Branch" />
-      
-      <Button fx:id="pendingOrdersButton" layoutX="335.0" layoutY="337.0" mnemonicParsing="false" onAction="#handlePendingOrders" prefHeight="80.0" prefWidth="130.0" text="Pending&#10;Orders" />
-      
-      <Button fx:id="registerUserButton" layoutX="520.0" layoutY="337.0" mnemonicParsing="false" onAction="#handleRegisterUser" prefHeight="80.0" prefWidth="130.0" text="Register&#10;User" />
-      <Button fx:id="myOrdersButton" layoutX="150.0" layoutY="462.0" mnemonicParsing="false" prefHeight="80.0" prefWidth="130.0" text="My Orders" onAction="#handleMyOrders" />
    </children>
 </AnchorPane>
