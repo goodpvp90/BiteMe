@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import client.Client;
+import client.Client.EnumPageForDishInOrder;
 import common.DishInOrder;
 import common.EnumOrderStatus;
 import common.Order;
@@ -29,7 +30,7 @@ public class MyOrders {
 
 	private Client client;
 	private User user = null;
-	List<Order> pendingOrders = new ArrayList<>();
+	List<Order> Orders = new ArrayList<>();
 	List<DishInOrder> PendingDishInOrders = new ArrayList<>();
 	@FXML
     private Text errorText;
@@ -106,6 +107,22 @@ public class MyOrders {
     public void setUser(User user) 
     {
         this.user = user;
+        OrdersLoader();
+
+    }
+    
+    public void setOrders(List<Order> DBOrderList) {
+    	Orders.clear();                            	 
+    	Orders = DBOrderList;
+    }
+    
+    public void OrdersLoader()
+    {    	
+        client.getUsersOrders(user.getUsername());
+        showError("hi"+user.getUsername());
+        Platform.runLater(() -> {
+    		orderTableView.getItems().addAll(Orders);   		 
+        	});
     }
     
     @FXML
@@ -138,7 +155,7 @@ public class MyOrders {
     
     
     private void showOrderDetails(int orderID) {
-    	client.sendShowDishesInOrder(orderID); 
+    	client.sendShowDishesInOrder(orderID,EnumPageForDishInOrder.CUSTOMER); 
     	Platform.runLater(() -> {
         Stage detailStage = new Stage();
         VBox vbox = new VBox();

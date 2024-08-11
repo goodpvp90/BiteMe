@@ -172,7 +172,7 @@ public class Server extends AbstractServer {
             	break;
             case USERS_ORDERS:
             	List<Order> orders = orderController.getOrdersByUsername((String)message[1]);
-            	sendMessageToClient(EnumClientOperations.CHANGE_HOME_BRANCH, client, orders);
+            	sendMessageToClient(EnumClientOperations.USERS_ORDERS, client, orders);
             	break;
 			case NONE:
 				System.out.println("No operation was received");
