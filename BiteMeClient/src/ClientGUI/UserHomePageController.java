@@ -95,14 +95,20 @@ public class UserHomePageController {
     	else {switch(user.getType()) {    	
     	case CEO:
     		updateMenuButton.setVisible(false);
-    		//pendingOrdersButton.setVisible(false);
+    		pendingOrdersButton.setVisible(false);
 	        changeHomeBranchButton.setVisible(false);
     		break;
     	case WORKER:
+    		updateMenuButton.setVisible(false);
     		viewReportsButton.setVisible(false);
     		registerUserButton.setVisible(false);
 	        changeHomeBranchButton.setVisible(false);
     		break;
+    	case QUALIFIED_WORKER:
+    		viewReportsButton.setVisible(false);
+    		registerUserButton.setVisible(false);
+	        changeHomeBranchButton.setVisible(false);
+	        break;
     	case CUSTOMER:
     		viewReportsButton.setVisible(false);
     		registerUserButton.setVisible(false);
@@ -284,6 +290,9 @@ public class UserHomePageController {
                     break;
                 case WORKER:
                     userType = "Worker";
+                    break;
+                case QUALIFIED_WORKER:
+                	userType = "Qualified Worker";
                     break;
                 case CUSTOMER:
                 	switch(user.getCustomerType()) {

@@ -313,5 +313,6 @@ public class WorkerPendingOrders {
     public void closeApplication() {
     	if (client != null) 
 			  client.userLogout(user, true);
+    }
   }
 }
