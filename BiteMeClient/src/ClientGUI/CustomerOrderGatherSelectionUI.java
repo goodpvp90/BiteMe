@@ -46,11 +46,15 @@ public class CustomerOrderGatherSelectionUI extends Application {
             CustomerOrderGatherSelection controller = loader.getController();
             if(user!=null) controller.setUser(user);
             if(orders!= null) controller.setDishesCount(orders);
-            //////////////////////////////////////////////////////
             if(param!=null) controller.setBooleanParam(param);
             if(contactInfo!=null) controller.setContactInfo(contactInfo);
             if(date!=null) controller.setDateInfo(date);
 
+          //Handler for "X" button in the top screen
+            primaryStage.setOnCloseRequest(event -> {
+                event.consume(); // Prevent the window from closing immediately
+                controller.closeApplication();
+            });
             
             primaryStage.show();
         } catch (Exception e) {

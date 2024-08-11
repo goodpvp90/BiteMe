@@ -450,6 +450,12 @@ private void handleNoCompensationButton(ActionEvent event) {
             showError("An error occurred while loading the User Home Page.");
         }
 	}
+	
+	public void closeApplication() {
+		if (client != null) {
+			client.userLogout(user, true);
+		};
+	}  
 	 
 	 
 	 

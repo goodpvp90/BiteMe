@@ -27,6 +27,7 @@ import ClientGUI.ClientLoginController;
 import ClientGUI.CustomerCheckout;
 import ClientGUI.CustomerInformationUpdateController;
 import ClientGUI.CustomerOrderCreation;
+import ClientGUI.CustomerOrderGatherSelection;
 import ClientGUI.HomeBranchChange;
 import ClientGUI.MyOrders;
 import ClientGUI.RegisterUserPageController;
@@ -45,6 +46,7 @@ public class Client extends AbstractClient {
 	// Controller for Client GUI functionality
 	private ClientLoginController clientLoginController;
 	private CustomerOrderCreation  CustomerOrderCreation;
+	private CustomerOrderGatherSelection customerOrderGatherSelection;
 	private Consumer<IncomeReport> pendingRevenueReportCallback;
 	private ReportsPageController reportsPageController;
 	private RegisterUserPageController registerUserPageController;
@@ -149,6 +151,9 @@ public class Client extends AbstractClient {
 		this.myOrders=myOrders;
 	}
 
+	public void getCustomerOrderGatherSelection(CustomerOrderGatherSelection customerOrderGatherSelection) {
+		this.customerOrderGatherSelection=customerOrderGatherSelection;
+	}
 	
 	// Handle messages received from the server
 	@Override
@@ -407,8 +412,17 @@ public class Client extends AbstractClient {
 		sendMessageToServer(new Object[] { EnumServerOperations.LOGIN, user });
 	}
 	
-	public void userLogout(User user) {
-		sendMessageToServer(new Object[] { EnumServerOperations.LOG_OUT, user });
+	public void userLogout(User user, boolean kill) {
+		if(!kill) {
+			System.out.println("Here don't kill");
+
+			sendMessageToServer(new Object[] { EnumServerOperations.LOG_OUT, user });
+		}
+		else {
+			System.out.println("Here QUIT");
+			sendMessageToServer(new Object[] { EnumServerOperations.LOG_OUT, user });
+			quit();
+		}
 	}
 	
 	public void getIncomeReport(IncomeReport report) {

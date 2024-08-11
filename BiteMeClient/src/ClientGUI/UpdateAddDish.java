@@ -219,14 +219,7 @@ public class UpdateAddDish {
 			showError("This dish type is not exist");
 		
 	}
-    //Making Quit Button to kill thread and send message to server
-    public void closeApplication() {
-        if (client != null) {
-        	client.userLogout(user);
-            }
-        Platform.exit();
-        System.exit(0);
-    }   
+  
     
     private int UserHomeBranchConvertToInt(EnumBranch enumGet)
     {
@@ -277,6 +270,13 @@ public class UpdateAddDish {
     	errorText.setText(errText);
     	errorText.setVisible(true);
     }
+    
+    //Making Quit Button to kill thread and send message to server
+    public void closeApplication() {
+    	if (client != null) {
+			client.userLogout(user, true);
+		};
+    } 
 	
   
     
