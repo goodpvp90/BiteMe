@@ -326,6 +326,10 @@ public class Client extends AbstractClient {
             	//TODO OFEK DO SMTH
             	userHomePageController.showCreateOrderDuringUpdateMenuDialog();
             	break;
+            case INTERRUPT_PENDING_ORDERS:
+            	//TODO OFEK DO SMTH
+            	System.out.println("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+            	break;
             case SERVER_DISCONNECTED:
             	//TODO do smth
             	break;
@@ -515,5 +519,13 @@ public class Client extends AbstractClient {
 	
 	public void removeClientInOrder() {
 		sendMessageToServer(new Object[] { EnumServerOperations.OUT_ORDER_CREATION});
+	}
+	
+	public void addWorkerInPendingOrders(User user) {
+		sendMessageToServer(new Object[] { EnumServerOperations.IN_PENDING_ORDERS, user});
+	}
+	
+	public void removeWorkerInPendingOrders(User user) {
+		sendMessageToServer(new Object[] { EnumServerOperations.OUT_PENDING_ORDERS});
 	}
 }

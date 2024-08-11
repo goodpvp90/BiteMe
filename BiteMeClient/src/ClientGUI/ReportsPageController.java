@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.util.List;
 
 import client.Client;
+import common.EnumBranch;
 import common.EnumType;
 import common.IncomeReport;
 import common.OrdersReport;
@@ -173,7 +174,7 @@ public class ReportsPageController {
             int month = monthDropdown.getSelectionModel().getSelectedIndex() + 1;
             int year = Integer.parseInt(yearStr);
          // Create an IncomeReport object
-            IncomeReport report = new IncomeReport(common.Restaurant.Location.valueOf(branch.toUpperCase()), month, year);
+            IncomeReport report = new IncomeReport(EnumBranch.valueOf(branch.toUpperCase()), month, year);
             revenueReportButton.setDisable(true);
             //Get Report from the client
             client.getIncomeReport(report);
@@ -259,7 +260,7 @@ public class ReportsPageController {
         try {
             int month = monthDropdown.getSelectionModel().getSelectedIndex() + 1;
             int year = Integer.parseInt(yearStr);
-            PerformanceReport report = new PerformanceReport(common.Restaurant.Location.valueOf(branch.toUpperCase()), month, year);
+            PerformanceReport report = new PerformanceReport(EnumBranch.valueOf(branch.toUpperCase()), month, year);
             // Don't disable the button here
             client.getPerformanceReport(report);
         } catch (NumberFormatException e) {
@@ -341,7 +342,7 @@ public class ReportsPageController {
         try {
             int month = monthDropdown.getSelectionModel().getSelectedIndex() + 1;
             int year = Integer.parseInt(yearStr);
-            OrdersReport report = new OrdersReport(common.Restaurant.Location.valueOf(branch.toUpperCase()), month, year);
+            OrdersReport report = new OrdersReport(EnumBranch.valueOf(branch.toUpperCase()), month, year);
             ordersReportButton.setDisable(true);
             client.getOrdersReport(report);
         } catch (NumberFormatException e) {
@@ -421,7 +422,7 @@ public class ReportsPageController {
         try {
             int quarter = Integer.parseInt(quarterStr);
             int year = Integer.parseInt(yearStr);
-            QuarterlyReport report = new QuarterlyReport(common.Restaurant.Location.valueOf(branch.toUpperCase()), quarter, year);
+            QuarterlyReport report = new QuarterlyReport(EnumBranch.valueOf(branch.toUpperCase()), quarter, year);
             client.getQuarterlyReport(report);
             System.out.println("Quarterly Report request sent to client");
         } catch (NumberFormatException e) {

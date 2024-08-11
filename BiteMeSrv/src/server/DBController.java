@@ -31,7 +31,6 @@ import common.Order;
 import common.OrdersReport;
 import common.PerformanceReport;
 import common.QuarterlyReport;
-import common.Restaurant.Location;
 import common.User;
 
 public class DBController {
@@ -963,7 +962,7 @@ public class DBController {
     }
     
     // Method to retrieve restaurant ID from its location
-    private int getRestaurantIdByLocation(Location location){
+    private int getRestaurantIdByLocation(EnumBranch location){
         String query = "SELECT branch_id FROM restaurants WHERE location = ?";
         try (PreparedStatement pstmt = connection.prepareStatement(query)) {
             pstmt.setString(1, location.toString());
@@ -1264,6 +1263,26 @@ public class DBController {
         return incomes;
     }
         
+    public EnumBranch getLocationByBranchId(int branchId) {
+    	EnumBranch branch = null;
+        String query = "SELECT location FROM restaurants WHERE branch_id = ?";
+        
+        try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            
+            preparedStatement.setInt(1, branchId);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            
+            if (resultSet.next()) {
+            	branch = EnumBranch.valueOf(resultSet.getString("location"));
+            }
+            
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        
+        return branch;
+    } 
+   
     public void savePendingNotification(String username, int orderId, String status) throws SQLException {
         String query = "INSERT INTO pendingnotifications (username, orderNumber, status) VALUES (?, ?, ?)";
         try (PreparedStatement stmt = connection.prepareStatement(query)) {

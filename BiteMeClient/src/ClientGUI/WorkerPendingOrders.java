@@ -289,7 +289,8 @@ public class WorkerPendingOrders {
   	// Goes back to the user's home page
   	@FXML
   	private void handleBackButtonAction() {    
-  	    try {
+  	    client.removeWorkerInPendingOrders(user);
+  		try {
   	        // Retrieve the existing stage for UserHomePageUI
   	        Stage userHomePageStage = UserHomePageUI.getStage();
 
@@ -311,6 +312,7 @@ public class WorkerPendingOrders {
     
  	//Making Quit Button to kill thread and send message to server
     public void closeApplication() {
+  	    client.removeWorkerInPendingOrders(user);
     	if (client != null) 
 			  client.userLogout(user, true);
     }
