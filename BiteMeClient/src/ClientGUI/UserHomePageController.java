@@ -362,6 +362,7 @@ public class UserHomePageController {
     //pop up window handler for a customer when a qualified worker changes the menu
     public void showCreateOrderDuringUpdateMenuDialog() {
         Platform.runLater(() -> {
+        	boolean MenuUpdateToCustomer = true;// Indicator for the helper method which window should open
             Alert alert = new Alert(AlertType.INFORMATION);
             alert.initStyle(StageStyle.UTILITY);
             alert.setTitle("Attention!");
@@ -373,27 +374,54 @@ public class UserHomePageController {
             alert.getButtonTypes().setAll(okButton);
             alert.showAndWait().ifPresentOrElse(response -> {
                 if (response == okButton) {
-                    // Handle OK button press
-                    closeCurrentWindowAndOpenNewOne();
+                    closeCurrentWindowAndOpenNewOne(MenuUpdateToCustomer);
                 }
             }, () -> {
-                // Handle the X button press
-                closeCurrentWindowAndOpenNewOne();
+                closeCurrentWindowAndOpenNewOne(MenuUpdateToCustomer);
+            });
+        });
+    }
+    
+  //pop up window handler for a worker viewing pending list when a customer creates a new order
+    public void showPendingOrderDuringOrderCreationDialog() {
+        Platform.runLater(() -> {
+        	boolean MenuUpdateToCustomer = false;// Indicator for the helper method which window should open
+            Alert alert = new Alert(AlertType.INFORMATION);
+            alert.initStyle(StageStyle.UTILITY);
+            alert.setTitle("Attention!");
+            alert.setHeaderText(null);
+            alert.setContentText("Looks like a customer created a new order!\n"
+                    + "Please press CONFIRM or close the dialog to reload the page.\n");
+            ButtonType okButton = new ButtonType("CONFIRM", ButtonData.OK_DONE);
+            alert.getButtonTypes().setAll(okButton);
+            alert.showAndWait().ifPresentOrElse(response -> {
+                if (response == okButton) {
+                    closeCurrentWindowAndOpenNewOne(MenuUpdateToCustomer);
+                }
+            }, () -> {
+                closeCurrentWindowAndOpenNewOne(MenuUpdateToCustomer);
             });
         });
     }
 
-    // Helper method to close the current window and open the new one for the pop up handler above
-    private void closeCurrentWindowAndOpenNewOne() {
+    // Helper method to close the current window and open the new one for the pop up handler 
+    private void closeCurrentWindowAndOpenNewOne(boolean popup) {
         try {
             // Close the current window
             Stage currentStage = (Stage) Stage.getWindows().stream().filter(Window::isShowing).findFirst().orElse(null);
             if (currentStage != null) {
                 currentStage.close();
             }
-            // Open the new window
-            CustomerOrderCreationUI custCreatApp = new CustomerOrderCreationUI(user, null);
-            custCreatApp.start(new Stage());
+            if(popup==true)//opens CustomerorderCreation
+            {
+            	CustomerOrderCreationUI custCreatApp = new CustomerOrderCreationUI(user, null);
+                custCreatApp.start(new Stage());
+            }
+            else//opens WorkerPendingOrders
+            {
+            	WorkerPendingOrdersUI pendingCreatApp = new WorkerPendingOrdersUI(user);
+            	pendingCreatApp.start(new Stage());
+            }        	
         } catch (Exception e) {
             e.printStackTrace();
         }
