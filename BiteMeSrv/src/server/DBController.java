@@ -48,6 +48,8 @@ public class DBController {
 		// Establish the connection
 		connection = DriverManager.getConnection(url, username, password);
 		System.out.println("Connected to the database successfully!");
+		
+		
 	}
 
 	public void closeConnection() {

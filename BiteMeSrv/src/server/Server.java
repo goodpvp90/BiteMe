@@ -37,7 +37,7 @@ public class Server extends AbstractServer {
 	private Map<String, ConnectionToClient> clients = new HashMap<>();
 	private List<ConnectionToClient> clientsInOrderCreation = new ArrayList<>();
 	
-	// Private constructor
+	
 	public Server(int port, String url, String username, String password) {
 		super(port);
 		dbController = new DBController();
@@ -49,7 +49,7 @@ public class Server extends AbstractServer {
 			dbController.connect(url, username, password);
 		} catch (ClassNotFoundException | SQLException e) {
 			System.out.println("Failed to connect to the database.");
-			e.printStackTrace();
+			throw new NullPointerException();
 		}
 	}
 

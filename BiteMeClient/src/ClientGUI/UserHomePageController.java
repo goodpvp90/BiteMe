@@ -363,14 +363,6 @@ public class UserHomePageController {
         });
      }
     
-//    /**
-//     * Logs out the user from the database.
-//     */
-//    public void logoutUser() {
-//        if (user != null && client != null) {
-//            client.userLogout(user);
-//        }
-//    }
     
     /**
      * Closes the application, ensuring proper logout and client shutdown.

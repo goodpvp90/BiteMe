@@ -27,7 +27,7 @@ public class CustomerOrderCreationUI extends Application {
         FXMLLoader loader = new FXMLLoader
         		(getClass().getResource("CustomerOrderCreation.fxml"));
         Parent root = loader.load();
-        primaryStage.setTitle("Customer Order Creation");
+        primaryStage.setTitle("Order Creation");
         
         /////set user transferred from home page////////
         CustomerOrderCreation controller = loader.getController();

@@ -12,7 +12,7 @@ public class serverUI extends Application {
     	FXMLLoader loader = new FXMLLoader(getClass().getResource("server.fxml"));
         Parent root = loader.load();
         serverController controller = loader.getController();
-        Scene scene = new Scene(root);
+        Scene scene = new Scene(root,800,600);
         scene.getStylesheets().add(getClass().getResource("server.css").toExternalForm());
         primaryStage.setTitle("Server");
         primaryStage.setScene(scene);
