@@ -4,18 +4,24 @@
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.paint.Color?>
+<?import javafx.scene.paint.LinearGradient?>
+<?import javafx.scene.paint.Stop?>
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane prefHeight="600" prefWidth="800" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ClientGUI.CustomerCheckout">
-    <Button fx:id="backButton" layoutX="10.0" layoutY="10.0" onAction="#handleBackButtonAction" prefHeight="30.0" prefWidth="110.0" text="BACK" />
-    <Button fx:id="confirmOrderButton" layoutX="655.0" layoutY="520.0" onAction="#handleConfirmOrderAction" prefHeight="48.0" prefWidth="129.0" text="CONFIRM ORDER" />
+<AnchorPane prefHeight="600" prefWidth="800" styleClass="customer-checkout-page" stylesheets="@client.css" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ClientGUI.CustomerCheckout">
+    <VBox spacing="20" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <HBox alignment="CENTER_LEFT" spacing="20" styleClass="header">
+            <Text fx:id="receiptText" text="Receipt" wrappingWidth="225.79052734375" />
+            <HBox HBox.hgrow="ALWAYS" />
+            <Button fx:id="backButton" mnemonicParsing="false" onAction="#handleBackButtonAction" prefHeight="36.0" prefWidth="88.0" text="BACK" />
+        </HBox>
+    </VBox>
     
-    <Text fx:id="receiptText" layoutX="330.0" layoutY="56.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Receipt">
-        <font>
-            <Font name="System Bold" size="40.0" />
-        </font>
-    </Text>
+    <Button fx:id="confirmOrderButton" layoutX="655.0" layoutY="520.0" onAction="#handleConfirmOrderAction" prefHeight="48.0" prefWidth="174.0" text="CONFIRM ORDER" />
     
     <Text fx:id="customerDetailsText" layoutX="28.0" layoutY="112.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Customer Details">
         <font>
@@ -25,9 +31,9 @@
     <Text fx:id="receiverNameLabel" fill="#0000007f" layoutX="28.0" layoutY="134.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Receiver Name: " />
     <Text fx:id="phoneNumberLabel" fill="#00000080" layoutX="29.0" layoutY="157.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Phone Number:" />
     <Text fx:id="deliveryAddressLabel" fill="#00000080" layoutX="28.0" layoutY="180.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Delivery Address:" />
-    <Text fx:id="receiverNameInfoText" layoutX="140.0" layoutY="134.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Receiver Name Info" wrappingWidth="163.95179748535156" />
-    <Text fx:id="phoneNumInfoText" layoutX="140.0" layoutY="157.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Phone Number Info" wrappingWidth="163.95179748535156" />
-    <Text fx:id="deliveryAddInfoText" layoutX="140.0" layoutY="180.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Delivery Address Info" wrappingWidth="163.95179748535156" />
+    <Text fx:id="receiverNameInfoText" fill="WHITE" layoutX="140.0" layoutY="134.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Receiver Name Info" wrappingWidth="163.95179748535156" />
+    <Text fx:id="phoneNumInfoText" fill="WHITE" layoutX="140.0" layoutY="157.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Phone Number Info" wrappingWidth="163.95179748535156" />
+    <Text fx:id="deliveryAddInfoText" fill="WHITE" layoutX="140.0" layoutY="180.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Delivery Address Info" wrappingWidth="163.95179748535156" />
     
     <Text fx:id="selectedItemsText" layoutX="28.0" layoutY="214.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Selected Items">
         <font>
@@ -62,9 +68,25 @@
     <Text fx:id="earlyLabel" fill="#0000007f" layoutX="493.0" layoutY="132.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Early Supply Time:" />
     <Text fx:id="sharedDeliveryLabel" fill="#0000007f" layoutX="493.0" layoutY="157.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Shared Delivery:" />
     <Text fx:id="lateOrderCompensationLabel" fill="#0000007f" layoutX="493.0" layoutY="182.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Late Order Compensation:" />
-    <Text fx:id="earlyInfoText" layoutX="640.0" layoutY="132.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Early Delivery Info" wrappingWidth="202.6184844970703" />
-    <Text fx:id="sharedDeliveryInfoText" layoutX="640.0" layoutY="157.0" strokeType="OUTSIDE" strokeWidth="0.0" text="User not eligible" wrappingWidth="184.8638916015625" />
-    <Text fx:id="lateOrderDeliveryInfoText" layoutX="640.0" layoutY="182.0" strokeType="OUTSIDE" strokeWidth="0.0" text="User not eligible" />
+    <Text fx:id="earlyInfoText" fill="WHITE" layoutX="640.0" layoutY="132.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Early Delivery Info" wrappingWidth="202.6184844970703" />
+    <Text fx:id="sharedDeliveryInfoText" layoutX="640.0" layoutY="157.0" strokeType="OUTSIDE" strokeWidth="0.0" text="User not eligible" wrappingWidth="184.8638916015625">
+      <fill>
+         <LinearGradient endX="1.0" endY="1.0">
+            <stops>
+               <Stop>
+                  <color>
+                     <Color red="1.0" green="1.0" blue="1.0" />
+                  </color>
+               </Stop>
+               <Stop offset="1.0">
+                  <color>
+                     <Color red="1.0" green="1.0" blue="1.0" />
+                  </color>
+               </Stop>
+            </stops>
+         </LinearGradient>
+      </fill></Text>
+    <Text fx:id="lateOrderDeliveryInfoText" fill="WHITE" layoutX="640.0" layoutY="182.0" strokeType="OUTSIDE" strokeWidth="0.0" text="User not eligible" />
     
     <Text fx:id="compensationText" fill="#2614ed" layoutX="493.0" layoutY="216.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Compensation" visible="false">
         <font>
@@ -74,10 +96,10 @@
     <Text fx:id="compensationMessageText" layoutX="493.0" layoutY="236.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Hello!&#10;we found you eligible for 50% off a compensation&#10;for a past late order.&#10;Would you like to use it?" visible="false" wrappingWidth="300.0" />
     <Button fx:id="yesButton" layoutX="493.0" layoutY="311.0" mnemonicParsing="false" onAction="#handleYesCompensationButton" text="Yes" visible="false" />
     <Button fx:id="noButton" layoutX="531.0" layoutY="311.0" mnemonicParsing="false" onAction="#handleNoCompensationButton" text="No" visible="false" />
-   <Text fx:id="compensationValueText" layoutX="493.0" layoutY="301.0" strokeType="OUTSIDE" strokeWidth="0.0" text="You got Text Compensation" visible="false" />
-   <Text fx:id="errorText" fill="RED" layoutX="530.0" layoutY="471.0" strokeType="OUTSIDE" strokeWidth="0.0" text="ErrorText" textAlignment="RIGHT" visible="false" wrappingWidth="300.0">
-      <font>
-         <Font size="14.0" />
-      </font>
-   </Text>
+    <Text fx:id="compensationValueText" layoutX="493.0" layoutY="301.0" strokeType="OUTSIDE" strokeWidth="0.0" text="You got Text Compensation" visible="false" />
+    <Text fx:id="errorText" fill="RED" layoutX="530.0" layoutY="471.0" strokeType="OUTSIDE" strokeWidth="0.0" text="ErrorText" textAlignment="RIGHT" visible="false" wrappingWidth="300.0">
+        <font>
+            <Font size="14.0" />
+        </font>
+    </Text>
 </AnchorPane>
