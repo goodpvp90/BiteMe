@@ -506,6 +506,7 @@ public class Client extends AbstractClient {
 	}
 	
 	public void getUsersOrders(String Username) {
+		System.out.println("1");
 		sendMessageToServer(new Object[] { EnumServerOperations.USERS_ORDERS, Username});
 	}
 	

@@ -22,9 +22,25 @@ public class OrderController {
 		this.notificationController = notificationController;
 		this.dbController = dbController;
 	}
-
+     
+    
+    public void handleInsertOrder(ConnectionToClient client, Object[] message) {
+    	// Extract data from the message
+        Order newOrder = (Order) message[1];
+        @SuppressWarnings("unchecked")
+		List<Dish> dishesInOrder = (List<Dish>) message[2];
+        // Call the method to create the order
+        try {
+        	boolean order = createOrder(newOrder, dishesInOrder, client);
+        	notificationController.notifyWorker(dbController.getLocationByBranchId(newOrder.getBranchId()));
+            server.sendMessageToClient(EnumClientOperations.INSERT_ORDER,client, order);
+        } catch (Exception e) {
+        	e.printStackTrace();;
+        }
+    }
+    
 	// Create a new order
-    public boolean createOrder(Order order, List<Dish> dishesInOrder, ConnectionToClient client) {
+    private boolean createOrder(Order order, List<Dish> dishesInOrder, ConnectionToClient client) {
         try {
             dbController.createOrder(order, dishesInOrder);
             return true;
@@ -34,8 +50,16 @@ public class OrderController {
         }
     }
 
+	public void handleUpdateOrderStatus(ConnectionToClient client, Object[] message) {
+        int orderId = (int) message[1];
+        EnumOrderStatus newStatus = (EnumOrderStatus) message[2];
+        String update_msg = (String)message[3];
+        boolean isDelivery = (boolean)message[4];
+        updateOrderStatus(orderId, newStatus, update_msg, isDelivery);
+	}   
+    
     // Update an existing order's status
-    public String updateOrderStatus(int orderId, EnumOrderStatus status, String msg, boolean isDelivery) {
+    private String updateOrderStatus(int orderId, EnumOrderStatus status, String msg, boolean isDelivery) {
         try {
             dbController.updateOrderStatus(orderId, status);            
             switch(status) {
@@ -51,6 +75,8 @@ public class OrderController {
                     notificationController.notifyUser(orderId, msg);
                 dbController.updateOrderReceiveTimeAndInsertDiscount(orderId, new Timestamp(System.currentTimeMillis()));
             	break;
+			default:
+				break;
             }
             
             return "Order status updated successfully";
@@ -60,55 +86,16 @@ public class OrderController {
         }
     }
 
-    // Retrieve orders for a specific username
-    public List<Order> getOrdersByUsername(String username) {
-        try {
-            return dbController.getOrdersByUsername(username);
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
-    // Retrieve pending orders for a specific branch
-    public List<Order> getPendingOrdersByBranch(int branchId) {
-        try {
-            return dbController.showPendingOrdersByBranch(branchId);
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
-
     // Retrieve dishes in a specific order
-    public List<DishInOrder> getDishesInOrder(int orderId) {
-        return dbController.getDishesInOrder(orderId);
-    }
-    
-    public boolean addDish(Dish dish) {
-    	boolean result = dbController.addDish(dish);
-    	if (result)
-    		notificationController.notifyUpdatedMenu();
-        return result;
-    }
-    
-    public boolean deleteDish(Dish dish) {
-    	boolean result =  dbController.deleteDish(dish);
-    	if (result)
-    		notificationController.notifyUpdatedMenu();
-    	return result;
-    }
-    
-    public boolean updateDish(Dish dish) {
-    	boolean result =  dbController.updateDish(dish);
-    	if (result)
-    		notificationController.notifyUpdatedMenu();
-    	return result;
-    }
+	public void handleDishesInOrder(ConnectionToClient client, Object[] message) {
+    	int orderid = (int)message[1];
+    	List<DishInOrder> dishes = dbController.getDishesInOrder(orderid);
+    	server.sendMessageToClient(EnumClientOperations.DISHES_IN_ORDER, client, dishes);
+	}   
 
-	public List<Dish> viewMenu(int menuId) {
-		List<Dish> menu = dbController.getMenu(menuId);
-		return menu;
-	}
+	public void handleOrderInTime(ConnectionToClient client, Object[] message) {
+    	int orderarriveid = (int)message[1];
+    	server.sendMessageToClient(EnumClientOperations.ORDER_ON_TIME, client, dbController.isOrderArrivedOnTime(orderarriveid));
+	}   
+
 }
