@@ -11,4 +11,3 @@ public enum EnumType{
 	BUSINESS,
 	PRIVATE;
 }
- 

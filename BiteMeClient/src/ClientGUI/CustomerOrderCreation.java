@@ -1,5 +1,4 @@
 package ClientGUI;
-import common.Restaurant.Location;
 import common.User;
 import common.EnumDish;
 import common.EnumServerOperations;
@@ -9,6 +8,7 @@ import common.DishBeverage;
 import common.DishDessert;
 import common.DishMainCourse;
 import common.DishSalad;
+import common.EnumBranch;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
@@ -43,7 +43,7 @@ public class CustomerOrderCreation {
 	public List<Dish> tempChosenItemsFromMenu = new ArrayList<>(); 
 	public List<Dish> ChosenItemsFromMenu = new ArrayList<>(); 
     @FXML
-    private ComboBox<Location> branchComboBox;
+    private ComboBox<EnumBranch> branchComboBox;
     @FXML
     private ComboBox<String> categoryComboBox;
     @FXML
@@ -79,7 +79,7 @@ public class CustomerOrderCreation {
     	// Initialize the client
         client = Client.getInstance();
         client.setCustomerOrderCreation(this);
-        branchComboBox.getItems().addAll(Location.values());
+        branchComboBox.getItems().addAll(EnumBranch.values());
         branchComboBox.setPromptText("Select a branch");
         branchComboBox.setOnAction(event -> handleBranchSelection());
         categoryComboBox.setItems(FXCollections.observableArrayList(
@@ -159,51 +159,51 @@ public class CustomerOrderCreation {
         if (user != null) {
         	if(ChosenItemsFromMenu.size()==0) {
             branchComboBox.setValue(UserHomeBranchToRestaurantBranch(user));
-            Location homeBranch = UserHomeBranchToRestaurantBranch(user);
+            EnumBranch homeBranch = UserHomeBranchToRestaurantBranch(user);
             branchComboBox.setValue(homeBranch);
             handleBranchSelection(); // Call to load the menu for the home branch
         	}
         	else {
-        		Location returnLocation = convertNumToLocation(ChosenItemsFromMenu.get(0).getMenuId());
+        		EnumBranch returnLocation = convertNumToLocation(ChosenItemsFromMenu.get(0).getMenuId());
                 branchComboBox.setValue(returnLocation);
                 ChosenItemsTableView.getItems().addAll(ChosenItemsFromMenu);
             	client.getViewMenu(EnumServerOperations.VIEW_MENU, ChosenItemsFromMenu.get(0).getMenuId());
         	}
         }
         else
-        {   branchComboBox.setValue(Location.SOUTH); // or any default location
+        {   branchComboBox.setValue(EnumBranch.SOUTH); // or any default location
     		showError("NO HOME BRANCH FOUND FOR USER");        
         }            
     }
     
     
-    private Location convertNumToLocation(int menuID) {
+    private EnumBranch convertNumToLocation(int menuID) {
     	switch(menuID)
     	{
     	case 1:
-    		return Location.NORTH;
+    		return EnumBranch.NORTH;
     	case 2:
-    		return Location.CENTER;
+    		return EnumBranch.CENTER;
     	case 3:
-    		return Location.SOUTH;	
+    		return EnumBranch.SOUTH;	
     	default:
-    		return Location.NORTH;
+    		return EnumBranch.NORTH;
     	}
     }
     	
     //Set the default home branch of the viewer as a default selected branch when ordering
-    private Location UserHomeBranchToRestaurantBranch(User user)
+    private EnumBranch UserHomeBranchToRestaurantBranch(User user)
     {
     	switch(user.getHomeBranch())
     	{
     	case NORTH:
-    		return Location.NORTH;
+    		return EnumBranch.NORTH;
     	case CENTER:
-    		return Location.CENTER;
+    		return EnumBranch.CENTER;
     	case SOUTH:
-    		return Location.SOUTH;	
+    		return EnumBranch.SOUTH;	
     	default:
-    		return Location.NORTH;
+    		return EnumBranch.NORTH;
     	}
     }
     
@@ -211,7 +211,7 @@ public class CustomerOrderCreation {
     public void handleBranchSelection() {
 
     	int MenuID=0;
-        Location selectedBranch = branchComboBox.getValue();
+    	EnumBranch selectedBranch = branchComboBox.getValue();
         if (selectedBranch != null) {
         	switch (selectedBranch)
         	{

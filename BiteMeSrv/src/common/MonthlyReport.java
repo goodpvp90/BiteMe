@@ -2,28 +2,26 @@ package common;
 
 import java.io.Serializable;
 
-import common.Restaurant.Location;
-
 public class MonthlyReport implements Serializable{
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private Location loc;
+	private EnumBranch loc;
     private int month;
     private int year;
     
-	public MonthlyReport(Location loc, int month, int year) {
+	public MonthlyReport(EnumBranch loc, int month, int year) {
 		this.loc = loc;
 		this.month = month;
 		this.year = year;
 	}
 
-	public Location getRestaurant() {
+	public EnumBranch getRestaurant() {
 		return loc;
 	}
 
-	public void setRestaurant(Location loc) {
+	public void setRestaurant(EnumBranch loc) {
 		this.loc = loc;
 	}
 
