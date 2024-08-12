@@ -28,7 +28,7 @@ public class UpdateDeleteMenuUI extends Application {
             if(user!=null) {controller.setUser(user); }            
             
             primaryStage.setScene(scene);
-            primaryStage.setTitle("Update/Delete Menu");
+            primaryStage.setTitle("Update Delete Menu");
             //Handler for "X" button in the top screen
             primaryStage.setOnCloseRequest(event -> {
                 event.consume(); // Prevent the window from closing immediately

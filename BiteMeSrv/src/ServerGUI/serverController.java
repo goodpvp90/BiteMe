@@ -48,48 +48,46 @@ public class serverController {
     // Initialize the serverGUI default values
     @FXML
     public void initialize() {
-        // Disable the disconnect and quit buttons initially, and update IP in text
-        disconnectButton.setDisable(true);
-        quitButton.setDisable(false);
         IPText.setText(getIP());
     }
 
-    // Starts up the server
-    @FXML
-    private void handleConnectButton(ActionEvent event) {
-        if (server == null) {
+	// Starts up the server
+	@FXML
+	private void handleConnectButton(ActionEvent event) {
+		try {
+			CheckLegalInput(portText.getText(), DBNameText.getText(), DBuser.getText(), DBPassword.getText());
+		} catch (IllegalArgumentException e) {
+			showError(e.getMessage());
+			return;
+		}
 
-          
-            try {
-            	CheckLegalInput(portText.getText(),DBNameText.getText(),DBuser.getText()
-            			,DBPassword.getText());
-			} catch (IllegalArgumentException e) {
-				showErrorOfWrongInput(e.getMessage());
-				return;
-			}
-            server = new Server(Integer.parseInt(portText.getText()), DBNameText.getText(), DBuser.getText(), DBPassword.getText());
-          server.setController(this);
-            //handle connection to server with legal input from text fields
-            // Making a thread to run in the background and listen for clients
-                try {
-                    server.listen();
-                    // run later is used to sync thread updates basically
-                    Platform.runLater(() -> {
-                        // Turns off and on the connect and disconnect buttons respectively
-                        connectButton.setDisable(true);
-                        disconnectButton.setDisable(false);
-                        quitButton.setDisable(false);
-                        hideErrorOfWrongInput();
-                    });
-                } catch (Exception e) {
-                    Platform.runLater(() -> {
-                        updateStatus("Failed to start server");
-                        e.printStackTrace();
-                    });
-                }
+		try {
+			server = new Server(Integer.parseInt(portText.getText()), DBNameText.getText(), DBuser.getText(),
+					DBPassword.getText());
+		} catch (NullPointerException e) {
+			Platform.runLater(() -> showError("Error! Failed connecting to the Database!"));
+			return;
+		}
 
-        }
-    }
+		server.setController(this);
+
+		// handle connection to server with legal input from text fields
+		// Making a thread to run in the background and listen for clients
+		try {
+			server.listen();
+			// run later is used to sync thread updates basically
+			Platform.runLater(() -> {
+				// Turns off and on the connect and disconnect buttons respectively
+				connectButton.setDisable(true);
+				disconnectButton.setDisable(false);
+				quitButton.setDisable(false);
+				hideErrorOfWrongInput();
+			});
+		} catch (Exception e) {
+			showError("Port already taken");
+		}
+
+	}
 
     //Receive text from UI screen about Port number, DB name, DB user, DB password and
     //check their correctness to required format 
@@ -127,7 +125,7 @@ public class serverController {
     //When error occurred on input of wrong data in the text field this error
     //will appear
     //
-    public void showErrorOfWrongInput(String message) {
+    public void showError(String message) {
     	ErrorServerInput.setText(message);
     	ErrorServerInput.setVisible(true);
     }
@@ -173,6 +171,7 @@ public class serverController {
             }
         }
         Platform.exit();
+		Platform.runLater(() -> {System.exit(0);});
     }
     
     
@@ -220,6 +219,7 @@ public class serverController {
         }
     }
     
+    //if pressed on window 'X'
     public void closeApplication() {
     	safeClose();
     }
