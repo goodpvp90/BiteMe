@@ -8,9 +8,15 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.Month;
+import java.time.YearMonth;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import client.Client;
+import common.EnumBranch;
 import common.EnumType;
 import common.IncomeReport;
 import common.OrdersReport;
@@ -18,6 +24,7 @@ import common.PerformanceReport;
 import common.QuarterlyReport;
 import common.User;
 import javafx.application.Platform;
+import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -56,11 +63,25 @@ public class ReportsPageController {
      * Initializes the controller. This method is automatically called
      * after the FXML file has been loaded.
      */
+    @FXML
     public void initialize() {
         client = Client.getInstance();
         client.setReportsPageController(this);
         setupDropdowns();
         clearErrorMessage();
+
+        // Add listeners to year dropdowns
+        yearDropdown.getSelectionModel().selectedItemProperty().addListener((options, oldValue, newValue) -> {
+            if (newValue != null) {
+                updateMonthDropdown();
+            }
+        });
+
+        quarterYearDropdown.getSelectionModel().selectedItemProperty().addListener((options, oldValue, newValue) -> {
+            if (newValue != null) {
+                updateQuarterDropdown();
+            }
+        });
     }
     
     /**
@@ -81,7 +102,12 @@ public class ReportsPageController {
             branchDropdown.setValue(user.getHomeBranch().toString());
             branchDropdown.setDisable(true);
         } else if (user.getType() == EnumType.CEO) {
-            branchDropdown.getItems().addAll("North", "Center", "South");
+            branchDropdown.getItems().clear();
+            branchDropdown.getItems().addAll(
+                Arrays.stream(EnumBranch.values())
+                    .map(Enum::toString)
+                    .collect(Collectors.toList())
+            );
             branchDropdown.setDisable(false);
         }
     }
@@ -110,11 +136,86 @@ public class ReportsPageController {
      * Sets up the dropdown menus with appropriate values.
      */
     private void setupDropdowns() {
-        monthDropdown.getItems().addAll("January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December");
-        yearDropdown.getItems().addAll("2023", "2024", "2025");
-        quarterDropdown.getItems().addAll("1", "2", "3", "4");
-        quarterYearDropdown.getItems().addAll("2023", "2024", "2025");
+        LocalDate currentDate = LocalDate.now();
+        int currentYear = currentDate.getYear();
+        int currentMonth = currentDate.getMonthValue();
+        
+        // Setup month dropdown
+        monthDropdown.getItems().clear();
+        for (Month month : Month.values()) {
+            monthDropdown.getItems().add(month.toString());
+        }
+
+        // Setup year dropdowns
+        yearDropdown.getItems().clear();
+        quarterYearDropdown.getItems().clear();
+        yearDropdown.getItems().addAll(String.valueOf(currentYear - 1), String.valueOf(currentYear));
+        quarterYearDropdown.getItems().addAll(String.valueOf(currentYear - 1), String.valueOf(currentYear));
+
+        // Setup quarter dropdown
+        quarterDropdown.getItems().clear();
+        for (int i = 1; i <= 4; i++) {
+            quarterDropdown.getItems().add(String.valueOf(i));
+        }
+
+        // Disable future months and quarters
+        monthDropdown.setOnShowing(event -> updateMonthDropdown());
+        quarterDropdown.setOnShowing(event -> updateQuarterDropdown());
+        
+        yearDropdown.setOnAction(event -> updateMonthDropdown());
+        quarterYearDropdown.setOnAction(event -> updateQuarterDropdown());
     }
+    
+    private void updateMonthDropdown() {
+        if (yearDropdown.getValue() == null) return;
+
+        int selectedYear = Integer.parseInt(yearDropdown.getValue());
+        LocalDate currentDate = LocalDate.now();
+        int currentYear = currentDate.getYear();
+        int currentMonth = currentDate.getMonthValue();
+
+        if (selectedYear < currentYear) {
+            // Show all months for past years
+            monthDropdown.setItems(FXCollections.observableArrayList(
+                Arrays.stream(Month.values())
+                    .map(Month::toString)
+                    .collect(Collectors.toList())));
+        } else if (selectedYear == currentYear) {
+            // Show months up to the current month for the current year
+            monthDropdown.setItems(FXCollections.observableArrayList(
+                Arrays.stream(Month.values())
+                    .filter(month -> month.getValue() < currentMonth)
+                    .map(Month::toString)
+                    .collect(Collectors.toList())));
+        } else {
+            // Clear the dropdown for future years
+            monthDropdown.getItems().clear();
+        }
+    }
+
+    private void updateQuarterDropdown() {
+        if (quarterYearDropdown.getValue() == null) return;
+
+        int selectedYear = Integer.parseInt(quarterYearDropdown.getValue());
+        LocalDate currentDate = LocalDate.now();
+        int currentYear = currentDate.getYear();
+        int currentQuarter = (currentDate.getMonthValue() - 1) / 3 + 1;
+
+        if (selectedYear < currentYear) {
+            // Show all quarters for past years
+            quarterDropdown.setItems(FXCollections.observableArrayList("1", "2", "3", "4"));
+        } else if (selectedYear == currentYear) {
+            // Show quarters up to the current quarter for the current year
+            quarterDropdown.setItems(FXCollections.observableArrayList(
+                java.util.stream.IntStream.rangeClosed(1, currentQuarter)
+                    .mapToObj(String::valueOf)
+                    .toList()));
+        } else {
+            // Clear the dropdown for future years
+            quarterDropdown.getItems().clear();
+        }
+    }
+    
 
     /**
      * Handles the back button action, returning to the User Home Page.
@@ -173,7 +274,7 @@ public class ReportsPageController {
             int month = monthDropdown.getSelectionModel().getSelectedIndex() + 1;
             int year = Integer.parseInt(yearStr);
          // Create an IncomeReport object
-            IncomeReport report = new IncomeReport(common.Restaurant.Location.valueOf(branch.toUpperCase()), month, year);
+            IncomeReport report = new IncomeReport(EnumBranch.valueOf(branch.toUpperCase()), month, year);
             revenueReportButton.setDisable(true);
             //Get Report from the client
             client.getIncomeReport(report);
@@ -259,7 +360,7 @@ public class ReportsPageController {
         try {
             int month = monthDropdown.getSelectionModel().getSelectedIndex() + 1;
             int year = Integer.parseInt(yearStr);
-            PerformanceReport report = new PerformanceReport(common.Restaurant.Location.valueOf(branch.toUpperCase()), month, year);
+            PerformanceReport report = new PerformanceReport(EnumBranch.valueOf(branch.toUpperCase()), month, year);
             // Don't disable the button here
             client.getPerformanceReport(report);
         } catch (NumberFormatException e) {
@@ -341,7 +442,7 @@ public class ReportsPageController {
         try {
             int month = monthDropdown.getSelectionModel().getSelectedIndex() + 1;
             int year = Integer.parseInt(yearStr);
-            OrdersReport report = new OrdersReport(common.Restaurant.Location.valueOf(branch.toUpperCase()), month, year);
+            OrdersReport report = new OrdersReport(EnumBranch.valueOf(branch.toUpperCase()), month, year);
             ordersReportButton.setDisable(true);
             client.getOrdersReport(report);
         } catch (NumberFormatException e) {
@@ -421,7 +522,17 @@ public class ReportsPageController {
         try {
             int quarter = Integer.parseInt(quarterStr);
             int year = Integer.parseInt(yearStr);
-            QuarterlyReport report = new QuarterlyReport(common.Restaurant.Location.valueOf(branch.toUpperCase()), quarter, year);
+
+            // Check if the selected quarter has ended
+            LocalDate currentDate = LocalDate.now();
+            LocalDate quarterEndDate = YearMonth.of(year, quarter * 3).atEndOfMonth();
+
+            if (quarterEndDate.isAfter(currentDate)) {
+                showErrorMessage("The selected quarter has not ended yet. Please choose a completed quarter.");
+                return;
+            }
+
+            QuarterlyReport report = new QuarterlyReport(EnumBranch.valueOf(branch.toUpperCase()), quarter, year);
             client.getQuarterlyReport(report);
             System.out.println("Quarterly Report request sent to client");
         } catch (NumberFormatException e) {
@@ -433,7 +544,7 @@ public class ReportsPageController {
     public void handleQuarterlyReportResponse(QuarterlyReport qreport, List<Double> monthlyIncomes) {
         System.out.println("Received quarterly report response");
         Platform.runLater(() -> {
-            if (qreport != null && monthlyIncomes != null && monthlyIncomes.size() == 3) {
+            if (qreport != null && monthlyIncomes != null) {
                 openQuarterlyReportWindow(qreport, monthlyIncomes);
             } else {
                 showErrorMessage("Invalid data received for quarterly report.");
@@ -449,8 +560,16 @@ public class ReportsPageController {
             Parent root = loader.load();
             QuarterlyReportController controller = loader.getController();
             controller.setReportData(report, this, monthlyIncomes);
+            
             Stage stage = new Stage();
             stage.setScene(new Scene(root));
+            
+            // Call the updateWindowTitle method
+            controller.updateWindowTitle();
+            
+            // Set up the close handler
+            controller.setupCloseHandler();
+
             stage.show();
             System.out.println("Quarterly Report window opened successfully");
             

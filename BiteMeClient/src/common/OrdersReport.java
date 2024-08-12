@@ -3,14 +3,12 @@ package common;
 import java.util.HashMap;
 import java.util.Map;
 
-import common.Restaurant.Location;
-
 public class OrdersReport extends MonthlyReport{
     private Map<EnumDish, Integer> dishTypeAmountMap;
 
 
     // Constructors
-    public OrdersReport(Location restaurant, int month, int year) {
+    public OrdersReport(EnumBranch restaurant, int month, int year) {
 		super(restaurant, month, year);
         this.dishTypeAmountMap = new HashMap<>();
     }

@@ -7,19 +7,13 @@ public class Restaurant implements Serializable{
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-
-	public enum Location{
-		NORTH,
-		CENTER,
-		SOUTH;
-	}
 	
 	private Menu menu;
 	private String name;
 	private int BranchID;
-	private Location location;
+	private EnumBranch location;
 	
-	public Restaurant(Menu menu, String name, int branchID, Location location) {
+	public Restaurant(Menu menu, String name, int branchID, EnumBranch location) {
 		this.menu = menu;
 		this.name = name;
 		BranchID = branchID;
@@ -50,11 +44,11 @@ public class Restaurant implements Serializable{
 		BranchID = branchID;
 	}
 
-	public Location getLocation() {
+	public EnumBranch getLocation() {
 		return location;
 	}
 
-	public void setLocation(Location location) {
+	public void setLocation(EnumBranch location) {
 		this.location = location;
 	}
 	

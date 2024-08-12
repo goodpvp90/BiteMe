@@ -100,20 +100,23 @@ public class OrderController {
     
     public boolean addDish(Dish dish) {
     	boolean result = server.dbController.addDish(dish);
-        server.notifyUpdatedMenu();
+    	if (result)
+    		server.notifyUpdatedMenu();
         return result;
     }
     
     public boolean deleteDish(Dish dish) {
     	boolean result =  server.dbController.deleteDish(dish);
-        server.notifyUpdatedMenu();
-        return result;
+    	if (result)
+    		server.notifyUpdatedMenu();
+    	return result;
     }
     
     public boolean updateDish(Dish dish) {
     	boolean result =  server.dbController.updateDish(dish);
-        server.notifyUpdatedMenu();
-        return result;
+    	if (result)
+    		server.notifyUpdatedMenu();
+    	return result;
     }
 
 	public List<Dish> viewMenu(int menuId) {

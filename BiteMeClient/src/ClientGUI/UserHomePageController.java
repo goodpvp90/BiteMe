@@ -253,6 +253,7 @@ public class UserHomePageController {
      */
     @FXML
     private void handlePendingOrders(ActionEvent event) {
+    	client.addWorkerInPendingOrders(user);
     	try {
             // Launch CustomerOrderCreationUI future logic
     		//OFEK changed this one to work on this current version	
@@ -337,7 +338,7 @@ public class UserHomePageController {
         }
     }
     
-    //temp
+    
     public void showNotificationDialog(List<String> text) {
   		Platform.runLater(() -> {
             if (text == null || text.isEmpty()) {
@@ -359,8 +360,42 @@ public class UserHomePageController {
             });  
         });
      }
-    
-    
+
+    public void showCreateOrderDuringUpdateMenuDialog() {
+  		Platform.runLater(() -> {                      
+            Alert alert = new Alert(AlertType.INFORMATION);
+            alert.initStyle(StageStyle.UTILITY);
+            alert.setTitle("Attention!");
+            alert.setHeaderText(null);
+            alert.setContentText("Looks like there was a change in the menus!\n"
+            		+ "Please press OK or close the dialog to go back to the home page.\n"
+            		+ "Sorry for the inconvenience...");         
+            ButtonType okButton = new ButtonType("OK", ButtonData.OK_DONE);
+            Stage currentStage = (Stage) alert.getDialogPane().getScene().getWindow();
+            alert.getButtonTypes().setAll(okButton);
+            alert.showAndWait().ifPresent(response -> {
+                if (response == okButton) {
+                	try {
+              	        Stage userHomePageStage = UserHomePageUI.getStage();
+              	        if (userHomePageStage != null) {
+              	            userHomePageStage.show();
+              	        } else {
+              	            UserHomePageUI Userapp = new UserHomePageUI(user, true);
+              	            Userapp.start(new Stage());
+              	        }            	       
+              	        currentStage.close();
+              	    } catch (Exception e) {
+              	        e.printStackTrace();   
+              	    }             	              	
+                    alert.close(); 
+                }              
+            });
+            currentStage.close();
+            Stage userHomePageStage = UserHomePageUI.getStage();
+            userHomePageStage.show();
+        });
+     }
+        
     /**
      * Closes the application, ensuring proper logout and client shutdown.
      */

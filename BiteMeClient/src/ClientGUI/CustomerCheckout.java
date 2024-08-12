@@ -442,6 +442,7 @@ private void handleNoCompensationButton(ActionEvent event) {
 	}
 	
 	private void launchHomePage() {
+		client.removeClientInOrder();
 		try {
 	        // Retrieve the existing stage for UserHomePageUI
 	        Stage userHomePageStage = UserHomePageUI.getStage();
@@ -463,6 +464,7 @@ private void handleNoCompensationButton(ActionEvent event) {
 	}
 	
 	public void closeApplication() {
+		client.removeClientInOrder();
 		if (client != null) {
 			client.userLogout(user, true);
 		}
