@@ -474,7 +474,7 @@ public class Client extends AbstractClient {
 	
 	//USE IT TO UPDATE ORDER STATUS, IN PROGESS, READY , COMPLETED .....
 	// IT HAS A LOT OF LOGIC IN BACKEND, by status we update time and etc..
-	public void updateOrderStatus(int orderId, EnumOrderStatus status, String msg) {
+	public void updateOrderStatus(int orderId, EnumOrderStatus status, String msg, boolean isDelivery) {
 		sendMessageToServer(new Object[] { EnumServerOperations.UPDATE_ORDER_STATUS, orderId, status, msg});
 	}
 
