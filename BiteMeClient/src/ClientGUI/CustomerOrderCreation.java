@@ -365,7 +365,7 @@ public class CustomerOrderCreation {
 	            userHomePageStage.show();  // Show the hidden stage again
 	        } else {
 	            // If the stage is somehow null, recreate and show it
-	            UserHomePageUI Userapp = new UserHomePageUI(user, true);
+	            UserHomePageUI Userapp = new UserHomePageUI(user);
 	            Userapp.start(new Stage());
 	        }
 

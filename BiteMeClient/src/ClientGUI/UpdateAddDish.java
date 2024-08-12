@@ -160,7 +160,7 @@ public class UpdateAddDish {
 
 		alert.showAndWait().ifPresent(response -> {
 			if (response == okButton) {
-				alert.close(); // Close the dialog window
+				alert.close(); // Close the dialog windoW
 			}
 		});
 	}

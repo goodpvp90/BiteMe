@@ -76,7 +76,7 @@ public class RegisterUserPageController {
                 userHomePageStage.show();  // Show the hidden stage again
             } else {
                 // If the stage is somehow null, recreate and show it
-                UserHomePageUI Userapp = new UserHomePageUI(loggedInUser, true);
+                UserHomePageUI Userapp = new UserHomePageUI(loggedInUser);
                 Userapp.start(new Stage());
             }
 
