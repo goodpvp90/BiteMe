@@ -5,91 +5,94 @@
 <?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane prefHeight="600" prefWidth="800" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ClientGUI.CustomerOrderGatherSelection">
-    <Button fx:id="backButton" layoutX="10.0" layoutY="10.0" onAction="#handleBackButtonAction" prefHeight="30.0" prefWidth="110.0" text="BACK" />
-    <Button fx:id="checkoutButton" layoutX="660.0" layoutY="520.0" onAction="#handleCheckoutButtonAction" prefHeight="55.0" prefWidth="125.0" text="CHECKOUT" />
-    <Text fx:id="selectSupplyMethodText" layoutX="235.0" layoutY="60.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Select Supply Method">
-        <font>
-            <Font name="System Bold" size="32.0" />
-        </font>
-    </Text>
-    <Text fx:id="chooseDateTimeText" layoutX="54.0" layoutY="129.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Please Choose date &amp; time for order to be ready:">
+<AnchorPane prefHeight="600" prefWidth="800" styleClass="blue-gradient-1" stylesheets="@client.css" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ClientGUI.CustomerOrderGatherSelection">
+    <VBox spacing="20" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <HBox alignment="CENTER_LEFT" spacing="20" styleClass="header">
+            <Text fx:id="headlineText" text="Select Supply Method" />
+            <HBox HBox.hgrow="ALWAYS" />
+            <Button fx:id="backButton" mnemonicParsing="false" onAction="#handleBackButtonAction" text="Back" />
+        </HBox>
+    </VBox>
+
+    <Button fx:id="checkoutButton" layoutX="660.0" layoutY="477.0" onAction="#handleCheckoutButtonAction" prefHeight="55.0" prefWidth="125.0" text="Checkout" />
+    <Text fx:id="chooseDateTimeText" fill="WHITE" layoutX="54.0" layoutY="129.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Please Choose date &amp; time for order to be ready:">
         <font>
             <Font name="Arial Bold" size="16.0" />
         </font>
     </Text>
     <Button fx:id="regularButton" layoutX="54.0" layoutY="164.0" mnemonicParsing="false" onAction="#handleRegularButtonAction" prefHeight="43.0" prefWidth="66.0" text="Regular" />
     <Button fx:id="earlyButton" layoutX="129.0" layoutY="164.0" mnemonicParsing="false" onAction="#handleEarlyButtonAction" prefHeight="43.0" prefWidth="66.0" text="Early" />
-    <DatePicker fx:id="datePicker" layoutX="321.0" layoutY="146.0" onAction="#handleMinuteandHourComboBoxAction" prefHeight="25.0" prefWidth="150.0" visible="false" />
-    <Text fx:id="dateLabelText" layoutX="271.0" layoutY="163.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Date:" visible="false" />
-    <Text fx:id="timeLabelText" layoutX="270.0" layoutY="224.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Time:" visible="false" />
-    <Text fx:id="minutesLabelText" fill="#a1a1a1" layoutX="413.0" layoutY="198.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Minutes:" visible="false">
+    <DatePicker fx:id="datePicker" layoutX="393.0" layoutY="148.0" onAction="#handleMinuteandHourComboBoxAction" prefHeight="25.0" prefWidth="150.0" visible="false" />
+    <Text fx:id="dateLabelText" fill="WHITE" layoutX="343.0" layoutY="165.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Date:" visible="false" />
+    <Text fx:id="timeLabelText" fill="WHITE" layoutX="342.0" layoutY="226.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Time:" visible="false" />
+    <Text fx:id="minutesLabelText" fill="WHITE" layoutX="485.0" layoutY="200.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Minutes:" visible="false">
         <font>
             <Font size="10.0" />
         </font>
     </Text>
-    <Text fx:id="hoursLabelText" fill="#777575" layoutX="340.0" layoutY="198.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Hours:" visible="false">
+    <Text fx:id="hoursLabelText" fill="WHITE" layoutX="412.0" layoutY="200.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Hours:" visible="false">
         <font>
             <Font size="10.0" />
         </font>
     </Text>
-    <ComboBox fx:id="hoursComboBox" layoutX="321.0" layoutY="207.0" onAction="#handleMinuteandHourComboBoxAction" prefHeight="25.0" prefWidth="66.0" visible="false" />
-    <ComboBox fx:id="minutesComboBox" layoutX="401.0" layoutY="207.0" onAction="#handleMinuteandHourComboBoxAction" prefHeight="25.0" prefWidth="66.0" visible="false" />
-    <Text fx:id="chooseSupplyMethodText" layoutX="54.0" layoutY="281.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Please choose supply method you desire:">
+    <ComboBox fx:id="hoursComboBox" layoutX="393.0" layoutY="209.0" onAction="#handleMinuteandHourComboBoxAction" prefHeight="25.0" prefWidth="66.0" visible="false" />
+    <ComboBox fx:id="minutesComboBox" layoutX="473.0" layoutY="209.0" onAction="#handleMinuteandHourComboBoxAction" prefHeight="25.0" prefWidth="66.0" visible="false" />
+    <Text fx:id="chooseSupplyMethodText" fill="WHITE" layoutX="54.0" layoutY="281.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Please choose supply method you desire:">
         <font>
             <Font name="System Bold" size="16.0" />
         </font>
     </Text>
     <Button fx:id="pickupButton" layoutX="374.0" layoutY="264.0" mnemonicParsing="false" onAction="#handlePickupButtonAction" prefHeight="30.0" prefWidth="66.0" text="Pickup" />
     <Button fx:id="deliveryButton" layoutX="452.0" layoutY="264.0" mnemonicParsing="false" onAction="#handleDeliveryButtonAction" prefHeight="30.0" prefWidth="66.0" text="Delivery" />
-    <Text fx:id="deliveryInfoText" layoutX="54.0" layoutY="323.0" strokeType="OUTSIDE" strokeWidth="0.0" text="1. Please fill Delivery information:" visible="false">
+    <Text fx:id="deliveryInfoText" fill="WHITE" layoutX="54.0" layoutY="323.0" strokeType="OUTSIDE" strokeWidth="0.0" text="1. Please fill Delivery information:" visible="false">
         <font>
             <Font name="Arial Bold" size="14.0" />
         </font>
     </Text>
-    <Text fx:id="deliveryAddressText" layoutX="53.0" layoutY="350.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Delivery address:" visible="false">
+    <Text fx:id="deliveryAddressText" fill="WHITE" layoutX="53.0" layoutY="350.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Delivery address:" visible="false">
       <font>
          <Font size="14.0" />
       </font></Text>
-    <Text fx:id="receiverText" layoutX="54.0" layoutY="470.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Receiver name:" visible="false" />
-    <Text fx:id="phoneNumberText" layoutX="54.0" layoutY="505.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Phone number:" visible="false" />
+    <Text fx:id="receiverText" fill="WHITE" layoutX="58.0" layoutY="491.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Receiver name:" visible="false" />
+    <Text fx:id="phoneNumberText" fill="WHITE" layoutX="57.0" layoutY="538.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Phone number:" visible="false" />
     <TextField fx:id="cityAddressTextField" layoutX="169.0" layoutY="360.0" prefHeight="25.0" prefWidth="175.0" visible="false" />
-    <TextField fx:id="streetAddressTextField" layoutX="169.0" layoutY="394.0" prefHeight="25.0" prefWidth="175.0" visible="false" />
-    <TextField fx:id="receiverTextField" layoutX="169.0" layoutY="453.0" prefHeight="25.0" prefWidth="175.0" visible="false" />
-    <TextField fx:id="phoneNumberTextField" layoutX="169.0" layoutY="487.0" prefHeight="25.0" prefWidth="175.0" visible="false" />
-    <Text fx:id="deliveryTypeText" layoutX="394.0" layoutY="323.0" strokeType="OUTSIDE" strokeWidth="0.0" text="2. Please choose type of delivery:" visible="false">
+    <TextField fx:id="streetAddressTextField" layoutX="169.0" layoutY="406.0" prefHeight="32.0" prefWidth="175.0" visible="false" />
+    <TextField fx:id="receiverTextField" layoutX="169.0" layoutY="465.0" prefHeight="25.0" prefWidth="175.0" visible="false" />
+    <TextField fx:id="phoneNumberTextField" layoutX="169.0" layoutY="513.0" prefHeight="25.0" prefWidth="175.0" visible="false" />
+    <Text fx:id="deliveryTypeText" fill="WHITE" layoutX="394.0" layoutY="323.0" strokeType="OUTSIDE" strokeWidth="0.0" text="2. Please choose type of delivery:" visible="false">
         <font>
             <Font name="Arial Bold" size="14.0" />
         </font>
     </Text>
     <ComboBox fx:id="deliveryTypeComboBox" layoutX="394.0" layoutY="335.0" onAction="#handleDeliveryTypeComboBoxAction" prefWidth="150.0" visible="false" />
     <TextField fx:id="participantsTextField" layoutX="399.0" layoutY="406.0" prefHeight="25.0" prefWidth="66.0" visible="false" />
-    <Text fx:id="participantsText" layoutX="396.0" layoutY="388.0" strokeType="OUTSIDE" strokeWidth="0.0" text="3. How many participants?" visible="false">
+    <Text fx:id="participantsText" fill="WHITE" layoutX="396.0" layoutY="388.0" strokeType="OUTSIDE" strokeWidth="0.0" text="3. How many participants?" visible="false">
         <font>
             <Font name="Arial Bold" size="14.0" />
         </font>
     </Text>
-    <Text fx:id="earlyOrderWarningText" fill="RED" layoutX="496.0" layoutY="216.0" strokeType="OUTSIDE" strokeWidth="0.0" text="For early order you need to choose&#10;+2hr from now atleast" visible="false">
+    <Text fx:id="earlyOrderWarningText" fill="RED" layoutX="568.0" layoutY="218.0" strokeType="OUTSIDE" strokeWidth="0.0" text="For early order you need to choose&#10;+2hr from now atleast" visible="false">
         <font>
             <Font size="14.0" />
         </font>
     </Text>
-   <Text fx:id="cityText" layoutX="54.0" layoutY="377.0" strokeType="OUTSIDE" strokeWidth="0.0" text="City" visible="false" />
-   <Text fx:id="streetText" layoutX="53.0" layoutY="411.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Street / Business:" visible="false" />
-   <Text fx:id="errorText" fill="RED" layoutX="98.0" layoutY="550.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Error Text" textAlignment="RIGHT" visible="false" wrappingWidth="555.4699401855469">
+   <Text fx:id="cityText" fill="WHITE" layoutX="54.0" layoutY="386.0" strokeType="OUTSIDE" strokeWidth="0.0" text="City" visible="false" />
+   <Text fx:id="streetText" fill="WHITE" layoutX="53.0" layoutY="432.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Street / Business:" visible="false" />
+   <Text fx:id="errorText" fill="RED" layoutX="288.0" layoutY="575.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Error Text" textAlignment="RIGHT" visible="false" wrappingWidth="509.4699401855469">
       <font>
          <Font size="14.0" />
       </font>
    </Text>
    <Text fx:id="errorRobotText" fill="RED" layoutX="563.0" layoutY="347.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Error! method of delivery is still staging,&#10;please pick a different method." visible="false" />
-   <Text fx:id="receiverInfoText" layoutX="53.0" layoutY="441.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Receiver Information:" visible="false">
+   <Text fx:id="receiverInfoText" fill="WHITE" layoutX="32.0" layoutY="463.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Receiver Information:" visible="false">
       <font>
          <Font size="14.0" />
       </font>
    </Text>
-   <Text fill="#0a0ac9" layoutX="54.0" layoutY="153.0" strokeType="OUTSIDE" strokeWidth="0.0" text="*Regular orders will be delivered within one hour." />
-
+   <Text fill="#ffd900" layoutX="54.0" layoutY="153.0" strokeType="OUTSIDE" strokeWidth="0.0" text="*Regular orders will be delivered within one hour." />
 </AnchorPane>

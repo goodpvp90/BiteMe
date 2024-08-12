@@ -594,3 +594,1004 @@
 #logoutButton:pressed, .back-button:pressed {
     -fx-background-color: rgba(244, 67, 54, 0.6);
 }
+
+/* CustomerOrderCreation Styles */
+/* Styles specific to CustomerOrderCreation.fxml */
+
+.customer-order-creation-page {
+    -fx-background-color: linear-gradient(to bottom right, #0f2027, #203a43, #2c5364);
+}
+
+.customer-order-creation-page .label {
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+}
+
+.customer-order-creation-page .combo-box {
+    -fx-background-color: rgba(255, 255, 255, 0.2);
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-prompt-text-fill: rgba(255, 255, 255, 0.7);
+    -fx-border-color: rgba(255, 255, 255, 0.3);
+    -fx-border-width: 1px;
+    -fx-border-radius: 5px;
+    -fx-background-radius: 5px;
+    -fx-padding: 5px;
+}
+
+.customer-order-creation-page .combo-box:focused {
+    -fx-background-color: rgba(255, 255, 255, 0.3);
+    -fx-border-color: rgba(255, 255, 255, 0.5);
+}
+
+.customer-order-creation-page .combo-box .arrow-button {
+    -fx-background-color: transparent;
+}
+
+.customer-order-creation-page .combo-box .arrow {
+    -fx-background-color: white;
+}
+
+.customer-order-creation-page .combo-box .list-cell {
+    -fx-background-color: transparent;
+    -fx-text-fill: white;
+}
+
+.customer-order-creation-page .combo-box-popup .list-view {
+    -fx-background-color: rgba(15, 32, 39, 0.95);
+}
+
+.customer-order-creation-page .combo-box-popup .list-cell {
+    -fx-background-color: transparent;
+    -fx-text-fill: white;
+}
+
+.customer-order-creation-page .combo-box-popup .list-cell:hover {
+    -fx-background-color: rgba(255, 255, 255, 0.2);
+}
+
+.customer-order-creation-page .table-view {
+    -fx-background-color: rgba(255, 255, 255, 0.1);
+    -fx-table-cell-border-color: transparent;
+}
+
+.customer-order-creation-page .table-view .column-header-background {
+    -fx-background-color: rgba(255, 255, 255, 0.2);
+}
+
+.customer-order-creation-page .table-view .column-header, .table-view .filler {
+    -fx-background-color: transparent;
+    -fx-size: 35;
+    -fx-border-width: 0 0 1 0;
+    -fx-border-color: rgba(255, 255, 255, 0.3);
+}
+
+.customer-order-creation-page .table-view .column-header .label {
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+}
+
+.customer-order-creation-page .table-row-cell {
+    -fx-background-color: transparent;
+    -fx-text-fill: white;
+}
+
+.customer-order-creation-page .table-row-cell:odd {
+    -fx-background-color: rgba(255, 255, 255, 0.05);
+}
+
+.customer-order-creation-page .table-row-cell:selected {
+    -fx-background-color: rgba(0, 150, 201, 0.3);
+}
+
+.customer-order-creation-page .table-view .table-cell {
+    -fx-text-fill: white;
+}
+
+.customer-order-creation-page #errorText {
+    -fx-fill: #ff6b6b;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+}
+
+.customer-order-creation-page .button {
+    -fx-background-color: rgba(33, 150, 243, 0.8);
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-padding: 8px 15px;
+    -fx-border-radius: 5px;
+    -fx-background-radius: 5px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.3), 5, 0, 0, 1);
+    -fx-cursor: hand;
+}
+
+.customer-order-creation-page .button:hover {
+    -fx-background-color: rgba(33, 150, 243, 1);
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.5), 10, 0, 0, 2);
+    -fx-translate-y: -2px;
+}
+
+.customer-order-creation-page .button:pressed {
+    -fx-background-color: rgba(33, 150, 243, 0.6);
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.3), 3, 0, 0, 0);
+    -fx-translate-y: 1px;
+}
+
+.customer-order-creation-page .back-button {
+    -fx-background-color: rgba(244, 67, 54, 0.8);
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-padding: 8px 15px;
+    -fx-border-radius: 5px;
+    -fx-background-radius: 5px;
+}
+
+.customer-order-creation-page .back-button:hover {
+    -fx-background-color: rgba(244, 67, 54, 1);
+}
+
+.customer-order-creation-page .back-button:pressed {
+    -fx-background-color: rgba(244, 67, 54, 0.6);
+}
+
+.blue-gradient-1 #backButton {
+    -fx-background-color: rgba(244, 67, 54, 0.8);
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-padding: 8px 15px;
+    -fx-border-radius: 5px;
+    -fx-background-radius: 5px;
+}
+
+.blue-gradient-1 #backButton:hover {
+    -fx-background-color: rgba(244, 67, 54, 1);
+}
+
+.blue-gradient-1 #backButton:pressed {
+    -fx-background-color: rgba(244, 67, 54, 0.6);
+}
+
+.blue-gradient-1 #checkoutButton {
+    -fx-background-color: #4CAF50;  
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-padding: 8px 15px;
+    -fx-border-radius: 5px;
+    -fx-background-radius: 5px;
+}
+
+.blue-gradient-1 #checkoutButton:hover {
+    -fx-background-color: #45a049;  
+}
+
+.blue-gradient-1 #checkoutButton:pressed {
+    -fx-background-color: #388E3C;  
+}
+
+.blue-gradient-1 .date-picker {
+    -fx-background-color: white;
+}
+
+.blue-gradient-1 .date-picker > .text-field {
+    -fx-background-color: white;
+    -fx-text-fill: black;
+}
+
+.blue-gradient-1 .date-picker-popup > * > .date-cell {
+    -fx-background-color: white;
+    -fx-text-fill: black;
+}
+
+.blue-gradient-1 .date-picker-popup > * > .date-cell:hover {
+    -fx-background-color: #f0f0f0;
+}
+
+.blue-gradient-1 .date-picker-popup > * > .selected {
+    -fx-background-color: #4CAF50;
+    -fx-text-fill: white;
+}
+
+.blue-gradient-1 .date-picker-popup > * > .previous-month,
+.blue-gradient-1 .date-picker-popup > * > .next-month {
+    -fx-text-fill: #a0a0a0;
+}
+
+.blue-gradient-1 #cityAddressTextField,
+.blue-gradient-1 #streetAddressTextField,
+.blue-gradient-1 #receiverTextField,
+.blue-gradient-1 #phoneNumberTextField {
+    -fx-font-size: 12px;
+    -fx-pref-height: 30px;
+}
+
+/* CustomerCheckout Styles */
+/* Styles specific to CustomerCheckout.fxml */
+
+.customer-checkout-page {
+    -fx-background-color: linear-gradient(to bottom right, #0f2027, #203a43, #2c5364);
+}
+
+.customer-checkout-page .header {
+    -fx-background-color: rgba(255, 255, 255, 0.1);
+    -fx-padding: 15px 20px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.3), 0, 5, 0, 0);
+    -fx-min-width: 100%;
+}
+
+.customer-checkout-page #receiptText {
+    -fx-font-size: 35px;
+    -fx-font-weight: bold;
+    -fx-fill: white;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.8), 5, 0, 0, 2);
+}
+
+.customer-checkout-page #backButton {
+    -fx-background-color: rgba(244, 67, 54, 0.8);
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-padding: 8px 15px;
+    -fx-border-radius: 5px;
+    -fx-background-radius: 5px;
+}
+
+.customer-checkout-page #backButton:hover {
+    -fx-background-color: rgba(244, 67, 54, 1);
+}
+
+.customer-checkout-page #backButton:pressed {
+    -fx-background-color: rgba(244, 67, 54, 0.6);
+}
+
+.customer-checkout-page #confirmOrderButton {
+    -fx-background-color: #4CAF50;
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-padding: 8px 15px;
+    -fx-border-radius: 5px;
+    -fx-background-radius: 5px;
+}
+
+.customer-checkout-page #confirmOrderButton:hover {
+    -fx-background-color: #45a049;
+}
+
+.customer-checkout-page #confirmOrderButton:pressed {
+    -fx-background-color: #3d8b40;
+}
+
+.customer-checkout-page .text {
+    -fx-fill: white;
+}
+
+.customer-checkout-page #customerDetailsText, 
+.customer-checkout-page #selectedItemsText,
+.customer-checkout-page #discountsText,
+.customer-checkout-page #compensationText,
+.customer-checkout-page #totalPriceLabel {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-fill: white;
+}
+
+.customer-checkout-page #receiverNameLabel,
+.customer-checkout-page #phoneNumberLabel,
+.customer-checkout-page #deliveryAddressLabel,
+.customer-checkout-page #earlyLabel,
+.customer-checkout-page #sharedDeliveryLabel,
+.customer-checkout-page #lateOrderCompensationLabel {
+    -fx-fill: #d3d3d3;
+}
+
+.customer-checkout-page #priceTextInfo {
+    -fx-fill: #4CAF50;
+    -fx-font-weight: bold;
+}
+
+.customer-checkout-page .table-view {
+    -fx-background-color: rgba(255, 255, 255, 0.1);
+    -fx-table-cell-border-color: transparent;
+}
+
+.customer-checkout-page .table-view .column-header-background {
+    -fx-background-color: rgba(255, 255, 255, 0.2);
+}
+
+.customer-checkout-page .table-view .column-header, 
+.customer-checkout-page .table-view .filler {
+    -fx-background-color: transparent;
+    -fx-size: 35;
+    -fx-border-width: 0 0 1 0;
+    -fx-border-color: rgba(255, 255, 255, 0.3);
+}
+
+.customer-checkout-page .table-view .column-header .label {
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+}
+
+.customer-checkout-page .table-row-cell {
+    -fx-background-color: transparent;
+    -fx-text-fill: white;
+}
+
+.customer-checkout-page .table-row-cell:odd {
+    -fx-background-color: rgba(255, 255, 255, 0.05);
+}
+
+.customer-checkout-page .table-row-cell:selected {
+    -fx-background-color: rgba(0, 150, 201, 0.3);
+}
+
+.customer-checkout-page .table-view .table-cell {
+    -fx-text-fill: white;
+}
+
+.customer-checkout-page #yesButton,
+.customer-checkout-page #noButton {
+    -fx-background-color: #4CAF50;
+    -fx-text-fill: white;
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+    -fx-padding: 5px 10px;
+    -fx-border-radius: 3px;
+    -fx-background-radius: 3px;
+}
+
+.customer-checkout-page #yesButton:hover,
+.customer-checkout-page #noButton:hover {
+    -fx-background-color: #45a049;
+}
+
+.customer-checkout-page #yesButton:pressed,
+.customer-checkout-page #noButton:pressed {
+    -fx-background-color: #3d8b40;
+}
+
+.customer-checkout-page #errorText {
+    -fx-fill: #ff6b6b;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+}
+
+/* End of CustomerCheckout Styles */
+
+
+/* MyOrders Styles */
+.my-orders-page {
+    -fx-background-color: linear-gradient(to bottom right, #0f2027, #203a43, #2c5364);
+}
+
+.my-orders-page .header {
+    -fx-background-color: rgba(255, 255, 255, 0.1);
+    -fx-padding: 15px 20px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.3), 0, 5, 0, 0);
+    -fx-min-width: 100%;
+}
+
+.my-orders-page #headlineText {
+    -fx-font-size: 35px;
+    -fx-font-weight: bold;
+    -fx-fill: white;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.8), 5, 0, 0, 2);
+}
+
+.my-orders-page #backButton, .my-orders-page #RefreshListButton {
+    -fx-background-color: rgba(244, 67, 54, 0.8);
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-padding: 8px 15px;
+    -fx-border-radius: 5px;
+    -fx-background-radius: 5px;
+}
+
+.my-orders-page #backButton:hover, .my-orders-page #RefreshListButton:hover {
+    -fx-background-color: rgba(244, 67, 54, 1);
+}
+
+.my-orders-page #backButton:pressed, .my-orders-page #RefreshListButton:pressed {
+    -fx-background-color: rgba(244, 67, 54, 0.6);
+}
+
+.my-orders-page .table-view {
+    -fx-background-color: rgba(255, 255, 255, 0.1);
+    -fx-table-cell-border-color: transparent;
+}
+
+.my-orders-page .table-view .column-header-background {
+    -fx-background-color: rgba(255, 255, 255, 0.2);
+}
+
+.my-orders-page .table-view .column-header, 
+.my-orders-page .table-view .filler {
+    -fx-background-color: transparent;
+    -fx-size: 35;
+    -fx-border-width: 0 0 1 0;
+    -fx-border-color: rgba(255, 255, 255, 0.3);
+}
+
+.my-orders-page .table-view .column-header .label {
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+}
+
+.my-orders-page .table-row-cell {
+    -fx-background-color: transparent;
+    -fx-text-fill: white;
+}
+
+.my-orders-page .table-row-cell:odd {
+    -fx-background-color: rgba(255, 255, 255, 0.05);
+}
+
+.my-orders-page .table-row-cell:selected {
+    -fx-background-color: rgba(0, 150, 201, 0.3);
+}
+
+.my-orders-page .table-view .table-cell {
+    -fx-text-fill: white;
+}
+
+.my-orders-page #approveOrderButton,.my-orders-page #RefreshListButton {
+    -fx-background-color: rgba(33, 150, 243, 0.8);
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-padding: 8px 15px;
+    -fx-border-radius: 5px;
+    -fx-background-radius: 5px;
+}
+
+.my-orders-page #approveOrderButton:hover, .my-orders-page #RefreshListButton:hover {
+    -fx-background-color: rgba(33, 150, 243, 1);
+}
+
+.my-orders-page #approveOrderButton:pressed, .my-orders-page #RefreshListButton:pressed {
+    -fx-background-color: rgba(33, 150, 243, 0.6);
+}
+
+.my-orders-page #backButton {
+    -fx-background-color: rgba(244, 67, 54, 0.8);
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-padding: 8px 15px;
+    -fx-border-radius: 5px;
+    -fx-background-radius: 5px;
+}
+
+.my-orders-page #backButton:hover {
+    -fx-background-color: rgba(244, 67, 54, 1);
+}
+
+.my-orders-page #backButton:pressed {
+    -fx-background-color: rgba(244, 67, 54, 0.6);
+}
+
+.my-orders-page #errorText {
+    -fx-fill: #ff6b6b;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+}
+
+
+/* End of the MyOrders Styles */
+
+
+/* WorkerPendingOrders Styles */
+.worker-pending-orders-page {
+    -fx-background-color: linear-gradient(to bottom right, #0f2027, #203a43, #2c5364);
+}
+
+.worker-pending-orders-page .header {
+    -fx-background-color: rgba(255, 255, 255, 0.1);
+    -fx-padding: 15px 20px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.3), 0, 5, 0, 0);
+    -fx-min-width: 100%;
+}
+
+.worker-pending-orders-page #headlineText {
+    -fx-font-size: 35px;
+    -fx-font-weight: bold;
+    -fx-fill: white;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.8), 5, 0, 0, 2);
+}
+
+.worker-pending-orders-page #backButton {
+    -fx-background-color: rgba(244, 67, 54, 0.8);
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-padding: 8px 15px;
+    -fx-border-radius: 5px;
+    -fx-background-radius: 5px;
+}
+
+.worker-pending-orders-page #backButton:hover {
+    -fx-background-color: rgba(244, 67, 54, 1);
+}
+
+.worker-pending-orders-page #backButton:pressed {
+    -fx-background-color: rgba(244, 67, 54, 0.6);
+}
+
+.worker-pending-orders-page .table-view {
+    -fx-background-color: rgba(255, 255, 255, 0.1);
+    -fx-table-cell-border-color: transparent;
+}
+
+.worker-pending-orders-page .table-view .column-header-background {
+    -fx-background-color: rgba(255, 255, 255, 0.2);
+}
+
+.worker-pending-orders-page .table-view .column-header, 
+.worker-pending-orders-page .table-view .filler {
+    -fx-background-color: transparent;
+    -fx-size: 35;
+    -fx-border-width: 0 0 1 0;
+    -fx-border-color: rgba(255, 255, 255, 0.3);
+}
+
+.worker-pending-orders-page .table-view .column-header .label {
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+}
+
+.worker-pending-orders-page .table-row-cell {
+    -fx-background-color: transparent;
+    -fx-text-fill: white;
+}
+
+.worker-pending-orders-page .table-row-cell:odd {
+    -fx-background-color: rgba(255, 255, 255, 0.05);
+}
+
+.worker-pending-orders-page .table-row-cell:selected {
+    -fx-background-color: rgba(0, 150, 201, 0.3);
+}
+
+.worker-pending-orders-page .table-view .table-cell {
+    -fx-text-fill: white;
+}
+
+.worker-pending-orders-page #approveOrderButton,
+.worker-pending-orders-page #orderReadyButton {
+    -fx-background-color: rgba(33, 150, 243, 0.8);
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-padding: 8px 15px;
+    -fx-border-radius: 5px;
+    -fx-background-radius: 5px;
+}
+
+.worker-pending-orders-page #approveOrderButton:hover,
+.worker-pending-orders-page #orderReadyButton:hover {
+    -fx-background-color: rgba(33, 150, 243, 1);
+}
+
+.worker-pending-orders-page #approveOrderButton:pressed,
+.worker-pending-orders-page #orderReadyButton:pressed {
+    -fx-background-color: rgba(33, 150, 243, 0.6);
+}
+
+.worker-pending-orders-page #approveOrderButton:disabled,
+.worker-pending-orders-page #orderReadyButton:disabled {
+    -fx-opacity: 0.5;
+}
+
+.worker-pending-orders-page .combo-box {
+    -fx-background-color: rgba(255, 255, 255, 0.2);
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-prompt-text-fill: rgba(255, 255, 255, 0.7);
+    -fx-border-color: rgba(255, 255, 255, 0.3);
+    -fx-border-width: 1px;
+    -fx-border-radius: 5px;
+    -fx-background-radius: 5px;
+    -fx-padding: 5px;
+}
+
+.worker-pending-orders-page .combo-box:focused {
+    -fx-background-color: rgba(255, 255, 255, 0.3);
+    -fx-border-color: rgba(255, 255, 255, 0.5);
+}
+
+.worker-pending-orders-page .combo-box .arrow-button {
+    -fx-background-color: transparent;
+}
+
+.worker-pending-orders-page .combo-box .arrow {
+    -fx-background-color: white;
+}
+
+.worker-pending-orders-page .combo-box .list-cell {
+    -fx-background-color: transparent;
+    -fx-text-fill: white;
+}
+
+.worker-pending-orders-page .combo-box-popup .list-view {
+    -fx-background-color: rgba(15, 32, 39, 0.95);
+}
+
+.worker-pending-orders-page .combo-box-popup .list-cell {
+    -fx-background-color: transparent;
+    -fx-text-fill: white;
+}
+
+.worker-pending-orders-page .combo-box-popup .list-cell:hover {
+    -fx-background-color: rgba(255, 255, 255, 0.2);
+}
+
+.worker-pending-orders-page #errorText {
+    -fx-fill: #ff6b6b;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+}
+
+/* END OF WorkerPendingOrders Styles */
+
+
+/* UpdateMenuNavigation Styles */
+.blue-gradient-1 {
+    -fx-background-color: linear-gradient(to bottom right, #0f2027, #203a43, #2c5364);
+}
+
+.header {
+    -fx-background-color: rgba(255, 255, 255, 0.1);
+    -fx-padding: 15px 20px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.3), 0, 5, 0, 0);
+    -fx-min-width: 100%;
+}
+
+.headline-text {
+    -fx-font-size: 30px;
+    -fx-font-weight: bold;
+    -fx-fill: white;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.8), 5, 0, 0, 2);
+}
+
+.instruction-text {
+    -fx-font-size: 18px;
+    -fx-fill: #d3d3d3;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.6), 3, 0, 0, 1);
+}
+
+#backButton {
+    -fx-background-color: rgba(244, 67, 54, 0.8);
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-padding: 8px 15px;
+    -fx-border-radius: 5px;
+    -fx-background-radius: 5px;
+}
+
+#backButton:hover {
+    -fx-background-color: rgba(244, 67, 54, 1);
+}
+
+#backButton:pressed {
+    -fx-background-color: rgba(244, 67, 54, 0.6);
+}
+
+#updateDeleteButton, #addNewDishButton {
+    -fx-background-color: rgba(33, 150, 243, 0.8);
+    -fx-text-fill: white;
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-pref-width: 180px;
+    -fx-pref-height: 100px;
+    -fx-text-alignment: center;
+    -fx-alignment: center;
+    -fx-content-display: top;
+    -fx-border-radius: 5px;
+    -fx-background-radius: 5px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.3), 5, 0, 0, 1);
+    -fx-cursor: hand;
+}
+
+#updateDeleteButton:hover, #addNewDishButton:hover {
+    -fx-background-color: rgba(33, 150, 243, 1);
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.5), 10, 0, 0, 2);
+    -fx-translate-y: -2px;
+}
+
+#updateDeleteButton:pressed, #addNewDishButton:pressed {
+    -fx-background-color: rgba(33, 150, 243, 0.6);
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.3), 3, 0, 0, 0);
+    -fx-translate-y: 1px;
+}
+
+.error-text {
+    -fx-fill: #ff6b6b;
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+}
+
+.button-container {
+    -fx-spacing: 20;
+    -fx-alignment: center;
+}
+/* End of UpdateMenuNavigation Styles */
+
+
+/* UpdateDeleteMenu Styles */
+.update-delete-menu {
+    -fx-background-color: linear-gradient(to bottom right, #0f2027, #203a43, #2c5364);
+}
+
+.update-delete-menu .header {
+    -fx-background-color: rgba(255, 255, 255, 0.1);
+    -fx-padding: 15px 20px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.3), 0, 5, 0, 0);
+}
+
+.update-delete-menu .headline-text {
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+    -fx-fill: white;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.8), 5, 0, 0, 2);
+}
+
+.update-delete-menu #backButton {
+    -fx-background-color: rgba(244, 67, 54, 0.8);
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-padding: 8px 15px;
+    -fx-border-radius: 5px;
+    -fx-background-radius: 5px;
+}
+
+.update-delete-menu #backButton:hover {
+    -fx-background-color: rgba(244, 67, 54, 1);
+}
+
+.update-delete-menu #backButton:pressed {
+    -fx-background-color: rgba(244, 67, 54, 0.6);
+}
+
+.update-delete-menu .table-view {
+    -fx-background-color: rgba(255, 255, 255, 0.1);
+    -fx-table-cell-border-color: transparent;
+}
+
+.update-delete-menu .table-view .column-header-background {
+    -fx-background-color: rgba(255, 255, 255, 0.2);
+}
+
+.update-delete-menu .table-view .column-header, 
+.update-delete-menu .table-view .filler {
+    -fx-background-color: transparent;
+    -fx-size: 35;
+    -fx-border-width: 0 0 1 0;
+    -fx-border-color: rgba(255, 255, 255, 0.3);
+}
+
+.update-delete-menu .table-view .column-header .label {
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+}
+
+.update-delete-menu .table-row-cell {
+    -fx-background-color: transparent;
+    -fx-text-fill: white;
+}
+
+.update-delete-menu .table-row-cell:odd {
+    -fx-background-color: rgba(255, 255, 255, 0.05);
+}
+
+.update-delete-menu .table-row-cell:selected {
+    -fx-background-color: rgba(0, 150, 201, 0.3);
+}
+
+.update-delete-menu .table-view .table-cell {
+    -fx-text-fill: white;
+}
+
+.update-delete-menu .label-text {
+    -fx-fill: white;
+    -fx-font-size: 14px;
+}
+
+.update-delete-menu .text-field, .update-delete-menu .combo-box {
+    -fx-background-color: rgba(255, 255, 255, 0.2);
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-prompt-text-fill: rgba(255, 255, 255, 0.7);
+    -fx-border-color: rgba(255, 255, 255, 0.3);
+    -fx-border-width: 1px;
+    -fx-border-radius: 5px;
+    -fx-background-radius: 5px;
+    -fx-padding: 5px;
+}
+
+.update-delete-menu .text-field:focused, .update-delete-menu .combo-box:focused {
+    -fx-background-color: rgba(255, 255, 255, 0.3);
+    -fx-border-color: rgba(255, 255, 255, 0.5);
+}
+
+.update-delete-menu #saveButton, .update-delete-menu #deleteButton {
+    -fx-background-color: rgba(33, 150, 243, 0.8);
+    -fx-text-fill: white;
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-padding: 10px 20px;
+    -fx-border-radius: 5px;
+    -fx-background-radius: 5px;
+}
+
+.update-delete-menu #saveButton:hover, .update-delete-menu #deleteButton:hover {
+    -fx-background-color: rgba(33, 150, 243, 1);
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.5), 10, 0, 0, 2);
+    -fx-translate-y: -2px;
+}
+
+.update-delete-menu #saveButton:pressed, .update-delete-menu #deleteButton:pressed {
+    -fx-background-color: rgba(33, 150, 243, 0.6);
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.3), 3, 0, 0, 0);
+    -fx-translate-y: 1px;
+}
+
+.update-delete-menu #deleteButton {
+    -fx-background-color: rgba(244, 67, 54, 0.8);
+}
+
+.update-delete-menu #deleteButton:hover {
+    -fx-background-color: rgba(244, 67, 54, 1);
+}
+
+.update-delete-menu #deleteButton:pressed {
+    -fx-background-color: rgba(244, 67, 54, 0.6);
+}
+
+.update-delete-menu .error-text {
+    -fx-fill: #ff6b6b;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+}
+
+/* End of UpdateDeleteMenu Styles */
+
+/* UpdateAddDish Styles */
+.update-add-dish {
+    -fx-background-color: linear-gradient(to bottom right, #0f2027, #203a43, #2c5364);
+}
+
+.update-add-dish .header {
+    -fx-background-color: rgba(255, 255, 255, 0.1);
+    -fx-padding: 15px 20px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.3), 0, 5, 0, 0);
+}
+
+.update-add-dish .headline-text {
+    -fx-font-size: 30px;
+    -fx-font-weight: bold;
+    -fx-fill: white;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.8), 5, 0, 0, 2);
+}
+
+.update-add-dish #backButton {
+    -fx-background-color: rgba(244, 67, 54, 0.8);
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-padding: 8px 15px;
+    -fx-border-radius: 5px;
+    -fx-background-radius: 5px;
+}
+
+.update-add-dish #backButton:hover {
+    -fx-background-color: rgba(244, 67, 54, 1);
+}
+
+.update-add-dish #backButton:pressed {
+    -fx-background-color: rgba(244, 67, 54, 0.6);
+}
+
+.update-add-dish .label-text {
+    -fx-fill: white;
+    -fx-font-size: 16px;
+}
+
+.update-add-dish .text-field {
+    -fx-background-color: rgba(255, 255, 255, 0.2);
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-prompt-text-fill: rgba(255, 255, 255, 0.7);
+    -fx-border-color: rgba(255, 255, 255, 0.3);
+    -fx-border-width: 1px;
+    -fx-border-radius: 5px;
+    -fx-background-radius: 5px;
+    -fx-padding: 5px;
+}
+
+.update-add-dish .text-field:focused {
+    -fx-background-color: rgba(255, 255, 255, 0.3);
+    -fx-border-color: rgba(255, 255, 255, 0.5);
+}
+
+.update-add-dish .combo-box {
+    -fx-background-color: rgba(255, 255, 255, 0.2);
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-prompt-text-fill: rgba(255, 255, 255, 0.7);
+    -fx-border-color: rgba(255, 255, 255, 0.3);
+    -fx-border-width: 1px;
+    -fx-border-radius: 5px;
+    -fx-background-radius: 5px;
+    -fx-padding: 5px;
+}
+
+.update-add-dish .combo-box .list-cell {
+    -fx-text-fill: white;
+    -fx-background-color: transparent;
+}
+
+.update-add-dish .combo-box-popup .list-view {
+    -fx-background-color: #203a43;
+    -fx-background-radius: 5px;
+    -fx-border-color: rgba(255, 255, 255, 0.3);
+    -fx-border-width: 1px;
+    -fx-border-radius: 5px;
+}
+
+.update-add-dish .combo-box-popup .list-cell {
+    -fx-text-fill: white;
+    -fx-background-color: transparent;
+    -fx-padding: 5px;
+}
+
+.update-add-dish .combo-box-popup .list-cell:hover {
+    -fx-background-color: rgba(255, 255, 255, 0.2);
+}
+
+.update-add-dish .combo-box-popup .list-cell:selected {
+    -fx-background-color: rgba(0, 150, 201, 0.5);
+}
+
+.update-add-dish .combo-box .arrow-button {
+    -fx-background-color: transparent;
+}
+
+.update-add-dish .combo-box .arrow {
+    -fx-background-color: white;
+}
+
+.update-add-dish #saveDishButton {
+    -fx-background-color: #4CAF50;  
+    -fx-text-fill: white;
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-padding: 10px 20px;
+    -fx-border-radius: 5px;
+    -fx-background-radius: 5px;
+}
+
+.update-add-dish #saveDishButton:hover {
+    -fx-background-color: #45a049;  
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.5), 10, 0, 0, 2);
+    -fx-translate-y: -2px;
+}
+
+.update-add-dish #saveDishButton:pressed {
+    -fx-background-color: #388E3C;  
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.3), 3, 0, 0, 0);
+    -fx-translate-y: 1px;
+}
+
+.update-add-dish .error-text {
+    -fx-fill: #ff6b6b;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+}
+
+/* End of UpdateAddDish Styles */

@@ -85,7 +85,7 @@ public class WorkerPendingOrders {
                 etaComboBox.setValue(null);
             }
         });
-        //***********    
+        //*****    
         etaComboBox.setItems(FXCollections.observableArrayList(
                 "In about 20 minutes",
                 "In about 1 hour",
@@ -95,7 +95,7 @@ public class WorkerPendingOrders {
             orderReadyButton.setDisable(newValue == null || newValue.isEmpty());
         });
         etaComboBox.setVisible(false);
-        //***********
+        //*****
         TableColumn<Order, Void> expandColumn = new TableColumn<>("Expand");
         expandColumn.setCellFactory(param -> new TableCell<>() {
             private final Button expandButton = new Button("Expand");
@@ -127,6 +127,7 @@ public class WorkerPendingOrders {
         this.user = user;     
         pendingOrdersLoader();        
     }
+  
     ///////////////////******
     public void pendingOrdersLoader()
     {    	

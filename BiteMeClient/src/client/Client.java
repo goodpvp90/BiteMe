@@ -214,6 +214,7 @@ public class Client extends AbstractClient {
 				// Handle non-array messages for updating the top label in clientController
 	            break;
             case NOTIFICATION:          	
+            	System.out.println("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEldar");
             	List<String> notifications = (List<String>) message[1];              
                 waitForController();
                 userHomePageController.showNotificationDialog(notifications);               	                
@@ -304,7 +305,6 @@ public class Client extends AbstractClient {
             case QUARTERLY_REPORT_ERROR:
             	//u receive a (Object)string
             	//TODO do smth
-            	System.out.println("AAAAAAAAAAAAAAAAAAs");
             	break;
             case UPDATE_DISH:
             	updateDeleteMenu.SetSuccessEdit((boolean) message[1]);
@@ -312,6 +312,7 @@ public class Client extends AbstractClient {
             case UPDATE_ORDER_STATUS:
             	//HERE U GET RESPONSE IF UPDATE STATUS IS SUCCESFULL
             	break;
+            	//TODO 12.08.24 After talking to Ido and Nadir This one we dont use.
             case SET_DISCOUNT_AMOUNT: //NEED TO DECIDE IF TO UPDATE RESPONSE, NOW NOT USED.
             	break;
             case GET_DISCOUNT_AMOUNT: 
@@ -475,7 +476,7 @@ public class Client extends AbstractClient {
 	//USE IT TO UPDATE ORDER STATUS, IN PROGESS, READY , COMPLETED .....
 	// IT HAS A LOT OF LOGIC IN BACKEND, by status we update time and etc..
 	public void updateOrderStatus(int orderId, EnumOrderStatus status, String msg, boolean isDelivery) {
-		sendMessageToServer(new Object[] { EnumServerOperations.UPDATE_ORDER_STATUS, orderId, status, msg});
+		sendMessageToServer(new Object[] { EnumServerOperations.UPDATE_ORDER_STATUS, orderId, status, msg, isDelivery});
 	}
 
 	
@@ -506,6 +507,7 @@ public class Client extends AbstractClient {
 	}
 	
 	public void getUsersOrders(String Username) {
+		System.out.println("1");
 		sendMessageToServer(new Object[] { EnumServerOperations.USERS_ORDERS, Username});
 	}
 	
@@ -522,6 +524,6 @@ public class Client extends AbstractClient {
 	}
 	
 	public void removeWorkerInPendingOrders(User user) {
-		sendMessageToServer(new Object[] { EnumServerOperations.OUT_PENDING_ORDERS});
+		sendMessageToServer(new Object[] { EnumServerOperations.OUT_PENDING_ORDERS, user});
 	}
 }

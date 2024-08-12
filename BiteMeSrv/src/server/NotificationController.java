@@ -52,12 +52,14 @@ public class NotificationController {
     }
     
     public void addToWorkersInPendingOrders(User key, ConnectionToClient client) {
-    	System.out.println("ADDING");
     	workersInPendingOrders.put(key, client);
     }
 
     public void removeFromWorkersInPendingOrders(User key) {
+    	System.out.println(workersInPendingOrders.size());
+    	System.out.println(getWorkerInPendingOrders(key));
     	workersInPendingOrders.remove(key);
+    	System.out.println(workersInPendingOrders.size());
     }
     
     public ConnectionToClient getWorkerInPendingOrders(User key) {
@@ -65,6 +67,7 @@ public class NotificationController {
     }
     
     public void notifyWorker(EnumBranch branchLoc) {
+    	System.out.println();
         for (User user : workersInPendingOrders.keySet()) {
             if(user.getHomeBranch() == branchLoc) {
             	server.sendMessageToClient(EnumClientOperations.INTERRUPT_PENDING_ORDERS, workersInPendingOrders.get(user), "RELOAD PENDING PAGE");

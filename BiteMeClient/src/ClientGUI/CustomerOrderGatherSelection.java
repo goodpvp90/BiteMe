@@ -27,103 +27,70 @@ public class CustomerOrderGatherSelection {
 
 	@FXML
     private Button backButton;
-
     @FXML
     private Button checkoutButton;
-
     @FXML
     private Text selectSupplyMethodText;
-
     @FXML
     private Text chooseDateTimeText;
-
     @FXML
     private Button regularButton;
-
     @FXML
     private Button earlyButton;
-
     @FXML
     private DatePicker datePicker;
-
     @FXML
     private Text dateLabelText;
-
     @FXML
     private Text timeLabelText;
-
     @FXML
     private Text minutesLabelText;
-
     @FXML
     private Text hoursLabelText;
-
     @FXML
     private ComboBox<String> hoursComboBox;
-
     @FXML
     private ComboBox<String> minutesComboBox;
-
     @FXML
     private Text chooseSupplyMethodText;
-
     @FXML
     private Button pickupButton;
-
     @FXML
     private Button deliveryButton;
-
     @FXML
     private Text deliveryInfoText;
-
     @FXML
     private Text deliveryAddressText;
-
     @FXML
     private Text receiverText;
-
     @FXML
     private Text phoneNumberText;
-
     @FXML
-    private TextField cityAddressTextField;
-    
+    private TextField cityAddressTextField;   
     @FXML
     private TextField streetAddressTextField;
-
     @FXML
     private TextField receiverTextField;
-
     @FXML
     private TextField phoneNumberTextField;
-
     @FXML
     private Text deliveryTypeText;
-
     @FXML
     private ComboBox<String> deliveryTypeComboBox;
-
     @FXML
     private TextField participantsTextField;
-
     @FXML
     private Text participantsText;
-
     @FXML
     private Text earlyOrderWarningText;
-
     @FXML
     private Text cityText;
-
     @FXML
-    private Text streetText;
-    
+    private Text streetText; 
     @FXML
-    private Text receiverInfoText;
-    
+    private Text receiverInfoText; 
     @FXML
-    private Text errorText;
-    
+    private Text errorText;  
     @FXML
     private  Text errorRobotText;
     

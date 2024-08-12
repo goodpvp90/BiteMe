@@ -6,48 +6,40 @@
 <?import javafx.scene.control.PasswordField?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.text.Font?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane prefHeight="600.0" prefWidth="800" stylesheets="@server.css" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ServerGUI.serverController">
-   <children>
-      <ListView fx:id="clientsListView" layoutX="449.0" layoutY="162.0" prefHeight="277.0" prefWidth="328.0" />
-      <Label layoutX="558.0" layoutY="138.0" prefWidth="113.0" text="Connected Clients" />
-      <Label layoutX="52.0" layoutY="455.0" prefHeight="11.0" prefWidth="89.0" text="Server Status:">
-         <font>
-            <Font size="14.0" />
-         </font></Label>
-      <Label fx:id="statusLabel" layoutX="151.0" layoutY="455.0" text="Stopped">
-         <font>
-            <Font size="14.0" />
-         </font></Label>
-      <Text fx:id="headlineText" layoutX="343.0" layoutY="62.0" text="Server">
-         <font>
-            <Font size="36.0" />
-         </font>
-      </Text>
-      <Text layoutX="323.0" layoutY="96.0" text="Server configuration">
-         <font>
-            <Font size="18.0" />
-         </font>
-      </Text>
-      <Button fx:id="connectButton" layoutX="99.0" layoutY="357.0" onAction="#handleConnectButton" text="Connect" />
-      <Button fx:id="disconnectButton" disable="true" layoutX="188.0" layoutY="358.0" onAction="#handleDisconnectButton" text="Disconnect" />
-      <Button fx:id="quitButton" layoutX="291.0" layoutY="358.0" onAction="#handleQuitButton" styleClass="logout-button" text="Quit" />
-      <PasswordField fx:id="DBPassword" layoutX="155.0" layoutY="300.0" prefHeight="31.0" prefWidth="215.0" text="Aa123456" />
-      <Label layoutX="59.0" layoutY="304.0" text="DB password:" />
-      <Label layoutX="91.0" layoutY="268.0" text="DB user:" />
-      <Label layoutX="83.0" layoutY="232.0" text="DB name:" />
-      <Label layoutX="114.0" layoutY="194.0" text="Port:" />
-      <TextField fx:id="DBuser" layoutX="155.0" layoutY="263.0" prefHeight="31.0" prefWidth="215.0" text="root" />
-      <TextField fx:id="DBNameText" layoutX="155.0" layoutY="225.0" prefHeight="31.0" prefWidth="215.0" text="jdbc:mysql://localhost:3306/biteme" />
-      <TextField fx:id="portText" layoutX="156.0" layoutY="189.0" prefHeight="30.0" prefWidth="215.0" text="5555" />
-      <Text fx:id="IPText" layoutX="162.0" layoutY="180.0" text="ip details" />
-      <Label layoutX="128.0" layoutY="165.0" text="IP:" />
-      <Text fx:id="ErrorServerInput" fill="RED" layoutX="57.0" layoutY="525.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Error Text" textAlignment="CENTER" visible="false" wrappingWidth="685.3256225585938">
-         <font>
-            <Font size="14.0" />
-         </font>
-      </Text>
-   </children>
+<AnchorPane prefHeight="600.0" prefWidth="800" styleClass="blue-gradient-1" stylesheets="@server.css" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ServerGUI.serverController">
+   <VBox spacing="20" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <HBox alignment="CENTER_LEFT" spacing="20" styleClass="header">
+         <Text fx:id="headlineText" styleClass="headline-text" text="Server" />
+         <HBox HBox.hgrow="ALWAYS" />
+         <Button fx:id="quitButton" mnemonicParsing="false" onAction="#handleQuitButton" styleClass="logout-button" text="Quit" />
+      </HBox>
+   </VBox>
+   
+   <Text layoutX="124.0" layoutY="132.0" styleClass="instruction-text" text="Server configuration" wrappingWidth="160.4541015625" />
+   
+   <ListView fx:id="clientsListView" layoutX="449.0" layoutY="162.0" prefHeight="277.0" prefWidth="328.0" />
+   <Label layoutX="558.0" layoutY="138.0" prefWidth="113.0" text="Connected Clients" />
+   
+   <Label layoutX="52.0" layoutY="455.0" prefHeight="11.0" prefWidth="89.0" text="Server Status:" />
+   <Label fx:id="statusLabel" layoutX="151.0" layoutY="455.0" text="Stopped" />
+   
+   <Button fx:id="connectButton" layoutX="155.0" layoutY="357.0" onAction="#handleConnectButton" text="Connect" />
+   <Button fx:id="disconnectButton" disable="true" layoutX="244.0" layoutY="358.0" onAction="#handleDisconnectButton" text="Disconnect" />
+   
+   <PasswordField fx:id="DBPassword" layoutX="155.0" layoutY="300.0" prefHeight="31.0" prefWidth="215.0" text="Aa123456" />
+   <Label layoutX="59.0" layoutY="304.0" text="DB password:" />
+   <Label layoutX="91.0" layoutY="268.0" text="DB user:" />
+   <Label layoutX="83.0" layoutY="232.0" text="DB name:" />
+   <Label layoutX="114.0" layoutY="194.0" text="Port:" />
+   <TextField fx:id="DBuser" layoutX="155.0" layoutY="263.0" prefHeight="31.0" prefWidth="215.0" text="root" />
+   <TextField fx:id="DBNameText" layoutX="155.0" layoutY="225.0" prefHeight="31.0" prefWidth="215.0" text="jdbc:mysql://localhost:3306/biteme" />
+   <TextField fx:id="portText" layoutX="156.0" layoutY="189.0" prefHeight="30.0" prefWidth="215.0" text="5555" />
+   <Text fx:id="IPText" fill="WHITE" layoutX="162.0" layoutY="180.0" text="ip details" />
+   <Label layoutX="128.0" layoutY="165.0" text="IP:" />
+   
+   <Text fx:id="ErrorServerInput" layoutX="57.0" layoutY="525.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="error-text" text="Error Text" textAlignment="CENTER" visible="false" wrappingWidth="685.3256225585938" />
 </AnchorPane>

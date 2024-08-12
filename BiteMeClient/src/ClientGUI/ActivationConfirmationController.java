@@ -17,14 +17,9 @@ import userEntities.User;
  */
 public class ActivationConfirmationController {
 
-	@FXML
-	private Text headlineText;
-
-	@FXML
-	private Text infoText;
-
-	@FXML
-	private Button returnButton;
+	@FXML	private Text headlineText;
+	@FXML	private Text infoText;
+	@FXML	private Button returnButton;
 
     /**
      * Initializes the controller. This method is automatically called after the FXML file has been loaded.
@@ -61,7 +56,7 @@ public class ActivationConfirmationController {
     }
 
     /**
-     * Sets the logged-in user information and registration status.
+     * Sets the logged-in user information
      * 
      * @param user The currently logged-in user
      */
@@ -80,7 +75,6 @@ public class ActivationConfirmationController {
             Parent root = loader.load();
             UserHomePageController controller = loader.getController();
             controller.setUser(loggedInUser);
-
             Stage currentStage = (Stage) infoText.getScene().getWindow();
             Scene scene = new Scene(root);
             currentStage.setScene(scene);

@@ -41,8 +41,6 @@ public class PerformanceReportController {
         this.reportsPageController = controller;
     }
 
-    
-    //TODO CHECK THIS TWICE!!!
     /**
      * Populates the Performance Report window with data from the PerformanceReport.
      * This method sets up the chart, calculates performance metrics, and applies tooltips.
@@ -65,24 +63,19 @@ public class PerformanceReportController {
         int totalOrdersMonth = 0;
         int completedOrdersMonth = 0;
         for (DailyPerformanceReport dailyReport : dailyReports) {
-            String day = String.valueOf(dailyReport.getDate().getDate());
+            String day = String.valueOf(dailyReport.getDate().getDate());//<< Did it so the date will be numbers and not the full date.
             int totalOrders = dailyReport.getTotalOrders();
             int completedOrders = dailyReport.getOrdersCompletedInTime();
             int notCompletedOrders = totalOrders - completedOrders;
-
             completedSeries.getData().add(new XYChart.Data<>(day, completedOrders));
             notCompletedSeries.getData().add(new XYChart.Data<>(day, notCompletedOrders));
-
             totalOrdersMonth += totalOrders;
             completedOrdersMonth += completedOrders;
         }
-
         performanceChart.getData().addAll(completedSeries, notCompletedSeries);
-
         // Calculate overall performance percentage
         double performancePercentage = (double) completedOrdersMonth / totalOrdersMonth * 100;
         performancePercentageLabel.setText(String.format("Overall Performance: %.2f%%", performancePercentage));
-
         // Apply tooltips after chart has been laid out
         Platform.runLater(this::applyTooltips);
     }
@@ -98,12 +91,10 @@ public class PerformanceReportController {
                 if (node != null) {
                     String day = data.getXValue();
                     int value = data.getYValue().intValue();
-                    String seriesName = series.getName();
-                    
+                    String seriesName = series.getName();                   
                     Tooltip tooltip = new Tooltip(String.format("%s on Day %s: %d orders", seriesName, day, value));
                     tooltip.setStyle("-fx-font-size: 14px; -fx-padding: 5px;");
                     Tooltip.install(node, tooltip);
-
                     node.setOnMouseEntered(event -> node.setOpacity(0.8));
                     node.setOnMouseExited(event -> node.setOpacity(1));
                 }
