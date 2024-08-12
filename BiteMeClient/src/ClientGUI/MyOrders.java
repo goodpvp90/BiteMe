@@ -139,8 +139,10 @@ public class MyOrders {
     @FXML
     private void handleApproveOrderAction() {
     	Order selectedOrder = orderTableView.getSelectionModel().getSelectedItem();
-    	client.updateOrderStatus(selectedOrder.getOrderId(),EnumOrderStatus.COMPLETED,"");        	
-    	client.sendOrderArriveOnTime(selectedOrder.getOrderId());
+    	if(selectedOrder!=null) {
+			client.updateOrderStatus(selectedOrder.getOrderId(), EnumOrderStatus.COMPLETED, "");
+			client.sendOrderArriveOnTime(selectedOrder.getOrderId());
+    	}
     }
     
     public void OrderCompleteHandle(boolean show) {

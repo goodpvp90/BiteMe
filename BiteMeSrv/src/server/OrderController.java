@@ -14,15 +14,19 @@ import restaurantEntities.Order;
 
 public class OrderController {
     private Server server;
+    private NotificationController notificationController;
+	private DBController dbController;
     
-    public OrderController(Server server) {
+    public OrderController(Server server, NotificationController notificationController, DBController dbController) {
 		this.server = server;
+		this.notificationController = notificationController;
+		this.dbController = dbController;
 	}
 
 	// Create a new order
     public boolean createOrder(Order order, List<Dish> dishesInOrder, ConnectionToClient client) {
         try {
-            server.dbController.createOrder(order, dishesInOrder);
+            dbController.createOrder(order, dishesInOrder);
             return true;
         } catch (SQLException e) {
             e.printStackTrace();
@@ -33,17 +37,17 @@ public class OrderController {
     // Update an existing order's status
     public String updateOrderStatus(int orderId, EnumOrderStatus status, String msg) {
         try {
-            server.dbController.updateOrderStatus(orderId, status);            
+            dbController.updateOrderStatus(orderId, status);            
             switch(status) {
             case IN_PROGRESS:
-                 server.dbController.updateOrderStartTime(orderId);
-                notifyUser(orderId, msg);
+                 dbController.updateOrderStartTime(orderId);
+                notificationController.notifyUser(orderId, msg);
             	break;
             case READY:
-                notifyUser(orderId, msg);
+            	notificationController.notifyUser(orderId, msg);
             	break;
             case COMPLETED:
-                server.dbController.updateOrderReceiveTimeAndInsertDiscount(orderId, new Timestamp(System.currentTimeMillis()));
+                dbController.updateOrderReceiveTimeAndInsertDiscount(orderId, new Timestamp(System.currentTimeMillis()));
             	break;
             }
             
@@ -54,27 +58,10 @@ public class OrderController {
         }
     }
 
-    
-    private void notifyUser(int orderId, String message) {
-        try {
-            Order order = server.dbController.getOrderById(orderId);
-            String username = order.getUsername();
-            ConnectionToClient client = server.getClient(username);
-            if (client != null) {
-            	List<String> not = new ArrayList<String>();
-            	not.add(message);
-            	server.sendMessageToClient(EnumClientOperations.NOTIFICATION, client, not);
-            }else 
-                server.dbController.savePendingNotification(username, orderId, message);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
     // Retrieve orders for a specific username
     public List<Order> getOrdersByUsername(String username) {
         try {
-            return server.dbController.getOrdersByUsername(username);
+            return dbController.getOrdersByUsername(username);
         } catch (SQLException e) {
             e.printStackTrace();
             return null;
@@ -84,7 +71,7 @@ public class OrderController {
     // Retrieve pending orders for a specific branch
     public List<Order> getPendingOrdersByBranch(int branchId) {
         try {
-            return server.dbController.showPendingOrdersByBranch(branchId);
+            return dbController.showPendingOrdersByBranch(branchId);
         } catch (SQLException e) {
             e.printStackTrace();
             return null;
@@ -94,32 +81,32 @@ public class OrderController {
 
     // Retrieve dishes in a specific order
     public List<DishInOrder> getDishesInOrder(int orderId) {
-        return server.dbController.getDishesInOrder(orderId);
+        return dbController.getDishesInOrder(orderId);
     }
     
     public boolean addDish(Dish dish) {
-    	boolean result = server.dbController.addDish(dish);
+    	boolean result = dbController.addDish(dish);
     	if (result)
-    		server.notifyUpdatedMenu();
+    		notificationController.notifyUpdatedMenu();
         return result;
     }
     
     public boolean deleteDish(Dish dish) {
-    	boolean result =  server.dbController.deleteDish(dish);
+    	boolean result =  dbController.deleteDish(dish);
     	if (result)
-    		server.notifyUpdatedMenu();
+    		notificationController.notifyUpdatedMenu();
     	return result;
     }
     
     public boolean updateDish(Dish dish) {
-    	boolean result =  server.dbController.updateDish(dish);
+    	boolean result =  dbController.updateDish(dish);
     	if (result)
-    		server.notifyUpdatedMenu();
+    		notificationController.notifyUpdatedMenu();
     	return result;
     }
 
 	public List<Dish> viewMenu(int menuId) {
-		List<Dish> menu = server.dbController.getMenu(menuId);
+		List<Dish> menu = dbController.getMenu(menuId);
 		return menu;
 	}
 }
