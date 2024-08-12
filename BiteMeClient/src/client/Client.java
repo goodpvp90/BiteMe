@@ -312,6 +312,7 @@ public class Client extends AbstractClient {
             case UPDATE_ORDER_STATUS:
             	//HERE U GET RESPONSE IF UPDATE STATUS IS SUCCESFULL
             	break;
+            	//TODO 12.08.24 After talking to Ido and Nadir This one we dont use.
             case SET_DISCOUNT_AMOUNT: //NEED TO DECIDE IF TO UPDATE RESPONSE, NOW NOT USED.
             	break;
             case GET_DISCOUNT_AMOUNT: 
