@@ -83,9 +83,7 @@ public class ClientLoginController {
         Platform.runLater(() -> {
             if (userData instanceof User) {
                 User user = (User) userData;
-                //TODO Check with guys whats ratherr (Using the function below or no)
-                boolean isRegistered = (user.getType() != null);
-                launchUserHomePageUI(user, isRegistered);
+                launchUserHomePageUI(user);
             } else if (userData instanceof String) {
                 showError((String) userData);
             } else {
@@ -138,14 +136,13 @@ public class ClientLoginController {
      * Launches the User Home Page UI after successful login.
      * 
      * @param user The authenticated User object
-     * @param isRegistered Boolean indicating if the user is fully registered
      */
-    private void launchUserHomePageUI(User user, boolean isRegistered) {
+    private void launchUserHomePageUI(User user) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("UserHomePage.fxml"));
             Parent root = loader.load();
             UserHomePageController controller = loader.getController();
-            controller.setUser(user, isRegistered);
+            controller.setUser(user);
 
             Stage currentStage = (Stage) loginButton.getScene().getWindow();
             Scene scene = new Scene(root);

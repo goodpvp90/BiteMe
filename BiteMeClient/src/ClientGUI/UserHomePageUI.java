@@ -12,18 +12,15 @@ import javafx.stage.Stage;
  */
 public class UserHomePageUI extends Application {
 	private User user;
-	private boolean isRegistered; 
 	private static Stage userHomePageStage; 
 	
 	/**
      * Constructor for UserHomePageUI.
      * 
      * @param user The User object representing the logged-in user.
-     * @param isRegistered A boolean indicating whether the user is fully registered.
      */
-	public UserHomePageUI (User user, boolean isRegistered) {
+	public UserHomePageUI (User user) {
 		this.user = user;
-		this.isRegistered=isRegistered;
 	}
 
 	/**
@@ -39,7 +36,7 @@ public class UserHomePageUI extends Application {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("UserHomePage.fxml"));
         Parent root = loader.load();
         UserHomePageController controller = loader.getController();
-        controller.setUser(user, isRegistered); 
+        controller.setUser(user); 
         //Handler for "X" button in the top screen
         primaryStage.setOnCloseRequest(event -> {
             event.consume(); // Prevent the window from closing immediately

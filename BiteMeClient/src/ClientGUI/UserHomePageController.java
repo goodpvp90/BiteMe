@@ -63,17 +63,14 @@ public class UserHomePageController {
     @FXML
     private Text headlineText;
 
-    private boolean isRegistered;
 
     /**
      * Sets the user for this controller and updates the UI accordingly.
      *
      * @param user The User object representing the current user.
-     * @param isRegistered A boolean indicating whether the user is registered.
      */
-    public void setUser(User user, boolean isRegistered) {
+    public void setUser(User user) {
         this.user = user;
-        this.isRegistered = isRegistered;
         updateUI();      
     }
     
@@ -81,18 +78,8 @@ public class UserHomePageController {
      * Updates the UI based on the user's type and registration status.
      */  
     private void updateUI() {
-    	if (user.getType() == null) {
-            // Handle unregistered user
-            viewReportsButton.setVisible(false);
-            registerUserButton.setVisible(false);
-            updateMenuButton.setVisible(false);
-            pendingOrdersButton.setVisible(false);
-            createOrderButton.setVisible(false);
-            changeHomeBranchButton.setVisible(false);
-            myOrdersButton.setVisible(false);
-            
-        } 
-    	else {switch(user.getType()) {    	
+    	
+    	switch(user.getType()) {    	
     	case CEO:
     		updateMenuButton.setVisible(false);
     		pendingOrdersButton.setVisible(false);
@@ -115,12 +102,22 @@ public class UserHomePageController {
     		updateMenuButton.setVisible(false);
     		pendingOrdersButton.setVisible(false);
     		break;
-    	default://if CEO or Branch Manager
+    	case UN_CUSTOMER:
+    		viewReportsButton.setVisible(false);
+            registerUserButton.setVisible(false);
+            updateMenuButton.setVisible(false);
+            pendingOrdersButton.setVisible(false);
+            createOrderButton.setVisible(false);
             changeHomeBranchButton.setVisible(false);
+            myOrdersButton.setVisible(false);
+            break;
+    	default://if Branch Manager
+            changeHomeBranchButton.setVisible(false);
+            break;
     	}	
-        }
     	changeHelloTextAndHeadline();
-	}
+
+    }
     
     /**
      * Initializes the controller. This method is automatically called after the FXML file has been loaded.
@@ -309,12 +306,12 @@ public class UserHomePageController {
             }
         } 
         headlineText.setText(user.getUsername() + ", " + userType);
-        if (user.getType() == null) {
+        if (user.getType()==EnumType.UN_CUSTOMER) {
             // For unregistered customer
-            welcomeText.setText("Hello, looks like\n"
-                    + "you have not registered yet.\n"
-                    + "Please make contact with a\n"
-                    + "manager of your preferred branch.");
+            welcomeText.setText("Hello, looks like"
+                    + " you have not registered yet.\n"
+                    + "Please make contact with a "
+                    + "manager of your \npreferred branch.");
         } else {
             // For all registered users
             welcomeText.setText("Hello " + user.getFirstName() + ", what would you like to do?");

@@ -36,7 +36,6 @@ public class ActivationConfirmationController {
 	}
 
     private User loggedInUser;
-    private boolean isRegistered;
 
     /**
      * Sets the user information to be displayed in the confirmation message.
@@ -67,11 +66,9 @@ public class ActivationConfirmationController {
      * Sets the logged-in user information and registration status.
      * 
      * @param user The currently logged-in user
-     * @param isRegistered Boolean indicating if the user is now registered
      */
-    public void setLoggedInUser(User user, boolean isRegistered) {
+    public void setLoggedInUser(User user) {
         this.loggedInUser = user;
-        this.isRegistered = isRegistered;
     }
 
     /**
@@ -84,7 +81,7 @@ public class ActivationConfirmationController {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("UserHomePage.fxml"));
             Parent root = loader.load();
             UserHomePageController controller = loader.getController();
-            controller.setUser(loggedInUser, isRegistered);
+            controller.setUser(loggedInUser);
 
             Stage currentStage = (Stage) infoText.getScene().getWindow();
             Scene scene = new Scene(root);
