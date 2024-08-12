@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.List;
 
 import client.Client;
+import enums.EnumType;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -16,6 +17,7 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import javafx.stage.Window;
 import userEntities.User;
 
 /**
@@ -334,7 +336,7 @@ public class UserHomePageController {
         }
     }
     
-    
+    // pop up window handler for an SMS like notification for a customer
     public void showNotificationDialog(List<String> text) {
   		Platform.runLater(() -> {
             if (text == null || text.isEmpty()) {
@@ -356,42 +358,48 @@ public class UserHomePageController {
             });  
         });
      }
-
+    
+    //pop up window handler for a customer when a qualified worker changes the menu
     public void showCreateOrderDuringUpdateMenuDialog() {
-  		Platform.runLater(() -> {                      
+        Platform.runLater(() -> {
             Alert alert = new Alert(AlertType.INFORMATION);
             alert.initStyle(StageStyle.UTILITY);
             alert.setTitle("Attention!");
             alert.setHeaderText(null);
             alert.setContentText("Looks like there was a change in the menus!\n"
-            		+ "Please press OK or close the dialog to go back to the home page.\n"
-            		+ "Sorry for the inconvenience...");         
+                    + "Please press OK or close the dialog to go back to the home page.\n"
+                    + "Sorry for the inconvenience...");
             ButtonType okButton = new ButtonType("OK", ButtonData.OK_DONE);
-            Stage currentStage = (Stage) alert.getDialogPane().getScene().getWindow();
             alert.getButtonTypes().setAll(okButton);
-            alert.showAndWait().ifPresent(response -> {
+            alert.showAndWait().ifPresentOrElse(response -> {
                 if (response == okButton) {
-                	try {
-              	        Stage userHomePageStage = UserHomePageUI.getStage();
-              	        if (userHomePageStage != null) {
-              	            userHomePageStage.show();
-              	        } else {
-              	            UserHomePageUI Userapp = new UserHomePageUI(user, true);
-              	            Userapp.start(new Stage());
-              	        }            	       
-              	        currentStage.close();
-              	    } catch (Exception e) {
-              	        e.printStackTrace();   
-              	    }             	              	
-                    alert.close(); 
-                }              
+                    // Handle OK button press
+                    closeCurrentWindowAndOpenNewOne();
+                }
+            }, () -> {
+                // Handle the X button press
+                closeCurrentWindowAndOpenNewOne();
             });
-            currentStage.close();
-            Stage userHomePageStage = UserHomePageUI.getStage();
-            userHomePageStage.show();
         });
-     }
-        
+    }
+
+    // Helper method to close the current window and open the new one for the pop up handler above
+    private void closeCurrentWindowAndOpenNewOne() {
+        try {
+            // Close the current window
+            Stage currentStage = (Stage) Stage.getWindows().stream().filter(Window::isShowing).findFirst().orElse(null);
+            if (currentStage != null) {
+                currentStage.close();
+            }
+            // Open the new window
+            CustomerOrderCreationUI custCreatApp = new CustomerOrderCreationUI(user, null);
+            custCreatApp.start(new Stage());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+           
     /**
      * Closes the application, ensuring proper logout and client shutdown.
      */

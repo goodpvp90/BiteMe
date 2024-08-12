@@ -321,7 +321,6 @@ public class Client extends AbstractClient {
             	homeBranchChange.checkSuccessChangeHomeBranch((boolean)message[1]);
             	break;
             case INTERRUPT_ORDER_CREATION:
-            	//TODO OFEK DO SMTH
             	userHomePageController.showCreateOrderDuringUpdateMenuDialog();
             	break;
             case INTERRUPT_PENDING_ORDERS:
