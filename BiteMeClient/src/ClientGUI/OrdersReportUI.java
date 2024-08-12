@@ -39,12 +39,10 @@ public class OrdersReportUI extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("OrdersReportWindow.fxml"));
-        Parent root = loader.load();
-        
+        Parent root = loader.load();        
         OrdersReportController controller = loader.getController();
         controller.setReportData(report);
         controller.setReportsPageController(reportsPageController);
-
         primaryStage.setTitle("Orders Report");
         primaryStage.setScene(new Scene(root));
         primaryStage.setOnCloseRequest(event -> {

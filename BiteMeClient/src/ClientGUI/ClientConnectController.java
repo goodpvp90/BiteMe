@@ -19,23 +19,17 @@ import javafx.stage.Stage;
  */
 public class ClientConnectController {
 
-    @FXML
-    private TextField serverIpTextField;
-    @FXML
-    private TextField serverPortTextField;
-    @FXML
-    private Button connectButton;
-    @FXML
-    private Button quitButton;
-    @FXML
-    private Text ErrorTextConnect;
+    @FXML    private TextField serverIpTextField;
+    @FXML    private TextField serverPortTextField;
+    @FXML    private Button connectButton;
+    @FXML    private Button quitButton;
+    @FXML   private Text ErrorTextConnect;
     @FXML
     
     /**
      * Initializes the controller. This method is automatically called after the FXML file has been loaded.
      */
     private void initialize() {
-        // Nothing is needed for now Maybe later :)
     }
     
     /**
@@ -48,7 +42,6 @@ public class ClientConnectController {
     private void handleConnectButtonAction() {
         String serverIp = serverIpTextField.getText();
         int serverPort = Integer.parseInt(serverPortTextField.getText());
-
         if (IPandPortLegal(serverIp, serverPort)) {
             new Thread(() -> {
                 try {
@@ -56,26 +49,13 @@ public class ClientConnectController {
                     Client.initialize(serverIp, serverPort);
                     Platform.runLater(() -> launchClientLoginUI());
                 } catch (IOException e) {
-                    Platform.runLater(() -> showError("Connection to server failed, please try again"));
-               
+                    Platform.runLater(() -> showError("Connection to server failed, please try again"));              
                 }
             }).start();
         } else {
             showError("The IP address or port number is invalid. Please check and try again.");
         }
     }
-//		if (IPandPortLegal(serverIp, serverPort)) {
-//			try {
-//			Client.initialize(serverIp, serverPort);
-//			}
-//			catch(ConnectException e) {
-//				showError("Connect to server port failed, please try again");
-//				return;
-//			}
-//
-//			launchClientLoginUI();
-//		}
-
 
     /**
      * Validates the IP address and port number entered by the user.
@@ -113,7 +93,6 @@ public class ClientConnectController {
 				return false;
 			}
 		}
-
 		return true;
 	}
 
