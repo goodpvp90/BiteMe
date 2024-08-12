@@ -1,6 +1,19 @@
 package userEntities;
 
-public class Customer{ 
-	private String creditCard;
-	private boolean registered; // Getters and Setters }
+/**
+ * Represents a customer with their credit card information and registration status.
+ */
+public class Customer {
+
+    /**
+     * The customer's credit card information.
+     */
+    private String creditCard;
+
+    /**
+     * Indicates whether the customer is registered.
+     */
+    private boolean registered;
+    
+    // Getters and Setters
 }

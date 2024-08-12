@@ -1,10 +1,7 @@
 package ClientGUI;
 
 import java.io.IOException;
-import java.net.ConnectException;
-
 import client.Client;
-import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;

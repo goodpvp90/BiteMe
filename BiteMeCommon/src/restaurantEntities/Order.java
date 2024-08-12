@@ -166,23 +166,4 @@ public class Order implements Serializable {
 	    return OrderReadyRequestTime;
 	}
 
-    
-	@Override
-	public String toString() {
-	    return "Order{" +
-	            "orderId=" + orderId +
-	            ", username='" + username + '\'' +
-	            ", phoneNum=" + phoneNum +
-	            ", receiverName='" + receiverName + '\'' +
-	            ", isEarly=" + isEarly +
-	            ", branchId=" + branchId +
-	            ", orderDate=" + orderDate +
-	            ", orderRequestTime=" + orderRequestTime +
-	            ", totalPrice=" + totalPrice +
-	            ", delivery=" + delivery +
-	            ", status=" + status +
-	            '}';
-	}
-
-    // Getters and setters
 }
