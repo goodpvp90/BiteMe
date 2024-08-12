@@ -5,7 +5,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import common.IncomeReport;
+import reports.IncomeReport;
 
 /**
  * The RevenueReportUI class is responsible for launching and displaying the Revenue Report window

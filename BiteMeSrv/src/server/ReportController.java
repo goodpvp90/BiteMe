@@ -7,14 +7,12 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-import common.EnumClientOperations;
-import common.EnumServerOperations;
-import common.IncomeReport;
-import common.MonthlyReport;
-import common.OrdersReport;
-import common.PerformanceReport;
-import common.QuarterlyReport;
+import enums.EnumClientOperations;
 import ocsf.server.ConnectionToClient;
+import reports.IncomeReport;
+import reports.OrdersReport;
+import reports.PerformanceReport;
+import reports.QuarterlyReport;
 
 /**
  * The ReportController class is responsible for scheduling and generating monthly reports

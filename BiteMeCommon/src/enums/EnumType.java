@@ -1,0 +1,13 @@
+package enums;
+
+public enum EnumType{
+	BRANCH_MANAGER,
+	CEO,
+	WORKER,
+	QUALIFIED_WORKER,
+	CUSTOMER,
+	UN_CUSTOMER,
+	REGULAR,
+	BUSINESS,
+	PRIVATE;
+}

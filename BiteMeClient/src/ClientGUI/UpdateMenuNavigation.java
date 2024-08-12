@@ -2,13 +2,12 @@ package ClientGUI;
 
 
 import client.Client;
-import common.User;
-import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import userEntities.User;
 
 public class UpdateMenuNavigation {
 

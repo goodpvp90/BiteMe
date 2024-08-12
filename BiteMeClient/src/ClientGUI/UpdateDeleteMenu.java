@@ -4,29 +4,29 @@ import java.util.ArrayList;
 import java.util.List;
 
 import client.Client;
-import common.Dish;
-import common.EnumBranch;
-import common.EnumDish;
-import common.EnumServerOperations;
-import common.User;
+import enums.EnumBranch;
+import enums.EnumDish;
+import enums.EnumServerOperations;
 import javafx.application.Platform;
+import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
-import javafx.scene.control.Alert.AlertType;
-import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.property.SimpleStringProperty;
+import restaurantEntities.Dish;
+import userEntities.User;
 
 public class UpdateDeleteMenu {
 

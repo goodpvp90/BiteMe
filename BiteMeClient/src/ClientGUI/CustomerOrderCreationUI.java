@@ -1,15 +1,13 @@
 package ClientGUI;
-import java.util.HashMap;
 import java.util.List;
 
-import common.Dish;
-
-import common.User;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import restaurantEntities.Dish;
+import userEntities.User;
 
 public class CustomerOrderCreationUI extends Application {
 	

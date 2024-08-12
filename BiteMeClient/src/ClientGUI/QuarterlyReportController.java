@@ -1,5 +1,7 @@
 package ClientGUI;
 
+import java.util.List;
+
 import javafx.fxml.FXML;
 import javafx.scene.chart.BarChart;
 import javafx.scene.chart.XYChart;
@@ -7,13 +9,9 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Tooltip;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
-
-import java.util.List;
-
-import common.QuarterlyReport;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
-import javafx.application.Platform;
+import reports.QuarterlyReport;
 
 public class QuarterlyReportController {
 

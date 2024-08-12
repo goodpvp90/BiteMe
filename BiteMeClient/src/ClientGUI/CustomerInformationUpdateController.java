@@ -1,22 +1,21 @@
 package ClientGUI;
 
+import java.io.IOException;
+
+import client.Client;
+import enums.EnumBranch;
+import enums.EnumType;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-
-import java.io.IOException;
-
-import client.Client;
-import common.User;
-import common.EnumBranch;
-import common.EnumType;
+import userEntities.User;
 
 /**
  * Controller class for the Customer Information Update Page in the BiteMe application.

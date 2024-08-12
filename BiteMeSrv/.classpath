@@ -8,10 +8,11 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry exported="true" kind="lib" path="lib/mysql-connector-java-8.0.13.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/javafx"/>
-	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/OCSF"/>
-	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/BiteMeClient"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/JavaFX"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/JavaFx"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/JavafX"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/javaFXnadir"/>
+	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/OCSF"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/BiteMeCommon"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

@@ -1,15 +1,16 @@
 package ClientGUI;
 
-import javafx.fxml.FXML;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.Label;
-import javafx.stage.Stage;
-import common.OrdersReport;
-import common.EnumDish;
+import java.util.Map;
+
+import enums.EnumDish;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import java.util.Map;
+import javafx.fxml.FXML;
+import javafx.scene.control.Label;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.stage.Stage;
+import reports.OrdersReport;
 
 public class OrdersReportController {
 

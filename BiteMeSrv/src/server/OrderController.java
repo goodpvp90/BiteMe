@@ -1,17 +1,16 @@
 package server;
 
-import common.Dish;
-import common.DishInOrder;
-import common.EnumClientOperations;
-import common.Order;
-import ocsf.server.ConnectionToClient;
-import common.EnumOrderStatus;
-import common.EnumServerOperations;
-
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
+
+import enums.EnumClientOperations;
+import enums.EnumOrderStatus;
+import ocsf.server.ConnectionToClient;
+import restaurantEntities.Dish;
+import restaurantEntities.DishInOrder;
+import restaurantEntities.Order;
 
 public class OrderController {
     private Server server;

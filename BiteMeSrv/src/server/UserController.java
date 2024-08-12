@@ -2,11 +2,12 @@ package server;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
-import common.EnumBranch;
-import common.EnumClientOperations;
-import common.EnumType;
-import common.User;
+
+import enums.EnumBranch;
+import enums.EnumClientOperations;
+import enums.EnumType;
 import ocsf.server.ConnectionToClient;
+import userEntities.User;
 
 
 public class UserController {

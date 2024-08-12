@@ -3,7 +3,7 @@ package ClientGUI;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.stage.Stage;
-import common.IncomeReport;
+import reports.IncomeReport;
 
 /**
  * Controller class for the Revenue Report window in the BiteMe application.

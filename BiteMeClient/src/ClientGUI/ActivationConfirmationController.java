@@ -1,16 +1,14 @@
 package ClientGUI;
 
+import enums.EnumType;
 import javafx.fxml.FXML;
-import javafx.scene.text.Text;
-import javafx.stage.Stage;
-
-import javafx.scene.control.Button;
-
-import common.EnumType;
-import common.User;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.text.Text;
+import javafx.stage.Stage;
+import userEntities.User;
 
 /**
  * Controller class for the Activation Confirmation Page in the BiteMe application.

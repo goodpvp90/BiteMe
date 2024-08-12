@@ -1,25 +1,12 @@
 package client;
-import ocsf.client.*;
-import java.io.*;
+import java.io.IOException;
 import java.net.InetAddress;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Consumer;
-import common.Dish;
-import common.DishInOrder;
-import common.EnumClientOperations;
-import common.EnumDish;
-import common.EnumOrderStatus;
-import common.EnumServerOperations;
-import common.IncomeReport;
-import common.MonthlyReport;
-import common.Order;
-import common.OrdersReport;
-import common.PerformanceReport;
-import common.QuarterlyReport;
-import common.User;
-import javafx.application.Platform;
+
 import ClientGUI.ClientLoginController;
 import ClientGUI.CustomerCheckout;
 import ClientGUI.CustomerInformationUpdateController;
@@ -33,9 +20,18 @@ import ClientGUI.UpdateAddDish;
 import ClientGUI.UpdateDeleteMenu;
 import ClientGUI.UserHomePageController;
 import ClientGUI.WorkerPendingOrders;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
-import java.util.concurrent.locks.Condition;
+import enums.EnumClientOperations;
+import enums.EnumOrderStatus;
+import enums.EnumServerOperations;
+import ocsf.client.AbstractClient;
+import reports.IncomeReport;
+import reports.OrdersReport;
+import reports.PerformanceReport;
+import reports.QuarterlyReport;
+import restaurantEntities.Dish;
+import restaurantEntities.DishInOrder;
+import restaurantEntities.Order;
+import userEntities.User;
 
 public class Client extends AbstractClient {
 	// Default port to connect to the server
@@ -298,6 +294,7 @@ public class Client extends AbstractClient {
                 QuarterlyReport qreport = (QuarterlyReport) data[0];
                 @SuppressWarnings("unchecked")
                 List<Double> monthlyIncomes = (List<Double>) data[1];
+                System.out.println("size " + monthlyIncomes.size());
                 if (reportsPageController != null) {
                     reportsPageController.handleQuarterlyReportResponse(qreport, monthlyIncomes);
                 } else {
@@ -307,6 +304,7 @@ public class Client extends AbstractClient {
             case QUARTERLY_REPORT_ERROR:
             	//u receive a (Object)string
             	//TODO do smth
+            	System.out.println("AAAAAAAAAAAAAAAAAAs");
             	break;
             case UPDATE_DISH:
             	updateDeleteMenu.SetSuccessEdit((boolean) message[1]);
