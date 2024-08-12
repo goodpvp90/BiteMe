@@ -1,14 +1,13 @@
 package ClientGUI;
 
+import java.io.IOException;
+
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
-
-import java.io.IOException;
-
-import common.User;
+import userEntities.User;
 
 public class UpdateDeleteMenuUI extends Application {
 	private User user;

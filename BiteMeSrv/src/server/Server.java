@@ -1,31 +1,27 @@
 package server;
 
-import java.io.*;
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 import ServerGUI.serverController;
-import common.Dish;
-import common.DishInOrder;
-import common.EnumBranch;
-import common.EnumClientOperations;
-import common.EnumDish;
-import common.EnumOrderStatus;
-import common.EnumServerOperations;
-import common.EnumType;
-import common.IncomeReport;
-import common.Order;
-import common.OrdersReport;
-import common.PerformanceReport;
-import common.QuarterlyReport;
-import common.User;
+import enums.EnumBranch;
+import enums.EnumClientOperations;
+import enums.EnumOrderStatus;
+import enums.EnumServerOperations;
 import ocsf.server.AbstractServer;
 import ocsf.server.ConnectionToClient;
+import reports.IncomeReport;
+import reports.OrdersReport;
+import reports.PerformanceReport;
+import reports.QuarterlyReport;
+import restaurantEntities.Dish;
+import restaurantEntities.DishInOrder;
+import restaurantEntities.Order;
+import userEntities.User;
 
 
 public class Server extends AbstractServer {
@@ -37,7 +33,6 @@ public class Server extends AbstractServer {
 	private Map<String, ConnectionToClient> clients = new HashMap<>();
 	private List<ConnectionToClient> clientsInOrderCreation = new ArrayList<>();
 	private Map<User,ConnectionToClient> workersInPendingOrders = new HashMap<>();
-	
 	
 	public Server(int port, String url, String username, String password) {
 		super(port);

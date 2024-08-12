@@ -3,10 +3,6 @@ package ClientGUI;
 import java.io.IOException;
 
 import client.Client;
-import common.Dish;
-import common.EnumDish;
-import common.EnumType;
-import common.User;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -17,6 +13,7 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import userEntities.User;
 
 /**
  * Controller class for the Client Login screen in the BiteMe application.

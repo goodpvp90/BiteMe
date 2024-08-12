@@ -1,11 +1,11 @@
-package ClientGUI;
+	package ClientGUI;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import common.PerformanceReport;
+import reports.PerformanceReport;
 
 /**
  * The PerformanceReportUI class is responsible for launching and displaying the Performance Report window

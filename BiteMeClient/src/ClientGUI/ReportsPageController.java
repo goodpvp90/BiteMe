@@ -1,12 +1,5 @@
 package ClientGUI;
 
-import javafx.fxml.FXML;
-import javafx.scene.control.Label;
-import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.VBox;
-
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.Month;
@@ -16,20 +9,26 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import client.Client;
-import common.EnumBranch;
-import common.EnumType;
-import common.IncomeReport;
-import common.OrdersReport;
-import common.PerformanceReport;
-import common.QuarterlyReport;
-import common.User;
+import enums.EnumBranch;
+import enums.EnumType;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import reports.IncomeReport;
+import reports.OrdersReport;
+import reports.PerformanceReport;
+import reports.QuarterlyReport;
+import userEntities.User;
 
 /**
  * Controller class for the Reports Page in the BiteMe application.

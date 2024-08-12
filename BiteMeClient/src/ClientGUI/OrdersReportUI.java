@@ -5,7 +5,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import common.OrdersReport;
+import reports.OrdersReport;
 
 /**
  * The OrdersReportUI class is responsible for launching and displaying the Orders Report window

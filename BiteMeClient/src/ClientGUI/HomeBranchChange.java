@@ -1,19 +1,17 @@
 package ClientGUI;
 
+import client.Client;
+import enums.EnumBranch;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
+import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.ListCell;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
-import javafx.scene.control.Button;
-import client.Client;
-import common.EnumBranch;
-import common.User;
-import common.EnumBranch;
-import javafx.application.Platform;
-import javafx.event.ActionEvent;
+import userEntities.User;
 
 public class HomeBranchChange {
 

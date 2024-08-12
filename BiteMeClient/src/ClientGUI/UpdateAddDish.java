@@ -1,27 +1,27 @@
 package ClientGUI;
 
 import client.Client;
-import common.User;
+import enums.EnumBranch;
+import enums.EnumDish;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
-import javafx.scene.control.Alert.AlertType;
-import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-import common.Dish;
-import common.DishAppetizer;
-import common.DishBeverage;
-import common.DishDessert;
-import common.DishMainCourse;
-import common.DishSalad;
-import common.EnumBranch;
-import common.EnumDish;
+import restaurantEntities.Dish;
+import restaurantEntities.DishAppetizer;
+import restaurantEntities.DishBeverage;
+import restaurantEntities.DishDessert;
+import restaurantEntities.DishMainCourse;
+import restaurantEntities.DishSalad;
+import userEntities.User;
 
 public class UpdateAddDish {
 

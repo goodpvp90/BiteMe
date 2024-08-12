@@ -1,20 +1,19 @@
 package ClientGUI;
 
+import java.util.List;
+
+import javafx.application.Platform;
 import javafx.fxml.FXML;
-import javafx.scene.control.Label;
-import javafx.scene.chart.StackedBarChart;
+import javafx.scene.Node;
 import javafx.scene.chart.CategoryAxis;
 import javafx.scene.chart.NumberAxis;
+import javafx.scene.chart.StackedBarChart;
 import javafx.scene.chart.XYChart;
-import javafx.stage.Stage;
-import common.PerformanceReport;
-import common.DailyPerformanceReport;
-import javafx.application.Platform;
+import javafx.scene.control.Label;
 import javafx.scene.control.Tooltip;
-import javafx.scene.Node;
-import java.util.List;
-import java.util.HashMap;
-import java.util.Map;
+import javafx.stage.Stage;
+import reports.DailyPerformanceReport;
+import reports.PerformanceReport;
 
 /**
  * Controller class for the Performance Report window in the BiteMe application.

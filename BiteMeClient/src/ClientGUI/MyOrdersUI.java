@@ -1,10 +1,10 @@
 package ClientGUI;
-import common.User;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import userEntities.User;
 
 public class MyOrdersUI extends Application {
 	private User user;
