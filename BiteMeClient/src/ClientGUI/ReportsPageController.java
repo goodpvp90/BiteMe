@@ -102,7 +102,12 @@ public class ReportsPageController {
             branchDropdown.setValue(user.getHomeBranch().toString());
             branchDropdown.setDisable(true);
         } else if (user.getType() == EnumType.CEO) {
-            branchDropdown.getItems().addAll("North", "Center", "South");
+            branchDropdown.getItems().clear();
+            branchDropdown.getItems().addAll(
+                Arrays.stream(EnumBranch.values())
+                    .map(Enum::toString)
+                    .collect(Collectors.toList())
+            );
             branchDropdown.setDisable(false);
         }
     }
@@ -555,8 +560,16 @@ public class ReportsPageController {
             Parent root = loader.load();
             QuarterlyReportController controller = loader.getController();
             controller.setReportData(report, this, monthlyIncomes);
+            
             Stage stage = new Stage();
             stage.setScene(new Scene(root));
+            
+            // Call the updateWindowTitle method
+            controller.updateWindowTitle();
+            
+            // Set up the close handler
+            controller.setupCloseHandler();
+
             stage.show();
             System.out.println("Quarterly Report window opened successfully");
             
