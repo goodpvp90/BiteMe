@@ -324,8 +324,7 @@ public class Client extends AbstractClient {
             	userHomePageController.showCreateOrderDuringUpdateMenuDialog();
             	break;
             case INTERRUPT_PENDING_ORDERS:
-            	//TODO OFEK DO SMTH
-            	System.out.println("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+            	userHomePageController.showPendingOrderDuringOrderCreationDialog();
             	break;
             case SERVER_DISCONNECTED:
             	//TODO do smth
