@@ -140,7 +140,7 @@ public class MyOrders {
     private void handleApproveOrderAction() {
     	Order selectedOrder = orderTableView.getSelectionModel().getSelectedItem();
     	if(selectedOrder!=null) {
-			client.updateOrderStatus(selectedOrder.getOrderId(), EnumOrderStatus.COMPLETED, "");
+			client.updateOrderStatus(selectedOrder.getOrderId(), EnumOrderStatus.COMPLETED, "", false);
 			client.sendOrderArriveOnTime(selectedOrder.getOrderId());
     	}
     }

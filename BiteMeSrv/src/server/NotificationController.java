@@ -19,8 +19,9 @@ public class NotificationController {
 	private List<ConnectionToClient> clientsInOrderCreation = new ArrayList<>();
 	private Map<User,ConnectionToClient> workersInPendingOrders = new HashMap<>();
 	
-    public NotificationController(Server server) {
+    public NotificationController(Server server, DBController dbController) {
 		this.server = server;
+		this.dbController = dbController;
 	}
     
     

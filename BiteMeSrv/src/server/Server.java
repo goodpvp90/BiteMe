@@ -35,7 +35,7 @@ public class Server extends AbstractServer {
 	public Server(int port, String url, String username, String password) {
 		super(port);
 		dbController = new DBController();
-		notificationController = new NotificationController(this);
+		notificationController = new NotificationController(this, dbController);
 		reportController = new ReportController(this, dbController);
 		userController = new UserController(this, notificationController, dbController);
 		orderController = new OrderController(this, notificationController, dbController);
@@ -113,7 +113,8 @@ public class Server extends AbstractServer {
                 int orderId = (int) message[1];
                 EnumOrderStatus newStatus = (EnumOrderStatus) message[2];
                 String update_msg = (String)message[3];
-                orderController.updateOrderStatus(orderId, newStatus, update_msg);
+                boolean isDelivery = (boolean)message[4];
+                orderController.updateOrderStatus(orderId, newStatus, update_msg, isDelivery);
                 break;
             case LOGIN:
             	handleLogin(client, message);

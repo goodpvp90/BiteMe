@@ -35,18 +35,20 @@ public class OrderController {
     }
 
     // Update an existing order's status
-    public String updateOrderStatus(int orderId, EnumOrderStatus status, String msg) {
+    public String updateOrderStatus(int orderId, EnumOrderStatus status, String msg, boolean isDelivery) {
         try {
             dbController.updateOrderStatus(orderId, status);            
             switch(status) {
             case IN_PROGRESS:
-                 dbController.updateOrderStartTime(orderId);
+                dbController.updateOrderStartTime(orderId);
                 notificationController.notifyUser(orderId, msg);
             	break;
             case READY:
             	notificationController.notifyUser(orderId, msg);
             	break;
             case COMPLETED:
+            	if (!isDelivery)
+                    notificationController.notifyUser(orderId, msg);
                 dbController.updateOrderReceiveTimeAndInsertDiscount(orderId, new Timestamp(System.currentTimeMillis()));
             	break;
             }
