@@ -322,12 +322,10 @@ public class Client extends AbstractClient {
             	homeBranchChange.checkSuccessChangeHomeBranch((boolean)message[1]);
             	break;
             case INTERRUPT_ORDER_CREATION:
-            	//TODO OFEK DO SMTH
             	userHomePageController.showCreateOrderDuringUpdateMenuDialog();
             	break;
             case INTERRUPT_PENDING_ORDERS:
-            	//TODO OFEK DO SMTH
-            	System.out.println("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+            	userHomePageController.showPendingOrderDuringOrderCreationDialog();
             	break;
             case SERVER_DISCONNECTED:
             	//TODO do smth
@@ -477,7 +475,7 @@ public class Client extends AbstractClient {
 	
 	//USE IT TO UPDATE ORDER STATUS, IN PROGESS, READY , COMPLETED .....
 	// IT HAS A LOT OF LOGIC IN BACKEND, by status we update time and etc..
-	public void updateOrderStatus(int orderId, EnumOrderStatus status, String msg) {
+	public void updateOrderStatus(int orderId, EnumOrderStatus status, String msg, boolean isDelivery) {
 		sendMessageToServer(new Object[] { EnumServerOperations.UPDATE_ORDER_STATUS, orderId, status, msg});
 	}
 

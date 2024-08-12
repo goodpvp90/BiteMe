@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.List;
 
 import client.Client;
+import enums.EnumType;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -16,6 +17,7 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import javafx.stage.Window;
 import userEntities.User;
 
 /**
@@ -59,17 +61,14 @@ public class UserHomePageController {
     @FXML
     private Text headlineText;
 
-    private boolean isRegistered;
 
     /**
      * Sets the user for this controller and updates the UI accordingly.
      *
      * @param user The User object representing the current user.
-     * @param isRegistered A boolean indicating whether the user is registered.
      */
-    public void setUser(User user, boolean isRegistered) {
+    public void setUser(User user) {
         this.user = user;
-        this.isRegistered = isRegistered;
         updateUI();      
     }
     
@@ -77,18 +76,8 @@ public class UserHomePageController {
      * Updates the UI based on the user's type and registration status.
      */  
     private void updateUI() {
-    	if (user.getType() == null) {
-            // Handle unregistered user
-            viewReportsButton.setVisible(false);
-            registerUserButton.setVisible(false);
-            updateMenuButton.setVisible(false);
-            pendingOrdersButton.setVisible(false);
-            createOrderButton.setVisible(false);
-            changeHomeBranchButton.setVisible(false);
-            myOrdersButton.setVisible(false);
-            
-        } 
-    	else {switch(user.getType()) {    	
+    	
+    	switch(user.getType()) {    	
     	case CEO:
     		updateMenuButton.setVisible(false);
     		pendingOrdersButton.setVisible(false);
@@ -111,12 +100,22 @@ public class UserHomePageController {
     		updateMenuButton.setVisible(false);
     		pendingOrdersButton.setVisible(false);
     		break;
-    	default://if CEO or Branch Manager
+    	case UN_CUSTOMER:
+    		viewReportsButton.setVisible(false);
+            registerUserButton.setVisible(false);
+            updateMenuButton.setVisible(false);
+            pendingOrdersButton.setVisible(false);
+            createOrderButton.setVisible(false);
             changeHomeBranchButton.setVisible(false);
+            myOrdersButton.setVisible(false);
+            break;
+    	default://if Branch Manager
+            changeHomeBranchButton.setVisible(false);
+            break;
     	}	
-        }
     	changeHelloTextAndHeadline();
-	}
+
+    }
     
     /**
      * Initializes the controller. This method is automatically called after the FXML file has been loaded.
@@ -274,12 +273,14 @@ public class UserHomePageController {
      */
     private void changeHelloTextAndHeadline() {
         String userType = "";
+        boolean staff = true;//if staff true print the branch for staff members
         
         if (user.getType() == null) {
             userType = "Unregistered Customer";
         } else {
             switch(user.getType()) {
                 case CEO:
+                    staff= false;
                     userType = "CEO";
                     break;
                 case BRANCH_MANAGER:
@@ -292,6 +293,7 @@ public class UserHomePageController {
                 	userType = "Qualified Worker";
                     break;
                 case CUSTOMER:
+                    staff= false;
                 	switch(user.getCustomerType()) {
                 	case BUSINESS:
                 		userType = "Business Customer";
@@ -305,13 +307,19 @@ public class UserHomePageController {
                 	}
             }
         } 
-        headlineText.setText(user.getUsername() + ", " + userType);
-        if (user.getType() == null) {
+        
+        if(staff)
+        	headlineText.setText(user.getUsername() + ", " + userType + "\nBranch: " + user.getHomeBranch());
+        else
+        	headlineText.setText(user.getUsername() + ", " + userType);
+
+        
+        if (user.getType()==EnumType.UN_CUSTOMER) {
             // For unregistered customer
-            welcomeText.setText("Hello, looks like\n"
-                    + "you have not registered yet.\n"
-                    + "Please make contact with a\n"
-                    + "manager of your preferred branch.");
+            welcomeText.setText("Hello, looks like"
+                    + " you have not registered yet.\n"
+                    + "Please make contact with a "
+                    + "manager of your \npreferred branch.");
         } else {
             // For all registered users
             welcomeText.setText("Hello " + user.getFirstName() + ", what would you like to do?");
@@ -337,7 +345,7 @@ public class UserHomePageController {
         }
     }
     
-    
+    // pop up window handler for an SMS like notification for a customer
     public void showNotificationDialog(List<String> text) {
   		Platform.runLater(() -> {
             if (text == null || text.isEmpty()) {
@@ -356,45 +364,79 @@ public class UserHomePageController {
                 if (response == okButton) {
                     alert.close(); // Close the dialog window
                 }
-            });
+            });  
         });
      }
-
+    
+    //pop up window handler for a customer when a qualified worker changes the menu
     public void showCreateOrderDuringUpdateMenuDialog() {
-  		Platform.runLater(() -> {                      
+        Platform.runLater(() -> {
+        	boolean MenuUpdateToCustomer = true;// Indicator for the helper method which window should open
             Alert alert = new Alert(AlertType.INFORMATION);
             alert.initStyle(StageStyle.UTILITY);
             alert.setTitle("Attention!");
             alert.setHeaderText(null);
             alert.setContentText("Looks like there was a change in the menus!\n"
-            		+ "Please press OK or close the dialog to go back to the home page.\n"
-            		+ "Sorry for the inconvenience...");         
+                    + "Please press OK or close the dialog to go back to the home page.\n"
+                    + "Sorry for the inconvenience...");
             ButtonType okButton = new ButtonType("OK", ButtonData.OK_DONE);
-            Stage currentStage = (Stage) alert.getDialogPane().getScene().getWindow();
             alert.getButtonTypes().setAll(okButton);
-            alert.showAndWait().ifPresent(response -> {
+            alert.showAndWait().ifPresentOrElse(response -> {
                 if (response == okButton) {
-                	try {
-              	        Stage userHomePageStage = UserHomePageUI.getStage();
-              	        if (userHomePageStage != null) {
-              	            userHomePageStage.show();
-              	        } else {
-              	            UserHomePageUI Userapp = new UserHomePageUI(user, true);
-              	            Userapp.start(new Stage());
-              	        }            	       
-              	        currentStage.close();
-              	    } catch (Exception e) {
-              	        e.printStackTrace();   
-              	    }             	              	
-                    alert.close(); 
-                }              
+                    closeCurrentWindowAndOpenNewOne(MenuUpdateToCustomer);
+                }
+            }, () -> {
+                closeCurrentWindowAndOpenNewOne(MenuUpdateToCustomer);
             });
-            currentStage.close();
-            Stage userHomePageStage = UserHomePageUI.getStage();
-            userHomePageStage.show();
         });
-     }
-        
+    }
+    
+  //pop up window handler for a worker viewing pending list when a customer creates a new order
+    public void showPendingOrderDuringOrderCreationDialog() {
+        Platform.runLater(() -> {
+        	boolean MenuUpdateToCustomer = false;// Indicator for the helper method which window should open
+            Alert alert = new Alert(AlertType.INFORMATION);
+            alert.initStyle(StageStyle.UTILITY);
+            alert.setTitle("Attention!");
+            alert.setHeaderText(null);
+            alert.setContentText("Looks like a customer created a new order!\n"
+                    + "Please press CONFIRM or close the dialog to reload the page.\n");
+            ButtonType okButton = new ButtonType("CONFIRM", ButtonData.OK_DONE);
+            alert.getButtonTypes().setAll(okButton);
+            alert.showAndWait().ifPresentOrElse(response -> {
+                if (response == okButton) {
+                    closeCurrentWindowAndOpenNewOne(MenuUpdateToCustomer);
+                }
+            }, () -> {
+                closeCurrentWindowAndOpenNewOne(MenuUpdateToCustomer);
+            });
+        });
+    }
+
+    // Helper method to close the current window and open the new one for the pop up handler 
+    private void closeCurrentWindowAndOpenNewOne(boolean popup) {
+        try {
+            // Close the current window
+            Stage currentStage = (Stage) Stage.getWindows().stream().filter(Window::isShowing).findFirst().orElse(null);
+            if (currentStage != null) {
+                currentStage.close();
+            }
+            if(popup==true)//opens CustomerorderCreation
+            {
+            	CustomerOrderCreationUI custCreatApp = new CustomerOrderCreationUI(user, null);
+                custCreatApp.start(new Stage());
+            }
+            else//opens WorkerPendingOrders
+            {
+            	WorkerPendingOrdersUI pendingCreatApp = new WorkerPendingOrdersUI(user);
+            	pendingCreatApp.start(new Stage());
+            }        	
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+           
     /**
      * Closes the application, ensuring proper logout and client shutdown.
      */

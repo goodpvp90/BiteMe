@@ -25,28 +25,31 @@ import userEntities.User;
 
 
 public class Server extends AbstractServer {
-	public DBController dbController;
+	private DBController dbController;
 	private serverController controller;
 	private ReportController reportController;
 	private OrderController orderController;
 	private UserController userController;
-	private Map<String, ConnectionToClient> clients = new HashMap<>();
-	private List<ConnectionToClient> clientsInOrderCreation = new ArrayList<>();
-	private Map<User,ConnectionToClient> workersInPendingOrders = new HashMap<>();
+	private NotificationController notificationController;
 	
 	public Server(int port, String url, String username, String password) {
 		super(port);
 		dbController = new DBController();
-		reportController = new ReportController(this);
-		orderController = new OrderController(this);
-		userController = new UserController(this);
-		//clients = new HashMap<>();
+		notificationController = new NotificationController(this, dbController);
+		reportController = new ReportController(this, dbController);
+		userController = new UserController(this, notificationController, dbController);
+		orderController = new OrderController(this, notificationController, dbController);
+		
 		try {
 			dbController.connect(url, username, password);
 		} catch (ClassNotFoundException | SQLException e) {
 			System.out.println("Failed to connect to the database.");
 			throw new NullPointerException();
 		}
+	}
+	
+	public DBController getDBController() {
+		return this.dbController;
 	}
 
     public void sendMessageToClient(EnumClientOperations op, ConnectionToClient client, Object msg) {
@@ -68,7 +71,7 @@ public class Server extends AbstractServer {
 			Object[] message = (Object[]) msg;
 			operation = (EnumServerOperations) message[0];
         	System.out.println(operation);
-        	System.out.println(areConnectionsEqual(clients.get("ben"),client));
+        	System.out.println(notificationController.areConnectionsEqual(notificationController.getClient("ben"),client));
 			switch (operation) {
 			case USER_CONDITION:
 				controller.displayClientDetails((String[]) message[1]);
@@ -83,10 +86,10 @@ public class Server extends AbstractServer {
                 sendMessageToClient(EnumClientOperations.UPDATE_DISH, client, updateResult);
             	break;
             case IN_ORDER_CREATION:
-            	addClientToClientsInOrderCreation(client);
+            	notificationController.addClientToClientsInOrderCreation(client);
             	break;
             case OUT_ORDER_CREATION:
-            	removeClientsInOrderCreation(client);
+            	notificationController.removeClientsInOrderCreation(client);
             	break;
             case INSERT_ORDER:
                 // Extract data from the message
@@ -95,7 +98,7 @@ public class Server extends AbstractServer {
                 // Call the method to create the order
                 try {
                 	boolean order = orderController.createOrder(newOrder, dishesInOrder, client);
-                	notifyWorker(dbController.getLocationByBranchId(newOrder.getBranchId()));
+                	notificationController.notifyWorker(dbController.getLocationByBranchId(newOrder.getBranchId()));
                     sendMessageToClient(EnumClientOperations.INSERT_ORDER,client, order);
                 } catch (Exception e) {
                     result = "Error creating order: " + e.getMessage();
@@ -110,7 +113,8 @@ public class Server extends AbstractServer {
                 int orderId = (int) message[1];
                 EnumOrderStatus newStatus = (EnumOrderStatus) message[2];
                 String update_msg = (String)message[3];
-                orderController.updateOrderStatus(orderId, newStatus, update_msg);
+                boolean isDelivery = (boolean)message[4];
+                orderController.updateOrderStatus(orderId, newStatus, update_msg, isDelivery);
                 break;
             case LOGIN:
             	handleLogin(client, message);
@@ -180,27 +184,19 @@ public class Server extends AbstractServer {
             	sendMessageToClient(EnumClientOperations.ORDER_ON_TIME, client, dbController.isOrderArrivedOnTime(orderarriveid)); 	
             	break;
             case IN_PENDING_ORDERS:
-            	addToWorkersInPendingOrders((User)message[1], client);
-                for (User userr : workersInPendingOrders.keySet())
-                	System.out.println(userr.equals((User)message[1]));
+            	notificationController.addToWorkersInPendingOrders((User)message[1], client);
             	break;
             case OUT_PENDING_ORDERS:
-            	removeFromWorkersInPendingOrders((User)message[1]);
+            	notificationController.removeFromWorkersInPendingOrders((User)message[1]);
             	break;
-			case NONE:
-				System.out.println("No operation was received");
-				break;
+            default:
+                System.out.println("No operation was received");
+                break;
 			}
 		} else
 			System.out.println("Received unknown message type from client: " + msg);
 	}
 	
-	//=======================================================
-    public boolean areConnectionsEqual(ConnectionToClient client1, ConnectionToClient client2) {
-        return clients.entrySet().stream()
-            .anyMatch(entry -> entry.getValue().equals(client1) && entry.getValue().equals(client2));
-    }
-    //==========================================================
 	private void viewMenu(ConnectionToClient client, Object[] message, EnumServerOperations operation) {
         int menuId = (int) message[1];
         List<Dish> menu = orderController.viewMenu(menuId);
@@ -225,53 +221,6 @@ public class Server extends AbstractServer {
             	sendMessageToClient(EnumClientOperations.NOTIFICATION, client, notifications);
         }
 	}
-    
-    public void addToClients(String key, ConnectionToClient client) {
-        clients.put(key, client);
-    }
-
-    public void removeFromClients(String key) {
-        clients.remove(key);
-    }
-    
-    // Retrieve a client from the map by key
-    public ConnectionToClient getClient(String key) {
-        return clients.get(key);
-    }
-    
-    public void addClientToClientsInOrderCreation(ConnectionToClient client) {
-    	clientsInOrderCreation.add(client);
-    }
-    
-    public void removeClientsInOrderCreation(ConnectionToClient client) {
-    	clientsInOrderCreation.remove(client);
-    }
-    
-    public void notifyUpdatedMenu() {
-    	for (ConnectionToClient c : clientsInOrderCreation)
-    		sendMessageToClient(EnumClientOperations.INTERRUPT_ORDER_CREATION, c, "STOP CREATING ORDER");
-    }
-    
-    public void addToWorkersInPendingOrders(User key, ConnectionToClient client) {
-    	System.out.println("ADDING");
-    	workersInPendingOrders.put(key, client);
-    }
-
-    public void removeFromWorkersInPendingOrders(User key) {
-    	workersInPendingOrders.remove(key);
-    }
-    
-    public ConnectionToClient getWorkerInPendingOrders(User key) {
-        return workersInPendingOrders.get(key);
-    }
-    
-    public void notifyWorker(EnumBranch branchLoc) {
-        for (User user : workersInPendingOrders.keySet()) {
-            if(user.getHomeBranch() == branchLoc) {
-            	sendMessageToClient(EnumClientOperations.INTERRUPT_PENDING_ORDERS, workersInPendingOrders.get(user), "RELOAD PENDING PAGE");
-            }
-        }
-    }
     
 	@Override
 	protected void clientDisconnected(ConnectionToClient client) {

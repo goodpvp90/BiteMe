@@ -139,8 +139,10 @@ public class MyOrders {
     @FXML
     private void handleApproveOrderAction() {
     	Order selectedOrder = orderTableView.getSelectionModel().getSelectedItem();
-    	client.updateOrderStatus(selectedOrder.getOrderId(),EnumOrderStatus.COMPLETED,"");        	
-    	client.sendOrderArriveOnTime(selectedOrder.getOrderId());
+    	if(selectedOrder!=null) {
+			client.updateOrderStatus(selectedOrder.getOrderId(), EnumOrderStatus.COMPLETED, "", false);
+			client.sendOrderArriveOnTime(selectedOrder.getOrderId());
+    	}
     }
     
     public void OrderCompleteHandle(boolean show) {
@@ -169,7 +171,7 @@ public class MyOrders {
                 userHomePageStage.show();  // Show the hidden stage again
             } else {
                 // If the stage is somehow null, recreate and show it
-                UserHomePageUI Userapp = new UserHomePageUI(user, true);
+                UserHomePageUI Userapp = new UserHomePageUI(user);
                 Userapp.start(new Stage());
             }
 

@@ -422,6 +422,7 @@ private void handleNoCompensationButton(ActionEvent event) {
 	}
 	
 	private void showConfirmationDialog() {
+		Platform.runLater(() -> {
 	    Alert alert = new Alert(Alert.AlertType.INFORMATION);
 	    alert.initStyle(StageStyle.UTILITY);
 	    alert.setTitle("Order Confirmation");
@@ -438,6 +439,7 @@ private void handleNoCompensationButton(ActionEvent event) {
 	    }, () -> {
 	        launchHomePage();  // Handle the X button press
 	    });
+		});
 	}
 	
 	private void launchHomePage() {
@@ -450,7 +452,7 @@ private void handleNoCompensationButton(ActionEvent event) {
 	            userHomePageStage.show();  // Show the hidden stage again
 	        } else {
 	            // If the stage is somehow null, recreate and show it
-	            UserHomePageUI Userapp = new UserHomePageUI(user, true);
+	            UserHomePageUI Userapp = new UserHomePageUI(user);
 	            Userapp.start(new Stage());
 	        }
 	        // Close the current stage

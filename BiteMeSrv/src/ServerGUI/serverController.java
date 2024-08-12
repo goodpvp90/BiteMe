@@ -14,6 +14,7 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.scene.text.Text;
+import server.DBController;
 import server.Server;
 
 public class serverController {
@@ -40,7 +41,7 @@ public class serverController {
     @FXML 
     private PasswordField DBPassword;
     @FXML
-    private Label ErrorServerInput;
+    private Text ErrorServerInput;
     @FXML
     private Text IPText;
     
@@ -86,7 +87,7 @@ public class serverController {
 		} catch (Exception e) {
 			showError("Port already taken");
 		}
-
+		
 	}
 
     //Receive text from UI screen about Port number, DB name, DB user, DB password and
@@ -164,6 +165,7 @@ public class serverController {
     	if (server != null) {
             try {
             	//So it wont close before resetting loggin of status
+            	resetAllUserLoggedStatus();
                 server.stopServer();
             } catch (Exception e) {
                 e.printStackTrace();
@@ -210,7 +212,8 @@ public class serverController {
     private void resetAllUserLoggedStatus() {
         if (server != null) {
             try {
-                server.dbController.resetAllUserLoggedStatus();
+            	DBController dbController = server.getDBController();
+                dbController.resetAllUserLoggedStatus();
                 System.out.println("All user logged statuses reset.");
             } catch (Exception e) {
                 e.printStackTrace();

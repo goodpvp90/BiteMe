@@ -212,7 +212,7 @@ public class CustomerInformationUpdateController {
             Parent root = loader.load();
             ActivationConfirmationController controller = loader.getController();
             controller.setUserInfo(user);
-            controller.setLoggedInUser(loggedInUser, true); // Assuming the user is now registered
+            controller.setLoggedInUser(loggedInUser); // Assuming the user is now registered
 
             Stage stage = new Stage();
             stage.setScene(new Scene(root));
