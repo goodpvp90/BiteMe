@@ -25,42 +25,29 @@ import userEntities.User;
  * This controller manages the display and functionality of the User Home Page,
  * which varies based on the user's type and registration status.
  */
-public class UserHomePageController {
-
-	
+public class UserHomePageController {	
 	private User user;
-	private Client client;
-	
+	private Client client;	
     @FXML
     private Button logoutButton;
-
     @FXML
     private Button createOrderButton;
-
     @FXML
     private Button updateMenuButton;
-
     @FXML
     private Button viewReportsButton;
-
     @FXML
     private Button changeHomeBranchButton;
-
     @FXML
     private Button pendingOrdersButton;
-
     @FXML
     private Button registerUserButton;
-
     @FXML
-    private Button myOrdersButton;
-    
+    private Button myOrdersButton;  
     @FXML
-    private Text welcomeText;
-    
+    private Text welcomeText;   
     @FXML
     private Text headlineText;
-
 
     /**
      * Sets the user for this controller and updates the UI accordingly.
@@ -194,13 +181,9 @@ public class UserHomePageController {
      */
     @FXML
     private void handleUpdateMenu(ActionEvent event) {
-    	try {
-            
-    		UpdateMenuNavigationUI UIApp = new UpdateMenuNavigationUI(user);
-    		
+    	try {            
+    		UpdateMenuNavigationUI UIApp = new UpdateMenuNavigationUI(user);    		
     		UIApp.start(new Stage());
-
-            // Close the current stage
             Stage currentStage = (Stage) updateMenuButton.getScene().getWindow();
             currentStage.hide();
         } catch (Exception e) {
@@ -235,8 +218,6 @@ public class UserHomePageController {
     	try {
     		HomeBranchChangeUI UIApp = new HomeBranchChangeUI(user);
     		UIApp.start(new Stage());
-
-            // Close the current stage
             Stage currentStage = (Stage) changeHomeBranchButton.getScene().getWindow();
             currentStage.hide();
         } catch (Exception e) {
