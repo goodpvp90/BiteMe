@@ -1010,3 +1010,158 @@
 
 
 /* End of the MyOrders Styles */
+
+
+/* WorkerPendingOrders Styles */
+.worker-pending-orders-page {
+    -fx-background-color: linear-gradient(to bottom right, #0f2027, #203a43, #2c5364);
+}
+
+.worker-pending-orders-page .header {
+    -fx-background-color: rgba(255, 255, 255, 0.1);
+    -fx-padding: 15px 20px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.3), 0, 5, 0, 0);
+    -fx-min-width: 100%;
+}
+
+.worker-pending-orders-page #headlineText {
+    -fx-font-size: 35px;
+    -fx-font-weight: bold;
+    -fx-fill: white;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.8), 5, 0, 0, 2);
+}
+
+.worker-pending-orders-page #backButton {
+    -fx-background-color: rgba(244, 67, 54, 0.8);
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-padding: 8px 15px;
+    -fx-border-radius: 5px;
+    -fx-background-radius: 5px;
+}
+
+.worker-pending-orders-page #backButton:hover {
+    -fx-background-color: rgba(244, 67, 54, 1);
+}
+
+.worker-pending-orders-page #backButton:pressed {
+    -fx-background-color: rgba(244, 67, 54, 0.6);
+}
+
+.worker-pending-orders-page .table-view {
+    -fx-background-color: rgba(255, 255, 255, 0.1);
+    -fx-table-cell-border-color: transparent;
+}
+
+.worker-pending-orders-page .table-view .column-header-background {
+    -fx-background-color: rgba(255, 255, 255, 0.2);
+}
+
+.worker-pending-orders-page .table-view .column-header, 
+.worker-pending-orders-page .table-view .filler {
+    -fx-background-color: transparent;
+    -fx-size: 35;
+    -fx-border-width: 0 0 1 0;
+    -fx-border-color: rgba(255, 255, 255, 0.3);
+}
+
+.worker-pending-orders-page .table-view .column-header .label {
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+}
+
+.worker-pending-orders-page .table-row-cell {
+    -fx-background-color: transparent;
+    -fx-text-fill: white;
+}
+
+.worker-pending-orders-page .table-row-cell:odd {
+    -fx-background-color: rgba(255, 255, 255, 0.05);
+}
+
+.worker-pending-orders-page .table-row-cell:selected {
+    -fx-background-color: rgba(0, 150, 201, 0.3);
+}
+
+.worker-pending-orders-page .table-view .table-cell {
+    -fx-text-fill: white;
+}
+
+.worker-pending-orders-page #approveOrderButton,
+.worker-pending-orders-page #orderReadyButton {
+    -fx-background-color: rgba(33, 150, 243, 0.8);
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-padding: 8px 15px;
+    -fx-border-radius: 5px;
+    -fx-background-radius: 5px;
+}
+
+.worker-pending-orders-page #approveOrderButton:hover,
+.worker-pending-orders-page #orderReadyButton:hover {
+    -fx-background-color: rgba(33, 150, 243, 1);
+}
+
+.worker-pending-orders-page #approveOrderButton:pressed,
+.worker-pending-orders-page #orderReadyButton:pressed {
+    -fx-background-color: rgba(33, 150, 243, 0.6);
+}
+
+.worker-pending-orders-page #approveOrderButton:disabled,
+.worker-pending-orders-page #orderReadyButton:disabled {
+    -fx-opacity: 0.5;
+}
+
+.worker-pending-orders-page .combo-box {
+    -fx-background-color: rgba(255, 255, 255, 0.2);
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-prompt-text-fill: rgba(255, 255, 255, 0.7);
+    -fx-border-color: rgba(255, 255, 255, 0.3);
+    -fx-border-width: 1px;
+    -fx-border-radius: 5px;
+    -fx-background-radius: 5px;
+    -fx-padding: 5px;
+}
+
+.worker-pending-orders-page .combo-box:focused {
+    -fx-background-color: rgba(255, 255, 255, 0.3);
+    -fx-border-color: rgba(255, 255, 255, 0.5);
+}
+
+.worker-pending-orders-page .combo-box .arrow-button {
+    -fx-background-color: transparent;
+}
+
+.worker-pending-orders-page .combo-box .arrow {
+    -fx-background-color: white;
+}
+
+.worker-pending-orders-page .combo-box .list-cell {
+    -fx-background-color: transparent;
+    -fx-text-fill: white;
+}
+
+.worker-pending-orders-page .combo-box-popup .list-view {
+    -fx-background-color: rgba(15, 32, 39, 0.95);
+}
+
+.worker-pending-orders-page .combo-box-popup .list-cell {
+    -fx-background-color: transparent;
+    -fx-text-fill: white;
+}
+
+.worker-pending-orders-page .combo-box-popup .list-cell:hover {
+    -fx-background-color: rgba(255, 255, 255, 0.2);
+}
+
+.worker-pending-orders-page #errorText {
+    -fx-fill: #ff6b6b;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+}
+
+
+/* END OF WorkerPendingOrders Styles */
