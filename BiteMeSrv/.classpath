@@ -13,6 +13,6 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/JavafX"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/javaFXnadir"/>
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/OCSF"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/BiteMeCommon"/>
+	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/BiteMeCommon"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
