@@ -45,7 +45,7 @@ public class Server extends AbstractServer {
 			dbController.connect(url, username, password);
 		} catch (ClassNotFoundException | SQLException e) {
 			System.out.println("Failed to connect to the database.");
-			e.printStackTrace();
+			throw new NullPointerException();
 		}
 	}
 

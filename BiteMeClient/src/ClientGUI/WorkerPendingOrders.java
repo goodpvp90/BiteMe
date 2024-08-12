@@ -310,6 +310,7 @@ public class WorkerPendingOrders {
   	        showError("An error occurred while loading the User Home Page.");
   	    }
   	}
+  	
     
  	//Making Quit Button to kill thread and send message to server
     public void closeApplication() {
@@ -318,4 +319,3 @@ public class WorkerPendingOrders {
 			  client.userLogout(user, true);
     }
   }
-

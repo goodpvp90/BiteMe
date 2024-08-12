@@ -30,7 +30,7 @@ public class CustomerCheckoutUI extends Application {
     public void start(Stage primaryStage) throws Exception {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("CustomerCheckout.fxml")); // Adjust the path as needed
         Parent root = loader.load();
-        primaryStage.setTitle("Customer Checkout");
+        primaryStage.setTitle("Checkout");
         primaryStage.setScene(new Scene(root));
 
         CustomerCheckout controller = loader.getController();

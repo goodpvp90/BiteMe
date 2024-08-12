@@ -42,7 +42,7 @@ public class CustomerOrderGatherSelectionUI extends Application {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("CustomerOrderGatherSelection.fxml")); // Adjust the path as needed
             Parent root = loader.load();
             primaryStage.setScene(new Scene(root));
-            primaryStage.setTitle("Order Gathering Method Selection");
+            primaryStage.setTitle("Order Gathering Selection");
             
             CustomerOrderGatherSelection controller = loader.getController();
             if(user!=null) controller.setUser(user);

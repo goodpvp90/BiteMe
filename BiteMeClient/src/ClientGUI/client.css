@@ -36,7 +36,7 @@
     -fx-border-radius: 5px;
     -fx-background-radius: 5px;
     -fx-padding: 10px;
-    -fx-alignment: center;
+    -fx-alignment: center-left;
 }
 
 .text-field:focused, .password-field:focused {
@@ -135,7 +135,7 @@
     -fx-border-radius: 5px;
     -fx-background-radius: 5px;
     -fx-padding: 10px;
-    -fx-alignment: center; 
+    -fx-alignment: center-left;
 }
 
 #serverIpTextField:focused, #serverPortTextField:focused {
@@ -444,3 +444,132 @@
 }
 
 /* End of ActivationConfirmation Styles */
+
+/* ReportsPage Styles */
+/* Styles specific to ReportsPage.fxml */
+
+.reports-page {
+    -fx-background-color: linear-gradient(to bottom right, #0f2027, #203a43, #2c5364);
+}
+
+.reports-page .header {
+    -fx-background-color: rgba(255, 255, 255, 0.1);
+    -fx-padding: 15px 20px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.3), 0, 5, 0, 0);
+    -fx-min-width: 100%;
+}
+
+.reports-page .headline-text {
+    -fx-font-size: 35px;
+    -fx-font-weight: bold;
+    -fx-fill: white;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.8), 5, 0, 0, 2);
+}
+
+.reports-page .sub-headline-text {
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+    -fx-fill: white;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.6), 3, 0, 0, 1);
+}
+
+.reports-page .error-text {
+    -fx-fill: #ff6b6b;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+}
+
+.reports-page Button {
+    -fx-background-color: rgba(33, 150, 243, 0.8);
+    -fx-text-fill: white;
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-pref-width: 190px;
+    -fx-pref-height: 80px;
+    -fx-text-alignment: center;
+    -fx-alignment: center;
+    -fx-content-display: top;
+    -fx-graphic-text-gap: 10;
+    -fx-border-radius: 5px;
+    -fx-background-radius: 5px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.3), 5, 0, 0, 1);
+    -fx-cursor: hand;
+    -fx-transition: all 0.3s ease;
+}
+
+.reports-page Button:hover {
+    -fx-background-color: rgba(33, 150, 243, 1);
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.5), 10, 0, 0, 2);
+    -fx-translate-y: -2px;
+}
+
+.reports-page Button:pressed {
+    -fx-background-color: rgba(33, 150, 243, 0.6);
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.3), 3, 0, 0, 0);
+    -fx-translate-y: 1px;
+}
+
+.reports-page .logout-button {
+    -fx-background-color: rgba(244, 67, 54, 0.8);
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-padding: 8px 15px;
+    -fx-border-radius: 5px;
+    -fx-background-radius: 5px;
+    -fx-pref-width: 70px;
+    -fx-pref-height: 30px;
+}
+
+.reports-page .logout-button:hover {
+    -fx-background-color: rgba(244, 67, 54, 1);
+}
+
+.reports-page .logout-button:pressed {
+    -fx-background-color: rgba(244, 67, 54, 0.6);
+}
+
+.reports-page .combo-box {
+    -fx-background-color: rgba(255, 255, 255, 0.2);
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-prompt-text-fill: rgba(255, 255, 255, 0.7);
+    -fx-border-color: rgba(255, 255, 255, 0.3);
+    -fx-border-width: 1px;
+    -fx-border-radius: 5px;
+    -fx-background-radius: 5px;
+    -fx-padding: 5px;
+}
+
+.reports-page .combo-box:focused {
+    -fx-background-color: rgba(255, 255, 255, 0.3);
+    -fx-border-color: rgba(255, 255, 255, 0.5);
+}
+
+.reports-page .combo-box .arrow-button {
+    -fx-background-color: transparent;
+}
+
+.reports-page .combo-box .arrow {
+    -fx-background-color: white;
+}
+
+.reports-page .combo-box .list-cell {
+    -fx-background-color: transparent;
+    -fx-text-fill: white;
+}
+
+.reports-page .combo-box-popup .list-view {
+    -fx-background-color: rgba(15, 32, 39, 0.95);
+}
+
+.reports-page .combo-box-popup .list-cell {
+    -fx-background-color: transparent;
+    -fx-text-fill: white;
+}
+
+.reports-page .combo-box-popup .list-cell:hover {
+    -fx-background-color: rgba(255, 255, 255, 0.2);
+}
+
+/* End of ReportsPage Styles */

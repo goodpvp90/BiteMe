@@ -88,7 +88,7 @@ public class QuarterlyReportController {
      * Updates the window title with the report details.
      * This method sets the stage title to include the Branch, Quarter, and Year from the report.
      */
-    private void updateWindowTitle() {
+    public void updateWindowTitle() {
         if (report != null) {
             String title = report.getRestaurant() + " Q" + report.getQuarter() + " " + report.getYear();
             Stage stage = (Stage) reportChart.getScene().getWindow();
@@ -102,7 +102,7 @@ public class QuarterlyReportController {
      * Sets up the close handler for the window.
      * This method attaches a close request handler to the stage to ensure proper cleanup when the window is closed.
      */
-    private void setupCloseHandler() {
+    public void setupCloseHandler() {
         Stage stage = (Stage) reportChart.getScene().getWindow();
         if (stage != null) {
             stage.setOnCloseRequest(this::handleCloseRequest);
