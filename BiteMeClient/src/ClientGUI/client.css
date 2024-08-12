@@ -573,3 +573,24 @@
 }
 
 /* End of ReportsPage Styles */
+
+/* UserHomePage Styles */
+/* Styles specific to UserHomePage.fxml */
+
+#logoutButton, .back-button {
+    -fx-background-color: rgba(244, 67, 54, 0.8);
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-padding: 8px 15px;
+    -fx-border-radius: 5px;
+    -fx-background-radius: 5px;
+}
+
+#logoutButton:hover, .back-button:hover {
+    -fx-background-color: rgba(244, 67, 54, 1);
+}
+
+#logoutButton:pressed, .back-button:pressed {
+    -fx-background-color: rgba(244, 67, 54, 0.6);
+}
