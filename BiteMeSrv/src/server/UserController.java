@@ -2,11 +2,14 @@ package server;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
 
 import enums.EnumBranch;
 import enums.EnumClientOperations;
 import enums.EnumType;
 import ocsf.server.ConnectionToClient;
+import restaurantEntities.Dish;
+import restaurantEntities.Order;
 import userEntities.User;
 
 
@@ -20,8 +23,27 @@ public class UserController {
 		this.notificationController = notificationController;
 		this.dbController = dbController;
 	}
-
-	public boolean login(ConnectionToClient client, Object[] message) {
+    
+    public void handleLogin(ConnectionToClient client, Object[] message) {
+    	User user = (User)message[1];
+        String username = user.getUsername();
+        List<String> notifications = null;
+       	System.out.println("LOGIN SHOWED ON SERVER");
+        boolean loginReuslt = login(client, (Object[]) message);
+        if (loginReuslt) {
+        	client.setInfo("user", username);
+        	try {
+                notifications = dbController.getPendingNotifications(username);
+                dbController.deletePendingNotifications(username);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+            if(!notifications.isEmpty())
+            	server.sendMessageToClient(EnumClientOperations.NOTIFICATION, client, notifications);
+        }
+	}
+    
+	private boolean login(ConnectionToClient client, Object[] message) {
     	User user = (User)message[1];
         Object result = dbController.validateLogin(user);
 		if (result instanceof String) {
@@ -60,7 +82,12 @@ public class UserController {
 
     }
     
-    public void checkUserForCreation(ConnectionToClient client, String username) {
+	public void handleCheckUser(ConnectionToClient client, Object[] message) {
+    	String usern = (String) message[1];
+    	checkUserForCreation(client,usern);
+	}   
+	
+    private void checkUserForCreation(ConnectionToClient client, String username) {
         try {
             User result = dbController.searchUsername(username);
             if (result != null) {
@@ -76,27 +103,43 @@ public class UserController {
     
     public void createAccount(ConnectionToClient client, Object[] message) {
         User user = (User)message[1];
-        System.out.println("Im after USER after CREATEACCOUNT");
         boolean result = false;
         try {
             result = dbController.createUser(user.getId(), user.getUsername(), user.getPassword(), user.getEmail(), user.getPhone(),
                     user.getFirstName(), user.getLastName(), user.getHomeBranch(), user.getType(), user.getCustomerType(), user.getCreditCard());
         } catch (Exception e) {
-            System.out.println("Exception occurred while calling createUser:");
             e.printStackTrace();
         }
-        System.out.println("Im after RES after CREATEACCOUNT " + " RESULT IS :" + result);
     	if (!result) {
-    		System.out.println("Im in ERROR CREATEACCOUNT");
     		server.sendMessageToClient(EnumClientOperations.EROR,client, result);    		
     	}
     	else {
-    		System.out.println("IM IN CREATED ACCOUNT ENUM");
     		server.sendMessageToClient(EnumClientOperations.CREATED_ACCOUNT,client, (Object)user);
     	}
     }
     
-    public boolean changeHomeBranch(User user) {
-    	return dbController.changeHomeBranch(user);
-    }
+	public void handleChangeHomeBranch(ConnectionToClient client, Object[] message) {
+    	boolean changeResult = dbController.changeHomeBranch((User)message[1]);
+    	server.sendMessageToClient(EnumClientOperations.CHANGE_HOME_BRANCH, client, changeResult);
+	}   
+    
+	public void handleGetDiscount(ConnectionToClient client, Object[] message) {
+    	String username = (String)message[1];
+    	double amount = dbController.getCurrentDiscountAmount(username);
+    	server.sendMessageToClient(EnumClientOperations.GET_DISCOUNT_AMOUNT, client, amount);
+	}   
+	
+	public void handleSetDiscount(ConnectionToClient client, Object[] message) {
+    	String username1 = (String)message[1];
+    	double amount1 = (double)message[2];
+    	dbController.updateDiscountAmount(username1, amount1);
+	}   
+	
+    // Retrieve orders for a specific username
+	public void handleUserOrders(ConnectionToClient client, Object[] message) {
+    	List<Order> orders = dbController.getOrdersByUsername((String)message[1]);
+    	server.sendMessageToClient(EnumClientOperations.USERS_ORDERS, client, orders);
+
+	}   	
+
 }
