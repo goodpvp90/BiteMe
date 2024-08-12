@@ -21,15 +21,18 @@ import reports.QuarterlyReport;
  */
 public class ReportController {
     private Server server;
+    private DBController dbController;
     private ScheduledExecutorService scheduler;
+    
 
     /**
      * Constructs a ReportController for the given server.
      *
      * @param server the server instance to associate with this ReportController
      */
-    public ReportController(Server server) {
+    public ReportController(Server server, DBController dbController) {
         this.server = server;
+        this.dbController = dbController;
         scheduler = Executors.newScheduledThreadPool(1);
         scheduleNextExecution(scheduler);
     }
@@ -66,21 +69,21 @@ public class ReportController {
      * Calls the dbController's method to generate the orders report.
      */
     private void generateOrdersReport() {
-        server.dbController.generateOrdersReport();
+        dbController.generateOrdersReport();
     }
 
     /**
      * Calls the dbController's method to generate the income report.
      */
     private void generateIncomeReport() {
-        server.dbController.generateIncomeReport();
+        dbController.generateIncomeReport();
     }
 
     /**
      * Calls the dbController's method to generate the performance report.
      */
     private void generatePerformanceReport() {
-        server.dbController.generatePerformanceReport();
+        dbController.generatePerformanceReport();
     }
     
     /**
@@ -91,7 +94,7 @@ public class ReportController {
      * @param client the ConnectionToClient object representing the client requesting the report
      */
     public void getIncomeReport(IncomeReport incomeReport, ConnectionToClient client) {
-    	Object result = server.dbController.getIncomeReport(incomeReport);
+    	Object result = dbController.getIncomeReport(incomeReport);
         manageDBReturn(result, client, "INCOME_REPORT");
     }
     
@@ -104,7 +107,7 @@ public class ReportController {
      * @param client the to which the report will be sent
      */
     public void getOrdersReport(OrdersReport ordersReport, ConnectionToClient client) {
-        Object result = server.dbController.getOrdersReport(ordersReport);
+        Object result = dbController.getOrdersReport(ordersReport);
         manageDBReturn(result, client, "ORDERS_REPORT");
     }
 
@@ -115,7 +118,7 @@ public class ReportController {
      * @param client the to which the report will be sent
      */
     public void getPerformanceReport(PerformanceReport performanceReport, ConnectionToClient client) {
-        Object result = server.dbController.getPerformanceReport(performanceReport);
+        Object result = dbController.getPerformanceReport(performanceReport);
         manageDBReturn(result, client, "PERFORMANCE_REPORT");
     }
 
@@ -151,17 +154,17 @@ public class ReportController {
      */
     
     public void getQuarterlyReport(QuarterlyReport qreport, ConnectionToClient client) {
-    	Object getResult = server.dbController.getQuarterlyReport(qreport);
+    	Object getResult = dbController.getQuarterlyReport(qreport);
     	if (getResult instanceof QuarterlyReport) {
-    		 List<Double> incomes = server.dbController.getIncomeListForQuarterly(qreport);
+    		 List<Double> incomes = dbController.getIncomeListForQuarterly(qreport);
     		 server.sendMessageToClient(EnumClientOperations.QUARTERLY_REPORT, client, new Object[] {(QuarterlyReport)getResult, incomes});
     	}else {
-    		boolean createResult = server.dbController.createQuarterlyReport(qreport);
+    		boolean createResult = dbController.createQuarterlyReport(qreport);
     		if (createResult) {
-    			Object newGetResult = server.dbController.getQuarterlyReport(qreport);
+    			Object newGetResult = dbController.getQuarterlyReport(qreport);
     			if (newGetResult instanceof QuarterlyReport) {
     				System.out.println("GOT HERE");
-    	    		List<Double> incomes = server.dbController.getIncomeListForQuarterly(qreport);
+    	    		List<Double> incomes = dbController.getIncomeListForQuarterly(qreport);
     	    		server.sendMessageToClient(EnumClientOperations.QUARTERLY_REPORT, client, new Object[] {(QuarterlyReport)newGetResult, incomes});
     			}else {
     				server.sendMessageToClient(EnumClientOperations.QUARTERLY_REPORT_ERROR, client, newGetResult);

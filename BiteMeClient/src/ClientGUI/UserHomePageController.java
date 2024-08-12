@@ -273,12 +273,14 @@ public class UserHomePageController {
      */
     private void changeHelloTextAndHeadline() {
         String userType = "";
+        boolean staff = true;//if staff true print the branch for staff members
         
         if (user.getType() == null) {
             userType = "Unregistered Customer";
         } else {
             switch(user.getType()) {
                 case CEO:
+                    staff= false;
                     userType = "CEO";
                     break;
                 case BRANCH_MANAGER:
@@ -291,6 +293,7 @@ public class UserHomePageController {
                 	userType = "Qualified Worker";
                     break;
                 case CUSTOMER:
+                    staff= false;
                 	switch(user.getCustomerType()) {
                 	case BUSINESS:
                 		userType = "Business Customer";
@@ -304,7 +307,13 @@ public class UserHomePageController {
                 	}
             }
         } 
-        headlineText.setText(user.getUsername() + ", " + userType);
+        
+        if(staff)
+        	headlineText.setText(user.getUsername() + ", " + userType + "\nBranch: " + user.getHomeBranch());
+        else
+        	headlineText.setText(user.getUsername() + ", " + userType);
+
+        
         if (user.getType()==EnumType.UN_CUSTOMER) {
             // For unregistered customer
             welcomeText.setText("Hello, looks like"

@@ -6,68 +6,48 @@
 <?import javafx.scene.control.PasswordField?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.ColumnConstraints?>
-<?import javafx.scene.layout.GridPane?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.RowConstraints?>
-<?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
 <AnchorPane prefHeight="600.0" prefWidth="800" stylesheets="@server.css" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ServerGUI.serverController">
    <children>
-      <VBox alignment="TOP_CENTER" layoutX="14.0" layoutY="14.0" prefHeight="600" prefWidth="385.0" spacing="20.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="327.3333333333333" AnchorPane.topAnchor="14.0">
-         <children>
-            <Text fx:id="headlineText" text="Server">
-               <font>
-                  <Font size="36.0" />
-               </font>
-            </Text>
-            <Text text="Server configuration">
-               <font>
-                  <Font size="18.0" />
-               </font>
-            </Text>
-            <GridPane alignment="CENTER" hgap="10" prefHeight="185.0" prefWidth="448.0" vgap="10">
-               <columnConstraints>
-                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="200.0" />
-               </columnConstraints>
-               <rowConstraints>
-                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-               </rowConstraints>
-               <children>
-                  <Label text="IP:" />
-                  <Text fx:id="IPText" GridPane.columnIndex="1" />
-                  <Label text="Port:" GridPane.rowIndex="1" />
-                  <TextField fx:id="portText" prefHeight="30.0" prefWidth="215.0" text="5555" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                  <Label text="DB name:" GridPane.rowIndex="2" />
-                  <TextField fx:id="DBNameText" text="jdbc:mysql://localhost:3306/biteme" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                  <Label text="DB user:" GridPane.rowIndex="3" />
-                  <TextField fx:id="DBuser" text="root" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-                  <Label text="DB password:" GridPane.rowIndex="4" />
-                  <PasswordField fx:id="DBPassword" prefHeight="21.0" prefWidth="252.0" text="Aa123456" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-               </children>
-            </GridPane>
-            <Label fx:id="ErrorServerInput" textFill="RED" visible="false" />
-            <VBox alignment="CENTER" spacing="10" />
-            <HBox alignment="CENTER" spacing="20">
-               <children>
-                  <Button fx:id="connectButton" onAction="#handleConnectButton" text="Connect" />
-                  <Button fx:id="disconnectButton" disable="true" onAction="#handleDisconnectButton" text="Disconnect" />
-                  <Button fx:id="quitButton" onAction="#handleQuitButton" styleClass="logout-button" text="Quit" />
-               </children>
-            </HBox>
-         </children>
-      </VBox>
-      <ListView fx:id="clientsListView" layoutX="490.0" layoutY="162.0" prefHeight="541.0" prefWidth="310.0" />
-      <Label layoutX="491.0" layoutY="139.0" text="Connected Clients" />
-      <HBox alignment="CENTER" layoutX="436.0" layoutY="114.0" spacing="20" />
-      <Label layoutX="492.0" layoutY="114.0" prefHeight="11.0" prefWidth="89.0" text="Server Status:" />
-      <Label fx:id="statusLabel" layoutX="587.0" layoutY="114.0" text="Stopped" />
+      <ListView fx:id="clientsListView" layoutX="449.0" layoutY="162.0" prefHeight="277.0" prefWidth="328.0" />
+      <Label layoutX="558.0" layoutY="138.0" prefWidth="113.0" text="Connected Clients" />
+      <Label layoutX="52.0" layoutY="455.0" prefHeight="11.0" prefWidth="89.0" text="Server Status:">
+         <font>
+            <Font size="14.0" />
+         </font></Label>
+      <Label fx:id="statusLabel" layoutX="151.0" layoutY="455.0" text="Stopped">
+         <font>
+            <Font size="14.0" />
+         </font></Label>
+      <Text fx:id="headlineText" layoutX="343.0" layoutY="62.0" text="Server">
+         <font>
+            <Font size="36.0" />
+         </font>
+      </Text>
+      <Text layoutX="323.0" layoutY="96.0" text="Server configuration">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </Text>
+      <Button fx:id="connectButton" layoutX="99.0" layoutY="357.0" onAction="#handleConnectButton" text="Connect" />
+      <Button fx:id="disconnectButton" disable="true" layoutX="188.0" layoutY="358.0" onAction="#handleDisconnectButton" text="Disconnect" />
+      <Button fx:id="quitButton" layoutX="291.0" layoutY="358.0" onAction="#handleQuitButton" styleClass="logout-button" text="Quit" />
+      <PasswordField fx:id="DBPassword" layoutX="155.0" layoutY="300.0" prefHeight="31.0" prefWidth="215.0" text="Aa123456" />
+      <Label layoutX="59.0" layoutY="304.0" text="DB password:" />
+      <Label layoutX="91.0" layoutY="268.0" text="DB user:" />
+      <Label layoutX="83.0" layoutY="232.0" text="DB name:" />
+      <Label layoutX="114.0" layoutY="194.0" text="Port:" />
+      <TextField fx:id="DBuser" layoutX="155.0" layoutY="263.0" prefHeight="31.0" prefWidth="215.0" text="root" />
+      <TextField fx:id="DBNameText" layoutX="155.0" layoutY="225.0" prefHeight="31.0" prefWidth="215.0" text="jdbc:mysql://localhost:3306/biteme" />
+      <TextField fx:id="portText" layoutX="156.0" layoutY="189.0" prefHeight="30.0" prefWidth="215.0" text="5555" />
+      <Text fx:id="IPText" layoutX="162.0" layoutY="180.0" text="ip details" />
+      <Label layoutX="128.0" layoutY="165.0" text="IP:" />
+      <Text fx:id="ErrorServerInput" fill="RED" layoutX="57.0" layoutY="525.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Error Text" textAlignment="CENTER" visible="false" wrappingWidth="685.3256225585938">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </Text>
    </children>
 </AnchorPane>

@@ -12,14 +12,18 @@ import userEntities.User;
 
 public class UserController {
 	private Server server;
-	
-    public UserController(Server server) {
+    private NotificationController notificationController;
+	private DBController dbController;
+
+    public UserController(Server server, NotificationController notificationController, DBController dbController) {
 		this.server = server;
+		this.notificationController = notificationController;
+		this.dbController = dbController;
 	}
 
 	public boolean login(ConnectionToClient client, Object[] message) {
     	User user = (User)message[1];
-        Object result = server.dbController.validateLogin(user);
+        Object result = dbController.validateLogin(user);
 		if (result instanceof String) {
 			server.sendMessageToClient(EnumClientOperations.USER,client, result);
 			return false;
@@ -37,9 +41,9 @@ public class UserController {
 			user.setType((EnumType)details.get(8));
 			
 			if (user.getType() == EnumType.CUSTOMER)
-				user.setCustomerType(server.dbController.getCustomerType(user.getUsername()));
+				user.setCustomerType(dbController.getCustomerType(user.getUsername()));
 			//client.setInfo("user", user); //Store information into client object
-			server.addToClients(user.getUsername(), client);
+			notificationController.addToClients(user.getUsername(), client);
 			server.sendMessageToClient(EnumClientOperations.USER,client,(Object)user);
 			return true;
 		}
@@ -47,18 +51,18 @@ public class UserController {
     
     public void logout(ConnectionToClient client, Object[] message) {
         User user = (User) message[1];
-        boolean logoutSuccess = server.dbController.logout(user.getUsername());
+        boolean logoutSuccess = dbController.logout(user.getUsername());
 
         if (logoutSuccess) {
             user.setLogged(false);
-            server.removeFromClients(user.getUsername());
+            notificationController.removeFromClients(user.getUsername());
         }
 
     }
     
     public void checkUserForCreation(ConnectionToClient client, String username) {
         try {
-            User result = server.dbController.searchUsername(username);
+            User result = dbController.searchUsername(username);
             if (result != null) {
                 server.sendMessageToClient(EnumClientOperations.CHECK_USER, client, result);
             } else {
@@ -75,7 +79,7 @@ public class UserController {
         System.out.println("Im after USER after CREATEACCOUNT");
         boolean result = false;
         try {
-            result = server.dbController.createUser(user.getId(), user.getUsername(), user.getPassword(), user.getEmail(), user.getPhone(),
+            result = dbController.createUser(user.getId(), user.getUsername(), user.getPassword(), user.getEmail(), user.getPhone(),
                     user.getFirstName(), user.getLastName(), user.getHomeBranch(), user.getType(), user.getCustomerType(), user.getCreditCard());
         } catch (Exception e) {
             System.out.println("Exception occurred while calling createUser:");
@@ -93,6 +97,6 @@ public class UserController {
     }
     
     public boolean changeHomeBranch(User user) {
-    	return server.dbController.changeHomeBranch(user);
+    	return dbController.changeHomeBranch(user);
     }
 }
