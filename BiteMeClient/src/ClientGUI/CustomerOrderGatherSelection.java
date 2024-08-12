@@ -198,7 +198,6 @@ public class CustomerOrderGatherSelection {
 		this.selectedDishes = selectedDishesCount;
 	}
 	
-	/////////////////////////////////////////////////////////////////////
 	public void setBooleanParam(boolean[] param) {
 		earlyChoosed = param[0];
 		setVisibleForChoiceOfDateAndTime(earlyChoosed);

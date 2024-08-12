@@ -18,6 +18,7 @@ import server.DBController;
 import server.Server;
 
 public class serverController {
+	
     private Server server;
     @FXML
     private GridPane gridPane;
@@ -31,7 +32,6 @@ public class serverController {
     private Button quitButton;
     @FXML
     private ListView<String> clientsListView;
-    
     @FXML 
     private TextField portText;
     @FXML 

@@ -1,10 +1,7 @@
 package ClientGUI;
 
 import java.io.IOException;
-import java.net.ConnectException;
-
 import client.Client;
-import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -64,18 +61,6 @@ public class ClientConnectController {
             showError("The IP address or port number is invalid. Please check and try again.");
         }
     }
-//		if (IPandPortLegal(serverIp, serverPort)) {
-//			try {
-//			Client.initialize(serverIp, serverPort);
-//			}
-//			catch(ConnectException e) {
-//				showError("Connect to server port failed, please try again");
-//				return;
-//			}
-//
-//			launchClientLoginUI();
-//		}
-
 
     /**
      * Validates the IP address and port number entered by the user.

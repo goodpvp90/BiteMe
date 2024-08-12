@@ -5,34 +5,48 @@ import java.util.Arrays;
 
 import enums.EnumDish;
 
-public class DishSalad extends Dish{
+/**
+ * The DishSalad class represents a salad dish in the restaurant's menu.
+ */
+public class DishSalad extends Dish {
 
-	//private ArrayList<String> optionals; NO NEED
-    // Method to get the optionals list
-	
-	public DishSalad() {
-		super();
-		// TODO Auto-generated constructor stub
-	}
-
-	public DishSalad(String dishName, boolean isGrill, double price, int menuId) {
-		super(dishName, price, menuId, isGrill);
-		this.setDishType(EnumDish.SALAD);
+    /**
+     * Parameterized constructor for the DishSalad class.
+     * Initializes a new instance with the specified dish name, grilling status, price, and menu ID.
+     * Sets the dish type to SALAD.
+     *
+     * @param dishName The name of the salad dish.
+     * @param isGrill Indicates whether the dish is grilled.
+     * @param price The price of the dish.
+     * @param menuId The ID associated with the menu to which the dish belongs.
+     */
+    public DishSalad(String dishName, boolean isGrill, double price, int menuId) {
+        super(dishName, price, menuId, isGrill);
+        this.setDishType(EnumDish.SALAD);
         optionals = new ArrayList<>(Arrays.asList("Big", "Small"));
-	}
-	
-	@Override
+    }
+
+    /**
+     * Returns the list of optional items or choices associated with the salad dish.
+     *
+     * @return The list of optionals.
+     */
+    @Override
     public ArrayList<String> getOptionals() {
         return optionals;
     }
-	
-    // Method to add an optional value to the list
+
+    /**
+     * Adds an optional item to the list of optionals for the salad dish.
+     *
+     * @param optional The optional item to add.
+     * @return true if the item was successfully added, false if the item was null or already exists in the list.
+     */
     public boolean addOptional(String optional) {
         if (optional != null && !optionals.contains(optional)) {
             optionals.add(optional);
-            return true; // Indicate that the value was successfully added
+            return true;
         }
-        return false; // Indicate that the value was not added (either null or already exists)
+        return false;
     }
-
 }

@@ -127,7 +127,7 @@ public class WorkerPendingOrders {
         this.user = user;     
         pendingOrdersLoader();        
     }
-    /////********************//////////////******
+    ///////////////////******
     public void pendingOrdersLoader()
     {    	
     	EnumBranch homeBranch = user.getHomeBranch();   	    	
@@ -205,7 +205,7 @@ public class WorkerPendingOrders {
     private void handleApproveOrderAction() {
  		Order selectedOrder = orderTableView.getSelectionModel().getSelectedItem();
         if (selectedOrder != null) {       	
-        	client.updateOrderStatus(selectedOrder.getOrderId(),EnumOrderStatus.IN_PROGRESS,"Order " + selectedOrder.getOrderId()+": Your order has been approved and is being prepared!");        	
+        	client.updateOrderStatus(selectedOrder.getOrderId(),EnumOrderStatus.IN_PROGRESS,"Order " + selectedOrder.getOrderId()+": Your order has been approved and is being prepared!",selectedOrder.isDelivery());        	
             selectedOrder.setStatus(EnumOrderStatus.IN_PROGRESS);
             orderTableView.refresh();
             updateButtonStates(selectedOrder);           
@@ -222,14 +222,14 @@ public class WorkerPendingOrders {
             if (selectedOrder.isDelivery()) {
                 etaComboBox.setVisible(true);
                 if (etaComboBox.getValue() != null && !etaComboBox.getValue().equals("-Choose Comment-")) {
-                    client.updateOrderStatus(selectedOrder.getOrderId(), EnumOrderStatus.READY, "Order " + selectedOrder.getOrderId()+": Your order is ready and the delivery is on its way!\n Estimated time of arrival will be "+etaComboBox.getValue());
+                    client.updateOrderStatus(selectedOrder.getOrderId(), EnumOrderStatus.READY, "Order " + selectedOrder.getOrderId()+": Your order is ready and the delivery is on its way!\n Estimated time of arrival will be "+etaComboBox.getValue(),selectedOrder.isDelivery());
                 } else {
                     showError("ETA must be provided for delivery orders.");
                     return; 
                 }
             } else {
                 // If it's not a delivery order, allow status update without checking etaComboBox
-                client.updateOrderStatus(selectedOrder.getOrderId(), EnumOrderStatus.COMPLETED,"Order " + selectedOrder.getOrderId()+": Your order is ready for pickup!");
+                client.updateOrderStatus(selectedOrder.getOrderId(), EnumOrderStatus.COMPLETED,"Order " + selectedOrder.getOrderId()+": Your order is ready for pickup!",selectedOrder.isDelivery());
             }
             // Remove order from the table after setting status to READY
             selectedOrder.setStatus(EnumOrderStatus.READY);
