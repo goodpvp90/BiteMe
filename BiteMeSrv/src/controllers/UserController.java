@@ -110,12 +110,9 @@ public class UserController {
         } catch (Exception e) {
             e.printStackTrace();
         }
-    	if (!result) {
-    		server.sendMessageToClient(EnumClientOperations.EROR,client, result);    		
-    	}
-    	else {
+    	if (result) 
     		server.sendMessageToClient(EnumClientOperations.CREATED_ACCOUNT,client, (Object)user);
-    	}
+    	
     }
     
 	public void handleChangeHomeBranch(ConnectionToClient client, Object[] message) {

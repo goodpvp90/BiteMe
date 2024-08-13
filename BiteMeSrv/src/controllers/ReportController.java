@@ -132,11 +132,8 @@ public class ReportController {
      */
     private void manageDBReturn(Object result, ConnectionToClient client, String reportType) {
         if (result instanceof String) {
-            if ("no such report exists".equals(result)) {
+            if ("no such report exists".equals(result)) 
                 server.sendMessageToClient(EnumClientOperations.REPORT_ERROR, client, result);
-            } else {
-                server.sendMessageToClient(EnumClientOperations.SQL_ERROR, client, result);
-            }
         } else {
             server.sendMessageToClient(EnumClientOperations.valueOf(reportType), client, result);
         }
@@ -167,8 +164,6 @@ public class ReportController {
     				System.out.println("GOT HERE");
     	    		List<Double> incomes = dbController.getIncomeListForQuarterly(qreport);
     	    		server.sendMessageToClient(EnumClientOperations.QUARTERLY_REPORT, client, new Object[] {(QuarterlyReport)newGetResult, incomes});
-    			}else {
-    				server.sendMessageToClient(EnumClientOperations.QUARTERLY_REPORT_ERROR, client, newGetResult);
     			}
     		}
     	}	
