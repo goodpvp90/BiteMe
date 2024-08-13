@@ -3,6 +3,8 @@ package controllers;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.List;
+
+import containers.ListContainer;
 import enums.EnumClientOperations;
 import enums.EnumOrderStatus;
 import ocsf.server.ConnectionToClient;
@@ -26,12 +28,12 @@ public class OrderController {
     public void handleInsertOrder(ConnectionToClient client, Object[] message) {
     	// Extract data from the message
         Order newOrder = (Order) message[1];
-        //TODO 
-        @SuppressWarnings("unchecked")
-		List<Dish> dishesInOrder = (List<Dish>) message[2];
+        ListContainer dishesInOrderContainer = (ListContainer)message[2];
+		List<Dish> dishesInOrder = dishesInOrderContainer.getListDish();
+
         // Call the method to create the order
         try {
-        	boolean order = createOrder(newOrder, dishesInOrder, client);
+        	createOrder(newOrder, dishesInOrder, client);
         	notificationController.notifyWorker(dbController.getLocationByBranchId(newOrder.getBranchId()));
         } catch (Exception e) {
         	e.printStackTrace();;
@@ -89,7 +91,10 @@ public class OrderController {
 	public void handleDishesInOrder(ConnectionToClient client, Object[] message) {
     	int orderid = (int)message[1];
     	List<DishInOrder> dishes = dbController.getDishesInOrder(orderid);
-    	server.sendMessageToClient(EnumClientOperations.DISHES_IN_ORDER, client, dishes);
+	    //encapsulate the list to avoid suppress warnings
+    	ListContainer dishesContainer = new ListContainer();
+    	dishesContainer.setListDishInOrder(dishes);
+    	server.sendMessageToClient(EnumClientOperations.DISHES_IN_ORDER, client, dishesContainer);
 	}   
 
 	public void handleOrderInTime(ConnectionToClient client, Object[] message) {

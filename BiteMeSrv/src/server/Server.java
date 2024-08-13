@@ -68,7 +68,6 @@ public class Server extends AbstractServer {
 			Object[] message = (Object[]) msg;
 			operation = (EnumServerOperations) message[0];
         	System.out.println(operation);
-        	System.out.println(notificationController.areConnectionsEqual(notificationController.getClient("ben"),client));
 			switch (operation) {
 			case CLIENT_CONDITION:
 				controller.displayClientDetails((String[]) message[1]);

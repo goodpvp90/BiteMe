@@ -16,6 +16,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import containers.ListContainer;
 import enums.EnumBranch;
 import enums.EnumDish;
 import enums.EnumOrderStatus;
@@ -133,7 +134,10 @@ public class DBController {
 	        e.printStackTrace();
 	        return (Object) e.toString();
 	    }
-	    return (Object) userDetails;
+	    //encapsulate the list to avoid suppress warnings
+	    ListContainer userDetailsContainer = new ListContainer();
+	    userDetailsContainer.setlistObject(userDetails);
+	    return (Object) userDetailsContainer;
 	}
 
 	private boolean updateIsLoggedStatus(String username) {
