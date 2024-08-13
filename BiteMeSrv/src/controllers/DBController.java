@@ -36,14 +36,24 @@ import restaurantEntities.DishSalad;
 import restaurantEntities.Order;
 import userEntities.User;
 
-
+/**
+ * Manages database connections.
+ */
 public class DBController {
-	//EXAMPLE OF JDBC URL:
-	//private static String JDBC_URL = "jdbc:mysql://localhost:3306/biteme?serverTimezone=UTC&useSSL=false&allowPublicKeyRetrieval=true";
-
-
+	/**
+	 * Represents the connection to the database.
+	 */
 	private Connection connection;
 
+    /**
+     * Connects to the database with the provided credentials.
+     *
+     * @param jdbc_url the JDBC URL of the database.
+     * @param username the username for the connection.
+     * @param password the password for the connection.
+     * @throws ClassNotFoundException if the JDBC driver is not found.
+     * @throws SQLException if a database access error occurs.
+     */
 	public void connect(String jdbc_url, String username, String password) throws ClassNotFoundException, SQLException {
 		String url = jdbc_url + "?serverTimezone=Asia/Jerusalem&useSSL=false&allowPublicKeyRetrieval=true";
 		// Load MySQL JDBC Driver
@@ -55,6 +65,9 @@ public class DBController {
 		
 	}
 
+    /**
+     * Closes the database connection.
+     */
 	public void closeConnection() {
 		if (connection != null) {
 			try {
@@ -67,7 +80,13 @@ public class DBController {
 		}
 	}
 
-
+	/**
+	 * Validates the login credentials of a user.
+	 * 
+	 * @param user the user object containing login details (username and password)
+	 * @return an Object containing either a string message indicating the result of the login attempt 
+	 *         or a ListContainer containing user details if the login is successful
+	 */
 	public Object validateLogin(User user) {
 	    List<Object> userDetails = new ArrayList<>();
 	    String username = user.getUsername(), password = user.getPassword();
@@ -139,7 +158,13 @@ public class DBController {
 	    userDetailsContainer.setlistObject(userDetails);
 	    return (Object) userDetailsContainer;
 	}
-
+	
+	/**
+	 * Updates the login status of a user to logged in.
+	 * 
+	 * @param username the username of the user whose status needs to be updated
+	 * @return true if the status was updated successfully; {@code false} otherwise
+	 */
 	private boolean updateIsLoggedStatus(String username) {
 	    String query = "UPDATE users SET isLogged = 1 WHERE username = ?";
 	    try {
@@ -178,6 +203,12 @@ public class DBController {
 		return null;
 	}
 	
+	/**
+	 * Logs out a user by updating their login status to logged out.
+	 * 
+	 * @param username the username of the user to log out
+	 * @return {@code true} if the logout was successful (i.e., the status was updated); {@code false} otherwise
+	 */
     public boolean logout(String username) {
         String query = "UPDATE users SET isLogged = 0 WHERE username = ?";
         try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
@@ -190,7 +221,22 @@ public class DBController {
         }
     }
 
- // Create or update user by managers
+    /**
+     * Creates or updates a user in the database. Also handles customer-specific information if applicable.
+     * 
+     * @param id the unique identifier for the user
+     * @param username the username of the user
+     * @param password the password of the user (should be hashed before storing)
+     * @param email the email address of the user
+     * @param phone the phone number of the user
+     * @param firstName the first name of the user
+     * @param lastName the last name of the user
+     * @param enumBranch the branch associated with the user (can be {@code null})
+     * @param type the type of user (e.g., CUSTOMER, MANAGER)
+     * @param customerType the type of customer (can be {@code null}) if the user is a CUSTOMER
+     * @param creditCard the credit card number of the customer (can be {@code null}) if the user is a CUSTOMER
+     * @return true if the user was created or updated successfully; {@code false} otherwise
+     */
     public boolean createUser(String id, String username, String password, String email, String phone, String firstName, String lastName, EnumBranch enumBranch, EnumType type, EnumType customerType, String creditCard) {
         String sqlUpdateUsers = "UPDATE users SET password = ?, email = ?, phone = ?, firstname = ?, lastname = ?, home_branch = ?, type = ?, id = ? WHERE username = ?";
         String sqlInsertCustomers = "INSERT INTO customers (username, credit_card, type_of_customer) VALUES (?, ?, ?) ON DUPLICATE KEY UPDATE credit_card = VALUES(credit_card), type_of_customer = VALUES(type_of_customer)";
@@ -239,6 +285,12 @@ public class DBController {
         }
     }
     
+    /**
+     * Changes the home branch of a user.
+     * 
+     * @param user the user whose home branch is to be updated
+     * @return {@code true} if the home branch was updated successfully; {@code false} otherwise
+     */
     public boolean changeHomeBranch(User user) {
         PreparedStatement preparedStatement = null;
     	 // SQL query to update the user's home branch
@@ -260,6 +312,13 @@ public class DBController {
 	    }
     }
 	
+    /**
+     * Updates the status of an order and records the order receive time if applicable.
+     * 
+     * @param orderId the ID of the order to update
+     * @param status the new status of the order
+     * @throws SQLException if a database access error occurs
+     */
 	public void updateOrderStatus(int orderId, EnumOrderStatus status) throws SQLException {
 	    String checkDeliveryQuery = "SELECT delivery FROM orders WHERE order_id = ?";
 	    String updateStatusQuery = "UPDATE orders SET status = ? WHERE order_id = ?";
@@ -290,7 +349,13 @@ public class DBController {
 	}
 
 	
-	// Update order start time when worker accepts the order.
+	/**
+	 * Updates the order start time when a worker accepts the order. If the `order_ready_time` is null,
+	 * it sets it to the current time plus one hour. Otherwise, it means the order
+	 * is an early order so it adds 20 minutes to the existing time.
+	 * 
+	 * @param orderId the ID of the order to update
+	 */
 	public void updateOrderStartTime(int orderId) {
 	    String selectQuery = "SELECT order_ready_time FROM orders WHERE order_id = ?";
 	    String updateQuery = "UPDATE orders SET order_ready_time = ? WHERE order_id = ?";
@@ -326,7 +391,12 @@ public class DBController {
 	    }
 	}
 	
-	//GET DISCOUNT FOR USERNAME
+	/**
+	 * Retrieves the current discount amount for a given username.
+	 * 
+	 * @param username the username for which to retrieve the discount amount
+	 * @return the discount amount for the specified username, or 0.0 if no discount is found or an error occurs
+	 */
 	public double getCurrentDiscountAmount(String username) {
 	    String query = "SELECT discount_amount FROM discounts WHERE username = ?";
 	    try (PreparedStatement stmt = connection.prepareStatement(query)) {
@@ -341,7 +411,13 @@ public class DBController {
 	    return 0.0;
 	}
 	
-	//UPDATE NEW DISCOUNT AMOUNT FOR USER
+	/**
+	 * Updates the discount amount for a user. If the user already has a discount, it updates the amount;
+	 * otherwise, it inserts a new record.
+	 * 
+	 * @param username the username of the user
+	 * @param discountAmount the new discount amount to set
+	 */
 	public void updateDiscountAmount(String username, double discountAmount) {
 	    String query = "INSERT INTO discounts (username, discount_amount) VALUES (?, ?) ON DUPLICATE KEY UPDATE discount_amount = ?";
 	    try (PreparedStatement stmt = connection.prepareStatement(query)) {
@@ -354,7 +430,13 @@ public class DBController {
 	    }
 	}
 	
-	
+	/**
+	 * Updates the order receive time and calculates the discount based on the order's ready time and total price.
+	 * If the order is received after the ready time, a discount amount is calculated and updated for the user.
+	 * 
+	 * @param orderId the ID of the order to update
+	 * @param orderReceiveTime the timestamp when the order was received
+	 */
 	public void updateOrderReceiveTimeAndInsertDiscount(int orderId, Timestamp orderReceiveTime) {
 	    String selectQuery = "SELECT order_ready_time, total_price, username FROM orders WHERE order_id = ?";
 	    String updateOrderQuery = "UPDATE orders SET order_receive_time = ? WHERE order_id = ?";
@@ -409,6 +491,12 @@ public class DBController {
 	    }
 	}
 
+	/**
+	 * Checks if the order arrived on time by comparing the order ready time with the order receive time.
+	 * 
+	 * @param orderId the ID of the order to check
+	 * @return true if the order arrived on time or early, false if it was late or if there was an issue retrieving the data
+	 */
     public boolean isOrderArrivedOnTime(int orderId) {
         String selectQuery = "SELECT order_ready_time, order_receive_time FROM orders WHERE order_id = ?";
 
@@ -441,8 +529,12 @@ public class DBController {
     }
 
 
-    
-    // Get orders for a specific username
+    /**
+     * Retrieves a list of orders associated with a specific username.
+     * 
+     * @param username the username for which to retrieve orders
+     * @return a list of Order objects for the specified username; if no orders are found, returns an empty list
+     */
     public List<Order> getOrdersByUsername(String username) {
         List<Order> orders = new ArrayList<>();
         String query = "SELECT * FROM orders WHERE username = ?";
@@ -470,8 +562,6 @@ public class DBController {
      * @return A list of pending orders for the specified branch.
      * @throws SQLException If there is an error querying the database.
      */
-    
-    
 	public List<Order> showPendingOrdersByBranch(int branchId) throws SQLException {
 	    String query = "SELECT o.*, d.receiver_name AS delivery_receiver_name, d.phone_number AS delivery_phone_number " +
 	                   "FROM orders o " +
@@ -525,7 +615,13 @@ public class DBController {
 
     
     
-    
+	/**
+	 * Creates a new order and inserts it into the database, including its associated dishes and delivery details if applicable.
+	 * 
+	 * @param order the Order object containing the order details
+	 * @param dishes a list of Dish objects associated with the order
+	 * @throws SQLException if an SQL error occurs during the operation
+	 */
     public void createOrder(Order order, List<Dish> dishes) throws SQLException {
         String insertOrderQuery = "INSERT INTO orders (username, branch_id, order_date, order_ready_time, order_receive_time, total_price, delivery, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
         String insertDishInOrderQuery = "INSERT INTO dish_in_order (order_id, dish_id, optional, comment, dish_name) VALUES (?, ?, ?, ?, ?)";
@@ -597,7 +693,13 @@ public class DBController {
         }
     }
     
-    
+    /**
+     * Searches for a user by username and retrieves their details from the database.
+     * 
+     * @param username the username of the user to search for
+     * @return a User object containing the user's details if found; otherwise, returns null
+     * @throws SQLException if an SQL error occurs during the operation
+     */
     public User searchUsername(String username) throws SQLException {
         String query = "SELECT * FROM users WHERE username = ?";
         try (PreparedStatement stmt = connection.prepareStatement(query)) {
@@ -640,6 +742,12 @@ public class DBController {
         }
     }
     
+    /**
+     * Retrieves a list of DishInOrder objects associated with a specific order.
+     * 
+     * @param orderId the ID of the order for which to retrieve dishes
+     * @return a list of DishInOrder objects associated with the specified order; if no dishes are found, returns an empty list
+     */
     public List<DishInOrder> getDishesInOrder(int orderId) {
         List<DishInOrder> dishesInOrder = new ArrayList<>();
         String sql = "SELECT * FROM dish_in_order WHERE order_id = ?";
@@ -748,7 +856,12 @@ public class DBController {
         }
     }
 
-    
+    /**
+     * Retrieves a list of Dish objects for a specific menu from the database.
+     * 
+     * @param menuId the ID of the menu to retrieve dishes for
+     * @return a list of Dish objects associated with the specified menu; the list may include different types of dishes
+     */
     public List<Dish> getMenu(int menuId) {
         String sql = "SELECT * FROM dishes WHERE menu_id = ?";
         List<Dish> dishes = new ArrayList<>();
@@ -800,6 +913,12 @@ public class DBController {
         return dishes;
     }
     
+    /**
+     * Updates the details of a specific Dish in the database.
+     * 
+     * @param dish the Dish object containing updated details
+     * @return true if the update was successful; false otherwise
+     */
     public boolean updateDish(Dish dish) {
         String updateSql = "UPDATE dishes SET dish_type = ?, dish_name = ?, price = ?, is_grill = ? WHERE dish_id = ?";
 
@@ -823,7 +942,6 @@ public class DBController {
      * and inserts it into the ordersreport table.
      * If a report for the same restaurant and month already exists, it updates the amount field.
      */
-    //===================================add completed
     public void generateOrdersReport() {
         String query = "INSERT INTO ordersreport (restaurant, dish_type, amount, month, year) " +
                 "SELECT o.branch_id AS restaurant, d.dish_type, COUNT(*) AS amount, " +
@@ -931,7 +1049,12 @@ public class DBController {
         return (Object)report;
     }
     
-    // Method to retrieve restaurant ID from its location
+    /**
+     * Retrieves the restaurant ID for a specific location from the database.
+     * 
+     * @param location the EnumBranch representing the restaurant location
+     * @return the branch ID of the restaurant at the specified location, or 0 if no matching restaurant is found or an error occurs
+     */
     private int getRestaurantIdByLocation(EnumBranch location){
         String query = "SELECT branch_id FROM restaurants WHERE location = ?";
         try (PreparedStatement pstmt = connection.prepareStatement(query)) {
@@ -1231,6 +1354,12 @@ public class DBController {
         return incomes;
     }
         
+    /**
+     * Retrieves the location of a restaurant by its branch ID.
+     * 
+     * @param branchId the ID of the restaurant branch
+     * @return the EnumBranch representing the location of the restaurant, or null if no matching branch is found or an error occurs
+     */
     public EnumBranch getLocationByBranchId(int branchId) {
     	EnumBranch branch = null;
         String query = "SELECT location FROM restaurants WHERE branch_id = ?";
@@ -1251,6 +1380,14 @@ public class DBController {
         return branch;
     } 
    
+    /**
+     * Saves a pending notification for a specific user and order.
+     * 
+     * @param username the username of the user to receive the notification
+     * @param orderId the ID of the order associated with the notification
+     * @param status the status of the notification
+     * @throws SQLException if a database access error occurs
+     */
     public void savePendingNotification(String username, int orderId, String status) throws SQLException {
         String query = "INSERT INTO pendingnotifications (username, orderNumber, status) VALUES (?, ?, ?)";
         try (PreparedStatement stmt = connection.prepareStatement(query)) {
@@ -1261,6 +1398,13 @@ public class DBController {
         }
     }
     
+    /**
+     * Retrieves the list of pending notifications for a specific user.
+     * 
+     * @param username the username of the user whose notifications are to be retrieved
+     * @return a List of notification statuses for the specified user
+     * @throws SQLException if a database access error occurs
+     */
     public List<String> getPendingNotifications(String username) throws SQLException {
         String query = "SELECT orderNumber, status FROM pendingnotifications WHERE username = ?";
         List<String> notifications = new ArrayList<>();
@@ -1275,6 +1419,12 @@ public class DBController {
         return notifications;
     }
     
+    /**
+     * Deletes all pending notifications for a specific user.
+     * 
+     * @param username the username of the user whose notifications are to be deleted
+     * @throws SQLException if a database access error occurs
+     */
     public void deletePendingNotifications(String username) throws SQLException {
         String query = "DELETE FROM pendingnotifications WHERE username = ?";
         try (PreparedStatement stmt = connection.prepareStatement(query)) {
@@ -1283,7 +1433,13 @@ public class DBController {
         }
     }
    
-    
+    /**
+     * Retrieves an order by its ID.
+     * 
+     * @param orderId the ID of the order to be retrieved
+     * @return an Order object representing the order, or null if no matching order is found
+     * @throws SQLException if a database access error occurs
+     */
     public Order getOrderById(int orderId) throws SQLException {
         String query = "SELECT * FROM orders WHERE order_id = ?";
         try (PreparedStatement stmt = connection.prepareStatement(query)) {
@@ -1305,7 +1461,13 @@ public class DBController {
         return null;
     }
 
-    //TODO USED WHEN DISCONNECTING THE SERVER.
+    /**
+     * Resets the logged status for all users to 0.
+     * This method is intended to be used when disconnecting the server to ensure
+     * that all users are logged out.
+     * 
+     * It prints the number of affected rows and an error message if an exception occurs.
+     */
     public void resetAllUserLoggedStatus() {
         String query = "UPDATE users SET isLogged = 0";
         try (PreparedStatement stmt = connection.prepareStatement(query)) {
@@ -1317,6 +1479,13 @@ public class DBController {
         }
     }
     
+    /**
+     * Checks if data of a specified type has been imported previously.
+     * 
+     * @param dataType the type of data to check (e.g., "users_table_import", "customers_table_import")
+     * @return true if the data has been imported; false otherwise
+     * @throws SQLException if a database access error occurs
+     */
     private boolean hasDataBeenImported(String dataType) throws SQLException {
         String checkSQL = "SELECT COUNT(*) FROM import_flags WHERE import_type = ?";
         try (PreparedStatement pstmt = connection.prepareStatement(checkSQL)) {
@@ -1327,6 +1496,12 @@ public class DBController {
         }
     }
 
+    /**
+     * Records an import operation for a specified data type to prevent duplicate imports.
+     * 
+     * @param dataType the type of data being recorded (e.g., "users_table_import", "customers_table_import")
+     * @throws SQLException if a database access error occurs
+     */
     private void recordImport(String dataType) throws SQLException {
         String insertSQL = "INSERT INTO import_flags (import_type) VALUES (?)";
         try (PreparedStatement pstmt = connection.prepareStatement(insertSQL)) {
@@ -1335,6 +1510,17 @@ public class DBController {
         }
     }
 
+    /**
+     * Imports user and customer data from external sources into the local database.
+     * 
+     * The method performs the following actions:
+     * Checks if user data has already been imported. If not, it copies data from
+     * `externalusers.users` to `biteme.users` and records the import.
+     * Checks if customer data has already been imported. If not, it copies data from
+     * `externalusers.customers` to `biteme.customers` and records the import.
+     * 
+     * @throws SQLException if a database access error occurs
+     */
     public void importUsers() throws SQLException {
         String usersImportType = "users_table_import";
         String customersImportType = "customers_table_import";

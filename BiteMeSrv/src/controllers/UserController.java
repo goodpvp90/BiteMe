@@ -12,18 +12,44 @@ import restaurantEntities.Order;
 import server.Server;
 import userEntities.User;
 
-
+/**
+ * Manages user-related operations for the server.
+ **/
 public class UserController {
-	private Server server;
+    /**
+     * The server instance.
+     */
+    private Server server;
+    
+    /**
+     * The notification controller instance.
+     */
     private NotificationController notificationController;
-	private DBController dbController;
+    
+    /**
+     * The database controller instance.
+     */
+    private DBController dbController;
 
+    /**
+     * Constructor for UserController.
+     *
+     * @param server the server instance
+     * @param notificationController the notification controller instance
+     * @param dbController the database controller instance
+     */
     public UserController(Server server, NotificationController notificationController, DBController dbController) {
 		this.server = server;
 		this.notificationController = notificationController;
 		this.dbController = dbController;
 	}
     
+    /**
+     * Handles user login.
+     *
+     * @param client  the client connection
+     * @param message the message containing user login details
+     */
     public void handleLogin(ConnectionToClient client, Object[] message) {
     	User user = (User)message[1];
         String username = user.getUsername();
@@ -46,6 +72,13 @@ public class UserController {
         }
 	}
     
+    /**
+     * Performs the login operation.
+     *
+     * @param client  the client connection
+     * @param message the message containing user login details
+     * @return true if login was successful, false otherwise
+     */
 	private boolean login(ConnectionToClient client, Object[] message) {
     	User user = (User)message[1];
         Object result = dbController.validateLogin(user);
@@ -74,6 +107,12 @@ public class UserController {
 		}
     }
     
+    /**
+     * Handles user logout.
+     *
+     * @param client  the client connection
+     * @param message the message containing user logout details
+     */
     public void logout(ConnectionToClient client, Object[] message) {
         User user = (User) message[1];
         boolean logoutSuccess = dbController.logout(user.getUsername());
@@ -85,11 +124,23 @@ public class UserController {
 
     }
     
+    /**
+     * Handles checking if a username exists.
+     *
+     * @param client  the client connection
+     * @param message the message containing the username to check
+     */
 	public void handleCheckUser(ConnectionToClient client, Object[] message) {
     	String usern = (String) message[1];
     	checkUserForCreation(client,usern);
 	}   
-	
+
+    /**
+     * Checks if a username exists in the database.
+     *
+     * @param client   the client connection
+     * @param username the username to check
+     */
     private void checkUserForCreation(ConnectionToClient client, String username) {
         try {
             User result = dbController.searchUsername(username);
@@ -104,6 +155,12 @@ public class UserController {
         }
     }
     
+    /**
+     * Handles account creation.
+     *
+     * @param client  the client connection
+     * @param message the message containing user account details
+     */
     public void createAccount(ConnectionToClient client, Object[] message) {
         User user = (User)message[1];
         boolean result = false;
@@ -118,25 +175,47 @@ public class UserController {
     	
     }
     
+    /**
+     * Handles changing a user's home branch.
+     *
+     * @param client  the client connection
+     * @param message the message containing user and new home branch details
+     */
 	public void handleChangeHomeBranch(ConnectionToClient client, Object[] message) {
     	boolean changeResult = dbController.changeHomeBranch((User)message[1]);
     	server.sendMessageToClient(EnumClientOperations.CHANGE_HOME_BRANCH, client, changeResult);
 	}   
     
+    /**
+     * Handles retrieving the current discount amount for a user.
+     *
+     * @param client  the client connection
+     * @param message the message containing the username
+     */
 	public void handleGetDiscount(ConnectionToClient client, Object[] message) {
     	String username = (String)message[1];
     	double amount = dbController.getCurrentDiscountAmount(username);
     	server.sendMessageToClient(EnumClientOperations.GET_DISCOUNT_AMOUNT, client, amount);
 	}   
 	
+    /**
+     * Handles setting the discount amount for a user.
+     *
+     * @param client  the client connection
+     * @param message the message containing the username and discount amount
+     */
 	public void handleSetDiscount(ConnectionToClient client, Object[] message) {
     	String username1 = (String)message[1];
     	double amount1 = (double)message[2];
     	dbController.updateDiscountAmount(username1, amount1);
 	}   
 	
-    // Retrieve orders for a specific username
-	public void handleUserOrders(ConnectionToClient client, Object[] message) {
+    /**
+     * Handles retrieving the orders for a specific user.
+     *
+     * @param client  the client connection
+     * @param message the message containing the username
+     */	public void handleUserOrders(ConnectionToClient client, Object[] message) {
     	List<Order> orders = dbController.getOrdersByUsername((String)message[1]);
     	//encapsulate the list to avoid suppress warnings
     	ListContainer ordersContainer = new ListContainer();
