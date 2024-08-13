@@ -20,7 +20,7 @@ public class UpdateMenuNavigationUI extends Application {
     	FXMLLoader loader =new FXMLLoader(getClass().getResource("UpdateMenuNavigation.fxml"));
         Parent root = loader.load();
         
-        primaryStage.setTitle("Customer Order Gather Selection");
+        primaryStage.setTitle("Update Menu");
         primaryStage.setScene(new Scene(root));
         
         UpdateMenuNavigation controller = loader.getController();

@@ -21,6 +21,7 @@ public class Server extends AbstractServer {
 	private OrderController orderController;
 	private UserController userController;
 	private NotificationController notificationController;
+	private UsersUtility usersutility;
 	private RestaurantController restaurantController;
 	
 	public Server(int port, String url, String username, String password) {
@@ -30,7 +31,8 @@ public class Server extends AbstractServer {
 		reportController = new ReportController(this, dbController);
 		userController = new UserController(this, notificationController, dbController);
 		orderController = new OrderController(this, notificationController, dbController);
-		restaurantController = new RestaurantController(this, dbController, notificationController);
+		usersutility = new UsersUtility(dbController);
+		restaurantController = new RestaurantController(this, dbController, notificationController, orderController);
 		
 		try {
 			dbController.connect(url, username, password);
@@ -42,6 +44,10 @@ public class Server extends AbstractServer {
 	
 	public DBController getDBController() {
 		return this.dbController;
+	}
+	
+	public UsersUtility getUsersUtility() {
+		return this.usersutility;
 	}
 
     public void sendMessageToClient(EnumClientOperations op, ConnectionToClient client, Object msg) {

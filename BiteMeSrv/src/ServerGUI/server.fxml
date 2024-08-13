@@ -19,7 +19,7 @@
       </HBox>
    </VBox>
    
-   <Text layoutX="323.0" layoutY="96.0" styleClass="instruction-text" text="Server configuration" />
+   <Text layoutX="124.0" layoutY="132.0" styleClass="instruction-text" text="Server configuration" wrappingWidth="160.4541015625" />
    
    <ListView fx:id="clientsListView" layoutX="449.0" layoutY="162.0" prefHeight="277.0" prefWidth="328.0" />
    <Label layoutX="558.0" layoutY="138.0" prefWidth="113.0" text="Connected Clients" />
@@ -27,8 +27,8 @@
    <Label layoutX="52.0" layoutY="455.0" prefHeight="11.0" prefWidth="89.0" text="Server Status:" />
    <Label fx:id="statusLabel" layoutX="151.0" layoutY="455.0" text="Stopped" />
    
-   <Button fx:id="connectButton" layoutX="99.0" layoutY="357.0" onAction="#handleConnectButton" text="Connect" />
-   <Button fx:id="disconnectButton" disable="true" layoutX="188.0" layoutY="358.0" onAction="#handleDisconnectButton" text="Disconnect" />
+   <Button fx:id="connectButton" layoutX="155.0" layoutY="357.0" onAction="#handleConnectButton" text="Connect" />
+   <Button fx:id="disconnectButton" disable="true" layoutX="244.0" layoutY="358.0" onAction="#handleDisconnectButton" text="Disconnect" />
    
    <PasswordField fx:id="DBPassword" layoutX="155.0" layoutY="300.0" prefHeight="31.0" prefWidth="215.0" text="Aa123456" />
    <Label layoutX="59.0" layoutY="304.0" text="DB password:" />
@@ -41,5 +41,5 @@
    <Text fx:id="IPText" fill="WHITE" layoutX="162.0" layoutY="180.0" text="ip details" />
    <Label layoutX="128.0" layoutY="165.0" text="IP:" />
    
-   <Text fx:id="ErrorServerInput" layoutX="57.0" layoutY="525.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="error-text" text="Error Text" textAlignment="CENTER" visible="false" wrappingWidth="685.3256225585938" />
+   <Text fx:id="ErrorServerInput" layoutX="57.0" layoutY="605.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="error-text" text="Error Text" textAlignment="CENTER" visible="false" wrappingWidth="685.3256225585938" />
 </AnchorPane>

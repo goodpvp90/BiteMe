@@ -127,7 +127,8 @@ public class WorkerPendingOrders {
         this.user = user;     
         pendingOrdersLoader();        
     }
-    /////*******//////////////***
+  
+    ///////////////////******
     public void pendingOrdersLoader()
     {    	
     	EnumBranch homeBranch = user.getHomeBranch();   	    	
