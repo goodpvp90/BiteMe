@@ -12,7 +12,10 @@ public class Order implements Serializable {
 
 
 	private static final long serialVersionUID = 1L;
+<<<<<<< HEAD
 	
+=======
+>>>>>>> branch 'Ido' of https://github.com/goodpvp90/BiteMe.git
     /** The unique identifier for the order. */
     private int orderId;
 

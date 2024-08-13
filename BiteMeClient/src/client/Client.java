@@ -121,7 +121,7 @@ public class Client extends AbstractClient {
 		String clientIP = InetAddress.getLocalHost().getHostAddress();
 		String clientHostName = InetAddress.getLocalHost().getHostName();
 		sendToServer(new Object[] { EnumServerOperations.CLIENT_CONDITION,
-				new String[] { clientIP, clientHostName, "start" } });
+				 new String[] { clientIP, clientHostName, "start" } });
 	}
 	/**
      * Returns the instance of the Client.
