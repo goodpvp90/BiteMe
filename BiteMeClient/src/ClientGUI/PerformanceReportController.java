@@ -72,6 +72,7 @@ public class PerformanceReportController {
             totalOrdersMonth += totalOrders;
             completedOrdersMonth += completedOrders;
         }
+        //Do the chart,Without that line wont be a chart.
         performanceChart.getData().addAll(completedSeries, notCompletedSeries);
         // Calculate overall performance percentage
         double performancePercentage = (double) completedOrdersMonth / totalOrdersMonth * 100;

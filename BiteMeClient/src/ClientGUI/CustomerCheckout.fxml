@@ -88,16 +88,16 @@
       </fill></Text>
     <Text fx:id="lateOrderDeliveryInfoText" fill="WHITE" layoutX="640.0" layoutY="182.0" strokeType="OUTSIDE" strokeWidth="0.0" text="User not eligible" />
     
-    <Text fx:id="compensationText" fill="#2614ed" layoutX="493.0" layoutY="216.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Compensation" visible="false">
+    <Text fx:id="compensationText" fill="#967a7a" layoutX="493.0" layoutY="216.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Compensation" visible="false">
         <font>
             <Font name="System Bold" size="16.0" />
         </font>
     </Text>
-    <Text fx:id="compensationMessageText" layoutX="493.0" layoutY="236.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Hello!&#10;we found you eligible for 50% off a compensation&#10;for a past late order.&#10;Would you like to use it?" visible="false" wrappingWidth="300.0" />
+    <Text fx:id="compensationMessageText" fill="WHITE" layoutX="493.0" layoutY="231.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Hello!&#10;We have found you eligible for 50% off a compensation&#10;for a past late order.&#10;Would you like to use it?" visible="false" wrappingWidth="329.0" />
     <Button fx:id="yesButton" layoutX="493.0" layoutY="311.0" mnemonicParsing="false" onAction="#handleYesCompensationButton" text="Yes" visible="false" />
-    <Button fx:id="noButton" layoutX="531.0" layoutY="311.0" mnemonicParsing="false" onAction="#handleNoCompensationButton" text="No" visible="false" />
-    <Text fx:id="compensationValueText" layoutX="493.0" layoutY="301.0" strokeType="OUTSIDE" strokeWidth="0.0" text="You got Text Compensation" visible="false" />
-    <Text fx:id="errorText" fill="RED" layoutX="530.0" layoutY="471.0" strokeType="OUTSIDE" strokeWidth="0.0" text="ErrorText" textAlignment="RIGHT" visible="false" wrappingWidth="300.0">
+    <Button fx:id="noButton" layoutX="548.0" layoutY="311.0" mnemonicParsing="false" onAction="#handleNoCompensationButton" text="No" visible="false" />
+    <Text fx:id="compensationValueText" fill="WHITE" layoutX="493.0" layoutY="301.0" strokeType="OUTSIDE" strokeWidth="0.0" text="You got Text Compensation" visible="false" />
+    <Text fx:id="errorText" fill="RED" layoutX="530.0" layoutY="471.0" nodeOrientation="RIGHT_TO_LEFT" strokeType="OUTSIDE" strokeWidth="0.0" text="ErrorText" textAlignment="RIGHT" visible="false" wrappingWidth="300.0">
         <font>
             <Font size="14.0" />
         </font>
