@@ -5,7 +5,6 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.Period;
 import java.util.List;
-
 import client.Client;
 import enums.EnumType;
 import javafx.collections.FXCollections;
@@ -21,93 +20,267 @@ import javafx.stage.Stage;
 import restaurantEntities.Dish;
 import userEntities.User;
 
+/**
+ * Handles the customer order gathering and selection process.
+ * Provides functionality for selecting delivery options, date and time, and managing customer inputs.
+ */
 public class CustomerOrderGatherSelection {
-	private User user = null;
-	private List<Dish> selectedDishes = null;
+	/**
+     * The user currently logged into the system.
+     */
+    private User user = null;
 
-	@FXML
+    /**
+     * The list of dishes selected by the user in the creation menu.
+     */
+    private List<Dish> selectedDishes = null;
+
+    /**
+     * Button to navigate back to the previous page.
+     */
+    @FXML
     private Button backButton;
+
+    /**
+     * Button to proceed with checkout.
+     */
     @FXML
     private Button checkoutButton;
+
+    /**
+     * Text indicating the supply method selection.
+     */
     @FXML
     private Text selectSupplyMethodText;
+
+    /**
+     * Text indicating the date and time selection.
+     */
     @FXML
     private Text chooseDateTimeText;
+
+    /**
+     * Button for selecting regular delivery.
+     */
     @FXML
     private Button regularButton;
+
+    /**
+     * Button for selecting early delivery.
+     */
     @FXML
     private Button earlyButton;
+
+    /**
+     * DatePicker for selecting the delivery date.
+     */
     @FXML
     private DatePicker datePicker;
+
+    /**
+     * Text label for the date selection.
+     */
     @FXML
     private Text dateLabelText;
+
+    /**
+     * Text label for the time selection.
+     */
     @FXML
     private Text timeLabelText;
+
+    /**
+     * Text label for the minutes selection.
+     */
     @FXML
     private Text minutesLabelText;
+
+    /**
+     * Text label for the hours selection.
+     */
     @FXML
     private Text hoursLabelText;
+
+    /**
+     * ComboBox for selecting hours.
+     */
     @FXML
     private ComboBox<String> hoursComboBox;
+
+    /**
+     * ComboBox for selecting minutes.
+     */
     @FXML
     private ComboBox<String> minutesComboBox;
+
+    /**
+     * Text indicating the supply method selection.
+     */
     @FXML
     private Text chooseSupplyMethodText;
+
+    /**
+     * Button for selecting pickup.
+     */
     @FXML
     private Button pickupButton;
+
+    /**
+     * Button for selecting delivery.
+     */
     @FXML
     private Button deliveryButton;
+
+    /**
+     * Text providing information about delivery.
+     */
     @FXML
     private Text deliveryInfoText;
+
+    /**
+     * Text label for the delivery address input.
+     */
     @FXML
     private Text deliveryAddressText;
+
+    /**
+     * Text label for the receiver's name input.
+     */
     @FXML
     private Text receiverText;
+
+    /**
+     * Text label for the phone number input.
+     */
     @FXML
     private Text phoneNumberText;
+
+    /**
+     * TextField for entering the city address.
+     */
     @FXML
-    private TextField cityAddressTextField;   
+    private TextField cityAddressTextField;
+
+    /**
+     * TextField for entering the street address.
+     */
     @FXML
     private TextField streetAddressTextField;
+
+    /**
+     * TextField for entering the receiver's name.
+     */
     @FXML
     private TextField receiverTextField;
+
+    /**
+     * TextField for entering the phone number.
+     */
     @FXML
     private TextField phoneNumberTextField;
+
+    /**
+     * Text label for the delivery type selection.
+     */
     @FXML
     private Text deliveryTypeText;
+
+    /**
+     * ComboBox for selecting the delivery type.
+     */
     @FXML
     private ComboBox<String> deliveryTypeComboBox;
+
+    /**
+     * TextField for entering the number of participants.
+     */
     @FXML
     private TextField participantsTextField;
+
+    /**
+     * Text label for the number of participants input.
+     */
     @FXML
     private Text participantsText;
+
+    /**
+     * Text warning for early order.
+     */
     @FXML
     private Text earlyOrderWarningText;
+
+    /**
+     * Text label for the city input.
+     */
     @FXML
     private Text cityText;
+
+    /**
+     * Text label for the street or work place input.
+     */
     @FXML
-    private Text streetText; 
+    private Text streetText;
+
+    /**
+     * Text providing additional receiver information.
+     */
     @FXML
-    private Text receiverInfoText; 
+    private Text receiverInfoText;
+
+    /**
+     * Text for displaying error messages.
+     */
     @FXML
-    private Text errorText;  
+    private Text errorText;
+
+    /**
+     * Text for displaying robot-dlivery option chosen error messages.
+     */
     @FXML
-    private  Text errorRobotText;
-    
+    private Text errorRobotText;
+
+    /**
+     * Client instance for handling server communications.
+     */
     private Client client;
-    
+
+    /**
+     * Flag indicating if early order option is chosen.
+     */
     private boolean earlyChoosed = false;
+
+    /**
+     * Flag indicating if delivery option is chosen.
+     */
     private boolean deliveryChoosed = false;
+
+    /**
+     * Flag indicating if one of the date and time options selected.
+     */
     private boolean chooseTime = false;
+
+    /**
+     * Flag indicating if one of pickup and delivery selected.
+     */
     private boolean chooseSupply = false;
+
+    /**
+     * Flag indicating if an shared delivery option is selected.
+     */
     private boolean chooseOptionShared = false;
+
+    /**
+     * Flag indicating if a robot option is chosen.
+     */
     private boolean chooseOptionRobot = false;
 
 
-
+    /**
+     * Initializes the controller. Sets up combo boxes and default values.
+     */
 	@FXML
 	private void initialize() {
-		client = client.getInstance();
+		client = Client.getInstance();
 		client.getCustomerOrderGatherSelection(this);
 		//Set the hours and minute combo box with elements
 		ObservableList<String> hoursList = FXCollections.observableArrayList();
@@ -155,16 +328,30 @@ public class CustomerOrderGatherSelection {
         
 	}
 
-	// Set the user instance from the UI
+	
+	/**
+     * Sets the user instance from the UI.
+     * 
+     * @param user The user currently logged into the system.
+     */
 	public void setUser(User user) {
 		this.user = user;
 	}
 
-	// Set the dishes hash map
+	/**
+     * Sets the list of selected dishes from the server.
+     * 
+     * @param selectedDishesCount The list of dishes selected by the user.
+     */
 	public void setDishesCount(List<Dish> selectedDishesCount) {
 		this.selectedDishes = selectedDishesCount;
 	}
 	
+	/**
+     * Sets various boolean parameters and updates the UI accordingly.
+     * 
+     * @param param Array of boolean parameters to set.
+     */
 	public void setBooleanParam(boolean[] param) {
 		earlyChoosed = param[0];
 		setVisibleForChoiceOfDateAndTime(earlyChoosed);
@@ -194,7 +381,12 @@ public class CustomerOrderGatherSelection {
 		}
 		
 	}
-	//if returned from checkout retrieve the choices
+	
+	/**
+     * Updates the contact information fields.
+     * 
+     * @param contactInfo Array of contact information.
+     */
 	public void setContactInfo(String[] contactInfo) {
 		cityAddressTextField.setText(contactInfo[0]);
 		streetAddressTextField.setText(contactInfo[1]);
@@ -204,23 +396,46 @@ public class CustomerOrderGatherSelection {
 		minutesComboBox.setValue(contactInfo[5]);
 		participantsTextField.setText(contactInfo[6]);
 	}
-	//if returned from checkout retrieve the date choice
+	
+	
+	/**
+     * Updates the date picker with the given date.
+     * 
+     * @param dateOld The date to set in the date picker.
+     */
 	public void setDateInfo(Object dateOld) {
 		LocalDate date = (LocalDate) dateOld;
 		datePicker.setValue(date);
 	}
 	
+	
+	/**
+     * Handles the action for the early order button. Shows date and time selection.
+     * 
+     * @param event The action event triggered by the button click.
+     */
 	@FXML
 	private void handleEarlyButtonAction(ActionEvent event) throws IOException {
 		setVisibleForChoiceOfDateAndTime(true);
 		
 	}
+	
+	/**
+     * Handles the action for the regular button. Shows delivery options.
+     * 
+     * @param event The action event triggered by the button click.
+     */
 	@FXML
 	private void handleRegularButtonAction(ActionEvent event) throws IOException {
 		setVisibleForChoiceOfDateAndTime(false);	
 		earlyOrderWarningText.setVisible(false);
 	}
 	
+    /**
+     * Sets visibility for date and time selection according early or pick up selection.
+     *
+     * @param hide If true, hides the date and time selection components.
+     */
 	private void setVisibleForChoiceOfDateAndTime(boolean hide) {
 		chooseTime = true;
 		earlyChoosed=hide;
@@ -237,16 +452,34 @@ public class CustomerOrderGatherSelection {
 
 	}
 	
+	 /**
+     * Handles the action for the delivery button.
+     *
+     * @param event The action event.
+     * @throws IOException If an I/O error occurs.
+     */
 	@FXML
 	private void handleDeliveryButtonAction(ActionEvent event) throws IOException {
 		setVisibleForDeliveryandPickup(true);	
 			
 	}
+	
+	/**
+     * Handles the action for the pickup button.
+     *
+     * @param event The action event.
+     * @throws IOException If an I/O error occurs.
+     */
 	@FXML
 	private void handlePickupButtonAction(ActionEvent event) throws IOException {
 		setVisibleForDeliveryandPickup(false);	
 	}
 	
+	/**
+     * Sets visibility for delivery and pickup options.
+     *
+     * @param hide If true, hides the delivery and pickup components.
+     */
 	private void setVisibleForDeliveryandPickup(boolean hide) {
 		chooseSupply = true;
 		deliveryButton.setDisable(hide);
@@ -276,7 +509,12 @@ public class CustomerOrderGatherSelection {
 		
 	}
 	
-	//checks if we are 2 hours at least from current time in early delivery
+	/**
+     * Handles the action for the minute and hour ComboBoxes, checking if the selected time is at least 2 hours from the current time for early delivery.
+     * 
+     * @param event The action event triggered by the ComboBox selection.
+     * @throws IOException If an I/O error occurs during the operation.
+     */
 	@FXML
 	private void handleMinuteandHourComboBoxAction(ActionEvent event) throws IOException {
 		
@@ -291,8 +529,13 @@ public class CustomerOrderGatherSelection {
 	}
 
 	
-	//if we are on early order calculate if its 2 hours and above from current time
-	//compares also days, check if the difference is at least one day
+	/**
+     * Calculates whether the selected time is at least 2 hours from the current time for early delivery, considering day differences.
+     * 
+     * @param hour The selected hour.
+     * @param minute The selected minute.
+     * @return true if the selected time is at least 2 hours from now, false otherwise.
+     */
 	private boolean calculateTime2hours(String hour, String minute ) {
 		LocalTime now = LocalTime.now();
 		Period period = Period.between(LocalDate.now(),datePicker.getValue());
@@ -304,6 +547,9 @@ public class CustomerOrderGatherSelection {
 				(Integer.valueOf(minute)-(now.getMinute())>=0));
 	}
 	
+	/**
+     * Handles the action for the delivery type ComboBox, updating visibility and options based on the selected delivery type.
+     */
 	@FXML
 	private void handleDeliveryTypeComboBoxAction() {
 		String choice = deliveryTypeComboBox.getValue();
@@ -328,12 +574,23 @@ public class CustomerOrderGatherSelection {
 		}
 	}
 	
+	/**
+     * Sets the visibility of the delivery type fields based on the hide parameter.
+     * will shot text and text field if shared option selected.
+     * 
+     * @param hide true to hide the fields, false to show them.
+     */
 	private void setVisibleForDeliveryType(boolean hide) {
 		participantsTextField.setVisible(hide);
 		participantsText.setVisible(hide);
 	}
 
 
+	/**
+     * Validates the delivery information input fields.
+     * 
+     * @return true if all delivery information fields are valid, false otherwise.
+     */
 	private boolean checkInputForDeliveryInfo() {
         if (cityAddressTextField.getText().isEmpty()) {
             showError("City address cannot be empty.");
@@ -371,6 +628,11 @@ public class CustomerOrderGatherSelection {
         return true;
 	}
 	
+	/**
+     * Validates the number of participants input field.
+     * 
+     * @return true if the participants input field is valid, false otherwise.
+     */
 	private boolean checkInputForParticipantsNum() {
 		if (participantsTextField.getText().isEmpty()) {
             showError("Participants box cannot be empty.");
@@ -382,11 +644,12 @@ public class CustomerOrderGatherSelection {
 		return true;
 	}
 
-	private void showError(String message) {
-		errorText.setText(message);
-		errorText.setVisible(true);
-	}
 	
+	 /**
+     * Handles the action for the checkout button, validating inputs and launching the checkout process.
+     * 
+     * @param event The action event triggered by the button click.
+     */
 	@FXML
 	private void handleCheckoutButtonAction(ActionEvent event) {
 		if(!chooseTime) {
@@ -419,6 +682,12 @@ public class CustomerOrderGatherSelection {
 		launchCheckout();
 	}
 
+	 /**
+     * Handles the action for the back button, returning to the previous screen.
+     * 
+     * @param event The action event triggered by the button click.
+     * @throws IOException If an I/O error occurs during the operation.
+     */
 	@FXML
 	private void handleBackButtonAction(ActionEvent event) throws IOException {
 
@@ -433,7 +702,15 @@ public class CustomerOrderGatherSelection {
 
 	}
 	
-
+	/**
+     * Displays an error message in the errorText field.
+     * 
+     * @param message The error message to display.
+     */
+	private void showError(String message) {
+		errorText.setText(message);
+		errorText.setVisible(true);
+	}
 	
 	private void launchCheckout() {
 		boolean[] param = {earlyChoosed,chooseTime,deliveryChoosed,chooseSupply,chooseOptionShared};
@@ -452,6 +729,9 @@ public class CustomerOrderGatherSelection {
         }
 	}
 	
+	 /**
+     * Closes the application, removing the client from the order and logging out the user.
+     */
 	public void closeApplication() {
 		client.removeClientInOrder();
 		if (client != null) {

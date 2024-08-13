@@ -57,7 +57,7 @@ public class Server extends AbstractServer {
 
 	@Override
 	protected void handleMessageFromClient(Object msg, ConnectionToClient client) {
-		EnumServerOperations operation = EnumServerOperations.NONE;
+		EnumServerOperations operation;
 		if (msg instanceof Object[]) {
 			Object[] message = (Object[]) msg;
 			operation = (EnumServerOperations) message[0];

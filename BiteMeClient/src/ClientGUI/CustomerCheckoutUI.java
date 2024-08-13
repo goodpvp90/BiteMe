@@ -12,6 +12,7 @@ import userEntities.User;
 
 /**
  * Manages the customer checkout interface.
+ * It loads the corresponding FXML file, sets up the scene, and handles the primary stage.
  */
 public class CustomerCheckoutUI extends Application {
 	private User user = null;
