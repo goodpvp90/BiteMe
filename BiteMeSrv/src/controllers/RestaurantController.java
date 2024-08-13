@@ -1,13 +1,15 @@
-package server;
+package controllers;
 
 import java.sql.SQLException;
 import java.util.List;
 
+import containers.ListContainer;
 import enums.EnumClientOperations;
 import enums.EnumServerOperations;
 import ocsf.server.ConnectionToClient;
 import restaurantEntities.Dish;
 import restaurantEntities.Order;
+import server.Server;
 
 public class RestaurantController {
 	private Server server;
@@ -61,12 +63,18 @@ public class RestaurantController {
 	public void viewMenu(ConnectionToClient client, Object[] message, EnumServerOperations operation) {
         int menuId = (int) message[1];
         List<Dish> menu = dbController.getMenu(menuId);
-        server.sendMessageToClient(EnumClientOperations.valueOf(operation.toString()), client, menu);
+	    //encapsulate the list to avoid suppress warnings
+        ListContainer menuContainer = new ListContainer();
+        menuContainer.setListDish(menu);
+        server.sendMessageToClient(EnumClientOperations.valueOf(operation.toString()), client, menuContainer);
 	}
 	
 	public void handlePendingOrders(ConnectionToClient client, Object[] message) {
         List<Order> pendingOrders = getPendingOrdersByBranch((int) message[1]);
-        server.sendMessageToClient(EnumClientOperations.PENDING_ORDER, client, pendingOrders);
+	    //encapsulate the list to avoid suppress warnings
+        ListContainer pendingOrdersContainer = new ListContainer();
+        pendingOrdersContainer.setlistOrder(pendingOrders);
+        server.sendMessageToClient(EnumClientOperations.PENDING_ORDER, client, pendingOrdersContainer);
 	}
 	
     // Retrieve pending orders for a specific branch

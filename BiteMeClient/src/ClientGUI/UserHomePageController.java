@@ -65,6 +65,7 @@ public class UserHomePageController {
     private void updateUI() {    	
     	switch(user.getType()) {    	
     	case CEO:
+    		registerUserButton.setVisible(false);
     		updateMenuButton.setVisible(false);
     		pendingOrdersButton.setVisible(false);
 	        changeHomeBranchButton.setVisible(false);

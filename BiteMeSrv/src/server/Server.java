@@ -4,6 +4,12 @@ import java.io.IOException;
 import java.sql.SQLException;
 
 import ServerGUI.serverController;
+import controllers.DBController;
+import controllers.NotificationController;
+import controllers.OrderController;
+import controllers.ReportController;
+import controllers.RestaurantController;
+import controllers.UserController;
 import enums.EnumClientOperations;
 import enums.EnumServerOperations;
 import ocsf.server.AbstractServer;
@@ -21,7 +27,6 @@ public class Server extends AbstractServer {
 	private OrderController orderController;
 	private UserController userController;
 	private NotificationController notificationController;
-	private UsersUtility usersutility;
 	private RestaurantController restaurantController;
 	
 	public Server(int port, String url, String username, String password) {
@@ -31,7 +36,6 @@ public class Server extends AbstractServer {
 		reportController = new ReportController(this, dbController);
 		userController = new UserController(this, notificationController, dbController);
 		orderController = new OrderController(this, notificationController, dbController);
-		usersutility = new UsersUtility(dbController);
 		restaurantController = new RestaurantController(this, dbController, notificationController);
 		
 		try {
@@ -46,9 +50,6 @@ public class Server extends AbstractServer {
 		return this.dbController;
 	}
 	
-	public UsersUtility getUsersUtility() {
-		return this.usersutility;
-	}
 
     public void sendMessageToClient(EnumClientOperations op, ConnectionToClient client, Object msg) {
         try {
@@ -67,7 +68,6 @@ public class Server extends AbstractServer {
 			Object[] message = (Object[]) msg;
 			operation = (EnumServerOperations) message[0];
         	System.out.println(operation);
-        	System.out.println(notificationController.areConnectionsEqual(notificationController.getClient("ben"),client));
 			switch (operation) {
 			case CLIENT_CONDITION:
 				controller.displayClientDetails((String[]) message[1]);
@@ -174,7 +174,8 @@ public class Server extends AbstractServer {
 		dbController.closeConnection();
 		reportController.shutdown();
 	}
-
+	
+	//stop
 	public void stopServer() {
 		try {
 			sendToAllClients(new Object[]{EnumClientOperations.SERVER_DISCONNECTED});

@@ -6,7 +6,7 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import client.Client;
-import client.Client.EnumPageForDishInOrder;
+import enums.EnumPageForDishInOrder;
 import enums.EnumOrderStatus;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;

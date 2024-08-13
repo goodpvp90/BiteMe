@@ -1,15 +1,15 @@
-package server;
+package controllers;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 
+import containers.ListContainer;
 import enums.EnumBranch;
 import enums.EnumClientOperations;
 import enums.EnumType;
 import ocsf.server.ConnectionToClient;
-import restaurantEntities.Dish;
 import restaurantEntities.Order;
+import server.Server;
 import userEntities.User;
 
 
@@ -28,7 +28,6 @@ public class UserController {
     	User user = (User)message[1];
         String username = user.getUsername();
         List<String> notifications = null;
-       	System.out.println("LOGIN SHOWED ON SERVER");
         boolean loginReuslt = login(client, (Object[]) message);
         if (loginReuslt) {
         	client.setInfo("user", username);
@@ -38,8 +37,12 @@ public class UserController {
             } catch (SQLException e) {
                 e.printStackTrace();
             }
-            if(!notifications.isEmpty())
-            	server.sendMessageToClient(EnumClientOperations.NOTIFICATION, client, notifications);
+            if(!notifications.isEmpty()) {
+        	    //encapsulate the list to avoid suppress warnings
+            	ListContainer notificationsContainter = new ListContainer();
+            	notificationsContainter.setListString(notifications);
+            	server.sendMessageToClient(EnumClientOperations.NOTIFICATION, client, notificationsContainter);
+            }
         }
 	}
     
@@ -51,8 +54,8 @@ public class UserController {
 			return false;
 		}
 		else {
-			@SuppressWarnings("unchecked")
-			ArrayList<Object> details = (ArrayList<Object>) result;
+			ListContainer userDetailsContainer = (ListContainer)result;
+			List<Object> details = userDetailsContainer.getlistObject();
       
 			user.setFirstName((String)details.get(0));
 			user.setLastName((String)details.get(1));
@@ -110,12 +113,9 @@ public class UserController {
         } catch (Exception e) {
             e.printStackTrace();
         }
-    	if (!result) {
-    		server.sendMessageToClient(EnumClientOperations.EROR,client, result);    		
-    	}
-    	else {
+    	if (result) 
     		server.sendMessageToClient(EnumClientOperations.CREATED_ACCOUNT,client, (Object)user);
-    	}
+    	
     }
     
 	public void handleChangeHomeBranch(ConnectionToClient client, Object[] message) {
@@ -138,7 +138,10 @@ public class UserController {
     // Retrieve orders for a specific username
 	public void handleUserOrders(ConnectionToClient client, Object[] message) {
     	List<Order> orders = dbController.getOrdersByUsername((String)message[1]);
-    	server.sendMessageToClient(EnumClientOperations.USERS_ORDERS, client, orders);
+    	//encapsulate the list to avoid suppress warnings
+    	ListContainer ordersContainer = new ListContainer();
+    	ordersContainer.setlistOrder(orders);
+    	server.sendMessageToClient(EnumClientOperations.USERS_ORDERS, client, ordersContainer);
 
 	}   	
 

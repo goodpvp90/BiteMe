@@ -1,4 +1,4 @@
-package server;
+package controllers;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -7,12 +7,14 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+import containers.ListContainer;
 import enums.EnumClientOperations;
 import ocsf.server.ConnectionToClient;
 import reports.IncomeReport;
 import reports.OrdersReport;
 import reports.PerformanceReport;
 import reports.QuarterlyReport;
+import server.Server;
 
 /**
  * The ReportController class is responsible for scheduling and generating monthly reports
@@ -131,11 +133,8 @@ public class ReportController {
      */
     private void manageDBReturn(Object result, ConnectionToClient client, String reportType) {
         if (result instanceof String) {
-            if ("no such report exists".equals(result)) {
+            if ("no such report exists".equals(result)) 
                 server.sendMessageToClient(EnumClientOperations.REPORT_ERROR, client, result);
-            } else {
-                server.sendMessageToClient(EnumClientOperations.SQL_ERROR, client, result);
-            }
         } else {
             server.sendMessageToClient(EnumClientOperations.valueOf(reportType), client, result);
         }
@@ -157,17 +156,20 @@ public class ReportController {
     	Object getResult = dbController.getQuarterlyReport(qreport);
     	if (getResult instanceof QuarterlyReport) {
     		 List<Double> incomes = dbController.getIncomeListForQuarterly(qreport);
-    		 server.sendMessageToClient(EnumClientOperations.QUARTERLY_REPORT, client, new Object[] {(QuarterlyReport)getResult, incomes});
+			 //encapsulate the list to avoid suppress warnings
+    		 ListContainer incomeContainer = new ListContainer();
+    		 incomeContainer.setListDouble(incomes);
+    		 server.sendMessageToClient(EnumClientOperations.QUARTERLY_REPORT, client, new Object[] {(QuarterlyReport)getResult, incomeContainer});
     	}else {
     		boolean createResult = dbController.createQuarterlyReport(qreport);
     		if (createResult) {
     			Object newGetResult = dbController.getQuarterlyReport(qreport);
     			if (newGetResult instanceof QuarterlyReport) {
-    				System.out.println("GOT HERE");
     	    		List<Double> incomes = dbController.getIncomeListForQuarterly(qreport);
-    	    		server.sendMessageToClient(EnumClientOperations.QUARTERLY_REPORT, client, new Object[] {(QuarterlyReport)newGetResult, incomes});
-    			}else {
-    				server.sendMessageToClient(EnumClientOperations.QUARTERLY_REPORT_ERROR, client, newGetResult);
+    			    //encapsulate the list to avoid suppress warnings
+    	    		ListContainer incomeContainer = new ListContainer();
+    	    		incomeContainer.setListDouble(incomes);
+    	    		server.sendMessageToClient(EnumClientOperations.QUARTERLY_REPORT, client, new Object[] {(QuarterlyReport)newGetResult, incomeContainer});
     			}
     		}
     	}	
