@@ -308,4 +308,34 @@ public class User implements Serializable {
     public void setId(String id) {
         this.id = id;
     }
+    
+    /**
+     * Indicates whether some other object is "equal to" this one.
+     * 
+     * @param obj the reference object with which to compare.
+     * @return true if this object is the same as the obj argument; false otherwise.
+     */
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
+        User user = (User) obj;
+        return username != null ? username.equals(user.username) : user.username == null;
+    }
+
+    /**
+     * Returns a hash code value for the object. This method is supported for the benefit of 
+     * hash tables such as those provided by HashMap.
+     * 
+     * @return a hash code value for this object.
+     */
+    @Override
+    public int hashCode() {
+        return username != null ? username.hashCode() : 0;
+    }
+
 }

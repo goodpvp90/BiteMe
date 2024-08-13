@@ -1,4 +1,4 @@
-package server;
+package controllers;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -13,6 +13,7 @@ import reports.IncomeReport;
 import reports.OrdersReport;
 import reports.PerformanceReport;
 import reports.QuarterlyReport;
+import server.Server;
 
 /**
  * The ReportController class is responsible for scheduling and generating monthly reports

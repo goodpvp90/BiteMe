@@ -16,7 +16,7 @@ public class Order implements Serializable {
     ///////////////////////// for delivery
     private String city;
     private String streenAndNum;
-    private int phoneNum;
+    private String phoneNum;
     private String receiverName;
     private boolean isEarly; //if false below doesn't needed to fill 
     private Timestamp OrderReadyRequestTime; //when the delivery time, needed??????
@@ -41,7 +41,7 @@ public class Order implements Serializable {
     }
     
     public Order( String username, int branchId, Timestamp orderDate, Timestamp orderRequestTime, double totalPrice, boolean delivery,
-    		String city, String streenAndNum, int phoneNum, String receiverName ) {
+    		String city, String streenAndNum, String phoneNum, String receiverName ) {
         this.username = username;
         this.branchId = branchId;
         this.orderDate = orderDate;
@@ -145,8 +145,12 @@ public class Order implements Serializable {
 	public String getStreetAndNum() {
 	    return streenAndNum;
 	}
-
-	public int getPhoneNum() {
+	
+	public void setPhoneNum(String phoneNum) {
+	    this.phoneNum = phoneNum;
+	}
+	
+	public String getPhoneNum() {
 	    return phoneNum;
 	}
 
