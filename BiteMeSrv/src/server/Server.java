@@ -10,7 +10,6 @@ import controllers.OrderController;
 import controllers.ReportController;
 import controllers.RestaurantController;
 import controllers.UserController;
-import controllers.UsersUtility;
 import enums.EnumClientOperations;
 import enums.EnumServerOperations;
 import ocsf.server.AbstractServer;
