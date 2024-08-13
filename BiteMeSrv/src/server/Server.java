@@ -20,6 +20,12 @@ import reports.PerformanceReport;
 import reports.QuarterlyReport;
 import userEntities.User;
 
+/**
+ * The {@code Server} class is responsible for handling server-side operations
+ * in a client-server architecture. It manages communication with clients,
+ * processes server operations, and interacts with various controllers to 
+ * perform actions such as order management, user authentication, and report generation.
+ */
 public class Server extends AbstractServer {
 	private DBController dbController;
 	private serverController controller;
@@ -29,6 +35,14 @@ public class Server extends AbstractServer {
 	private NotificationController notificationController;
 	private RestaurantController restaurantController;
 	
+    /**
+     * Constructs a Server instance with the specified port and database credentials.
+     *
+     * @param port the port number for the server to listen on
+     * @param url the URL of the database
+     * @param username the database username
+     * @param password the database password
+     */
 	public Server(int port, String url, String username, String password) {
 		super(port);
 		dbController = new DBController();
@@ -46,11 +60,22 @@ public class Server extends AbstractServer {
 		}
 	}
 	
+    /**
+     * Returns the DBController instance used by the server.
+     *
+     * @return the DBController instance
+     */
 	public DBController getDBController() {
 		return this.dbController;
 	}
 	
-
+	 /**
+     * Sends a message to the specified client.
+     *
+     * @param op the operation type to be sent
+     * @param client the client to which the message will be sent
+     * @param msg the message to be sent
+     */
     public void sendMessageToClient(EnumClientOperations op, ConnectionToClient client, Object msg) {
         try {
             Object message = new Object[]{op, msg};
@@ -61,9 +86,16 @@ public class Server extends AbstractServer {
     }
     
 
-	@Override
-	protected void handleMessageFromClient(Object msg, ConnectionToClient client) {
+    /**
+     * Handles messages received from clients.
+     *
+     * @param msg    The message received from the client.
+     * @param client The client that sent the message.
+     */
+    @Override
+    protected void handleMessageFromClient(Object msg, ConnectionToClient client) {
 		EnumServerOperations operation;
+		//if the server recives object that isnt of instance of Object[] the server does nothing
 		if (msg instanceof Object[]) {
 			Object[] message = (Object[]) msg;
 			operation = (EnumServerOperations) message[0];
@@ -153,20 +185,30 @@ public class Server extends AbstractServer {
 			default:
 				break;
 			}
-		} else
-			System.out.println("Received unknown message type from client: " + msg);
+		}
 	}
     
+    /**
+     * Called when a client disconnects from the server.
+     *
+     * @param client The client that has disconnected.
+     */
 	@Override
 	protected void clientDisconnected(ConnectionToClient client) {
 		controller.displayClientDetails((new String[] { "Client disconnected: " + client }));
 	}
 
+    /**
+     * Called when the server has started and is now listening for connections.
+     */
 	@Override
 	protected void serverStarted() {
 		controller.updateStatus("Server listening for connections on port " + getPort());
 	}
 
+    /**
+     * Called when the server has stopped listening for connections.
+     */
 	@Override
 	protected void serverStopped() {
 		controller.updateStatus("Server has stopped listening for connections.");
@@ -175,7 +217,10 @@ public class Server extends AbstractServer {
 		reportController.shutdown();
 	}
 	
-	//stop
+    /**
+     * Stops the server, sends a disconnect message to all clients, and closes
+     * the server connection.
+     */
 	public void stopServer() {
 		try {
 			sendToAllClients(new Object[]{EnumClientOperations.SERVER_DISCONNECTED});
@@ -185,7 +230,12 @@ public class Server extends AbstractServer {
 			e.printStackTrace();
 		}
 	}
-
+	
+    /**
+     * Sets the server controller to manage server status and events.
+     *
+     * @param controller the server controller
+     */
 	public void setController(serverController controller) {
 		this.controller = controller;
 	}

@@ -22,8 +22,19 @@ import server.Server;
  * at the start of each month.
  */
 public class ReportController {
+    /**
+     * The server instance.
+     */
     private Server server;
+    
+    /**
+     * The database controller instance.
+     */
     private DBController dbController;
+    
+    /**
+     * The scheduled executor service for scheduling tasks.
+     */
     private ScheduledExecutorService scheduler;
     
 
@@ -103,9 +114,9 @@ public class ReportController {
     
     
     /**
-     * Retrieves the orders report based on the given {@link OrdersReport} and sends it to the specified client.
+     * Retrieves the orders report based on the given OrdersReport and sends it to the specified client.
      * 
-     * @param ordersReport the {@link OrdersReport} object containing the details of the report to retrieve
+     * @param ordersReport the OrdersReport object containing the details of the report to retrieve
      * @param client the to which the report will be sent
      */
     public void getOrdersReport(OrdersReport ordersReport, ConnectionToClient client) {
@@ -114,9 +125,9 @@ public class ReportController {
     }
 
     /**
-     * Retrieves the performance report based on the given {@link PerformanceReport} and sends it to the specified client.
+     * Retrieves the performance report based on the given PerformanceReport and sends it to the specified client.
      * 
-     * @param performanceReport the {@link PerformanceReport} object containing the details of the report to retrieve
+     * @param performanceReport the PerformanceReport object containing the details of the report to retrieve
      * @param client the to which the report will be sent
      */
     public void getPerformanceReport(PerformanceReport performanceReport, ConnectionToClient client) {
