@@ -23,42 +23,22 @@ import userEntities.User;
  */
 public class CustomerInformationUpdateController {
 
-    @FXML
-    private Button backButton;
+    @FXML    private Button backButton;    
+    @FXML    private TextField idField;
+    @FXML    private TextField firstNameField;
+    @FXML    private TextField lastNameField;
+    @FXML    private TextField emailField;
+    @FXML   private TextField phoneNumberField;
+    @FXML    private TextField creditCardField;    
+    @FXML    private ComboBox<EnumBranch> branchComboBox;
+    @FXML    private Button updateButton;
+    @FXML    private Text errorText;
     
-    @FXML
-    private TextField idField;
-
-    @FXML
-    private TextField firstNameField;
-
-    @FXML
-    private TextField lastNameField;
-
-    @FXML
-    private TextField emailField;
-
-    @FXML
-    private TextField phoneNumberField;
-
-    @FXML
-    private TextField creditCardField;
-    
-    @FXML
-    private ComboBox<EnumBranch> branchComboBox;
-
-    @FXML
-    private Button updateButton;
-
-    @FXML
-    private Text errorText;
-
     private Scene previousScene;
     private Client client;
     private User user;
     private User loggedInUser;
-
-    
+   
     /**
      * Initializes the controller. This method is automatically called after the FXML file has been loaded.
      */
@@ -88,18 +68,11 @@ public class CustomerInformationUpdateController {
 
     /**
      * Sets the user information to be updated or completed.
-     * Pre-fills the form fields with existing user information.
      * 
      * @param user The user object to be updated
      */
     public void setUser(User user) {
         this.user = user;
-        // Pre-fill the fields with existing user information
-        firstNameField.setText(user.getFirstName());
-        lastNameField.setText(user.getLastName());
-        emailField.setText(user.getEmail());
-        phoneNumberField.setText(user.getPhone());
-        // Don't pre-fill credit card for security reasons
     }
 
     /**
@@ -114,7 +87,8 @@ public class CustomerInformationUpdateController {
 
     /**
      * Handles the action when the update button is clicked.
-     * Validates the entered information and sends an update request to the server.
+     * Validates the entered information and sends an update request to the server .
+     * And opens an Activation Confirtmation screen if succeed
      */
     @FXML
     private void handleUpdate() {
@@ -129,6 +103,12 @@ public class CustomerInformationUpdateController {
             if (id.isEmpty() || firstName.isEmpty() || lastName.isEmpty() || email.isEmpty() || phone.isEmpty()) {
                 showError("Please fill in all required fields");
                 return;
+            }
+            // ID REGEX
+            if (!id.matches("[a-zA-Z0-9]+"))
+            { 
+            	showError("Please enter a valid ID ");
+            	return;
             }
             // Check if phone number contains only digits
             if (!phone.matches("\\d+")) {
@@ -149,12 +129,6 @@ public class CustomerInformationUpdateController {
             if (!email.matches("^[A-Za-z0-9+_.-]+@(.+)$")) {
                 showError("Please enter a valid email address");
                 return;
-            }
-            // ID REGEX
-            if (!id.matches("[a-zA-Z0-9]+"))
-            { 
-            	showError("Please enter a valid ID ");
-                return;
             }else {
                 // Update user information
                 user.setId(id);
@@ -163,7 +137,6 @@ public class CustomerInformationUpdateController {
                 user.setEmail(email);
                 user.setPhone(phone);
                 user.setCreditCard(creditCard);
-                // Set home branch based on DB Branches
                 EnumBranch selectedBranch = branchComboBox.getValue();
                 if (selectedBranch == null) {
                     showError("Please select a branch");
@@ -181,10 +154,8 @@ public class CustomerInformationUpdateController {
                     user.setCreditCard(creditCard);
                     user.setCustomerType(EnumType.PRIVATE);
                 }
-                // Send the updated user information to the server
                 client.sendCreateAccout(user);
                 System.out.println("Update request sent to server");
-                // Open the activation confirmation window
                 openActivationConfirmationWindow();
             }
         } catch (Exception e) {
@@ -213,13 +184,10 @@ public class CustomerInformationUpdateController {
             ActivationConfirmationController controller = loader.getController();
             controller.setUserInfo(user);
             controller.setLoggedInUser(loggedInUser); // Assuming the user is now registered
-
             Stage stage = new Stage();
             stage.setScene(new Scene(root));
             stage.setTitle("Customer Activation Confirmation");
             stage.show();
-
-            // Close the current window
             Stage currentStage = (Stage) updateButton.getScene().getWindow();
             currentStage.close();
         } catch (IOException e) {

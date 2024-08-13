@@ -21,6 +21,7 @@ import server.Server;
 import server.UsersUtility;
 
 public class serverController {
+	
     private Server server;
     private UsersUtility usersutility;
 
@@ -36,7 +37,6 @@ public class serverController {
     private Button quitButton;
     @FXML
     private ListView<String> clientsListView;
-    
     @FXML 
     private TextField portText;
     @FXML 

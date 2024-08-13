@@ -62,8 +62,7 @@ public class UserHomePageController {
     /**
      * Updates the UI based on the user's type and registration status.
      */  
-    private void updateUI() {
-    	
+    private void updateUI() {    	
     	switch(user.getType()) {    	
     	case CEO:
     		updateMenuButton.setVisible(false);
@@ -101,7 +100,6 @@ public class UserHomePageController {
             break;
     	}	
     	changeHelloTextAndHeadline();
-
     }
     
     /**
@@ -125,7 +123,6 @@ public class UserHomePageController {
      */
 	@FXML
 	private void handleLogout(ActionEvent event) {
-	    // Send logout request to the server
 	    client.userLogout(user,false);
 	    try {
 	        Stage stage = (Stage) logoutButton.getScene().getWindow();
@@ -153,7 +150,6 @@ public class UserHomePageController {
     		//use this when we don't want to test user
     		//CustomerOrderCreationUI CustCreatApp = new CustomerOrderCreationUI();
     		CustCreatApp.start(new Stage());
-
             // Close the current stage
             Stage currentStage = (Stage) createOrderButton.getScene().getWindow();
             currentStage.hide();

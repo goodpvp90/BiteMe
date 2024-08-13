@@ -439,7 +439,7 @@ public class DBController {
 
     
     // Get orders for a specific username
-    public List<Order> getOrdersByUsername(String username) throws SQLException {
+    public List<Order> getOrdersByUsername(String username) {
         List<Order> orders = new ArrayList<>();
         String query = "SELECT * FROM orders WHERE username = ?";
         try (PreparedStatement stmt = connection.prepareStatement(query)) {
@@ -453,7 +453,9 @@ public class DBController {
                     orders.add(order);
                 }
             }
-        }
+        } catch (SQLException e) {
+			e.printStackTrace();
+		}
         return orders;
     }
     

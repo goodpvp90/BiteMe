@@ -71,15 +71,12 @@ public class RegisterUserPageController {
         try {
             // Retrieve the existing stage for UserHomePageUI
             Stage userHomePageStage = UserHomePageUI.getStage();
-
             if (userHomePageStage != null) {
                 userHomePageStage.show();  // Show the hidden stage again
             } else {
-                // If the stage is somehow null, recreate and show it
                 UserHomePageUI Userapp = new UserHomePageUI(loggedInUser);
                 Userapp.start(new Stage());
             }
-
             // Close the current stage
             Stage currentStage = (Stage) backButton.getScene().getWindow();
             currentStage.close();
@@ -148,8 +145,7 @@ public class RegisterUserPageController {
      */
     private void CustomerInformationUpdateWindow(User user) {
         // Hide any previous error
-        errorText.setVisible(false);
-        
+        errorText.setVisible(false);        
         System.out.println("Proceeding to next window for user: " + user.getUsername());
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("CustomerInformationUpdate.fxml"));

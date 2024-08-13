@@ -10,6 +10,9 @@ import javafx.stage.Stage;
 import restaurantEntities.Dish;
 import userEntities.User;
 
+/**
+ * Manages the customer checkout interface.
+ */
 public class CustomerCheckoutUI extends Application {
 	private User user = null;
     private List<Dish> orders = null;
@@ -17,7 +20,15 @@ public class CustomerCheckoutUI extends Application {
     private String[] contactInfo=null;
     private Object date = null;
 
-
+    /**
+     * Creates an instance with user, orders, parameters, contact info, and date.
+     *
+     * @param user The user for checkout information.
+     * @param orders The list of dishes the user picked.
+     * @param param of user preferences choices of the user in the gather window.
+     * @param contactInfo filled by the user of delivery and time.
+     * @param date The date of the order.
+     */
     public CustomerCheckoutUI(User user, List<Dish> orders,boolean[] param, String[] contactInfo,Object date) {
     	this.user = user;
     	this.orders = orders;
@@ -26,6 +37,12 @@ public class CustomerCheckoutUI extends Application {
     	this.date = date;
 	}
     
+    /**
+     * Sets up the checkout UI and handles the primary stage.
+     *
+     * @param primaryStage The primary stage for the checkout scene.
+     * @throws Exception If loading the FXML or setting up the stage fails.
+     */
     @Override
     public void start(Stage primaryStage) throws Exception {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("CustomerCheckout.fxml")); // Adjust the path as needed
@@ -49,6 +66,11 @@ public class CustomerCheckoutUI extends Application {
         primaryStage.show();
     }
 
+    /**
+     * Launches the JavaFX application.
+     *
+     * @param args Command-line arguments.
+     */
     public static void main(String[] args) {
         launch(args);
     }
