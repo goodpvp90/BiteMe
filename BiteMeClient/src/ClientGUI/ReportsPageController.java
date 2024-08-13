@@ -37,23 +37,97 @@ import userEntities.User;
  */
 public class ReportsPageController {
 
-    @FXML private Button backButton;
-    @FXML private Button revenueReportButton;
-    @FXML private Button performanceReportButton;
-    @FXML private Button ordersReportButton;
-    @FXML private Button quarterlyReportButton;
-    @FXML private ComboBox<String> branchDropdown;
-    @FXML private ComboBox<String> monthDropdown;
-    @FXML private ComboBox<String> yearDropdown;
-    @FXML private ComboBox<String> quarterDropdown;
-    @FXML private ComboBox<String> quarterYearDropdown;
-    @FXML private VBox quarterlyReportSection;
-    @FXML private GridPane reportsGridPane;
-    @FXML private Label errorMessageLabel;
+	/**
+	 * Button to return to the previous page.
+	 */
+	@FXML 
+	private Button backButton;
+
+	/**
+	 * Button to generate a revenue report.
+	 */
+	@FXML 
+	private Button revenueReportButton;
+
+	/**
+	 * Button to generate a performance report.
+	 */
+	@FXML 
+	private Button performanceReportButton;
+
+	/**
+	 * Button to generate an orders report.
+	 */
+	@FXML 
+	private Button ordersReportButton;
+
+	/**
+	 * Button to generate a quarterly report.
+	 */
+	@FXML 
+	private Button quarterlyReportButton;
+
+	/**
+	 * Dropdown menu for selecting the branch.
+	 */
+	@FXML 
+	private ComboBox<String> branchDropdown;
+
+	/**
+	 * Dropdown menu for selecting the month.
+	 */
+	@FXML 
+	private ComboBox<String> monthDropdown;
+
+	/**
+	 * Dropdown menu for selecting the year.
+	 */
+	@FXML 
+	private ComboBox<String> yearDropdown;
+
+	/**
+	 * Dropdown menu for selecting the quarter.
+	 */
+	@FXML 
+	private ComboBox<String> quarterDropdown;
+
+	/**
+	 * Dropdown menu for selecting the year for quarterly reports.
+	 */
+	@FXML 
+	private ComboBox<String> quarterYearDropdown;
+
+	/**
+	 * Container for quarterly report UI elements.
+	 */
+	@FXML 
+	private VBox quarterlyReportSection;
+
+	/**
+	 * Grid layout for organizing report UI elements.
+	 */
+	@FXML 
+	private GridPane reportsGridPane;
+
+	/**
+	 * Label for displaying error messages.
+	 */
+	@FXML 
+	private Label errorMessageLabel;
     
+    /**
+     * The client instance for communication with the server.
+     */
     private Client client;
-    private EnumType userType;
+
+    /**
+     * The User object representing the current user.
+     */
     private User user;
+
+    /**
+     * Counter for the number of open quarterly report windows.
+     */
     private int openQuarterlyReportWindows = 0;
 
     /**
@@ -141,35 +215,32 @@ public class ReportsPageController {
         for (Month month : Month.values()) {
             monthDropdown.getItems().add(month.toString());
         }
-
         // Setup year dropdowns
         yearDropdown.getItems().clear();
         quarterYearDropdown.getItems().clear();
         yearDropdown.getItems().addAll(String.valueOf(currentYear - 1), String.valueOf(currentYear));
         quarterYearDropdown.getItems().addAll(String.valueOf(currentYear - 1), String.valueOf(currentYear));
-
         // Setup quarter dropdown
         quarterDropdown.getItems().clear();
         for (int i = 1; i <= 4; i++) {
             quarterDropdown.getItems().add(String.valueOf(i));
         }
-
         // Disable future months and quarters
         monthDropdown.setOnShowing(event -> updateMonthDropdown());
-        quarterDropdown.setOnShowing(event -> updateQuarterDropdown());
-        
+        quarterDropdown.setOnShowing(event -> updateQuarterDropdown());        
         yearDropdown.setOnAction(event -> updateMonthDropdown());
         quarterYearDropdown.setOnAction(event -> updateQuarterDropdown());
     }
     
+    /**
+     * Updates the month dropdown based on the selected year.
+     */
     private void updateMonthDropdown() {
         if (yearDropdown.getValue() == null) return;
-
         int selectedYear = Integer.parseInt(yearDropdown.getValue());
         LocalDate currentDate = LocalDate.now();
         int currentYear = currentDate.getYear();
         int currentMonth = currentDate.getMonthValue();
-
         if (selectedYear < currentYear) {
             // Show all months for past years
             monthDropdown.setItems(FXCollections.observableArrayList(
@@ -189,6 +260,9 @@ public class ReportsPageController {
         }
     }
 
+    /**
+     * Updates the quarter dropdown based on the selected year.
+     */
     private void updateQuarterDropdown() {
         if (quarterYearDropdown.getValue() == null) return;
 
@@ -221,9 +295,7 @@ public class ReportsPageController {
     @FXML
     private void handleBackButton(ActionEvent event) {
     	 try {
-             // Retrieve the existing stage for UserHomePageUI
              Stage userHomePageStage = UserHomePageUI.getStage();
-
              if (userHomePageStage != null) {
                  userHomePageStage.show();  // Show the hidden stage again
              } else {
@@ -231,8 +303,6 @@ public class ReportsPageController {
                  UserHomePageUI Userapp = new UserHomePageUI(user);
                  Userapp.start(new Stage());
              }
-
-             // Close the current stage
              Stage currentStage = (Stage) backButton.getScene().getWindow();
              currentStage.close();
          } catch (Exception e) {
@@ -256,12 +326,10 @@ public class ReportsPageController {
             showErrorMessage("Please select both a month and a year before generating the report.");
             return;
         }
-
         // For BM, the branch should already be set
         if (branch == null && user.getType() == EnumType.BRANCH_MANAGER) {
             branch = user.getHomeBranch().toString();
         }
-        //Check for NULL Branch (NEVER SHOULD GET HERE)
         if (branch == null) {
         	showErrorMessage("Branch information is missing.");
             return;
@@ -338,14 +406,12 @@ public class ReportsPageController {
     private void handlePerformanceReport(ActionEvent event) {
         String branch = branchDropdown.getValue();
         String monthStr = monthDropdown.getValue();
-        String yearStr = yearDropdown.getValue();
-        
+        String yearStr = yearDropdown.getValue();        
         clearErrorMessage();
         if (monthStr == null || yearStr == null || monthStr.isEmpty() || yearStr.isEmpty()) {
             showErrorMessage("Please select both a month and a year before generating the report.");
             return;
         }
-
         if (branch == null && user.getType() == EnumType.BRANCH_MANAGER) {
             branch = user.getHomeBranch().toString();
         }
@@ -457,7 +523,7 @@ public class ReportsPageController {
                 if (!report.getDishTypeAmountMap().isEmpty()) {
                     openOrdersReportWindow(report);
                 } else {
-                    showErrorMessage("No orders data available for the selected month and year.");
+                    showErrorMessage("no such report exists.");
                     enableOrdersReportButton();
                 }
             } else if (response instanceof String) {
@@ -502,41 +568,38 @@ public class ReportsPageController {
         System.out.println("Quarterly Report button clicked");
         String branch = branchDropdown.getValue();
         String quarterStr = quarterDropdown.getValue();
-        String yearStr = quarterYearDropdown.getValue();
-        
+        String yearStr = quarterYearDropdown.getValue();        
         clearErrorMessage();
         if (quarterStr == null || yearStr == null || quarterStr.isEmpty() || yearStr.isEmpty()) {
             showErrorMessage("Please select both a quarter and a year before generating the report.");
             return;
         }
-
         if (branch == null) {
             showErrorMessage("Branch information is missing.");
             return;
-        }
-        
+        }        
         try {
             int quarter = Integer.parseInt(quarterStr);
             int year = Integer.parseInt(yearStr);
-
             // Check if the selected quarter has ended
             LocalDate currentDate = LocalDate.now();
             LocalDate quarterEndDate = YearMonth.of(year, quarter * 3).atEndOfMonth();
-
             if (quarterEndDate.isAfter(currentDate)) {
                 showErrorMessage("The selected quarter has not ended yet. Please choose a completed quarter.");
                 return;
             }
-
             QuarterlyReport report = new QuarterlyReport(EnumBranch.valueOf(branch.toUpperCase()), quarter, year);
             client.getQuarterlyReport(report);
-            System.out.println("Quarterly Report request sent to client");
         } catch (NumberFormatException e) {
             showErrorMessage("Invalid quarter or year format. Please enter valid numbers.");
         }
     }
 
-    
+    /**
+     * Handles the generation of a quarterly report. This is only available for CEO users.
+     *
+     * @param event The ActionEvent triggered by clicking the quarterly report button.
+     */
     public void handleQuarterlyReportResponse(QuarterlyReport qreport, List<Double> monthlyIncomes) {
         System.out.println("Received quarterly report response");
         Platform.runLater(() -> {
@@ -548,14 +611,16 @@ public class ReportsPageController {
         });
     }
 
-    
+    /**
+     * Processes the response from the server for a quarterly report request.
+     *
+     * @param qreport The QuarterlyReport object received from the server.
+     * @param monthlyIncomes List of monthly incomes for the quarter.
+     */
     private void openQuarterlyReportWindow(QuarterlyReport report, List<Double> monthlyIncomes) {
         try {
-            QuarterlyReportUI quarterlyReportUI = new QuarterlyReportUI();
-            quarterlyReportUI.setReportData(report, this, monthlyIncomes);
-            quarterlyReportUI.start(new Stage());
-            System.out.println("Quarterly Report window opened successfully");
-            
+        	QuarterlyReportUI quarterlyReportUI = new QuarterlyReportUI(report, this, monthlyIncomes);
+            quarterlyReportUI.start(new Stage());            
             openQuarterlyReportWindows++;
             if (openQuarterlyReportWindows >= 2) {
                 quarterlyReportButton.setDisable(true);
@@ -576,6 +641,7 @@ public class ReportsPageController {
             quarterlyReportButton.setDisable(false);
         }
     }
+    
     /**
      * Displays an error message to the user.
      *

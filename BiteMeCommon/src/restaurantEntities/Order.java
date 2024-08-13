@@ -105,8 +105,6 @@ public class Order implements Serializable {
 		this.streetAndNum = streetAndNum;
 		this.phoneNum = phoneNum;
 		this.receiverName = receiverName;
-		
-	
     }
  
     /**
