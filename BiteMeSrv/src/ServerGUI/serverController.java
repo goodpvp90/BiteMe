@@ -2,13 +2,12 @@ package ServerGUI;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.io.File;
-import java.io.IOException;
+import java.sql.SQLException;
+
 
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.geometry.Insets;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
@@ -18,12 +17,10 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.text.Text;
 import server.DBController;
 import server.Server;
-import server.UsersUtility;
 
 public class serverController {
 	
     private Server server;
-    private UsersUtility usersutility;
 
     @FXML
     private GridPane gridPane;
@@ -232,8 +229,13 @@ public class serverController {
 
     // Method to import users from external schema
     public void importUsers() {
-    	UsersUtility usersutlity = server.getUsersUtility();
-        usersutlity.importUsers();
+    	DBController dbcontroller = server.getDBController();
+    	try {
+			dbcontroller.importUsers();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
     }
 }
 
