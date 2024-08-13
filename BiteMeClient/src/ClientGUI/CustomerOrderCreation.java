@@ -36,44 +36,91 @@ import restaurantEntities.DishMainCourse;
 import restaurantEntities.DishSalad;
 import userEntities.User;
 
-public class CustomerOrderCreation {	
-	private Client client;
-	private User user = null;
-	public List<Dish> tempMenuFromDB = new ArrayList<>(); 
-	public List<Dish> tempChosenItemsFromMenu = new ArrayList<>(); 
-	public List<Dish> ChosenItemsFromMenu = new ArrayList<>(); 
+/**
+ * Manages the order creation process for customers, allowing them to select dishes
+ * from a menu and customize their order.
+ */
+public class CustomerOrderCreation {
+	
+    /** The client instance used for communication with the server. */
+    private Client client;
+    
+    /** The user associated with this order creation session. */
+    private User user = null;
+    
+    /** Temporary storage for the menu items retrieved from the database. */
+    public List<Dish> tempMenuFromDB = new ArrayList<>(); 
+    
+    /** Temporary storage for items chosen by the user from the menu. */
+    public List<Dish> tempChosenItemsFromMenu = new ArrayList<>(); 
+    
+    /** Storage for items chosen by the user to be added to the final order. */
+    public List<Dish> ChosenItemsFromMenu = new ArrayList<>(); 
+    
+    /** ComboBox for selecting the branch where the order will be placed. */
     @FXML
     private ComboBox<EnumBranch> branchComboBox;
+    
+    /** ComboBox for selecting the category of dishes to display. */
     @FXML
     private ComboBox<String> categoryComboBox;
+    
+    /** TableView for displaying the menu items available for selection. */
     @FXML
     private TableView<Dish> menuTableView;
+    
+    /** TableColumn for displaying the name of the dish in the menu. */
     @FXML
     private TableColumn<Dish, String> nameColumn;
+    
+    /** TableColumn for displaying the price of the dish in the menu. */
     @FXML
     private TableColumn<Dish, Double> priceColumn;
+    
+    /** TableColumn for displaying optional choices for a dish in the menu. */
     @FXML
     private TableColumn<Dish, String> optionalsColumn;
+    
+    /** TableColumn for displaying comments for a dish in the menu. */
     @FXML
     private TableColumn<Dish, String> commentsColumn;     
+    
+    /** TableView for displaying the items chosen by the user for the order. */
     @FXML
     private TableView<Dish> ChosenItemsTableView;
+    
+    /** TableColumn for displaying the name of the chosen dish. */
     @FXML
     private TableColumn<Dish, String> ChosenItemsnameColumn;
+    
+    /** TableColumn for displaying the price of the chosen dish. */
     @FXML
     private TableColumn<Dish, Double> ChosenItemspriceColumn;
+    
+    /** TableColumn for displaying the optional choices of the chosen dish. */
     @FXML
     private TableColumn<Dish, String> ChosenItemsoptionalsColumn;
+    
+    /** TableColumn for displaying comments for the chosen dish. */
     @FXML
     private TableColumn<Dish, String> ChosenItemscommentsColumn; 
+    
+    /** Text element for displaying error messages to the user. */
     @FXML
     private Text errorText;
+    
+    /** Button to proceed to the next step in the order process. */
     @FXML
     private Button continueButton;
-    @FXML
-	private Button backButton;
     
-  
+    /** Button to return to the previous screen. */
+    @FXML
+    private Button backButton;
+    
+    /**
+     * Initializes the order creation screen, setting up the ComboBoxes, TableViews,
+     * and event handlers.
+     */
     @FXML
     private void initialize() {
     	// Initialize the client
@@ -153,7 +200,12 @@ public class CustomerOrderCreation {
     }
     
     
-    //Set the user instance from the UI 
+    /**
+     * Sets the user instance associated with this order creation session.
+     * Also set the combo box values according to user details
+     * 
+     * @param user The user to set.
+     */
     public void setUser(User user) {
         this.user = user;
         if (user != null) {
@@ -176,7 +228,12 @@ public class CustomerOrderCreation {
         }            
     }
     
-    
+    /**
+     * Converts a menu ID to the corresponding branch location.
+     * 
+     * @param menuID The ID of the menu.
+     * @return The corresponding EnumBranch value.
+     */
     private EnumBranch convertNumToLocation(int menuID) {
     	switch(menuID)
     	{
@@ -191,7 +248,13 @@ public class CustomerOrderCreation {
     	}
     }
     	
-    //Set the default home branch of the viewer as a default selected branch when ordering
+    
+    /**
+     * Maps the user's home branch to the corresponding restaurant branch.
+     * 
+     * @param user The user whose home branch is being mapped.
+     * @return The corresponding EnumBranch value.
+     */
     private EnumBranch UserHomeBranchToRestaurantBranch(User user)
     {
     	switch(user.getHomeBranch())
@@ -207,7 +270,9 @@ public class CustomerOrderCreation {
     	}
     }
     
-    // update the menu based on the chosen branch
+    /**
+     * Handles the selection of a branch, updating an load the menu items based on the selected branch.
+     */
     public void handleBranchSelection() {
 
     	int MenuID=0;
@@ -233,7 +298,10 @@ public class CustomerOrderCreation {
         }
     }
     
-    // Handles the category selection part 
+    /**
+     * Handles the selection of a dish category, filtering the displayed menu items
+     * based on the selected category in combo box selection.
+     */
     @FXML
     private void handleCategorySelection() {
         String selectedCategory = categoryComboBox.getValue();
@@ -250,7 +318,9 @@ public class CustomerOrderCreation {
         }
     }
 
-    // Save Selections button. shows a table of all the picked items from the menu
+    /**
+     * Handles the confirmation of selected items, adding them to the list of chosen items.
+     */
     @FXML
     private void handleConfirmSelectionAction() {
     	errorText.setVisible(false);
@@ -315,26 +385,39 @@ public class CustomerOrderCreation {
         tempChosenItemsFromMenu.clear();
     }
 
-   //shows the selected items from the menu on the list at the bottom of the screen
+    /**
+     * Updates the list of selected items displayed to the user.
+     */
     private void updateSelectedItemsListView() { 	          
     	ChosenItemsTableView.getItems().addAll(tempChosenItemsFromMenu); 
     	ChosenItemsFromMenu.addAll(tempChosenItemsFromMenu); //The list of dishes that will continue with us until the Checkout   
 	}
         
-    //This one lets a user delete an item from the order list by clicking on it
+    /**
+     * Handles the deletion of an item from the list of selected items when clicked.
+     */
     private void handleDeleteSelectedItemWithClick() {
     	Dish dishToDelete = ChosenItemsTableView.getSelectionModel().getSelectedItem();
     	ChosenItemsFromMenu.remove(dishToDelete);
     	ChosenItemsTableView.getItems().remove(dishToDelete);              
     }
     
-    //Set the list of items chosen from the menu, to be saved until checkout
+    /**
+     * Sets the list of items chosen from the menu, to be saved until checkout.
+     * 
+     * @param ChosenItemsFromMenu The list of chosen dishes from the menu.
+     */
     public void setDishesCount(List<Dish> ChosenItemsFromMenu) {
         this.ChosenItemsFromMenu = ChosenItemsFromMenu;
     }
     
-    //Continues to the choosing supply method part, with a list of the items we chose
-	@FXML
+    /**
+     * Continues to the choosing supply method part with a list of the items we chose.
+     * If no items are chosen, an error message is shown.
+     * 
+     * @param event The event that triggers this action.
+     * @throws IOException If an I/O error occurs while loading the next scene.
+     */	@FXML
 	private void handleContinueAction(javafx.event.ActionEvent event) throws IOException {	
 		if (ChosenItemsFromMenu.size() > 0) {
 			CustomerOrderGatherSelectionUI COrderGatherApp = 
@@ -347,13 +430,21 @@ public class CustomerOrderCreation {
 		}
 	}
 	
-	// for the client's backend. sets up the tempMenuFromDB's relevant branch information 
-	public void SettempMenuFromDB(List<Dish> DBlist)
+     /**
+      * Sets up the tempMenuFromDB with relevant branch information.
+      * 
+      * @param DBlist The list of dishes retrieved from the database.
+      */
+     public void SettempMenuFromDB(List<Dish> DBlist)
 	{
 		tempMenuFromDB.clear();                            	 
 		tempMenuFromDB = DBlist; 
 	}
 	
+     /**
+      * Handles the action when the back button is clicked. 
+      * Navigates back to the User Home Page UI.
+      */
 	@FXML
 	private void handleBackButtonAction() {			
 	    try {
@@ -378,14 +469,21 @@ public class CustomerOrderCreation {
 	    }
 	}
     
-  //Change Error text and make it visible, appear under continue button
+	/**
+	 * Changes the error text and makes it visible.
+	 * 
+	 * @param str The error message to display.
+	 */
   	private void showError(String str) {
   		errorText.setText(str);
   		errorText.setVisible(true);
   	}   
     
-  //Making Quit Button to kill thread and send message to server
-	public void closeApplication() {
+  	/**
+  	 * Handles the Quit button action. 
+  	 * Logs the user out, kills the thread, and sends a message to the server.
+  	 */
+  	public void closeApplication() {
 		client.removeClientInOrder();
 		if (client != null) {
 			client.userLogout(user, true);

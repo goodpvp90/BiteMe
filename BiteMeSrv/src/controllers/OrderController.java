@@ -31,7 +31,7 @@ public class OrderController {
 		List<Dish> dishesInOrder = (List<Dish>) message[2];
         // Call the method to create the order
         try {
-        	boolean order = createOrder(newOrder, dishesInOrder, client);
+        	createOrder(newOrder, dishesInOrder, client);
         	notificationController.notifyWorker(dbController.getLocationByBranchId(newOrder.getBranchId()));
         } catch (Exception e) {
         	e.printStackTrace();;
