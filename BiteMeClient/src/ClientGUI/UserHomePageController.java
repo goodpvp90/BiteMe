@@ -2,7 +2,6 @@ package ClientGUI;
 
 import java.io.IOException;
 import java.util.List;
-
 import client.Client;
 import enums.EnumType;
 import javafx.application.Platform;
@@ -26,28 +25,56 @@ import userEntities.User;
  * which varies based on the user's type and registration status.
  */
 public class UserHomePageController {	
+	/**
+	 * The user associated with this controller.
+	 */
 	private User user;
-	private Client client;	
-    @FXML
-    private Button logoutButton;
-    @FXML
-    private Button createOrderButton;
-    @FXML
-    private Button updateMenuButton;
-    @FXML
-    private Button viewReportsButton;
-    @FXML
-    private Button changeHomeBranchButton;
-    @FXML
-    private Button pendingOrdersButton;
-    @FXML
-    private Button registerUserButton;
-    @FXML
-    private Button myOrdersButton;  
-    @FXML
-    private Text welcomeText;   
-    @FXML
-    private Text headlineText;
+
+	/**
+	 * The client instance used for server communication.
+	 */
+	private Client client; 
+
+	@FXML
+	/** Button to log out from the application. */
+	private Button logoutButton;
+
+	@FXML
+	/** Button to create a new order. */
+	private Button createOrderButton;
+
+	@FXML
+	/** Button to update the menu. */
+	private Button updateMenuButton;
+
+	@FXML
+	/** Button to view reports. */
+	private Button viewReportsButton;
+
+	@FXML
+	/** Button to change the home branch. */
+	private Button changeHomeBranchButton;
+
+	@FXML
+	/** Button to view pending orders. */
+	private Button pendingOrdersButton;
+
+	@FXML
+	/** Button to register a new user. */
+	private Button registerUserButton;
+
+	@FXML
+	/** Button to view the user's orders. */
+	private Button myOrdersButton;
+
+	@FXML
+	/** Text element displaying a welcome message to the user. */
+	private Text welcomeText;
+
+	@FXML
+	/** Text element displaying the headline for the user home page. */
+	private Text headlineText;
+
 
     /**
      * Sets the user for this controller and updates the UI accordingly.
@@ -252,39 +279,40 @@ public class UserHomePageController {
         String userType = "";
         boolean staff = true;//if staff true print the branch for staff members
         
-        if (user.getType() == null) {
-            userType = "Unregistered Customer";
-        } else {
-            switch(user.getType()) {
-                case CEO:
-                    staff= false;
-                    userType = "CEO";
-                    break;
-                case BRANCH_MANAGER:
-                    userType = "Manager";
-                    break;
-                case WORKER:
-                    userType = "Worker";
-                    break;
-                case QUALIFIED_WORKER:
-                	userType = "Qualified Worker";
-                    break;
-                case CUSTOMER:
-                    staff= false;
-                	switch(user.getCustomerType()) {
-                	case BUSINESS:
-                		userType = "Business Customer";
-                        break;
-                	case PRIVATE: 
-                		userType = "Private Customer";
-                        break;
-                	default:
-                    	userType = "Customer";
-                        break;
-                	}
-            }
-        } 
-        
+		switch (user.getType()) {
+		case CEO:
+			staff = false;
+			userType = "CEO";
+			break;
+		case BRANCH_MANAGER:
+			userType = "Manager";
+			break;
+		case WORKER:
+			userType = "Worker";
+			break;
+		case QUALIFIED_WORKER:
+			userType = "Qualified Worker";
+			break;
+		case CUSTOMER:
+			staff = false;
+			switch (user.getCustomerType()) {
+			case BUSINESS:
+				userType = "Business Customer";
+				break;
+			case PRIVATE:
+				userType = "Private Customer";
+				break;
+			default:
+				userType = "Customer";
+				break;
+			}
+		case UN_CUSTOMER:
+			userType = "Unregistered Customer";
+
+		default:
+			break;
+		}
+    
         if(staff)
         	headlineText.setText(user.getUsername() + ", " + userType + "\nBranch: " + user.getHomeBranch());
         else
@@ -322,8 +350,13 @@ public class UserHomePageController {
         }
     }
     
-    // pop up window handler for an SMS like notification for a customer
-    public void showNotificationDialog(List<String> text) {
+    /**
+     * Shows a notification dialog with the provided text.
+     * Pop up window handler for an SMS like notification for a customer
+     *
+     * @param text The list of text strings to be displayed in the notification.
+     */
+        public void showNotificationDialog(List<String> text) {
   		Platform.runLater(() -> {
             if (text == null || text.isEmpty()) {
                 System.out.println("No notifications to show.");
@@ -345,7 +378,10 @@ public class UserHomePageController {
         });
      }
     
-    //pop up window handler for a customer when a qualified worker changes the menu
+        /**
+         * Displays a dialog informing the customer about a menu update.
+         * Pop up window handler for a customer when a qualified worker changes the menu
+         */
     public void showCreateOrderDuringUpdateMenuDialog() {
         Platform.runLater(() -> {
         	boolean MenuUpdateToCustomer = true;// Indicator for the helper method which window should open
@@ -368,7 +404,10 @@ public class UserHomePageController {
         });
     }
     
-  //pop up window handler for a worker viewing pending list when a customer creates a new order
+    /**
+    * Displays a dialog informing the worker about a new order created by a customer.
+    * pop up window handler for a worker viewing pending list when a customer creates a new order
+    */
     public void showPendingOrderDuringOrderCreationDialog() {
         Platform.runLater(() -> {
         	boolean MenuUpdateToCustomer = false;// Indicator for the helper method which window should open
@@ -390,7 +429,12 @@ public class UserHomePageController {
         });
     }
 
-    // Helper method to close the current window and open the new one for the pop up handler 
+    /**
+     * Closes the current window and opens a new one based on the provided indicator.
+     * Helper method to close the current window and open the new one for the pop up handler 
+     * 
+     * @param popup If true, opens the CustomerOrderCreationUI; otherwise, opens WorkerPendingOrdersUI.
+     */
     private void closeCurrentWindowAndOpenNewOne(boolean popup) {
         try {
             // Close the current window

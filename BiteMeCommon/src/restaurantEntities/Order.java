@@ -12,6 +12,7 @@ public class Order implements Serializable {
 
 
 	private static final long serialVersionUID = 1L;
+	
     /** The unique identifier for the order. */
     private int orderId;
 

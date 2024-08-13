@@ -28,40 +28,93 @@ import javafx.stage.StageStyle;
 import restaurantEntities.DishInOrder;
 import restaurantEntities.Order;
 import userEntities.User;
-
+/**
+ * Controller class for handling worker's pending orders in the restaurant management system.
+ * This class manages the display and interactions of the pending orders, allowing the worker
+ * to approve and mark orders as ready, while providing the necessary UI updates.
+ */
 public class WorkerPendingOrders {
+	/** 
+	 * Client instance for interacting with the server.
+	 */
 	private Client client;
+	/** 
+	 * User instance representing the current logged-in user. 
+	 */
 	private User user = null;
+	/**
+	 *  List of pending orders of a specific branch.
+	 */
 	List<Order> pendingOrders = new ArrayList<>();
+	/**
+	 *  List of dishes in a pending order of a specific branch. 
+	 */
 	List<DishInOrder> PendingDishInOrders = new ArrayList<>();
+	/**
+	 *  Text label to display error messages.
+	 */
 	@FXML
     private Text errorText;
+	/** 
+	 * TableView to display the pending orders. 
+	 */
     @FXML
     private TableView<Order> orderTableView;
+    /**
+     *  TableColumn to display the order id. 
+     */
     @FXML
     private TableColumn<Order, Integer> orderIdColumn;
+    /**
+     *  TableColumn to display the name of the orderer. 
+     */
     @FXML
     private TableColumn<Order, String> ordererColumn;
+    /**
+     *  TableColumn to display the time and date of arrival for the order.       
+     */
     @FXML
     private TableColumn<Order, Timestamp> orderDateColumn;
+    /**
+     *  TableColumn to display the price of the order. 
+     */
     @FXML
     private TableColumn<Order, Double> totalPriceColumn;
+    /**
+     * TableColumn indicating whether the order is for delivery.
+     */    
     @FXML
     private TableColumn<Order, Boolean> deliveryColumn;
+    /**
+     * TableColumn showing the current status of the order.
+     */
     @FXML
     private TableColumn<Order, EnumOrderStatus> statusColumn;  
+    /**
+     * Button for approving an order.
+     */
     @FXML
     private Button approveOrderButton;
+    /**
+     * Button for marking an order as ready.
+     */
     @FXML
-    private Button orderReadyButton;    
+    private Button orderReadyButton;   
+    /**
+     * ComboBox for selecting the estimated time of arrival for delivery orders.
+     */
     @FXML
     private ComboBox<String> etaComboBox;
+    /**
+     * Button for navigating back to the previous UI.
+     */
     @FXML
     private Button backButton;   
-    
+    /**
+     * Initializes the UI components and sets up the necessary event listeners.
+     */
     @FXML
     private void initialize() {
-        // Set up the columns in the table
     	client = Client.getInstance();
     	client.setWorkerPendingOrders(this);
         orderIdColumn.setCellValueFactory(new PropertyValueFactory<>("orderId"));
@@ -82,8 +135,7 @@ public class WorkerPendingOrders {
                 updateButtonStates(newValue);
                 etaComboBox.setValue(null);
             }
-        });
-        //*****    
+        });  
         etaComboBox.setItems(FXCollections.observableArrayList(
                 "In about 20 minutes",
                 "In about 1 hour",
@@ -98,10 +150,8 @@ public class WorkerPendingOrders {
             private final Button expandButton = new Button("Expand");
             {
             	expandButton.setOnAction(event -> {
-                    // Get the Order object associated with the row
                     Order Selectedorder = getTableView().getItems().get(getIndex());
                     if (Selectedorder != null) {
-                        // Pass the orderId to the showOrderDetails method
                         showOrderDetails(Selectedorder.getOrderId()); 
                     }
                 });
@@ -118,13 +168,19 @@ public class WorkerPendingOrders {
         });
         orderTableView.getColumns().add(expandColumn);
     }
-
+    /**
+     * Sets the user for this UI and loads the pending orders.
+     *
+     * @param user The user to set.
+     */
     public void setUser(User user) 
     {
         this.user = user;     
         pendingOrdersLoader();        
     }
-
+    /**
+     * Loads the pending orders for the user's home branch.
+     */
     public void pendingOrdersLoader()
     {    	
     	EnumBranch homeBranch = user.getHomeBranch();   	    	
@@ -152,19 +208,31 @@ public class WorkerPendingOrders {
 		orderTableView.getItems().addAll(pendingOrders);   		 
     	});  	
     }
-    
+    /**
+     * Sets the pending orders retrieved from the database.
+     *
+     * @param DBOrderList The list of orders from the database.
+     */
     public void SetPendingOrdersFromDB(List<Order> DBOrderList)
 	{
     	pendingOrders.clear();                            	 
     	pendingOrders = DBOrderList;   	
 	}
-    
+    /**
+     * Sets the dishes in orders retrieved from the database.
+     *
+     * @param DBDishInOrdersList The list of dishes in orders from the database.
+     */
     public void SetDishInOrdersFromDB(List<DishInOrder> DBDishInOrdersList)
 	{
     	PendingDishInOrders.clear();                            	 
     	PendingDishInOrders = DBDishInOrdersList;   	
 	}
-    
+    /**
+     * Displays the dishes of the selected order in a new stage.
+     *
+     * @param orderID The ID of the order to display dishes for.
+     */
     private void showOrderDetails(int orderID) {
     	client.sendShowDishesInOrder(orderID,EnumPageForDishInOrder.WORKER); 
     	Platform.runLater(() -> {
@@ -185,7 +253,9 @@ public class WorkerPendingOrders {
         dishTableView.setItems(FXCollections.observableArrayList(PendingDishInOrders));
         });
     }
-    
+    /**
+     * Handles the action of approving an order.
+     */
     @FXML
     private void handleApproveOrderAction() {
  		Order selectedOrder = orderTableView.getSelectionModel().getSelectedItem();
@@ -198,7 +268,9 @@ public class WorkerPendingOrders {
         else
         	showError("Order selection error!!!");        
     }
-
+    /**
+     * Handles the action of marking an order as ready.
+     */
     @FXML
     private void handleOrderReadyAction() {
         Order selectedOrder = orderTableView.getSelectionModel().getSelectedItem();
@@ -224,7 +296,11 @@ public class WorkerPendingOrders {
             showError("Order selection error!!!");
         }
     }
-    
+    /**
+     * Updates the states of the buttons based on the selected order.
+     *
+     * @param selectedOrder The selected order.
+     */
     private void updateButtonStates(Order selectedOrder) {
         if (selectedOrder != null) {
             EnumOrderStatus status = selectedOrder.getStatus();
@@ -240,13 +316,20 @@ public class WorkerPendingOrders {
             etaComboBox.setValue(null);
         }
     }
-
-    //Change Error text and make it visible, appear under continue button
+    /**
+     * Displays an error message in the UI.
+     *
+     * @param message The error message to display.
+     */
   	private void showError(String str) {
   		errorText.setText(str);
   		errorText.setVisible(true);
   	} 
-
+  	/**
+  	 * Displays a notification dialog with a list of messages.
+  	 * Used for displaying real time updates for a customer regarding his order's status (SMS like)
+  	 * @param text The list of messages to display. If empty or null, no dialog is shown.
+  	 */
   	 public void showNotificationDialog(List<String> text) {
   		Platform.runLater(() -> {
             if (text == null || text.isEmpty()) {
@@ -268,8 +351,9 @@ public class WorkerPendingOrders {
             });
         });
      }
-    
-  	// Goes back to the user's home page
+  	/**
+      * Handles the action of navigating back to the previous UI.
+      */
   	@FXML
   	private void handleBackButtonAction() {    
   	    client.removeWorkerInPendingOrders(user);
@@ -288,8 +372,9 @@ public class WorkerPendingOrders {
   	        showError("An error occurred while loading the User Home Page.");
   	    }
   	}  	
-    
- 	//Making Quit Button to kill thread and send message to server
+  	/**
+  	 * Logs out the user and removes the worker from pending orders.
+  	 */
     public void closeApplication() {
   	    client.removeWorkerInPendingOrders(user);
     	if (client != null) 
