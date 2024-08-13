@@ -15,11 +15,31 @@ import userEntities.User;
  * It loads the corresponding FXML file, sets up the scene, and handles the primary stage.
  */
 public class CustomerCheckoutUI extends Application {
-	private User user = null;
+	/** 
+     * The user for checkout information.
+     */
+    private User user = null;
+
+    /** 
+     * The list of dishes the user picked.
+     */
     private List<Dish> orders = null;
+
+    /** 
+     * The user's preference choices selected in the gather window.
+     */
     private boolean[] param = null;
-    private String[] contactInfo=null;
+
+    /** 
+     * The contact information filled by the user for delivery and time.
+     */
+    private String[] contactInfo = null;
+
+    /** 
+     * The date of the order.
+     */
     private Object date = null;
+
 
     /**
      * Creates an instance with user, orders, parameters, contact info, and date.

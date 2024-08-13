@@ -19,7 +19,7 @@
          <VBox alignment="CENTER" spacing="20">
             <VBox alignment="CENTER" spacing="10">
                <Text styleClass="input-label" text="Enter server IP:" />
-               <TextField fx:id="serverIpTextField" maxWidth="300.0" promptText="Enter IP address" styleClass="text-field" />
+               <TextField fx:id="serverIpTextField" maxWidth="300.0" promptText="Enter IP address" styleClass="text-field" text="127.0.0.1" />
                
                <Text styleClass="input-label" text="Enter server Port:" />
                <TextField fx:id="serverPortTextField" maxWidth="300.0" promptText="Enter port number" styleClass="text-field" text="5555" />
