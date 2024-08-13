@@ -849,7 +849,6 @@ public class DBController {
             int rowsAffected = updateStmt.executeUpdate();
             return rowsAffected > 0;
         } catch (SQLException e) {
-            e.printStackTrace();
             return false;
         }
     }

@@ -1,7 +1,7 @@
 package enums;
 
 public enum EnumServerOperations {
-	USER_CONDITION,
+	CLIENT_CONDITION,
 	INSERT_ORDER,
 	LOGIN, 
 	ADD_DISH,

@@ -13,13 +13,11 @@ public class RestaurantController {
 	private Server server;
 	private DBController dbController;
 	private NotificationController notificationController;
-	private OrderController orderController;
 	
-	public RestaurantController(Server server, DBController dbController, NotificationController notificationController, OrderController orderController) {
+	public RestaurantController(Server server, DBController dbController, NotificationController notificationController) {
 		this.server = server;		
 		this.dbController = dbController;
 		this.notificationController = notificationController;
-		this.orderController = orderController;
 	}
 	
 	public void handleAddDish(ConnectionToClient client, Object[] message) {
