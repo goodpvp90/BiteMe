@@ -2,9 +2,8 @@ package ClientGUI;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
-
 import client.Client;
-import client.Client.EnumPageForDishInOrder;
+import enums.EnumPageForDishInOrder;
 import enums.EnumBranch;
 import enums.EnumOrderStatus;
 import javafx.application.Platform;
@@ -60,7 +59,6 @@ public class WorkerPendingOrders {
     @FXML
     private Button backButton;   
     
-    ////////////////////////////////////////////////////////////////////////////////////////////
     @FXML
     private void initialize() {
         // Set up the columns in the table
@@ -95,7 +93,6 @@ public class WorkerPendingOrders {
             orderReadyButton.setDisable(newValue == null || newValue.isEmpty());
         });
         etaComboBox.setVisible(false);
-        //*****
         TableColumn<Order, Void> expandColumn = new TableColumn<>("Expand");
         expandColumn.setCellFactory(param -> new TableCell<>() {
             private final Button expandButton = new Button("Expand");
@@ -121,14 +118,13 @@ public class WorkerPendingOrders {
         });
         orderTableView.getColumns().add(expandColumn);
     }
-    //-----------------------------------------END OF INIT------------------------------------------
+
     public void setUser(User user) 
     {
         this.user = user;     
         pendingOrdersLoader();        
     }
-  
-    ///////////////////******
+
     public void pendingOrdersLoader()
     {    	
     	EnumBranch homeBranch = user.getHomeBranch();   	    	
@@ -169,38 +165,26 @@ public class WorkerPendingOrders {
     	PendingDishInOrders = DBDishInOrdersList;   	
 	}
     
-    // Create a new stage to show order details
     private void showOrderDetails(int orderID) {
     	client.sendShowDishesInOrder(orderID,EnumPageForDishInOrder.WORKER); 
     	Platform.runLater(() -> {
         Stage detailStage = new Stage();
         VBox vbox = new VBox();
-        TableView<DishInOrder> dishTableView = new TableView<>();
-        
+        TableView<DishInOrder> dishTableView = new TableView<>();       
         TableColumn<DishInOrder, String> nameColumn = new TableColumn<>("Name");
         TableColumn<DishInOrder, String> optionalPickColumn = new TableColumn<>("Optional Pick");
-        TableColumn<DishInOrder, String> commentColumn = new TableColumn<>("Comment");
-        
+        TableColumn<DishInOrder, String> commentColumn = new TableColumn<>("Comment");        
         nameColumn.setCellValueFactory(new PropertyValueFactory<>("dishName"));
         optionalPickColumn.setCellValueFactory(new PropertyValueFactory<>("optionalPick"));
-        commentColumn.setCellValueFactory(new PropertyValueFactory<>("comment"));
-        
-        dishTableView.getColumns().addAll(nameColumn, optionalPickColumn, commentColumn);
-        
-        // Set up the scene before fetching data
+        commentColumn.setCellValueFactory(new PropertyValueFactory<>("comment"));        
+        dishTableView.getColumns().addAll(nameColumn, optionalPickColumn, commentColumn);       
         vbox.getChildren().add(dishTableView);
         detailStage.setScene(new Scene(vbox));
         detailStage.setTitle("Order Details");
         detailStage.show();
-        
-        // Fetch the dish data from the server
-                   
-        
-            dishTableView.setItems(FXCollections.observableArrayList(PendingDishInOrders));
+        dishTableView.setItems(FXCollections.observableArrayList(PendingDishInOrders));
         });
-
     }
-
     
     @FXML
     private void handleApproveOrderAction() {
@@ -217,7 +201,6 @@ public class WorkerPendingOrders {
 
     @FXML
     private void handleOrderReadyAction() {
-    	//אם זה פיקאפ אז סטאטוס משתנה לCOMPLETED
         Order selectedOrder = orderTableView.getSelectionModel().getSelectedItem();
         if (selectedOrder != null) {
             if (selectedOrder.isDelivery()) {
@@ -229,10 +212,8 @@ public class WorkerPendingOrders {
                     return; 
                 }
             } else {
-                // If it's not a delivery order, allow status update without checking etaComboBox
                 client.updateOrderStatus(selectedOrder.getOrderId(), EnumOrderStatus.COMPLETED,"Order " + selectedOrder.getOrderId()+": Your order is ready for pickup!",selectedOrder.isDelivery());
             }
-            // Remove order from the table after setting status to READY
             selectedOrder.setStatus(EnumOrderStatus.READY);
             orderTableView.getItems().remove(selectedOrder);
             orderTableView.refresh();
@@ -265,7 +246,7 @@ public class WorkerPendingOrders {
   		errorText.setText(str);
   		errorText.setVisible(true);
   	} 
-  	//TEMP
+
   	 public void showNotificationDialog(List<String> text) {
   		Platform.runLater(() -> {
             if (text == null || text.isEmpty()) {
@@ -293,25 +274,20 @@ public class WorkerPendingOrders {
   	private void handleBackButtonAction() {    
   	    client.removeWorkerInPendingOrders(user);
   		try {
-  	        // Retrieve the existing stage for UserHomePageUI
   	        Stage userHomePageStage = UserHomePageUI.getStage();
-
   	        if (userHomePageStage != null) {
-  	            userHomePageStage.show();  // Show the hidden stage again
+  	            userHomePageStage.show();  
   	        } else {
-  	            // If the stage is somehow null, recreate and show it
   	            UserHomePageUI Userapp = new UserHomePageUI(user);
   	            Userapp.start(new Stage());
   	        }
-  	        // Close the current stage
   	        Stage currentStage = (Stage) backButton.getScene().getWindow();
   	        currentStage.close();
   	    } catch (Exception e) {
   	        e.printStackTrace();
   	        showError("An error occurred while loading the User Home Page.");
   	    }
-  	}
-  	
+  	}  	
     
  	//Making Quit Button to kill thread and send message to server
     public void closeApplication() {
