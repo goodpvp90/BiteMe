@@ -17,6 +17,7 @@ import ClientGUI.UpdateAddDish;
 import ClientGUI.UpdateDeleteMenu;
 import ClientGUI.UserHomePageController;
 import ClientGUI.WorkerPendingOrders;
+import containers.ListContainer;
 import enums.EnumClientOperations;
 import enums.EnumOrderStatus;
 import enums.EnumPageForDishInOrder;
@@ -161,17 +162,18 @@ public class Client extends AbstractClient {
 			operation = (EnumClientOperations) message[0];
 			switch (operation) {	
 			case USERS_ORDERS:
-				List<Order> UserOrders = (List<Order>)message[1];			
+				ListContainer ordersContainer = (ListContainer)message[1];
+				List<Order> UserOrders = ordersContainer.getlistOrder();			
 				myOrders.setOrders(UserOrders);			
 	            break;
 			case PENDING_ORDER:
-				//TODO nadir
-				@SuppressWarnings("unchecked")
-				List<Order> pendingOrders = (List<Order>)message[1];
+				ListContainer pendingOrdersContainer = (ListContainer)message[1];
+				List<Order> pendingOrders = pendingOrdersContainer.getlistOrder();
 				workerPendingOrders.SetPendingOrdersFromDB(pendingOrders);
 				break;
 			case DISHES_IN_ORDER:
-	        	List<DishInOrder> dishes = (List<DishInOrder>)message[1];		
+				ListContainer dishesContainer = (ListContainer)message[1];
+	        	List<DishInOrder> dishes = dishesContainer.getListDishInOrder();		
 				switch(pageForDishInOrder) {
 					case EnumPageForDishInOrder.WORKER://for pending orders page
 						workerPendingOrders.SetDishInOrdersFromDB(dishes);
@@ -184,8 +186,9 @@ public class Client extends AbstractClient {
 			case USER:
 				handleLogin(message);
 	        	break;
-            case NOTIFICATION:          	
-            	List<String> notifications = (List<String>) message[1];              
+            case NOTIFICATION:
+            	ListContainer notificationsContainer = (ListContainer)message[1];
+            	List<String> notifications = notificationsContainer.getListString();              
                 waitForController();//Synchronization
                 userHomePageController.showNotificationDialog(notifications);               	                
                 break;
@@ -202,14 +205,14 @@ public class Client extends AbstractClient {
                     }
                 break;
             case VIEW_MENU:
-            	List<Dish> menu = (List<Dish>) message[1];
+            	ListContainer menuContainer = (ListContainer)message[1];
+            	List<Dish> menu = menuContainer.getListDish();
            	 	CustomerOrderCreation.SettempMenuFromDB(menu);    
                  break;
             case MENU_FOR_UPDATE:
-            	//TODO nadir
-            	@SuppressWarnings("unchecked")
-            	List<Dish> menuupdate = (List<Dish>) message[1];
-            	updateDeleteMenu.setMenuDishes(menuupdate);            	
+            	ListContainer menuUpdateContainer = (ListContainer)message[1];
+            	List<Dish> menuUpdate = menuUpdateContainer.getListDish();
+            	updateDeleteMenu.setMenuDishes(menuUpdate);       	
             	break;
             case ADD_DISH:
             	updateAddDish.setSucceededAdd((boolean) message[1]);
@@ -236,9 +239,8 @@ public class Client extends AbstractClient {
             case QUARTERLY_REPORT:
                 Object[] data = (Object[]) message[1];
                 QuarterlyReport qreport = (QuarterlyReport) data[0];
-                //TODO nadir
-                @SuppressWarnings("unchecked")
-                List<Double> monthlyIncomes = (List<Double>) data[1];
+                ListContainer monthlyIncomesContainer = (ListContainer)data[1];
+                List<Double> monthlyIncomes = monthlyIncomesContainer.getListDouble();
                 reportsPageController.handleQuarterlyReportResponse(qreport, monthlyIncomes);
                 break;
             case UPDATE_DISH:
@@ -338,7 +340,10 @@ public class Client extends AbstractClient {
 	}
 	
 	public void sendCreateOrderRequest(Order order, List<Dish> dishesInOrder) {
-	    sendMessageToServer(new Object[] { EnumServerOperations.INSERT_ORDER, order, dishesInOrder});		       
+	    //encapsulate the list to avoid suppress warnings
+		ListContainer containerDishInOrder = new ListContainer();
+		containerDishInOrder.setListDish(dishesInOrder);
+	    sendMessageToServer(new Object[] { EnumServerOperations.INSERT_ORDER, order, containerDishInOrder});	
 	}
 
 	public void loginValidation(User user) {

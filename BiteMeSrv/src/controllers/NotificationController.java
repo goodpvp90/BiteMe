@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import containers.ListContainer;
 import enums.EnumBranch;
 import enums.EnumClientOperations;
 import ocsf.server.ConnectionToClient;
@@ -56,10 +57,7 @@ public class NotificationController {
     }
 
     public void removeFromWorkersInPendingOrders(User key) {
-    	System.out.println(workersInPendingOrders.size());
-    	System.out.println(getWorkerInPendingOrders(key));
     	workersInPendingOrders.remove(key);
-    	System.out.println(workersInPendingOrders.size());
     }
     
     public ConnectionToClient getWorkerInPendingOrders(User key) {
@@ -83,7 +81,9 @@ public class NotificationController {
             if (client != null) {
             	List<String> not = new ArrayList<String>();
             	not.add(message);
-            	server.sendMessageToClient(EnumClientOperations.NOTIFICATION, client, not);
+            	ListContainer notContainter = new ListContainer();
+            	notContainter.setListString(not);
+            	server.sendMessageToClient(EnumClientOperations.NOTIFICATION, client, notContainter);
             }else 
                 dbController.savePendingNotification(username, orderId, message);
         } catch (SQLException e) {
