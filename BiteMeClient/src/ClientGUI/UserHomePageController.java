@@ -92,6 +92,7 @@ public class UserHomePageController {
     private void updateUI() {    	
     	switch(user.getType()) {    	
     	case CEO:
+    		registerUserButton.setVisible(false);
     		updateMenuButton.setVisible(false);
     		pendingOrdersButton.setVisible(false);
 	        changeHomeBranchButton.setVisible(false);
@@ -293,6 +294,10 @@ public class UserHomePageController {
 		case QUALIFIED_WORKER:
 			userType = "Qualified Worker";
 			break;
+		case UN_CUSTOMER:
+			staff = false;
+			userType = "Unregistered Customer";
+			break;
 		case CUSTOMER:
 			staff = false;
 			switch (user.getCustomerType()) {
@@ -306,8 +311,7 @@ public class UserHomePageController {
 				userType = "Customer";
 				break;
 			}
-		case UN_CUSTOMER:
-			userType = "Unregistered Customer";
+		
 
 		default:
 			break;
@@ -330,6 +334,7 @@ public class UserHomePageController {
             welcomeText.setText("Hello " + user.getFirstName() + ", what would you like to do?");
         }
     }
+    
     
     /**
      * Handles the register user action.
