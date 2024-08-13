@@ -123,6 +123,7 @@ public class Client extends AbstractClient {
 		sendToServer(new Object[] { EnumServerOperations.CLIENT_CONDITION,
 				new String[] { clientIP, clientHostName, "start" } });
 	}
+
 	/**
      * Returns the instance of the Client.
      * 
