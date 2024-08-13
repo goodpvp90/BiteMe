@@ -17,7 +17,6 @@ import ClientGUI.UpdateAddDish;
 import ClientGUI.UpdateDeleteMenu;
 import ClientGUI.UserHomePageController;
 import ClientGUI.WorkerPendingOrders;
-import containers.ListContainer;
 import enums.EnumClientOperations;
 import enums.EnumOrderStatus;
 import enums.EnumPageForDishInOrder;
@@ -93,7 +92,6 @@ public class Client extends AbstractClient {
      * The controller for the user home page.
      */
 	private UserHomePageController userHomePageController;
-
 	/**
      * The lock for synchronization on pop-up dialogs.
      */
@@ -266,8 +264,11 @@ public class Client extends AbstractClient {
 	            lock.unlock();
 	        }
 	}
-
-	
+	/**
+     * Handles messages received from the server.
+     * Each case relates to a different outcome on the client, usually for different UI screens
+     * @param msg the message from the server
+     */
 	@Override
 	protected void handleMessageFromServer(Object msg) {
 		EnumClientOperations operation;
@@ -276,23 +277,22 @@ public class Client extends AbstractClient {
 			operation = (EnumClientOperations) message[0];
 			switch (operation) {	
 			case USERS_ORDERS:
-				ListContainer ordersContainer = (ListContainer)message[1];
-				List<Order> UserOrders = ordersContainer.getlistOrder();			
+				List<Order> UserOrders = (List<Order>)message[1];			
 				myOrders.setOrders(UserOrders);			
 	            break;
 			case PENDING_ORDER:
-				ListContainer pendingOrdersContainer = (ListContainer)message[1];
-				List<Order> pendingOrders = pendingOrdersContainer.getlistOrder();
+				//TODO nadir
+				@SuppressWarnings("unchecked")
+				List<Order> pendingOrders = (List<Order>)message[1];
 				workerPendingOrders.SetPendingOrdersFromDB(pendingOrders);
 				break;
 			case DISHES_IN_ORDER:
-				ListContainer dishesContainer = (ListContainer)message[1];
-	        	List<DishInOrder> dishes = dishesContainer.getListDishInOrder();		
+	        	List<DishInOrder> dishes = (List<DishInOrder>)message[1];		
 				switch(pageForDishInOrder) {
 					case EnumPageForDishInOrder.WORKER:
 						workerPendingOrders.SetDishInOrdersFromDB(dishes);
 						break;
-					case EnumPageForDishInOrder.CUSTOMER://for my orders page
+					case EnumPageForDishInOrder.CUSTOMER:
 						myOrders.SetDishInOrdersFromDB(dishes);
 						break;
 				}
@@ -300,9 +300,8 @@ public class Client extends AbstractClient {
 			case USER:
 				handleLogin(message);
 	        	break;
-            case NOTIFICATION:
-            	ListContainer notificationsContainer = (ListContainer)message[1];
-            	List<String> notifications = notificationsContainer.getListString();              
+            case NOTIFICATION:          	
+            	List<String> notifications = (List<String>) message[1];              
                 waitForController();//Synchronization
                 userHomePageController.showNotificationDialog(notifications);               	                
                 break;
@@ -319,14 +318,14 @@ public class Client extends AbstractClient {
                     }
                 break;
             case VIEW_MENU:
-            	ListContainer menuContainer = (ListContainer)message[1];
-            	List<Dish> menu = menuContainer.getListDish();
+            	List<Dish> menu = (List<Dish>) message[1];
            	 	CustomerOrderCreation.SettempMenuFromDB(menu);    
                  break;
             case MENU_FOR_UPDATE:
-            	ListContainer menuUpdateContainer = (ListContainer)message[1];
-            	List<Dish> menuUpdate = menuUpdateContainer.getListDish();
-            	updateDeleteMenu.setMenuDishes(menuUpdate);       	
+            	//TODO nadir
+            	@SuppressWarnings("unchecked")
+            	List<Dish> menuupdate = (List<Dish>) message[1];
+            	updateDeleteMenu.setMenuDishes(menuupdate);            	
             	break;
             case ADD_DISH:
             	updateAddDish.setSucceededAdd((boolean) message[1]);
@@ -353,8 +352,9 @@ public class Client extends AbstractClient {
             case QUARTERLY_REPORT:
                 Object[] data = (Object[]) message[1];
                 QuarterlyReport qreport = (QuarterlyReport) data[0];
-                ListContainer monthlyIncomesContainer = (ListContainer)data[1];
-                List<Double> monthlyIncomes = monthlyIncomesContainer.getListDouble();
+                //TODO nadir
+                @SuppressWarnings("unchecked")
+                List<Double> monthlyIncomes = (List<Double>) data[1];
                 reportsPageController.handleQuarterlyReportResponse(qreport, monthlyIncomes);
                 break;
             case UPDATE_DISH:
@@ -384,7 +384,6 @@ public class Client extends AbstractClient {
 			}
 		}
 	}
-	
 	/**
      * Waits for the UserHomePageController to be set.
      */	
@@ -432,7 +431,6 @@ public class Client extends AbstractClient {
 			sendToServer(msg);
 		} catch (Exception e) {}		
 	}
-	
 	/**
      * Sends a request to show dishes in an order.
      * 
@@ -498,11 +496,7 @@ public class Client extends AbstractClient {
 	 * @param dishesInOrder the list of dishes associated with the order
 	 */
 	public void sendCreateOrderRequest(Order order, List<Dish> dishesInOrder) {
-	    //encapsulate the list to avoid suppress warnings
-		ListContainer containerDishInOrder = new ListContainer();
-		containerDishInOrder.setListDish(dishesInOrder);
-	    sendMessageToServer(new Object[] { EnumServerOperations.INSERT_ORDER, order, containerDishInOrder});	
-
+	    sendMessageToServer(new Object[] { EnumServerOperations.INSERT_ORDER, order, dishesInOrder});		       
 	}
 	/**
 	 * Sends a request to validate user login.
@@ -555,7 +549,6 @@ public class Client extends AbstractClient {
 	public void getQuarterlyReport(QuarterlyReport qreport) {
 		sendMessageToServer(new Object[] { EnumServerOperations.QUARTERLY_REPORT, qreport });
 	}
-
 	/**
 	 * Sends a request to get the discount amount for a user.
 	 * 
@@ -564,7 +557,6 @@ public class Client extends AbstractClient {
 	public void getDiscountAmount(String username) {
 		sendMessageToServer(new Object[] { EnumServerOperations.GET_DISCOUNT_AMOUNT, username });
 	}
-	
 	/**
 	 * Sends a request to set the discount amount for a user.
 	 * 
@@ -585,7 +577,6 @@ public class Client extends AbstractClient {
 	public void updateOrderStatus(int orderId, EnumOrderStatus status, String msg, boolean isDelivery) {
 		sendMessageToServer(new Object[] { EnumServerOperations.UPDATE_ORDER_STATUS, orderId, status, msg, isDelivery});
 	}
-	
 	/**
 	 * Sends a request to retrieve the menu.
 	 * 
@@ -595,8 +586,6 @@ public class Client extends AbstractClient {
 	public void getViewMenu(EnumServerOperations op, int menuId) {
 		sendMessageToServer(new Object[] {op, menuId });
 	}
-	
-	
 	/**
 	 * Sends a request to delete a dish.
 	 * 
@@ -621,7 +610,6 @@ public class Client extends AbstractClient {
 	public void changeHomeBranch(User user) {
 		sendMessageToServer(new Object[] { EnumServerOperations.CHANGE_HOME_BRANCH, user });
 	}
-
 	/**
      * Sends a request to update a dish.
      * 
