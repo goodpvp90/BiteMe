@@ -1459,6 +1459,52 @@
     -fx-font-weight: bold;
 }
 
+.update-delete-menu .combo-box {
+    -fx-background-color: rgba(255, 255, 255, 0.2);
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-prompt-text-fill: rgba(255, 255, 255, 0.7);
+    -fx-border-color: rgba(255, 255, 255, 0.3);
+    -fx-border-width: 1px;
+    -fx-border-radius: 5px;
+    -fx-background-radius: 5px;
+    -fx-padding: 5px;
+}
+
+.update-delete-menu .combo-box .list-cell {
+    -fx-text-fill: white;
+    -fx-background-color: transparent;
+}
+
+.update-delete-menu .combo-box-popup .list-view {
+    -fx-background-color: #203a43;
+    -fx-background-radius: 5px;
+    -fx-border-color: rgba(255, 255, 255, 0.3);
+    -fx-border-width: 1px;
+    -fx-border-radius: 5px;
+}
+
+.update-delete-menu .combo-box-popup .list-cell {
+    -fx-text-fill: white;
+    -fx-background-color: transparent;
+    -fx-padding: 5px;
+}
+
+.update-delete-menu .combo-box-popup .list-cell:hover {
+    -fx-background-color: rgba(255, 255, 255, 0.2);
+}
+
+.update-delete-menu .combo-box-popup .list-cell:selected {
+    -fx-background-color: rgba(0, 150, 201, 0.5);
+}
+
+.update-delete-menu .combo-box .arrow-button {
+    -fx-background-color: transparent;
+}
+
+.update-delete-menu .combo-box .arrow {
+    -fx-background-color: white;
+}
 /* End of UpdateDeleteMenu Styles */
 
 /* UpdateAddDish Styles */

@@ -30,9 +30,9 @@
         </columns>
     </TableView>
 
-    <ComboBox fx:id="etaComboBox" layoutX="325.0" layoutY="450.0" prefWidth="150.0" promptText="-Choose Comment-" />
+    <ComboBox fx:id="etaComboBox" layoutX="283.0" layoutY="447.0" prefHeight="42.0" prefWidth="229.0" promptText="-Choose Comment-" />
     <Button fx:id="approveOrderButton" disable="true" layoutX="140.0" layoutY="500.0" onAction="#handleApproveOrderAction" prefHeight="30.0" prefWidth="150.0" text="APPROVE ORDER" />
-    <Button fx:id="orderReadyButton" disable="true" layoutX="511.0" layoutY="500.0" onAction="#handleOrderReadyAction" prefHeight="30.0" prefWidth="150.0" text="ORDER READY" />
+    <Button fx:id="orderReadyButton" disable="true" layoutX="512.0" layoutY="500.0" onAction="#handleOrderReadyAction" prefHeight="30.0" prefWidth="150.0" text="ORDER READY" />
     
     <Text fx:id="errorText" fill="RED" layoutX="50.0" layoutY="560.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" textAlignment="CENTER" visible="false" wrappingWidth="700.0">
         <font>

@@ -54,8 +54,6 @@ public class ReportsPageController {
     private Client client;
     private EnumType userType;
     private User user;
-    private boolean isRegistered;
-    //TODO ADDED FOR QUARTER REPORT
     private int openQuarterlyReportWindows = 0;
 
     /**
@@ -91,9 +89,8 @@ public class ReportsPageController {
      * @param isRegistered A boolean indicating whether the user is registered (Only Customer can be NOT registered).
      * 
      */
-    public void setUser(User user, boolean isRegistered) {
+    public void setUser(User user) {
         this.user = user;
-        this.isRegistered = isRegistered;
         setUserType(user.getType());
 
         // Set up the branch dropdown based on user type
@@ -553,30 +550,17 @@ public class ReportsPageController {
 
     
     private void openQuarterlyReportWindow(QuarterlyReport report, List<Double> monthlyIncomes) {
-        System.out.println("Attempting to open Quarterly Report window");
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("QuarterlyReport.fxml"));
-            Parent root = loader.load();
-            QuarterlyReportController controller = loader.getController();
-            controller.setReportData(report, this, monthlyIncomes);
-            
-            Stage stage = new Stage();
-            stage.setScene(new Scene(root));
-            
-            // Call the updateWindowTitle method
-            controller.updateWindowTitle();
-            
-            // Set up the close handler
-            controller.setupCloseHandler();
-
-            stage.show();
+            QuarterlyReportUI quarterlyReportUI = new QuarterlyReportUI();
+            quarterlyReportUI.setReportData(report, this, monthlyIncomes);
+            quarterlyReportUI.start(new Stage());
             System.out.println("Quarterly Report window opened successfully");
             
             openQuarterlyReportWindows++;
             if (openQuarterlyReportWindows >= 2) {
                 quarterlyReportButton.setDisable(true);
             }
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             showErrorMessage("An error occurred while opening the Quarterly Report window.");
         }

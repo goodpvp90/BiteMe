@@ -33,7 +33,7 @@ public class ReportsPageUI extends Application {
 			controller.closeApplication();
         });   
         
-        controller.setUser(user, true);
+        controller.setUser(user);
         controller.setUserType(user.getType());
         primaryStage.setTitle("Reports Page");
         primaryStage.setScene(new Scene(root));
