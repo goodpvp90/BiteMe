@@ -28,80 +28,112 @@ import javafx.stage.StageStyle;
 import restaurantEntities.Dish;
 import userEntities.User;
 
+
+/**
+ * The UpdateDeleteMenu class handles the UI and logic for updating and deleting dishes from the menu.
+ */
 public class UpdateDeleteMenu {
 
+	/** Button to navigate back to the previous menu. */
     @FXML
     private Button backButton;
 
+    /** Button to save changes made to a selected dish. */
     @FXML
     private Button saveButton;
 
+    /** Button to delete a selected dish. */
     @FXML
     private Button deleteButton;
 
+    /** TableView to display the list of dishes. */
     @FXML
     private TableView<Dish> menuTableView;
 
+    /** TableColumn to display the type of the dish. */
     @FXML
     private TableColumn<Dish, String> typeColumn;
     
+    /** TableColumn to display the name of the dish. */
     @FXML
     private TableColumn<Dish, String> nameColumn;
 
+    /** TableColumn to display the price of the dish. */
     @FXML
     private TableColumn<Dish, Double> priceColumn;
 
+    /** TableColumn to display the optional items for the dish. */
     @FXML
     private TableColumn<Dish, String> optionalsColumn;
 
+    /** TableColumn to indicate if the dish is grilled. */
     @FXML
     private TableColumn<Dish, Boolean> grillColumn;
 
+    /** TextField to input or display the name of the dish. */
     @FXML
     private TextField nameField;
 
+    /** TextField to input or display the price of the dish. */
     @FXML
     private TextField priceField;
 
-
+    /** ComboBox to select whether the dish is grilled or not. */
     @FXML
     private ComboBox<String> grillComboBox;
 
+    /** Text label for the dish name field. */
     @FXML
     private Text nameText;
 
+    /** Text label for the dish price field. */
     @FXML
     private Text priceText;
 
-
+    /** Text label for the grill option field. */
     @FXML
     private Text grillText;
     
+    /** Text label to display error messages. */
     @FXML
     private Text errorText;
     
+    /** Client instance for interacting with the server. */
     private Client client;
     
+    /** User instance representing the current logged-in user. */
     private User user;
     
+    /** Flag to indicate if the delete operation was successful. */
     private boolean successDelete;
     
+    /** Flag to indicate if the edit operation was successful. */
     private boolean successEdit;
     
+    /** List of dishes chosen from the menu. */
 	public List<Dish> chosenItemsFromMenu = new ArrayList<>();
 	
-	private boolean whichOptionChoosed = false; //false to delete true to edit
+    /** Flag to indicate which operation was chosen (false for delete, true for edit). */
+	private boolean whichOptionChoosed = false;
 	
-	//if update didn't succeed use this as backup
+    /** Previous dish name for backup in case an update fails. */
 	private String prevDishName;
+
+    /** Previous dish price for backup in case an update fails. */
 	private double prevDishPrice;
+
+    /** Previous grill status for backup in case an update fails. */
 	private boolean prevIsGrill;
 
 
+	/** 
+     * Initializes the UpdateDeleteMenu controller. 
+     * Sets up the table columns, initializes the Client instance, and adds listeners for UI interactions.
+     */
     @FXML
     private void initialize() {
         // Setup table columns
-    	client = client.getInstance();
+    	client = Client.getInstance();
     	client.getInstanceOfUpdateDeleteMenu(this);
     	
     	typeColumn.setCellValueFactory(new PropertyValueFactory<>("dishType"));
@@ -162,7 +194,9 @@ public class UpdateDeleteMenu {
         
     }
     
-    //Reset the fill field and combo box to default values
+    /**
+     * Resets the input fields and ComboBox to their default values.
+     */
     private void resetFields() {
     	// Set the TextFields to be empty initially
         nameField.setText("");
@@ -174,6 +208,12 @@ public class UpdateDeleteMenu {
         grillComboBox.setVisible(false);
     }
     
+    /**
+     * Formats the list of optionals into a comma-separated string.
+     * 
+     * @param optionals List of optionals.
+     * @return Comma-separated string of optionals.
+     */
     private String formatOptionals(ArrayList<String> optionals) {
         if (optionals == null || optionals.isEmpty()) {
             return "";
@@ -181,6 +221,11 @@ public class UpdateDeleteMenu {
         return String.join(", ", optionals);
     }
     
+    /**
+     * Updates the menu table with the provided list of dishes.
+     * 
+     * @param dishes List of dishes to display in the table.
+     */
     public void updateMenuTable(List<Dish> dishes) {
         Platform.runLater(() -> {
             // Clear existing items and add the fetched dishes
@@ -194,25 +239,40 @@ public class UpdateDeleteMenu {
            
         });
     }
-   
+    
+    /**
+     * Sets the list of dishes chosen from the menu.
+     * 
+     * @param chosenItemsFromMenu List of chosen dishes.
+     */
     public void setMenuDishes(List<Dish> chosenItemsFromMenu) {
     	this.chosenItemsFromMenu = chosenItemsFromMenu;
     	
 
     }
-
+    
+    /**
+     * Sets the current user and fetches the menu for updating.
+     * 
+     * @param user Current user.
+     */
     public void setUser(User user) {
     	this.user=user;
     	client.getViewMenu(EnumServerOperations.MENU_FOR_UPDATE,UserHomeBranchConvertToInt(user.getHomeBranch()));
         Platform.runLater(() -> {
     	menuTableView.getItems().addAll(chosenItemsFromMenu);
     	menuTableView.getSortOrder().add(typeColumn);
-        typeColumn.setSortType(TableColumn.SortType.ASCENDING); // or DESCENDING for reverse order
+        typeColumn.setSortType(TableColumn.SortType.ASCENDING);
         });
 
     }
     
-        
+    /**
+     * Converts the user's home branch to an integer representation.
+     * 
+     * @param enumGet The EnumBranch value to convert.
+     * @return Integer representation of the branch.
+     */
     private int UserHomeBranchConvertToInt(EnumBranch enumGet)
     {
     	switch(user.getHomeBranch())
@@ -229,7 +289,9 @@ public class UpdateDeleteMenu {
     }
     
     
-
+    /**
+     * Handles the action of the back button, navigating to the Update Menu Navigation Page.
+     */
     @FXML
     private void handleBackButtonAction() {
     	try {
@@ -243,6 +305,9 @@ public class UpdateDeleteMenu {
         }
     }
 
+    /**
+     * Handles the action of the save button, updating the selected dish with the entered details.
+     */
     @FXML
     private void handleSaveButtonAction() {
     	whichOptionChoosed=true;
@@ -272,12 +337,26 @@ public class UpdateDeleteMenu {
 
     }
     
-    //check if the details entered are different from the current dish details
+    /**
+     * Checks if the details of the dish have been changed.
+     * 
+     * @param selectedDish The selected dish.
+     * @param name The new dish name.
+     * @param price The new dish price.
+     * @param grill The new grill status.
+     * @return true if details have changed, false otherwise.
+     */
     private boolean checkIfNotTheSameDetails(Dish dish, String name, double price,boolean isGrill) {
 		return !(dish.getDishName().equals(name) && dish.getPrice() == price && dish.isGrill() == isGrill);
     }
 
-    
+    /**
+     * Validates the input fields for editing a dish.
+     * 
+     * @param name The entered dish name.
+     * @param price The entered dish price.
+     * @return true if fields are valid, false otherwise.
+     */
     private boolean checkIfLegalFieldsEdit(String name, String price) {
     	 // Case 1: Name is empty
         if (name == null || name.trim().isEmpty()) {
@@ -307,12 +386,14 @@ public class UpdateDeleteMenu {
         return true;
     }
 
+    /**
+     * Handles the action of the delete button, deleting the selected dish from the menu.
+     */
     @FXML
     private void handleDeleteButtonAction() {
     	whichOptionChoosed=false;
         Dish selectedDish = menuTableView.getSelectionModel().getSelectedItem();
         if (selectedDish != null) {
-			chosenItemsFromMenu.remove(selectedDish);
             client.deleteDish(selectedDish);
         } else {
             showError("Please select a dish to delete.");
@@ -320,12 +401,21 @@ public class UpdateDeleteMenu {
     }
     
     
-    
+    /**
+     * Sets the result received from the server of the delete operation and proceeds accordingly.
+     * 
+     * @param successDelete true if the delete operation was successful, false otherwise.
+     */
     public void SetSuccessDelete(boolean successDelete) {
     	this.successDelete=successDelete;
     	Platform.runLater(() -> checkSuccessAndProceed());
     }
     
+    /**
+     * Sets the result received from the server of the edit operation and proceeds accordingly.
+     * 
+     * @param successEdit true if the edit operation was successful, false otherwise.
+     */
     public void SetSuccessEdit(boolean successEdit) {
     	this.successEdit=successEdit;
     	
@@ -336,11 +426,16 @@ public class UpdateDeleteMenu {
 
     }
     
-    
+    /**
+     * Checks the result of the last operation (edit/delete) and updates the UI accordingly.
+     */
 	private void checkSuccessAndProceed() {
+        Dish selectedDish = menuTableView.getSelectionModel().getSelectedItem();
 		if (successDelete || successEdit) {
-			if(successDelete)
+			if(successDelete) {
 				showSuccessDialog("Delete Dish Complete","deleted");
+				chosenItemsFromMenu.remove(selectedDish);
+			}
 			if(successEdit)
 				showSuccessDialog("Edit Dish Complete","edited");
 				
@@ -351,12 +446,23 @@ public class UpdateDeleteMenu {
 		} else {
 			if(!successDelete && !whichOptionChoosed)
 				showError("Failed to delete dish.");
+			
 			if(!successEdit && whichOptionChoosed) {
 				showError("Failed to edit dish.");
+				//return previous values before edit
+		        selectedDish.setDishName(prevDishName);
+	        	selectedDish.setPrice(prevDishPrice);
+	        	selectedDish.setGrill(prevIsGrill);
 			}
 		}
 	}
 
+	/**
+	 * Displays a success dialog with a given title and action content.
+	 * 
+	 * @param title The title of the dialog.
+	 * @param contentAction The content describing the action performed (e.g., "deleted", "edited").
+	 */
 	private void showSuccessDialog(String title, String contentAction) {
 		Alert alert = new Alert(AlertType.INFORMATION);
 		alert.initStyle(StageStyle.UTILITY);
@@ -374,13 +480,20 @@ public class UpdateDeleteMenu {
 		});
 	}
 	
-  //Making Quit Button to kill thread and send message to server
-    public void closeApplication() {
+	/**
+	 * Closes the application and logs out the user.
+	 */
+	public void closeApplication() {
 		if (client != null) {
 			client.userLogout(user, true);
 		}
     }   
     
+    /**
+     * Displays an error message in the errorText field.
+     * 
+     * @param message The error message to display.
+     */
     private void showError(String errText) {
     	errorText.setText(errText);
     	errorText.setVisible(true);

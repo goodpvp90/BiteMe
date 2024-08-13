@@ -503,10 +503,10 @@ public class Client extends AbstractClient {
 		sendMessageToServer(new Object[] { EnumServerOperations.CHANGE_HOME_BRANCH, user });
 	}
 	
-	public void executeNotifyUser(int orderId, String message)
-	{
-		sendMessageToServer(new Object[] { EnumServerOperations.NOTIFICATION, orderId, message });
-	}
+//	public void executeNotifyUser(int orderId, String message)
+//	{
+//		sendMessageToServer(new Object[] { EnumServerOperations.NOTIFICATION, orderId, message });
+//	}
 	
 	public void updateDish(Dish dish) {
 		sendMessageToServer(new Object[] { EnumServerOperations.UPDATE_DISH, dish });

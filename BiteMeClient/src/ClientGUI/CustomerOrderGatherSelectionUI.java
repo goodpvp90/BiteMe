@@ -9,20 +9,54 @@ import javafx.stage.Stage;
 import restaurantEntities.Dish;
 import userEntities.User;
 
+
+/**
+ * The CustomerOrderGatherSelectionUI class represents the user interface for gathering and selecting orders in the customer order process.
+ * It extends Application to set up and display the JavaFX application window.
+ */
 public class CustomerOrderGatherSelectionUI extends Application {
-	private User user = null;
-    private List<Dish> orders = null;
-    private boolean[] param = null;
-    private String[] contactInfo=null;
-    private Object date=null;
 	
-    //added constructor
+	/** The user associated with this UI. */
+    private User user = null;    
+    
+    /** The list of dishes associate with user order to be transfer to checkout. */
+    private List<Dish> orders = null;
+    
+    
+    /** An array of boolean parameters of user preferences selection if returned from checkout. */
+    private boolean[] param = null;
+    
+    
+    /** An array of contact information strings if filled by the user. */
+    private String[] contactInfo = null;    
+    
+    
+    /** An object representing the date information. */
+    private Object date = null;
+	
+    
+    /**
+     * Constructs a CustomerOrderGatherSelectionUI instance with the specified user and list of orders.
+     * called by order creation UI
+     * 
+     * @param user The user associated with this UI.
+     * @param orders The list of dishes (orders) to be displayed.
+     */
     public CustomerOrderGatherSelectionUI(User user, List<Dish> orders) {
     	this.user = user;
     	this.orders = orders;
 	}
-    ////////////////////////////////////////////////////////////////////////////////
-  //added constructor
+    
+    /**
+     * Constructor initializing the UI with user, orders, additional parameters, contact information, and date.
+     * called by Checkout UI
+     * 
+     * @param user The user associated with this UI.
+     * @param orders list of dishes associate with user order to be transfer to checkout.
+     * @param param An array of boolean parameters of user preferences selection if returned from checkout.
+     * @param contactInfo An array of contact information strings if filled by the user.
+     * @param date An object representing the date information.
+     */
     public CustomerOrderGatherSelectionUI(User user, List<Dish> orders,boolean[] param, String[] contactInfo,Object date) {
     	this.user = user;
     	this.orders = orders;
@@ -30,11 +64,12 @@ public class CustomerOrderGatherSelectionUI extends Application {
     	this.contactInfo = contactInfo;
     	this.date = date;
 	}
-    
-  //added constructor
-    public CustomerOrderGatherSelectionUI() {
-	}
 
+    /**
+     * Starts the UI application by loading the FXML file and setting up the stage.
+     * 
+     * @param primaryStage The primary stage for this application.
+     */
 	@Override
     public void start(Stage primaryStage) {
         try {
@@ -62,6 +97,12 @@ public class CustomerOrderGatherSelectionUI extends Application {
             e.printStackTrace();
         }
     }
+	
+	 /**
+     * Launches the UI application.
+     * 
+     * @param args Command line arguments.
+     */
 	public static void main(String[] args) {
         launch(args);
     }

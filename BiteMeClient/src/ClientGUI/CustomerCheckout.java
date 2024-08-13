@@ -282,7 +282,6 @@ public class CustomerCheckout {
 	
     /**
      * Initializes the CustomerCheckout controller. Sets up table columns and client instance.
-     * This method is automatically called by the FXMLLoader after the FXML file has been loaded.
      */
     @FXML
     private void initialize() {
