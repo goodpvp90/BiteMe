@@ -316,21 +316,24 @@ public class UpdateDeleteMenu {
         String name = nameField.getText();
         String price = priceField.getText();
         boolean grill = (grillComboBox.getValue().equals("Yes")?true:false);
-        if (selectedDish != null && checkIfLegalFieldsEdit(name,price)) {
-        	if(checkIfNotTheSameDetails(selectedDish,name,Double.valueOf(price),grill)) {
-        	//backup in case it didn't succeed
-        	prevDishName = selectedDish.getDishName();
-        	prevDishPrice = selectedDish.getPrice();
-        	prevIsGrill = selectedDish.isGrill();
-        	selectedDish.setDishName(name);
-        	selectedDish.setPrice(Double.valueOf(price));
-        	selectedDish.setGrill(grill);
-        	
-        	client.updateDish(selectedDish);
+        
+        if (selectedDish != null ) {
+        	if(checkIfLegalFieldsEdit(name,price)) {
+				if (checkIfNotTheSameDetails(selectedDish, name, Double.valueOf(price), grill)) {
+					// backup in case it didn't succeed
+					prevDishName = selectedDish.getDishName();
+					prevDishPrice = selectedDish.getPrice();
+					prevIsGrill = selectedDish.isGrill();
+					selectedDish.setDishName(name);
+					selectedDish.setPrice(Double.valueOf(price));
+					selectedDish.setGrill(grill);
+
+					client.updateDish(selectedDish);
+				} else // do nothing, same details entered
+					return;
         	}
-        	else //do nothing, same details entered
+        	else
         		return;
-        		
         }
         else
         	showError("Please select a dish to edit");
@@ -448,7 +451,7 @@ public class UpdateDeleteMenu {
 				showError("Failed to delete dish.");
 			
 			if(!successEdit && whichOptionChoosed) {
-				showError("Failed to edit dish.");
+				showError("Failure! This name already exist under this selected category!");
 				//return previous values before edit
 		        selectedDish.setDishName(prevDishName);
 	        	selectedDish.setPrice(prevDishPrice);
