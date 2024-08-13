@@ -56,6 +56,7 @@ public class Client extends AbstractClient {
 	private final Lock lock = new ReentrantLock();
 	private final Condition condition = lock.newCondition();
 	private MyOrders myOrders;
+	private User user;
 	// Constructor to initialize the client with host and port, and establish
 	// connection
 	private Client(String host, int port) throws IOException {
@@ -68,7 +69,7 @@ public class Client extends AbstractClient {
 
 		// Send initial connection message to the server
 
-		sendToServer(new Object[] { EnumServerOperations.USER_CONDITION,
+		sendToServer(new Object[] { EnumServerOperations.CLIENT_CONDITION,
 				new String[] { clientIP, clientHostName, "start" } });
 
 	}
@@ -98,6 +99,9 @@ public class Client extends AbstractClient {
 		
 	}
 	
+	public void setUser(User user) {
+		this.user = user;
+	}
 	
 	// sets the WorkerPendingOrders instance
 	public void setWorkerPendingOrders(WorkerPendingOrders WorkerPendingOrders) {
@@ -163,7 +167,7 @@ public class Client extends AbstractClient {
 	// Handle messages received from the server
 	@Override
 	protected void handleMessageFromServer(Object msg) {
-		EnumClientOperations operation = EnumClientOperations.NONE;
+		EnumClientOperations operation;
 		if (msg instanceof Object[]) {
 			Object[] message = (Object[]) msg;
 			operation = (EnumClientOperations) message[0];
@@ -328,7 +332,11 @@ public class Client extends AbstractClient {
             	userHomePageController.showPendingOrderDuringOrderCreationDialog();
             	break;
             case SERVER_DISCONNECTED:
-            	//TODO do smth
+            	System.out.println("1000");
+            	if(user == null)
+            		quit();
+            	else
+                	userLogout(user,true);
             	break;
             case ORDER_ON_TIME:           	
             	myOrders.OrderCompleteHandle((boolean)message[1]);
@@ -370,14 +378,12 @@ public class Client extends AbstractClient {
 			String clientHostName = InetAddress.getLocalHost().getHostName();
 
 			// Send disconnection message to the server
-			sendToServer(new Object[] { EnumServerOperations.USER_CONDITION,
+			sendToServer(new Object[] { EnumServerOperations.CLIENT_CONDITION,
 					new String[] { clientIP, clientHostName, "end" } });
 
 			// Close the connection
 			closeConnection();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		} catch (IOException e) {}
 		// Exit the application
 		System.exit(0);
 	}

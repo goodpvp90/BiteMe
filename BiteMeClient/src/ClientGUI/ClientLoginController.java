@@ -79,7 +79,8 @@ public class ClientLoginController {
 	public void updateUser(Object userData) {
         Platform.runLater(() -> {
             if (userData instanceof User) {
-                User user = (User) userData;
+                user = (User) userData;
+                client.setUser(user);
                 launchUserHomePageUI(user);
             } else if (userData instanceof String) {
                 showError((String) userData);

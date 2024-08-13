@@ -24,8 +24,7 @@ public class NotificationController {
 		this.dbController = dbController;
 	}
     
-    
-    public void addToClients(String key, ConnectionToClient client) {
+	public void addToClients(String key, ConnectionToClient client) {
         clients.put(key, client);
     }
 

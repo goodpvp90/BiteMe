@@ -30,7 +30,7 @@ public class Server extends AbstractServer {
 		reportController = new ReportController(this, dbController);
 		userController = new UserController(this, notificationController, dbController);
 		orderController = new OrderController(this, notificationController, dbController);
-		restaurantController = new RestaurantController(this, dbController, notificationController, orderController);
+		restaurantController = new RestaurantController(this, dbController, notificationController);
 		
 		try {
 			dbController.connect(url, username, password);
@@ -47,7 +47,6 @@ public class Server extends AbstractServer {
     public void sendMessageToClient(EnumClientOperations op, ConnectionToClient client, Object msg) {
         try {
             Object message = new Object[]{op, msg};
-            System.out.println(op.toString());
             client.sendToClient(message);
         } catch (IOException e) {
             e.printStackTrace();
@@ -57,14 +56,14 @@ public class Server extends AbstractServer {
 
 	@Override
 	protected void handleMessageFromClient(Object msg, ConnectionToClient client) {
-		EnumServerOperations operation = EnumServerOperations.NONE;
+		EnumServerOperations operation;
 		if (msg instanceof Object[]) {
 			Object[] message = (Object[]) msg;
 			operation = (EnumServerOperations) message[0];
         	System.out.println(operation);
         	System.out.println(notificationController.areConnectionsEqual(notificationController.getClient("ben"),client));
 			switch (operation) {
-			case USER_CONDITION:
+			case CLIENT_CONDITION:
 				controller.displayClientDetails((String[]) message[1]);
 				break;
             case ADD_DISH:
@@ -166,13 +165,13 @@ public class Server extends AbstractServer {
 	protected void serverStopped() {
 		controller.updateStatus("Server has stopped listening for connections.");
 		dbController.resetAllUserLoggedStatus();
-		sendToAllClients(EnumClientOperations.SERVER_DISCONNECTED);
 		dbController.closeConnection();
 		reportController.shutdown();
 	}
 
 	public void stopServer() {
 		try {
+			sendToAllClients(new Object[]{EnumClientOperations.SERVER_DISCONNECTED});
 			stopListening();
 			close();
 		} catch (IOException e) {

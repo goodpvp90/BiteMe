@@ -6,8 +6,6 @@ public enum EnumClientOperations{
 	USER,
 	DISPLAY_ORDERS,
 	EROR,
-	VIEW,
-	NONE,
 	PENDING_ORDER,
 	NOTIFICATION,
 	DELETE_DISH,
