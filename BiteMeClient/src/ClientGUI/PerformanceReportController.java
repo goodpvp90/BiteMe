@@ -22,15 +22,48 @@ import reports.PerformanceReport;
  */
 public class PerformanceReportController {
 
-    @FXML private Label branchLabel;
-    @FXML private Label monthYearLabel;
-    @FXML private Label performancePercentageLabel;
-    @FXML private StackedBarChart<String, Number> performanceChart;
-    @FXML private CategoryAxis xAxis;
-    @FXML private NumberAxis yAxis;
+    /**
+     * Label for displaying the branch information.
+     */
+    @FXML 
+    private Label branchLabel;
 
-    private ReportsPageController reportsPageController;
-    
+    /**
+     * Label for displaying the month and year of the report.
+     */
+    @FXML 
+    private Label monthYearLabel;
+
+    /**
+     * Label for displaying the overall performance percentage.
+     */
+    @FXML 
+    private Label performancePercentageLabel;
+
+    /**
+     * Stacked bar chart for visualizing the performance data.
+     */
+    @FXML 
+    private 
+    StackedBarChart<String, Number> performanceChart;
+
+    /**
+     * Category axis for the performance chart, representing days of the month.
+     */
+    @FXML 
+    private CategoryAxis xAxis;
+
+    /**
+     * Number axis for the performance chart, representing the number of orders.
+     */
+    @FXML 
+    private NumberAxis yAxis;
+
+    /**
+     * Reference to the ReportsPageController for communication with the main Reports Page.
+     */
+    private ReportsPageController reportsPageController;    
+
     /**
      * Sets the reference to the ReportsPageController.
      * This allows communication back to the main reports page.

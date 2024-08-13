@@ -43,7 +43,6 @@ public class Client extends AbstractClient {
 	private ClientLoginController clientLoginController;
 	private CustomerOrderCreation  CustomerOrderCreation;
 	private CustomerOrderGatherSelection customerOrderGatherSelection;
-	private Consumer<IncomeReport> pendingRevenueReportCallback;
 	private ReportsPageController reportsPageController;
 	private RegisterUserPageController registerUserPageController;
 	private CustomerInformationUpdateController customerInformationUpdateController;
@@ -272,39 +271,27 @@ public class Client extends AbstractClient {
             case REPORT_ERROR:
             	String errorMsg = (String)message[1];
             	//TODO somthing more            	
-                if (reportsPageController != null) {
                     reportsPageController.handleIncomeReportResponse(errorMsg);
-                }
             	break;
             case INCOME_REPORT:
                 IncomeReport receivedReport = (IncomeReport) message[1];
-                if (reportsPageController != null) {
                     reportsPageController.handleIncomeReportResponse(receivedReport);
-                }
                 break;
             case ORDERS_REPORT:
             	OrdersReport ordersReport = (OrdersReport)message[1];
-            	if (reportsPageController != null) {
-                    reportsPageController.handleOrdersReportResponse(ordersReport);
-                }
+                 reportsPageController.handleOrdersReportResponse(ordersReport);
                 break;
             case PERFORMANCE_REPORT:
             	PerformanceReport performanceReport = (PerformanceReport)message[1];
-                if (reportsPageController != null) {
                     reportsPageController.handlePerformanceReportResponse(performanceReport);
-                }
                 break;
             case QUARTERLY_REPORT:
                 Object[] data = (Object[]) message[1];
                 QuarterlyReport qreport = (QuarterlyReport) data[0];
                 @SuppressWarnings("unchecked")
                 List<Double> monthlyIncomes = (List<Double>) data[1];
-                System.out.println("size " + monthlyIncomes.size());
-                if (reportsPageController != null) {
-                    reportsPageController.handleQuarterlyReportResponse(qreport, monthlyIncomes);
-                } else {
-                    System.out.println("reportsPageController is null");
-                }
+                reportsPageController.handleQuarterlyReportResponse(qreport, monthlyIncomes);
+
                 break;
             case QUARTERLY_REPORT_ERROR:
             	//u receive a (Object)string
@@ -341,9 +328,6 @@ public class Client extends AbstractClient {
             case ORDER_ON_TIME:           	
             	myOrders.OrderCompleteHandle((boolean)message[1]);
             	break;
-			case NONE:
-				System.out.println("no operation was received");
-				break;
 			}
 		}
 	}

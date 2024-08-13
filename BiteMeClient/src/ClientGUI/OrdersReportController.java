@@ -19,12 +19,34 @@ import reports.OrdersReport;
  */
 public class OrdersReportController {
 
+	/**
+     * Table view for displaying order statistics.
+     */
     @FXML private TableView<Map.Entry<EnumDish, Integer>> ordersTable;
+
+    /**
+     * Table column for displaying dish types.
+     */
     @FXML private TableColumn<Map.Entry<EnumDish, Integer>, String> dishTypeColumn;
+
+    /**
+     * Table column for displaying the amount of each dish type ordered.
+     */
     @FXML private TableColumn<Map.Entry<EnumDish, Integer>, Integer> amountColumn;
+
+    /**
+     * Label for displaying the branch information.
+     */
     @FXML private Label branchLabel;
+
+    /**
+     * Label for displaying the month and year of the report.
+     */
     @FXML private Label monthYearLabel;
 
+    /**
+     * Reference to the ReportsPageController for communication with the main Reports Page.
+     */
     private ReportsPageController reportsPageController;
 
     /**
@@ -32,8 +54,10 @@ public class OrdersReportController {
      * It sets up the cell value factories for the table columns.
      */
     public void initialize() {
+    	//Sets a cell value that convers the key of each map to string (The enum)
         dishTypeColumn.setCellValueFactory(cellData -> 
             new javafx.beans.property.ReadOnlyStringWrapper(cellData.getValue().getKey().toString()));
+        //Sets a cell value that retrieves the value of each map entry (The int)
         amountColumn.setCellValueFactory(cellData -> 
             new javafx.beans.property.ReadOnlyObjectWrapper<>(cellData.getValue().getValue()));
     }

@@ -21,20 +21,40 @@ import userEntities.User;
  */
 public class RegisterUserPageController {
 
-    @FXML
-    private Button backButton;
+	/**
+	 * Button to return to the previous page.
+	 */
+	@FXML private Button backButton;
 
-    @FXML
-    private TextField usernameField;
+	/**
+	 * Text field for entering the username.
+	 */
+	@FXML private TextField usernameField;
 
-    @FXML
-    private Button continueButton;
+	/**
+	 * Button to proceed with the registration process.
+	 */
+	@FXML private Button continueButton;
 
-    @FXML
-    private Text errorText;
-    private User loggedInUser;
-    private Scene previousScene;
-    private Client client;
+	/**
+	 * Text area for displaying error messages.
+	 */
+	@FXML private Text errorText;
+
+	/**
+	 * The currently logged-in user.
+	 */
+	private User loggedInUser;
+
+	/**
+	 * The scene of the previous page, used for navigation.
+	 */
+	private Scene previousScene;
+
+	/**
+	 * The client instance for communication with the server.
+	 */
+	private Client client;
 
     /**
      * Initializes the controller. This method is automatically called after the FXML file has been loaded.
@@ -168,7 +188,11 @@ public class RegisterUserPageController {
         }
     }
     
-  //Making Quit Button to kill thread and send message to server
+    /**
+     * Closes the application and performs necessary cleanup operations.
+     * This method is typically called when the user exits the application.
+     * It logs out the current user and ensures proper termination of the client connection.
+     */
     public void closeApplication() {
     	if (client != null) {
 			client.userLogout(loggedInUser, true);

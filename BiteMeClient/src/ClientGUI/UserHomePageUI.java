@@ -11,8 +11,16 @@ import userEntities.User;
  * in the BiteMe application. This window appears after successful login and displays options based on user permissions.
  */
 public class UserHomePageUI extends Application {
+
+	/**
+	 * The User object representing the logged-in user.
+	 */
 	private User user;
-	private static Stage userHomePageStage; 
+
+	/**
+	 * Static reference to the User Home Page stage.
+	 */
+	private static Stage userHomePageStage;
 	
 	/**
      * Constructor for UserHomePageUI.
@@ -37,7 +45,6 @@ public class UserHomePageUI extends Application {
         Parent root = loader.load();
         UserHomePageController controller = loader.getController();
         controller.setUser(user); 
-        //Handler for "X" button in the top screen
         primaryStage.setOnCloseRequest(event -> {
             event.consume(); // Prevent the window from closing immediately
             controller.closeApplication();
@@ -59,7 +66,13 @@ public class UserHomePageUI extends Application {
         launch(args);
     }
     
- // Static method to retrieve the stage
+    /**
+     * Retrieves the stage for the User Home Page.
+     * This method allows other parts of the application to access and manipulate
+     * the User Home Page window.
+     *
+     * @return The Stage object representing the User Home Page window.
+     */
     public static Stage getStage() {
         return userHomePageStage;
     }

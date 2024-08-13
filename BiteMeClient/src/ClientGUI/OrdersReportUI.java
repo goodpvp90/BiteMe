@@ -13,7 +13,15 @@ import reports.OrdersReport;
  * the connection between the UI, its controller, and the main Reports Page.
  */
 public class OrdersReportUI extends Application {
+	
+    /**
+     * The OrdersReport object containing the data to be displayed in the report.
+     */
     private OrdersReport report;
+    
+    /**
+     * Reference to the ReportsPageController for callback communication.
+     */
     private ReportsPageController reportsPageController;
 
     /**

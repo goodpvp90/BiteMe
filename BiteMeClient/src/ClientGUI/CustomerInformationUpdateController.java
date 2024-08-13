@@ -23,20 +23,74 @@ import userEntities.User;
  */
 public class CustomerInformationUpdateController {
 
-    @FXML    private Button backButton;    
-    @FXML    private TextField idField;
-    @FXML    private TextField firstNameField;
-    @FXML    private TextField lastNameField;
-    @FXML    private TextField emailField;
-    @FXML   private TextField phoneNumberField;
-    @FXML    private TextField creditCardField;    
-    @FXML    private ComboBox<EnumBranch> branchComboBox;
-    @FXML    private Button updateButton;
-    @FXML    private Text errorText;
-    
+	/**
+     * Button to return to the previous page.
+     */
+    @FXML private Button backButton;
+
+    /**
+     * Text field for entering the user's ID.
+     */
+    @FXML private TextField idField;
+
+    /**
+     * Text field for entering the user's first name.
+     */
+    @FXML private TextField firstNameField;
+
+    /**
+     * Text field for entering the user's last name.
+     */
+    @FXML private TextField lastNameField;
+
+    /**
+     * Text field for entering the user's email address.
+     */
+    @FXML private TextField emailField;
+
+    /**
+     * Text field for entering the user's phone number.
+     */
+    @FXML private TextField phoneNumberField;
+
+    /**
+     * Text field for entering the user's credit card information.
+     */
+    @FXML private TextField creditCardField;
+
+    /**
+     * Combo box for selecting the user's branch.
+     */
+    @FXML private ComboBox<EnumBranch> branchComboBox;
+
+    /**
+     * Button to submit the updated user information.
+     */
+    @FXML private Button updateButton;
+
+    /**
+     * Text area for displaying error messages during the update process.
+     */
+    @FXML private Text errorText;
+
+    /**
+     * The scene of the previous page, used for navigation.
+     */
     private Scene previousScene;
+
+    /**
+     * The client instance for communication with the server.
+     */
     private Client client;
+
+    /**
+     * The user object representing the user being updated or registered.
+     */
     private User user;
+
+    /**
+     * The user object representing the currently logged-in user (typically a BM or CEO).
+     */
     private User loggedInUser;
    
     /**
@@ -99,7 +153,6 @@ public class CustomerInformationUpdateController {
             String email = getTextSafely(emailField);
             String phone = getTextSafely(phoneNumberField);
             String creditCard = getTextSafely(creditCardField);
-
             if (id.isEmpty() || firstName.isEmpty() || lastName.isEmpty() || email.isEmpty() || phone.isEmpty()) {
                 showError("Please fill in all required fields");
                 return;
@@ -130,7 +183,6 @@ public class CustomerInformationUpdateController {
                 showError("Please enter a valid email address");
                 return;
             }else {
-                // Update user information
                 user.setId(id);
                 user.setFirstName(firstName);
                 user.setLastName(lastName);

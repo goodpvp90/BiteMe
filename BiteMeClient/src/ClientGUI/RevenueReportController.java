@@ -12,12 +12,30 @@ import reports.IncomeReport;
  */
 public class RevenueReportController {
 
-    @FXML private Label branchLabel;
-    @FXML private Label monthYearLabel;
-    @FXML private Label revenueLabel;
-    @FXML private Label errorLabel;
+	/**
+	 * Label for displaying the branch information.
+	 */
+	@FXML private Label branchLabel;
 
-    private ReportsPageController reportsPageController;
+	/**
+	 * Label for displaying the month and year of the report.
+	 */
+	@FXML private Label monthYearLabel;
+
+	/**
+	 * Label for displaying the total revenue.
+	 */
+	@FXML private Label revenueLabel;
+
+	/**
+	 * Label for displaying error messages.
+	 */
+	@FXML private Label errorLabel;
+
+	/**
+	 * Reference to the ReportsPageController for communication with the main Reports Page.
+	 */
+	private ReportsPageController reportsPageController;
     
     /**
      * Sets the reference to the ReportsPageController.
