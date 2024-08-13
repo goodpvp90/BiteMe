@@ -281,7 +281,6 @@ public class CustomerOrderGatherSelection {
 	@FXML
 	private void initialize() {
 		client = Client.getInstance();
-		client.getCustomerOrderGatherSelection(this);
 		//Set the hours and minute combo box with elements
 		ObservableList<String> hoursList = FXCollections.observableArrayList();
         ObservableList<String> minutesList = FXCollections.observableArrayList();

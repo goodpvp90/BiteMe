@@ -5,13 +5,10 @@ import java.util.List;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
-import java.util.function.Consumer;
-
 import ClientGUI.ClientLoginController;
 import ClientGUI.CustomerCheckout;
 import ClientGUI.CustomerInformationUpdateController;
 import ClientGUI.CustomerOrderCreation;
-import ClientGUI.CustomerOrderGatherSelection;
 import ClientGUI.HomeBranchChange;
 import ClientGUI.MyOrders;
 import ClientGUI.RegisterUserPageController;
@@ -22,6 +19,7 @@ import ClientGUI.UserHomePageController;
 import ClientGUI.WorkerPendingOrders;
 import enums.EnumClientOperations;
 import enums.EnumOrderStatus;
+import enums.EnumPageForDishInOrder;
 import enums.EnumServerOperations;
 import ocsf.client.AbstractClient;
 import reports.IncomeReport;
@@ -38,12 +36,8 @@ public class Client extends AbstractClient {
 	final public static int DEFAULT_PORT = 8080;
 	private static Client instance;
 	private EnumPageForDishInOrder pageForDishInOrder;
-	// Controller for Client GUI functionality
-	
 	private ClientLoginController clientLoginController;
 	private CustomerOrderCreation  CustomerOrderCreation;
-	private CustomerOrderGatherSelection customerOrderGatherSelection;
-	private Consumer<IncomeReport> pendingRevenueReportCallback;
 	private ReportsPageController reportsPageController;
 	private RegisterUserPageController registerUserPageController;
 	private CustomerInformationUpdateController customerInformationUpdateController;
@@ -53,10 +47,12 @@ public class Client extends AbstractClient {
 	private UpdateAddDish updateAddDish;
 	private HomeBranchChange homeBranchChange;
 	private UserHomePageController userHomePageController;
+	//Locks for synchronization on some of the pop ups
 	private final Lock lock = new ReentrantLock();
 	private final Condition condition = lock.newCondition();
 	private MyOrders myOrders;
 	private User user;
+	
 	// Constructor to initialize the client with host and port, and establish
 	// connection
 	private Client(String host, int port) throws IOException {
@@ -68,7 +64,6 @@ public class Client extends AbstractClient {
 		String clientHostName = InetAddress.getLocalHost().getHostName();
 
 		// Send initial connection message to the server
-
 		sendToServer(new Object[] { EnumServerOperations.CLIENT_CONDITION,
 				new String[] { clientIP, clientHostName, "start" } });
 
@@ -79,13 +74,11 @@ public class Client extends AbstractClient {
 		if (instance == null) {
 			throw new IllegalStateException("Client not initialized. Call initialize() first.");
 		}
-		//Added by Eldar
 	    if (!instance.isConnected()) {
 	        try {
 	            instance.openConnection();
 	        } catch (IOException e) {
 	            e.printStackTrace();
-	            // Handle reconnection failure
 	        }
 	    }
 	    return instance;
@@ -95,8 +88,7 @@ public class Client extends AbstractClient {
 	public static void initialize(String host, int port) throws IOException {
 		if (instance == null) {
 			instance = new Client(host, port);
-		}
-		
+		}		
 	}
 	
 	public void setUser(User user) {
@@ -159,10 +151,6 @@ public class Client extends AbstractClient {
 	public void getInstanceOfMyOrders(MyOrders myOrders) {
 		this.myOrders=myOrders;
 	}
-
-	public void getCustomerOrderGatherSelection(CustomerOrderGatherSelection customerOrderGatherSelection) {
-		this.customerOrderGatherSelection=customerOrderGatherSelection;
-	}
 	
 	// Handle messages received from the server
 	@Override
@@ -171,97 +159,57 @@ public class Client extends AbstractClient {
 		if (msg instanceof Object[]) {
 			Object[] message = (Object[]) msg;
 			operation = (EnumClientOperations) message[0];
-			switch (operation) {
+			switch (operation) {	
 			case USERS_ORDERS:
-				List<Order> UserOrders = (List<Order>)message[1];
-				for (Order order :UserOrders) {
-					System.out.println(order);
-				}
-				myOrders.setOrders(UserOrders);
-			
+				List<Order> UserOrders = (List<Order>)message[1];			
+				myOrders.setOrders(UserOrders);			
 	            break;
-
 			case PENDING_ORDER:
+				//TODO nadir
 				@SuppressWarnings("unchecked")
 				List<Order> pendingOrders = (List<Order>)message[1];
 				workerPendingOrders.SetPendingOrdersFromDB(pendingOrders);
-				for (Order order :pendingOrders) {
-					System.out.println(order);
-				}
 				break;
 			case DISHES_IN_ORDER:
-				//****************
-	        	List<DishInOrder> dishes = (List<DishInOrder>)message[1];
-				for (DishInOrder dishin :dishes) {
-					System.out.println(
-							"name: " + dishin.getDishName()+", Option: "+dishin.getOptionalPick()
-							+ ", comment: "+dishin.getComment());
-				}
+	        	List<DishInOrder> dishes = (List<DishInOrder>)message[1];		
 				switch(pageForDishInOrder) {
-				case WORKER:
-					workerPendingOrders.SetDishInOrdersFromDB(dishes);
-					break;
-				case CUSTOMER:
-					myOrders.SetDishInOrdersFromDB(dishes);
-					break;
+					case EnumPageForDishInOrder.WORKER://for pending orders page
+						workerPendingOrders.SetDishInOrdersFromDB(dishes);
+						break;
+					case EnumPageForDishInOrder.CUSTOMER://for my orders page
+						myOrders.SetDishInOrdersFromDB(dishes);
+						break;
 				}
 	        	break;
 			case USER:
 				handleLogin(message);
 	        	break;
-			case INSERT_ORDER:
-				//HERE YOU RECEIVE BACK Order, and list of dishes in order.
-				//Object order = (Object)message[1];
-				//Object dishesinorder = (Object)message[2];
-				break;
-			case UPDATE_WELOCME:
-				// Handle non-array messages for updating the top label in clientController
-	            break;
             case NOTIFICATION:          	
-            	System.out.println("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEldar");
             	List<String> notifications = (List<String>) message[1];              
-                waitForController();
+                waitForController();//Synchronization
                 userHomePageController.showNotificationDialog(notifications);               	                
                 break;
             case CHECK_USER:
-            	//If its Boolean = Not in DB
-            	//If Name(And other) is Null = Need to Update
-            	//If Nothing is Null = User Registered.
-                Object res = message[1];
-                
+                Object res = message[1];                
                 if (registerUserPageController != null) {
                     registerUserPageController.handleServerResponse(res);
                 }
                 break;
             case CREATED_ACCOUNT:
-            	Object dataUser = (Object)message[1]; //You receive here user object if created
+            	Object dataUser = (Object)message[1];
                     if (customerInformationUpdateController != null) {
                         customerInformationUpdateController.handleServerResponse(dataUser);
                     }
                 break;
             case VIEW_MENU:
             	List<Dish> menu = (List<Dish>) message[1];
-            	for (Dish dish:menu) {
-            		System.out.println(dish);
-            	}
-            	System.out.println("HIGHER" + menu.size());
            	 	CustomerOrderCreation.SettempMenuFromDB(menu);    
-           	 	for (Dish dish :  CustomerOrderCreation.tempMenuFromDB) {
-        		    String dishInfo = "Dish{" +
-        		                      "dishId=" + dish.getDishId()  +
-        		                      '}';
-        		    System.out.println(dishInfo);
-        		}
                  break;
             case MENU_FOR_UPDATE:
-            	System.out.println("INNNNNNNNNNNNN");
+            	//TODO nadir
             	@SuppressWarnings("unchecked")
             	List<Dish> menuupdate = (List<Dish>) message[1];
-            	for (Dish dish:menuupdate) {
-            			System.out.println(dish.isGrill());
-            	}
-            	updateDeleteMenu.setMenuDishes(menuupdate);
-            	
+            	updateDeleteMenu.setMenuDishes(menuupdate);            	
             	break;
             case ADD_DISH:
             	updateAddDish.setSucceededAdd((boolean) message[1]);
@@ -270,54 +218,31 @@ public class Client extends AbstractClient {
             	updateDeleteMenu.SetSuccessDelete((boolean) message[1]);
                 break;
             case REPORT_ERROR:
-            	String errorMsg = (String)message[1];
-            	//TODO somthing more            	
-                if (reportsPageController != null) {
-                    reportsPageController.handleIncomeReportResponse(errorMsg);
-                }
+            	String errorMsg = (String)message[1];        	
+                reportsPageController.handleIncomeReportResponse(errorMsg);               
             	break;
             case INCOME_REPORT:
                 IncomeReport receivedReport = (IncomeReport) message[1];
-                if (reportsPageController != null) {
-                    reportsPageController.handleIncomeReportResponse(receivedReport);
-                }
+                reportsPageController.handleIncomeReportResponse(receivedReport);
                 break;
             case ORDERS_REPORT:
             	OrdersReport ordersReport = (OrdersReport)message[1];
-            	if (reportsPageController != null) {
-                    reportsPageController.handleOrdersReportResponse(ordersReport);
-                }
+                reportsPageController.handleOrdersReportResponse(ordersReport);               
                 break;
             case PERFORMANCE_REPORT:
             	PerformanceReport performanceReport = (PerformanceReport)message[1];
-                if (reportsPageController != null) {
-                    reportsPageController.handlePerformanceReportResponse(performanceReport);
-                }
+                reportsPageController.handlePerformanceReportResponse(performanceReport);
                 break;
             case QUARTERLY_REPORT:
                 Object[] data = (Object[]) message[1];
                 QuarterlyReport qreport = (QuarterlyReport) data[0];
+                //TODO nadir
                 @SuppressWarnings("unchecked")
                 List<Double> monthlyIncomes = (List<Double>) data[1];
-                System.out.println("size " + monthlyIncomes.size());
-                if (reportsPageController != null) {
-                    reportsPageController.handleQuarterlyReportResponse(qreport, monthlyIncomes);
-                } else {
-                    System.out.println("reportsPageController is null");
-                }
+                reportsPageController.handleQuarterlyReportResponse(qreport, monthlyIncomes);
                 break;
-            case QUARTERLY_REPORT_ERROR:
-            	//u receive a (Object)string
-            	//TODO do smth
-            	break;
             case UPDATE_DISH:
             	updateDeleteMenu.SetSuccessEdit((boolean) message[1]);
-            	break;
-            case UPDATE_ORDER_STATUS:
-            	//HERE U GET RESPONSE IF UPDATE STATUS IS SUCCESFULL
-            	break;
-            	//TODO 12.08.24 After talking to Ido and Nadir This one we dont use.
-            case SET_DISCOUNT_AMOUNT: //NEED TO DECIDE IF TO UPDATE RESPONSE, NOW NOT USED.
             	break;
             case GET_DISCOUNT_AMOUNT: 
             	customerCheckout.setCompensation((double)message[1]);	
@@ -332,7 +257,6 @@ public class Client extends AbstractClient {
             	userHomePageController.showPendingOrderDuringOrderCreationDialog();
             	break;
             case SERVER_DISCONNECTED:
-            	System.out.println("1000");
             	if(user == null)
             		quit();
             	else
@@ -345,8 +269,7 @@ public class Client extends AbstractClient {
 		}
 	}
 	
-	
-	
+	//Locking method for sync use	
 	public void waitForController() {
         lock.lock();
         try {
@@ -362,7 +285,6 @@ public class Client extends AbstractClient {
     }
 	
 	private void handleLogin(Object[] message) {
-		//SEND TO CLIENT CONTROLLER
         Object messagePart = message[1];
     	clientLoginController.updateUser(messagePart);
 	}
@@ -373,15 +295,10 @@ public class Client extends AbstractClient {
 			// Get client's IP address and host name
 			String clientIP = InetAddress.getLocalHost().getHostAddress();
 			String clientHostName = InetAddress.getLocalHost().getHostName();
-
-			// Send disconnection message to the server
 			sendToServer(new Object[] { EnumServerOperations.CLIENT_CONDITION,
-					new String[] { clientIP, clientHostName, "end" } });
-
-			// Close the connection
+			new String[] { clientIP, clientHostName, "end" } });
 			closeConnection();
 		} catch (IOException e) {}
-		// Exit the application
 		System.exit(0);
 	}
 
@@ -389,53 +306,39 @@ public class Client extends AbstractClient {
 	public void sendMessageToServer(Object msg) {
 		try {
 			sendToServer(msg);
-		} catch (Exception e) {
-		}
-	}
-	
-	public enum EnumPageForDishInOrder{
-		WORKER,
-		CUSTOMER;
+		} catch (Exception e) {}		
 	}
 	
 	public void sendShowDishesInOrder(int orderid, EnumPageForDishInOrder page) {
 		pageForDishInOrder = page;
-		//GET PENDING ORDERS
 		sendMessageToServer(new Object[] { EnumServerOperations.DISHES_IN_ORDER, orderid });
 	}
 	
 	public void sendOrderArriveOnTime(int orderId) {
-	    //GET PENDING ORDERS
 		sendMessageToServer(new Object[] { EnumServerOperations.ORDER_ON_TIME, orderId });
 	}
 	
 	public void sendShowPending(int branchId) {
-	    //GET PENDING ORDERS
 		sendMessageToServer(new Object[] { EnumServerOperations.PENDING_ORDER, branchId });
 	}
 	
 	public void sendCreateAccout(User user) {
-	    // Send a request to create accout
 		sendMessageToServer(new Object[] { EnumServerOperations.CREATE_ACCOUNT, user });
 	}
 	
 	public void sendSearchUser(String username) {
-	    // Send a request to create accout
 		sendMessageToServer(new Object[] { EnumServerOperations.CHECK_USER, username });
 	}
 	public void sendAddDishRequest(Dish dish) {
-	    // Send a request to add a new dish
 		sendMessageToServer(new Object[] { EnumServerOperations.ADD_DISH, dish });
 	}
 
 	public void sendDeleteDishRequest(Dish dish) {
-	    // Send a request to delete a new dish
 		sendMessageToServer(new Object[] { EnumServerOperations.DELETE_DISH, dish });
 	}
 	
 	public void sendCreateOrderRequest(Order order, List<Dish> dishesInOrder) {
-	    sendMessageToServer(new Object[] {
-		        EnumServerOperations.INSERT_ORDER, order, dishesInOrder});
+	    sendMessageToServer(new Object[] { EnumServerOperations.INSERT_ORDER, order, dishesInOrder});		       
 	}
 
 	public void loginValidation(User user) {
@@ -464,30 +367,22 @@ public class Client extends AbstractClient {
 		sendMessageToServer(new Object[] { EnumServerOperations.QUARTERLY_REPORT, qreport });
 	}
 	
-	
-	//THIS FUNCTION TO GET DISCOUNT AMOUNT FOR SPECIFIC USER.
 	public void getDiscountAmount(String username) {
 		sendMessageToServer(new Object[] { EnumServerOperations.GET_DISCOUNT_AMOUNT, username });
 	}
 	
-	
-	//USE THIS TO SEND TO US NEW AMOUNT, THE MATHEMATICAL LOGIC YOU DO.
 	public void setDiscountAmount(String username, double amount) {
 		sendMessageToServer(new Object[] { EnumServerOperations.SET_DISCOUNT_AMOUNT, username, amount });
 	}
 	
-	//USE IT TO UPDATE ORDER STATUS, IN PROGESS, READY , COMPLETED .....
-	// IT HAS A LOT OF LOGIC IN BACKEND, by status we update time and etc..
 	public void updateOrderStatus(int orderId, EnumOrderStatus status, String msg, boolean isDelivery) {
 		sendMessageToServer(new Object[] { EnumServerOperations.UPDATE_ORDER_STATUS, orderId, status, msg, isDelivery});
 	}
-
 	
 	public void getViewMenu(EnumServerOperations op, int menuId) {
 		sendMessageToServer(new Object[] {op, menuId });
 	}
-	
-	
+		
 	public void deleteDish(Dish dish) {
 		sendMessageToServer(new Object[] { EnumServerOperations.DELETE_DISH, dish });
 	}
@@ -500,17 +395,11 @@ public class Client extends AbstractClient {
 		sendMessageToServer(new Object[] { EnumServerOperations.CHANGE_HOME_BRANCH, user });
 	}
 	
-//	public void executeNotifyUser(int orderId, String message)
-//	{
-//		sendMessageToServer(new Object[] { EnumServerOperations.NOTIFICATION, orderId, message });
-//	}
-	
 	public void updateDish(Dish dish) {
 		sendMessageToServer(new Object[] { EnumServerOperations.UPDATE_DISH, dish });
 	}
 	
 	public void getUsersOrders(String Username) {
-		System.out.println("1");
 		sendMessageToServer(new Object[] { EnumServerOperations.USERS_ORDERS, Username});
 	}
 	
