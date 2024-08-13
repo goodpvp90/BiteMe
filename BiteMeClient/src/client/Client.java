@@ -69,7 +69,7 @@ public class Client extends AbstractClient {
 				new String[] { clientIP, clientHostName, "start" } });
 
 	}
-	
+	//
 	// Public method to get the Server instance
 	public static Client getInstance() {
 		if (instance == null) {
