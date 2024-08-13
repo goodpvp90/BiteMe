@@ -638,15 +638,12 @@ public class CustomerCheckout {
 		Timestamp orderDateTimestamp = Timestamp.valueOf(LocalDateTime.now());
 
 		Order orderNew;
-		if (returnBooleanPrefGather[2])// if delivery send delivery info
-		{// Create new order
+		//if (returnBooleanPrefGather[2])// if delivery send delivery info
+		//{// Create new order
 			orderNew = new Order(user.getUsername(), chosenItemsFromMenu.get(0).getMenuId(), orderDateTimestamp,
 					orderRequestTimestamp, totalPrice, returnBooleanPrefGather[2], contactInfo[0], contactInfo[1],
 					contactInfo[3], contactInfo[2]);
-		} else
-			orderNew = new Order(user.getUsername(), chosenItemsFromMenu.get(0).getMenuId(), orderDateTimestamp,
-					orderRequestTimestamp, totalPrice, returnBooleanPrefGather[2], contactInfo[0], contactInfo[1], 
-					contactInfo[3],contactInfo[2]);
+		//} 
 
 		client.sendCreateOrderRequest(orderNew, chosenItemsFromMenu);
 		client.setDiscountAmount(user.getUsername(), compensation);

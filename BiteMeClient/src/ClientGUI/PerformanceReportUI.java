@@ -13,7 +13,15 @@ import reports.PerformanceReport;
  * the connection between the UI, its controller, and the main Reports Page.
  */
 public class PerformanceReportUI extends Application {
+
+    /**
+     * The PerformanceReport object containing the data to be displayed in the report.
+     */
     private PerformanceReport report;
+
+    /**
+     * Reference to the ReportsPageController for callback communication.
+     */
     private ReportsPageController reportsPageController;
 
     /**

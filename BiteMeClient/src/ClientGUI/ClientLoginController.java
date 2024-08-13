@@ -21,23 +21,44 @@ import userEntities.User;
  */
 public class ClientLoginController {
 
+	/**
+     * Text field for entering the username.
+     */
 	@FXML
 	private TextField usernameField;
-
+	
+	/**
+     * Password field for entering the user's password.
+     */
 	@FXML
 	private PasswordField passwordField;
-
+	
+	/**
+     * Text area for displaying error messages during the login process.
+     */
 	@FXML
 	private Text errorText;
-
+	
+	/**
+     * Button to initiate the login process.
+     */
 	@FXML
 	private Button loginButton;
-
+	
+	/**
+     * Button to quit the application.
+     */
 	@FXML
 	private Button quitButton;
-
+	
+	/**
+     * The client instance for communication with the server.
+     */
 	private Client client;
-
+	
+	/**
+     * The user object representing the currently logged-in user.
+     */
 	private User user = null;
 
     /**
@@ -48,8 +69,6 @@ public class ClientLoginController {
 	private void initialize() {
 		loginButton.setOnAction(event -> handleLogin());
 		quitButton.setOnAction(event -> handleQuit());
-		
-		//Initialize the client controller in the client class the instance of this class
 		client = Client.getInstance();
 		client.getInstanceOfClientLoginController(this);
 	}
@@ -59,11 +78,8 @@ public class ClientLoginController {
      * Validates user input and sends login request to the server.
      */
 	private void handleLogin() {
-
 		String username = usernameField.getText();
 		String password = passwordField.getText();
-
-		// Check if the data input from user is legal
 		if (username.isEmpty() || password.isEmpty()) {
 			showError("Username or password cannot be empty");
 			return;
@@ -90,14 +106,6 @@ public class ClientLoginController {
         });
     }
 
-//	private boolean isUnregisteredCustomer(User user) {
-//	    return user.getType().equals(EnumType.CUSTOMER) 
-//	           && (user.getEmail() == null || user.getEmail().isEmpty())
-//	           && (user.getFirstName() == null || user.getFirstName().isEmpty())
-//	           && (user.getLastName() == null || user.getLastName().isEmpty())
-//	           && (user.getPhone() == null || user.getPhone().isEmpty());
-//	}
-
     /**
      * Handles the action when the quit button is clicked.
      * Closes the connection and exits the application.
@@ -107,7 +115,6 @@ public class ClientLoginController {
 		System.exit(0);
 	}
 	
-	//TODO Talk to Ben how to implement it so itll be not copied always.
     /**
      * Closes the application, ensuring proper disconnection from the server.
      * This method is called when the user clicks the window's close button.
@@ -141,18 +148,14 @@ public class ClientLoginController {
             Parent root = loader.load();
             UserHomePageController controller = loader.getController();
             controller.setUser(user);
-
             Stage currentStage = (Stage) loginButton.getScene().getWindow();
             Scene scene = new Scene(root);
             currentStage.setScene(scene);
             currentStage.setTitle("User Home Page");
-
-            // Set up the close request handler
             currentStage.setOnCloseRequest(event -> {
                 event.consume(); // Prevent the window from closing immediately
                 controller.closeApplication();
             });
-
             currentStage.show();
         } catch (Exception e) {
             e.printStackTrace();
@@ -163,9 +166,7 @@ public class ClientLoginController {
     /**
      * Resets the client state and UI elements.
      * This method is called when returning to the login screen from other parts of the application.
-     */
-       
-    
+     */   
     public void resetClient() {
         client = Client.getInstance();
         try {
@@ -181,6 +182,4 @@ public class ClientLoginController {
         passwordField.clear();
         errorText.setVisible(false);
     }
-
-
 }

@@ -13,7 +13,17 @@ import reports.IncomeReport;
  * the connection between the UI, its controller, and the main Reports Page.
  */
 public class RevenueReportUI extends Application {
+	
+	/**
+	 * The IncomeReport containing the revenue data to be displayed in the Revenue Report UI.
+	 */
     private IncomeReport report;
+    
+    /**
+     * The ReportsPageController instance that manages the main Reports Page.
+     * This reference is used for callback communication, such as re-enabling the Revenue Report button
+     * when the Revenue Report window is closed.
+     */
     private ReportsPageController reportsPageController;
 
     /**

@@ -16,13 +16,37 @@ import javafx.stage.Stage;
  */
 public class ClientConnectController {
 
-    @FXML    private TextField serverIpTextField;
-    @FXML    private TextField serverPortTextField;
-    @FXML    private Button connectButton;
-    @FXML    private Button quitButton;
-    @FXML   private Text ErrorTextConnect;
-    @FXML
+	/**
+     * Text field for entering the server IP address.
+     */
+    @FXML    
+    private TextField serverIpTextField;
     
+    /**
+     * Text field for entering the server port number.
+     */
+    @FXML    
+    private TextField serverPortTextField;
+    
+    /**
+     * Button to initiate the connection to the server.
+     */
+    @FXML    
+    private Button connectButton;
+    
+    /**
+     * Button to quit the application.
+     */
+    @FXML    
+    private Button quitButton;
+    
+    /**
+     * Text area for displaying error messages related to the connection process.
+     */
+    @FXML   
+    private Text ErrorTextConnect;
+    
+    @FXML
     /**
      * Initializes the controller. This method is automatically called after the FXML file has been loaded.
      */

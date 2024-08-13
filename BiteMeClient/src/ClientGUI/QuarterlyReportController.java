@@ -13,23 +13,68 @@ import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import reports.QuarterlyReport;
 
+/**
+ * Controller class for handling the Quarterly Report view in the BiteMe application.
+ * This class manages the display of quarterly report data including a bar chart of number of days accroding to order range count
+ * and monthly income information of the quarter.
+ */
 public class QuarterlyReportController {
 
-    @FXML private BarChart<String, Number> reportChart;
-    @FXML private Label reportIncome;
-    @FXML private Label monthlyIncome;
+    /**
+     * Bar chart for displaying the report data.
+     */
+    @FXML 
+    private BarChart<String, Number> reportChart;
 
-    private ReportsPageController parentController;
-    private QuarterlyReport report;
-    private List<Double> monthlyIncomes;
+    /**
+     * Label for displaying the total income for the quarter.
+     */
+    @FXML 
+    private Label reportIncome;
 
+    /**
+     * Label for displaying the monthly income breakdown.
+     */
+    @FXML 
+    private Label monthlyIncome;
+
+    /**
+     * Reference to the parent ReportsPageController.
+     */
+    private 
+    ReportsPageController parentController;
+
+    /**
+     * The QuarterlyReport object containing the report data.
+     */
+    private 
+    QuarterlyReport report;
+
+    /**
+     * List of monthly incomes for the quarter.
+     */
+    private 
+    List<Double> monthlyIncomes;
+
+
+    /**
+     * Initializes the controller. This method is automatically called
+     * after the FXML file has been loaded.
+     */
     public void initialize() {
-        // Set bold font for labels
+        // Set bold font for labels Not must, Only for design.
         Font boldFont = Font.font(reportIncome.getFont().getFamily(), FontWeight.BOLD, reportIncome.getFont().getSize());
         reportIncome.setFont(boldFont);
         monthlyIncome.setFont(boldFont);
     }
 
+    /**
+     * Sets the report data and updates the chart and labels.
+     *
+     * @param report The QuarterlyReport object containing the Quarter report data.
+     * @param controller The parent ReportsPageController.
+     * @param monthlyIncomes List of monthly income values.
+     */
     public void setReportData(QuarterlyReport report, ReportsPageController controller, List<Double> monthlyIncomes) {
         this.parentController = controller;
         this.report = report;
@@ -37,6 +82,9 @@ public class QuarterlyReportController {
         updateChart();
     }
 
+    /**
+     * Updates the bar chart with the report data.
+     */
     private void updateChart() {
         reportChart.getData().clear();
         XYChart.Series<String, Number> series = new XYChart.Series<>();
@@ -60,11 +108,11 @@ public class QuarterlyReportController {
         updateIncomeLabels();
     }
 
+    /**
+     * Updates the income labels with total and monthly income information.
+     */
     private void updateIncomeLabels() {
-        // Update total income label
         reportIncome.setText(String.format("Total Income: $%d", report.getIncome()));
-
-        // Update monthly income label
         StringBuilder monthlyIncomeText = new StringBuilder();
         String[] monthNames = getMonthNames(report.getQuarter());
         for (int i = 0; i < monthlyIncomes.size(); i++) {
@@ -74,6 +122,12 @@ public class QuarterlyReportController {
         monthlyIncome.setText("|     "+monthlyIncomeText.toString());
     }
 
+    /**
+     * Gets an array of month names for the given quarter.
+     *
+     * @param quarter The quarter number (1-4).
+     * @return An array of month names corresponding to the given quarter.
+     */
     private String[] getMonthNames(int quarter) {
         switch (quarter) {
             case 1: return new String[]{"January", "February", "March"};
@@ -85,8 +139,7 @@ public class QuarterlyReportController {
     }
 
     /**
-     * Updates the window title with the report details.
-     * This method sets the stage title to include the Branch, Quarter, and Year from the report.
+     * Updates the window title with the report information.
      */
     public void updateWindowTitle() {
         if (report != null) {
@@ -96,11 +149,10 @@ public class QuarterlyReportController {
                 stage.setTitle(title);
             }
         }
-    }
-    
+    }   
+
     /**
      * Sets up the close handler for the window.
-     * This method attaches a close request handler to the stage to ensure proper cleanup when the window is closed.
      */
     public void setupCloseHandler() {
         Stage stage = (Stage) reportChart.getScene().getWindow();
@@ -108,13 +160,11 @@ public class QuarterlyReportController {
             stage.setOnCloseRequest(this::handleCloseRequest);
         }
     }
-    
+ 
     /**
-     * Handles the close request event.
-     * This method is called when the user attempts to close the window. It calls the closeWindow method
-     * and consumes the event to prevent the default close operation.
+     * Handles the window close request.
      *
-     * @param event The WindowEvent triggered by the close request
+     * @param event The WindowEvent triggered by the close request.
      */
     private void handleCloseRequest(WindowEvent event) {
         closeWindow();
@@ -122,9 +172,7 @@ public class QuarterlyReportController {
     }
 
     /**
-     * Closes the window and performs necessary cleanup.
-     * This method notifies the parent controller that the window is closing, then closes the stage.
-     * It's called both by the custom close button and when the user clicks the window's close button.
+     * Closes the quarterly report window and notifies the parent controller.
      */
     @FXML
     public void closeWindow() {

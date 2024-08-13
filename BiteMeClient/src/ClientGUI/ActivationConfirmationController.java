@@ -17,10 +17,29 @@ import userEntities.User;
  */
 public class ActivationConfirmationController {
 
-	@FXML	private Text headlineText;
-	@FXML	private Text infoText;
-	@FXML	private Button returnButton;
+	/**
+     * The text displayed as the headline of the confirmation page.
+     */
+	@FXML	
+	private Text headlineText;
+	
+    /**
+     * The text area displaying the detailed user information.
+     */
+	@FXML	
+	private Text infoText;
+	
+    /**
+     * The button to return to the previous page.
+     */
+	@FXML	
+	private Button returnButton;
 
+	/**
+	 * The currently logged-in user.
+	 */
+	private User loggedInUser;
+	
     /**
      * Initializes the controller. This method is automatically called after the FXML file has been loaded.
      */
@@ -28,7 +47,6 @@ public class ActivationConfirmationController {
 	    headlineText.setText("Customer Activation Confirmation");
 	}
 
-    private User loggedInUser;
 
     /**
      * Sets the user information to be displayed in the confirmation message.
