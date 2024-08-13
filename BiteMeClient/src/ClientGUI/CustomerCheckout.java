@@ -645,8 +645,8 @@ public class CustomerCheckout {
 					contactInfo[3], contactInfo[2]);
 		} else
 			orderNew = new Order(user.getUsername(), chosenItemsFromMenu.get(0).getMenuId(), orderDateTimestamp,
-					orderRequestTimestamp, totalPrice, returnBooleanPrefGather[2], contactInfo[0], contactInfo[1], contactInfo[3],
-					contactInfo[2]);
+					orderRequestTimestamp, totalPrice, returnBooleanPrefGather[2], contactInfo[0], contactInfo[1], 
+					contactInfo[3],contactInfo[2]);
 
 		client.sendCreateOrderRequest(orderNew, chosenItemsFromMenu);
 		client.setDiscountAmount(user.getUsername(), compensation);
