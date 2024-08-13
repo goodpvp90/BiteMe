@@ -1,4 +1,4 @@
-package server;
+package controllers;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -10,6 +10,7 @@ import enums.EnumBranch;
 import enums.EnumClientOperations;
 import ocsf.server.ConnectionToClient;
 import restaurantEntities.Order;
+import server.Server;
 import userEntities.User;
 
 public class NotificationController {

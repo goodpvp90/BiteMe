@@ -3,8 +3,8 @@ package ServerGUI;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.sql.SQLException;
-
-
+import controllers.DBController;
+import controllers.UsersUtility;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -15,7 +15,6 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.scene.text.Text;
-import server.DBController;
 import server.Server;
 
 public class serverController {

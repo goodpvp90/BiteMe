@@ -1,4 +1,4 @@
-package server;
+package controllers;
 
 
 import java.sql.Connection;
@@ -374,7 +374,7 @@ public class DBController {
 	            // Update the order receive time
 	            updateOrderStmt.setTimestamp(1, orderReceiveTime);
 	            updateOrderStmt.setInt(2, orderId);
-	            int orderUpdateResult = updateOrderStmt.executeUpdate();
+	            updateOrderStmt.executeUpdate();
 	                      
 	            if (orderReadyTime != null && orderReceiveTime != null && orderReceiveTime.after(orderReadyTime)) {
 	                // Calculate the discount amount
@@ -394,7 +394,7 @@ public class DBController {
 	                // Update the discount table
 	                updateDiscountStmt.setString(1, username);
 	                updateDiscountStmt.setDouble(2, totalDiscountAmount);
-	                int discountUpdateResult = updateDiscountStmt.executeUpdate();
+	                updateDiscountStmt.executeUpdate();
 	            }
 	        } else {
 	            System.out.println("ResultSet is empty. No data found for orderId: " + orderId);
@@ -494,7 +494,7 @@ public class DBController {
 	                    order = new Order(username, branchId, orderDate, orderRequestTime, totalPrice, delivery, status);
 	                    order.setReceiverName(receiverName);
 	                    order.setOrderId(orderid);
-	                    System.out.println(order.getReceiverName());
+	                    order.setPhoneNum(phoneNumber);
 	                } else {
 	                    order = new Order(username, branchId, orderDate, orderRequestTime, totalPrice, delivery, status);
 	                    order.setOrderId(orderid);
@@ -648,8 +648,6 @@ public class DBController {
                 String comment = rs.getString("comment");
                 String dishName = rs.getString("dish_name");
                 
-                // Retrieve the Dish object based on dish_id
-                Dish dish = getDishById(dishId);
                 
                 // Create a DishInOrder object
                 DishInOrder ndish = new DishInOrder(dishName, dishId, comment, optional);
@@ -661,44 +659,6 @@ public class DBController {
 		}
         return dishesInOrder;
     }
-    
-    private Dish getDishById(int dishId){
-        String sql = "SELECT * FROM dishes WHERE dish_id = ?";
-        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
-            pstmt.setInt(1, dishId);
-            ResultSet rs = pstmt.executeQuery();
-            if (rs.next()) {
-                String dishName = rs.getString("dish_name");
-                double price = rs.getDouble("price");
-                int menuId = rs.getInt("menu_id");
-                boolean isGrill = rs.getBoolean("is_grill");
-                EnumDish dishType = EnumDish.valueOf(rs.getString("dish_type"));
-                Dish dish = null;
-                switch(dishType) {
-                case BEVERAGE:
-                	dish = new DishBeverage(dishName,isGrill, price, menuId);
-                	break;
-                case SALAD:
-                	dish = new DishSalad(dishName,isGrill, price, menuId);
-                	break;
-                case APPETIZER:
-                	dish = new DishAppetizer(dishName,isGrill, price, menuId);
-                	break;
-                case DESSERT:
-                	dish = new DishDessert(dishName,isGrill, price, menuId);
-                	break;
-                case MAIN_COURSE:
-                	dish = new DishMainCourse(dishName,isGrill, price, menuId);        
-                	break;
-                }
-                return dish;
-            }
-        } catch (SQLException e) {
-		}
-		return null;
-    }
-
-
     
     /**
      * Adds a new dish to the database. Before adding, it checks if a dish with
@@ -1120,11 +1080,9 @@ public class DBController {
     public boolean createQuarterlyReport(QuarterlyReport qreport) {
     	int restaurantId = getRestaurantIdByLocation(qreport.getRestaurant());
     	int income = getIncomeForQuarter(restaurantId, qreport.getYear(), qreport.getQuarter());
-        Object result = getDaysInRanges(qreport);
-        if (result == null)
+    	Map<String, Integer> daysInRanges = getDaysInRanges(qreport);
+        if (daysInRanges == null)
         	return false;
-		@SuppressWarnings("unchecked")
-		Map<String, Integer> daysInRanges = (Map<String, Integer>)result;
 
         // Insert new report
         String insertReportSQL = "INSERT INTO quarterly_report (branch_id, quarter, year, income, `0_20`, `21_40`, `41_60`, `61_80`, `81_100`, `101_120`, `121_140`, `141_160`, `161_180`, `181_200`, `201_plus`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
@@ -1195,7 +1153,7 @@ public class DBController {
      *         The keys of the map are the range labels (e.g., "0_20", "21_40"), and the values are the counts of days within those ranges.
      *         Returns {@code null} if there is an error executing the SQL query.
      */
-    private Object getDaysInRanges(QuarterlyReport qreport){
+    private Map<String, Integer> getDaysInRanges(QuarterlyReport qreport){
         // SQL query to get the number of days in each range of total orders
         String performanceSQL = "SELECT COUNT(*) AS days, " +
                 "SUM(totalOrders BETWEEN 0 AND 20) AS `0_20`, " +
@@ -1233,7 +1191,7 @@ public class DBController {
                 daysInRanges.put("181_200", rs.getInt("181_200"));
                 daysInRanges.put("201_plus", rs.getInt("201_plus"));
             }
-            return (Object)daysInRanges;
+            return daysInRanges;
         } catch (SQLException e) {
 			e.printStackTrace();
 			System.out.println("Error getting Days by range for creating quartyely report");

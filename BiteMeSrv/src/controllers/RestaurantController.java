@@ -1,4 +1,4 @@
-package server;
+package controllers;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -8,6 +8,7 @@ import enums.EnumServerOperations;
 import ocsf.server.ConnectionToClient;
 import restaurantEntities.Dish;
 import restaurantEntities.Order;
+import server.Server;
 
 public class RestaurantController {
 	private Server server;
