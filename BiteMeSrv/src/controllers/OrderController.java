@@ -26,13 +26,13 @@ public class OrderController {
     public void handleInsertOrder(ConnectionToClient client, Object[] message) {
     	// Extract data from the message
         Order newOrder = (Order) message[1];
+        //TODO 
         @SuppressWarnings("unchecked")
 		List<Dish> dishesInOrder = (List<Dish>) message[2];
         // Call the method to create the order
         try {
         	boolean order = createOrder(newOrder, dishesInOrder, client);
         	notificationController.notifyWorker(dbController.getLocationByBranchId(newOrder.getBranchId()));
-            server.sendMessageToClient(EnumClientOperations.INSERT_ORDER,client, order);
         } catch (Exception e) {
         	e.printStackTrace();;
         }
