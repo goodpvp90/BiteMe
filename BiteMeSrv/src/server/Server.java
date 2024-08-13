@@ -32,7 +32,7 @@ public class Server extends AbstractServer {
 		userController = new UserController(this, notificationController, dbController);
 		orderController = new OrderController(this, notificationController, dbController);
 		usersutility = new UsersUtility(dbController);
-		restaurantController = new RestaurantController(this, dbController, notificationController, orderController);
+		restaurantController = new RestaurantController(this, dbController, notificationController);
 		
 		try {
 			dbController.connect(url, username, password);
