@@ -2,6 +2,7 @@ package ServerGUI;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.sql.SQLException;
 import controllers.DBController;
 import controllers.UsersUtility;
 import javafx.application.Platform;
@@ -227,8 +228,13 @@ public class serverController {
 
     // Method to import users from external schema
     public void importUsers() {
-    	UsersUtility usersutlity = server.getUsersUtility();
-        usersutlity.importUsers();
+    	DBController dbcontroller = server.getDBController();
+    	try {
+			dbcontroller.importUsers();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
     }
 }
 
