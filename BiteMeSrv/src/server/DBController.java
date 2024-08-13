@@ -1,5 +1,6 @@
 package server;
 
+
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.DriverManager;
@@ -33,6 +34,7 @@ import restaurantEntities.DishMainCourse;
 import restaurantEntities.DishSalad;
 import restaurantEntities.Order;
 import userEntities.User;
+
 
 public class DBController {
 	//EXAMPLE OF JDBC URL:
@@ -1352,6 +1354,63 @@ public class DBController {
         }
     }
     
-    
+    private boolean hasDataBeenImported(String dataType) throws SQLException {
+        String checkSQL = "SELECT COUNT(*) FROM import_flags WHERE import_type = ?";
+        try (PreparedStatement pstmt = connection.prepareStatement(checkSQL)) {
+            pstmt.setString(1, dataType);
+            ResultSet rs = pstmt.executeQuery();
+            rs.next();
+            return rs.getInt(1) > 0;
+        }
+    }
+
+    private void recordImport(String dataType) throws SQLException {
+        String insertSQL = "INSERT INTO import_flags (import_type) VALUES (?)";
+        try (PreparedStatement pstmt = connection.prepareStatement(insertSQL)) {
+            pstmt.setString(1, dataType);
+            pstmt.executeUpdate();
+        }
+    }
+
+    public void importUsers() throws SQLException {
+        String usersImportType = "users_table_import";
+        String customersImportType = "customers_table_import";
+
+        // Check if the users data has already been imported
+        if (hasDataBeenImported(usersImportType)) {
+            System.out.println("Users data has already been imported.");
+        } else {
+            // SQL query to copy data from externalusers.users to biteme.users
+            String usersSql = "INSERT INTO biteme.users (username, password, email, phone, firstname, lastname, home_branch, type, isLogged, id) "
+                            + "SELECT username, password, email, phone, firstname, lastname, home_branch, type, isLogged, id "
+                            + "FROM externalusers.users";
+
+            try (PreparedStatement pstmt = connection.prepareStatement(usersSql)) {
+                int rowsAffected = pstmt.executeUpdate();
+                System.out.println(rowsAffected + " rows transferred to users table.");
+
+                // Record the users import to prevent future duplicates
+                recordImport(usersImportType);
+            }
+        }
+
+        // Check if the customers data has already been imported
+        if (hasDataBeenImported(customersImportType)) {
+            System.out.println("Customers data has already been imported.");
+        } else {
+            // SQL query to copy data from externalusers.customers to biteme.customers
+            String customersSql = "INSERT INTO biteme.customers (username, credit_card, type_of_customer) "
+                                + "SELECT username, credit_card, type_of_customer "
+                                + "FROM externalusers.customers";
+
+            try (PreparedStatement pstmt = connection.prepareStatement(customersSql)) {
+                int rowsAffected = pstmt.executeUpdate();
+                System.out.println(rowsAffected + " rows transferred to customers table.");
+
+                // Record the customers import to prevent future duplicates
+                recordImport(customersImportType);
+            }
+        }
+    }
     
 }

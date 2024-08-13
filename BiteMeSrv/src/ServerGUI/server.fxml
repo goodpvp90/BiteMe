@@ -41,5 +41,5 @@
    <Text fx:id="IPText" fill="WHITE" layoutX="162.0" layoutY="180.0" text="ip details" />
    <Label layoutX="128.0" layoutY="165.0" text="IP:" />
    
-   <Text fx:id="ErrorServerInput" layoutX="57.0" layoutY="525.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="error-text" text="Error Text" textAlignment="CENTER" visible="false" wrappingWidth="685.3256225585938" />
+   <Text fx:id="ErrorServerInput" layoutX="57.0" layoutY="605.0" strokeType="OUTSIDE" strokeWidth="0.0" styleClass="error-text" text="Error Text" textAlignment="CENTER" visible="false" wrappingWidth="685.3256225585938" />
 </AnchorPane>
