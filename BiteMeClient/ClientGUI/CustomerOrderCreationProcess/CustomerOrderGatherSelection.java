@@ -284,31 +284,47 @@ public class CustomerOrderGatherSelection {
 		//Set the hours and minute combo box with elements
 		ObservableList<String> hoursList = FXCollections.observableArrayList();
         ObservableList<String> minutesList = FXCollections.observableArrayList();
+
+        // Populate hours (00 to 23)
         for (int i = 0; i < 24; i++) {
-            String hour = String.format("%02d", i);
+            String hour = String.format("%02d", i); // Format as two digits
             hoursList.add(hour);
         }
+
+        // Populate minutes (00 to 59)
         for (int i = 0; i < 60; i += 1) {
-            String minute = String.format("%02d", i);
+            String minute = String.format("%02d", i); // Format as two digits
             minutesList.add(minute);
         }
+
         hoursComboBox.setItems(hoursList);
         minutesComboBox.setItems(minutesList);
+        
         //set current time
         LocalTime now = LocalTime.now();
+        
 		if (now.getHour() < 10)
 			hoursComboBox.setValue("0" + String.valueOf(now.getHour()));
 		else
 			hoursComboBox.setValue(String.valueOf(now.getHour()));
+
 		if (now.getMinute() < 10)
 			minutesComboBox.setValue("0" + String.valueOf(now.getMinute()));
 		else
-			minutesComboBox.setValue(String.valueOf(now.getMinute()));        
+			minutesComboBox.setValue(String.valueOf(now.getMinute()));
+        
+        //set type of delivery combo box with elements
         ObservableList<String> typeOfDelivery = FXCollections.observableArrayList(
         		"Normal", "Shared","Robot");
         deliveryTypeComboBox.setItems(typeOfDelivery);
+
+        
+        //set current date and time
         datePicker.setValue(LocalDate.now());
-        deliveryTypeComboBox.setValue("Normal"); 
+        
+        //set delivery type to default
+        deliveryTypeComboBox.setValue("Normal");
+        
 	}
 
 	
@@ -339,23 +355,30 @@ public class CustomerOrderGatherSelection {
 		earlyChoosed = param[0];
 		setVisibleForChoiceOfDateAndTime(earlyChoosed);
 		chooseTime = param[1];
+
 		if(chooseTime) {
 			earlyButton.setDisable(earlyChoosed);
 			regularButton.setDisable(!earlyChoosed);
 		}
+			
+		
 		deliveryChoosed = param[2];
 		setVisibleForDeliveryandPickup(deliveryChoosed);
+		
 		chooseSupply = param[3];
 		if(chooseSupply)
 		{
 			deliveryButton.setDisable(deliveryChoosed);
 			pickupButton.setDisable(!deliveryChoosed);
-		}			
+
+		}	
+		
 		chooseOptionShared = param[4];
 		setVisibleForDeliveryType(chooseOptionShared);
 		if(param[4]) {
 			deliveryTypeComboBox.setValue("Shared");
 		}
+		
 	}
 	
 	/**
@@ -392,7 +415,8 @@ public class CustomerOrderGatherSelection {
      */
 	@FXML
 	private void handleEarlyButtonAction(ActionEvent event) throws IOException {
-		setVisibleForChoiceOfDateAndTime(true);	
+		setVisibleForChoiceOfDateAndTime(true);
+		
 	}
 	
 	/**
@@ -415,7 +439,8 @@ public class CustomerOrderGatherSelection {
 		chooseTime = true;
 		earlyChoosed=hide;
 		regularButton.setDisable(!hide);
-		earlyButton.setDisable(hide);	
+		earlyButton.setDisable(hide);
+		
         datePicker.setVisible(hide);
         dateLabelText.setVisible(hide);
         timeLabelText.setVisible(hide);
@@ -423,6 +448,7 @@ public class CustomerOrderGatherSelection {
         hoursLabelText.setVisible(hide);
         hoursComboBox.setVisible(hide);
         minutesComboBox.setVisible(hide);
+
 	}
 	
 	 /**
@@ -434,6 +460,7 @@ public class CustomerOrderGatherSelection {
 	@FXML
 	private void handleDeliveryButtonAction(ActionEvent event) throws IOException {
 		setVisibleForDeliveryandPickup(true);	
+			
 	}
 	
 	/**
@@ -457,6 +484,7 @@ public class CustomerOrderGatherSelection {
 		deliveryButton.setDisable(hide);
 		pickupButton.setDisable(!hide);
 		deliveryChoosed=hide;
+		
 		deliveryInfoText.setVisible(hide);
 		deliveryAddressText.setVisible(hide);
 		receiverText.setVisible(hide);
@@ -470,12 +498,14 @@ public class CustomerOrderGatherSelection {
 		cityText.setVisible(hide);
 		streetText.setVisible(hide);
 		receiverInfoText.setVisible(hide);
+		
 		participantsTextField.setVisible(false);
 		participantsText.setVisible(false);
 		errorRobotText.setVisible(false);
 		chooseOptionShared = false;
 		chooseOptionRobot = false;
 		deliveryTypeComboBox.setValue("Normal");
+		
 	}
 	
 	/**
@@ -485,13 +515,16 @@ public class CustomerOrderGatherSelection {
      * @throws IOException If an I/O error occurs during the operation.
      */
 	@FXML
-	private void handleMinuteandHourComboBoxAction(ActionEvent event) throws IOException {	
+	private void handleMinuteandHourComboBoxAction(ActionEvent event) throws IOException {
+		
 		if (calculateTime2hours(hoursComboBox.getValue(),minutesComboBox.getValue())) {
 				earlyOrderWarningText.setVisible(false);
 				earlyOrderWarningText.setText("For early order you need to choose\n +2hr from now atleast");
 		}
+		
 		else
-			earlyOrderWarningText.setVisible(true);	
+			earlyOrderWarningText.setVisible(true);
+			
 	}
 
 	
@@ -565,6 +598,7 @@ public class CustomerOrderGatherSelection {
             showError("City address must contain only letters.");
             return false;
         }
+
         if (streetAddressTextField.getText().isEmpty()) {
             showError("Street address cannot be empty.");
             return false;
@@ -572,13 +606,16 @@ public class CustomerOrderGatherSelection {
             showError("Street address must contain only letters and numbers.");
             return false;
         }
+
+
         if (receiverTextField.getText().isEmpty()) {
             showError("Receiver cannot be empty.");
             return false;
         } else if (!receiverTextField.getText().matches("[a-zA-Z ]+")) {
             showError("Receiver must contain only letters.");
             return false;
-        }  
+        }
+        
         if (phoneNumberTextField.getText().isEmpty()) {
             showError("Phone number cannot be empty.");
             return false;
@@ -586,6 +623,7 @@ public class CustomerOrderGatherSelection {
             showError("Phone number must contain only numbers.");
             return false;
         }
+
         return true;
 	}
 	
@@ -658,6 +696,7 @@ public class CustomerOrderGatherSelection {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		// close current window
 		((Stage) backButton.getScene().getWindow()).close();
 
 	}
@@ -672,9 +711,6 @@ public class CustomerOrderGatherSelection {
 		errorText.setVisible(true);
 	}
 	
-	/**
-     * Launches the checkout process, passing relevant parameters to the CustomerCheckoutUI.
-     */
 	private void launchCheckout() {
 		boolean[] param = {earlyChoosed,chooseTime,deliveryChoosed,chooseSupply,chooseOptionShared};
 		String[] paramContacts = { cityAddressTextField.getText(), streetAddressTextField.getText(),

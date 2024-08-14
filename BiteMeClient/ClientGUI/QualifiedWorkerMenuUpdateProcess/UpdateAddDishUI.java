@@ -41,14 +41,17 @@ public class UpdateAddDishUI extends Application {
         Parent root = loader.load();
         primaryStage.setTitle("Add Dish");
         primaryStage.setScene(new Scene(root));
+
         UpdateAddDish controller = loader.getController();
         if (user != null) {
             controller.setUser(user);
         }
+
         primaryStage.setOnCloseRequest(event -> {
             event.consume(); // Prevent the window from closing immediately
             controller.closeApplication();
         });
+
         primaryStage.show();
     }
 

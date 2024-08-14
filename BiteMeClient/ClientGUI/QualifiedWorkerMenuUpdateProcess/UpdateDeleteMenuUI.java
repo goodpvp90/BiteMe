@@ -40,12 +40,15 @@ public class UpdateDeleteMenuUI extends Application {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("UpdateDeleteMenu.fxml"));
             AnchorPane root = loader.load();
             Scene scene = new Scene(root);
+            
             UpdateDeleteMenu controller = loader.getController();
             if (user != null) {
                 controller.setUser(user);
             }            
+            
             primaryStage.setScene(scene);
             primaryStage.setTitle("Update Delete Menu");
+
             // Handler for the "X" button in the top right corner of the screen
             primaryStage.setOnCloseRequest(event -> {
                 event.consume(); // Prevent the window from closing immediately

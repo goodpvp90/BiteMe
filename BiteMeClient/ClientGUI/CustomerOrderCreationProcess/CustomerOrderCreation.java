@@ -145,7 +145,9 @@ public class CustomerOrderCreation {
         ChosenItemspriceColumn.setCellValueFactory(new PropertyValueFactory<>("price"));
         ChosenItemsoptionalsColumn.setCellValueFactory(new PropertyValueFactory<>("optionalPick"));
         ChosenItemscommentsColumn.setCellValueFactory(new PropertyValueFactory<>("comments"));
+        // Populate the table with items based on the selected category
         menuTableView.getItems().clear();             
+        // Set up ComboBoxTableCell for optionalsColumn
         optionalsColumn.setCellFactory(column -> new ComboBoxTableCell<Dish, String>() {
             @Override
             public void updateItem(String item, boolean empty) {
@@ -161,11 +163,12 @@ public class CustomerOrderCreation {
                     comboBox.valueProperty().addListener((obs, oldVal, newVal) -> {
                         dish.setOptionalPick(newVal);
                     });
+                    // Set the default value to the first element if available
                     if (!options.isEmpty()) {
                         comboBox.setValue(options.get(0));
                     }
                     setGraphic(comboBox);
-                    setText(null);
+                    setText(null); // Ensure no text is displayed beside the ComboBox
                 }
             }
         });
@@ -174,7 +177,7 @@ public class CustomerOrderCreation {
             public ObservableValue<String> call(TableColumn.CellDataFeatures<Dish, String> param) {
                 Dish dish = param.getValue();
                 ObservableList<String> options = FXCollections.observableArrayList(dish.getOptionals());
-                return new SimpleStringProperty(options.isEmpty() ? "" : options.get(0));
+                return new SimpleStringProperty(options.isEmpty() ? "" : options.get(0)); // Default to first option if available
             }
         });                        
         commentsColumn.setCellFactory(TextFieldTableCell.forTableColumn());
@@ -211,7 +214,7 @@ public class CustomerOrderCreation {
             branchComboBox.setValue(UserHomeBranchToRestaurantBranch(user));
             EnumBranch homeBranch = UserHomeBranchToRestaurantBranch(user);
             branchComboBox.setValue(homeBranch);
-            handleBranchSelection();
+            handleBranchSelection(); // Call to load the menu for the home branch
         	}
         	else {
         		EnumBranch returnLocation = convertNumToLocation(ChosenItemsFromMenu.get(0).getMenuId());
@@ -221,7 +224,7 @@ public class CustomerOrderCreation {
         	}
         }
         else
-        {   branchComboBox.setValue(EnumBranch.SOUTH);
+        {   branchComboBox.setValue(EnumBranch.SOUTH); // or any default location
     		showError("NO HOME BRANCH FOUND FOR USER");        
         }            
     }
@@ -288,6 +291,7 @@ public class CustomerOrderCreation {
         		MenuID = 3;
         		break; 
         	}    
+
         	client.getViewMenu(EnumServerOperations.VIEW_MENU, MenuID);
         	ChosenItemsFromMenu.clear();                  
         	ChosenItemsTableView.getItems().clear();
@@ -326,6 +330,7 @@ public class CustomerOrderCreation {
     		showError("No item was picked from the menu!");
     		return;
     	}
+    	// Get all selected dishes
     	Dish tempDish = menuTableView.getSelectionModel().getSelectedItem();
     	String updatedComment = tempDish.getComments();    	
     	if(updatedComment.equals("Add Comment Here"))
@@ -413,8 +418,7 @@ public class CustomerOrderCreation {
      * 
      * @param event The event that triggers this action.
      * @throws IOException If an I/O error occurs while loading the next scene.
-     */
-    @FXML
+     */	@FXML
 	private void handleContinueAction(javafx.event.ActionEvent event) throws IOException {	
 		if (ChosenItemsFromMenu.size() > 0) {
 			CustomerOrderGatherSelectionUI COrderGatherApp = 
@@ -446,13 +450,18 @@ public class CustomerOrderCreation {
 	private void handleBackButtonAction() {			
 	    try {
 	    	client.removeClientInOrder();
+	        // Retrieve the existing stage for UserHomePageUI
 	        Stage userHomePageStage = UserHomePageUI.getStage();
+
 	        if (userHomePageStage != null) {
-	            userHomePageStage.show();
+	            userHomePageStage.show();  // Show the hidden stage again
 	        } else {
+	            // If the stage is somehow null, recreate and show it
 	            UserHomePageUI Userapp = new UserHomePageUI(user);
 	            Userapp.start(new Stage());
 	        }
+
+	        // Close the current stage
 	        Stage currentStage = (Stage) backButton.getScene().getWindow();
 	        currentStage.close();
 	    } catch (Exception e) {

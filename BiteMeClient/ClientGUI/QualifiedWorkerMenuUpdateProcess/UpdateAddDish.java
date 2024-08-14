@@ -127,10 +127,16 @@ public class UpdateAddDish {
     private void initialize() {
         client = client.getInstance();
         client.getInstanceOfUpdateAddDish(this);
+        
+        // Populate dishTypeComboBox with EnumDish values
         dishTypeComboBox.getItems().setAll(EnumDish.values());
-        dishTypeComboBox.setValue(EnumDish.APPETIZER); //Default selection
+        dishTypeComboBox.setValue(EnumDish.APPETIZER); // Default selection
+
+        // Populate isGrillComboBox with "Yes" and "No"
         isGrillComboBox.getItems().addAll("Yes", "No");
-        isGrillComboBox.setValue("No");
+        isGrillComboBox.setValue("No"); // Default selection
+
+        // Add listener to dishTypeComboBox
         dishTypeComboBox.valueProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue == EnumDish.MAIN_COURSE) {
                 isGrillText.setVisible(true);
@@ -140,7 +146,8 @@ public class UpdateAddDish {
                 isGrillComboBox.setVisible(false);
             }
         });
-        //Initially hide isGrillText and isGrillComboBox if not MAIN_COURSE
+
+        // Initially hide isGrillText and isGrillComboBox if not MAIN_COURSE
         if (dishTypeComboBox.getValue() != EnumDish.MAIN_COURSE) {
             isGrillText.setVisible(false);
             isGrillComboBox.setVisible(false);
@@ -190,10 +197,12 @@ public class UpdateAddDish {
         String dishName = dishNameField.getText();
         String price = priceField.getText();
         boolean isGrill = "Yes".equals(isGrillComboBox.getValue());
+        
         if (!CheckIfLegalNameAndPrice(dishName, price)) {
             return;
         }
         errorText.setVisible(false);
+        
         int dishMenuID = UserHomeBranchConvertToInt(user.getHomeBranch());
         addDishToDB(dishName, Double.parseDouble(price), dishMenuID, isGrill);
     }
@@ -219,11 +228,13 @@ public class UpdateAddDish {
         alert.setTitle("Added Dish Complete");
         alert.setHeaderText(null);
         alert.setContentText(dishNameField.getText() + " Created successfully!");
+
         ButtonType okButton = new ButtonType("OK", ButtonData.OK_DONE);
         alert.getButtonTypes().setAll(okButton);
+
         alert.showAndWait().ifPresent(response -> {
             if (response == okButton) {
-                alert.close();
+                alert.close(); // Close the dialog window
             }
         });
     }
@@ -234,8 +245,10 @@ public class UpdateAddDish {
     private void resetFields() {
         dishNameField.clear();
         priceField.clear();
-        dishTypeComboBox.setValue(EnumDish.APPETIZER);
-        isGrillComboBox.setValue("No"); 
+        dishTypeComboBox.setValue(EnumDish.APPETIZER);  // Default value for dishTypeComboBox
+        isGrillComboBox.setValue("No");  // Default value for isGrillComboBox
+        
+        // Hide isGrill fields if the default dish type is not MAIN_COURSE
         if (dishTypeComboBox.getValue() != EnumDish.MAIN_COURSE) {
             isGrillText.setVisible(false);
             isGrillComboBox.setVisible(false);
@@ -253,6 +266,7 @@ public class UpdateAddDish {
     private void addDishToDB(String dishName, double dishPrice, int dishMenuID, boolean isGrill) {
         EnumDish dishTypePick = dishTypeComboBox.getValue();
         Dish createdDish = null;
+        
         switch (dishTypePick) {
             case SALAD:
                 DishSalad dishSalad = new DishSalad(dishName, false, dishPrice, dishMenuID);

@@ -60,7 +60,6 @@ public class DBController {
 		Class.forName("com.mysql.cj.jdbc.Driver");
 		// Establish the connection
 		connection = DriverManager.getConnection(url, username, password);
-		System.out.println("Connected to the database successfully!");
 		
 		
 	}
@@ -72,9 +71,7 @@ public class DBController {
 		if (connection != null) {
 			try {
 				connection.close();
-				System.out.println("Database connection closed.");
 			} catch (SQLException e) {
-				System.out.println("Failed to close the database connection.");
 				e.printStackTrace();
 			}
 		}
@@ -482,11 +479,8 @@ public class DBController {
 	                updateDiscountStmt.setDouble(2, totalDiscountAmount);
 	                updateDiscountStmt.executeUpdate();
 	            }
-	        } else {
-	            System.out.println("ResultSet is empty. No data found for orderId: " + orderId);
 	        }
 	    } catch (SQLException e) {
-	        System.out.println("SQLException caught: " + e.getMessage());
 	        e.printStackTrace();
 	    }
 	}
@@ -508,18 +502,10 @@ public class DBController {
             if (rs.next()) {
                 Timestamp orderReadyTime = rs.getTimestamp("order_ready_time");
                 Timestamp orderReceiveTime = rs.getTimestamp("order_receive_time");
-
-                // Print retrieved timestamps for debugging
-                System.out.println("Order ID: " + orderId);
-                System.out.println("Order ready time: " + orderReadyTime);
-                System.out.println("Order receive time: " + orderReceiveTime);
-
                 // Check if the order arrived on time
                 if (orderReadyTime != null && orderReceiveTime != null) {
                     return orderReceiveTime.after(orderReadyTime); // true if on time or early, false if late
                 }
-            } else {
-                System.out.println("No data found for orderId: " + orderId);
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -956,7 +942,6 @@ public class DBController {
 
         try (PreparedStatement pstmt = connection.prepareStatement(query)) {
             pstmt.executeUpdate();
-            System.out.println("Monthly report generated successfully.");
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -980,7 +965,6 @@ public class DBController {
 
         try (PreparedStatement pstmt = connection.prepareStatement(query)) {
             pstmt.executeUpdate();
-            System.out.println("Monthly income report generated successfully.");
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -1004,7 +988,6 @@ public class DBController {
                        "ON DUPLICATE KEY UPDATE totalOrders = VALUES(totalOrders), ordersCompletedInTime = VALUES(ordersCompletedInTime)";
         try (PreparedStatement pstmt = connection.prepareStatement(query)) {
             int rowsAffected = pstmt.executeUpdate();
-            System.out.println(rowsAffected + " rows affected. Performance report for the last month generated successfully.");
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -1231,11 +1214,9 @@ public class DBController {
             insertStmt.setInt(15, daysInRanges.get("201_plus"));
 
             insertStmt.executeUpdate();
-            System.out.println("Quarterly Report created.");
             return true;
         } catch (SQLException e) {
 			e.printStackTrace();
-			System.out.println("Error generating new quarterly report");
 			return false;
 		}
     }
@@ -1265,7 +1246,6 @@ public class DBController {
             }
         } catch (SQLException e) {
 			e.printStackTrace();
-			System.out.println("Error getting income for quarterly report");
 		}
         return 0;
     }
@@ -1321,7 +1301,6 @@ public class DBController {
             return daysInRanges;
         } catch (SQLException e) {
 			e.printStackTrace();
-			System.out.println("Error getting Days by range for creating quartyely report");
 		}
         return null;
     }
@@ -1472,10 +1451,8 @@ public class DBController {
         String query = "UPDATE users SET isLogged = 0";
         try (PreparedStatement stmt = connection.prepareStatement(query)) {
             int rowsAffected = stmt.executeUpdate();
-            System.out.println(rowsAffected + " users' logged status reset.");
         } catch (SQLException e) {
             e.printStackTrace();
-            System.out.println("Error resetting user logged status.");
         }
     }
     

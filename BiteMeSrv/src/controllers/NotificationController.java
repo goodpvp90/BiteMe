@@ -138,7 +138,6 @@ public class NotificationController {
      * @param branchLoc the branch location
      */
     public void notifyWorker(EnumBranch branchLoc) {
-    	System.out.println();
         for (User user : workersInPendingOrders.keySet()) {
             if(user.getHomeBranch() == branchLoc) {
             	server.sendMessageToClient(EnumClientOperations.INTERRUPT_PENDING_ORDERS, workersInPendingOrders.get(user), "RELOAD PENDING PAGE");

@@ -75,7 +75,6 @@ public class ReportController {
         generateOrdersReport();
         generateIncomeReport();
         generatePerformanceReport();
-        System.out.println("Reports generated at: " + LocalDateTime.now());
     }
 
     /**
@@ -200,8 +199,6 @@ public class ReportController {
         try {
             if (!scheduler.awaitTermination(5, TimeUnit.SECONDS)) {
                 scheduler.shutdownNow();
-                if (!scheduler.awaitTermination(5, TimeUnit.SECONDS))
-                    System.err.println("Scheduler did not terminate");
             }
         } catch (InterruptedException ie) {
             scheduler.shutdownNow();

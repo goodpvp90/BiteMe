@@ -14,6 +14,5 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/javaFXnadir"/>
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/OCSF"/>
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/BiteMeCommon"/>
-	<classpathentry exported="true" kind="con" path="org.eclipse.jdt.USER_LIBRARY/javaFXIdo"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

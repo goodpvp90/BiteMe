@@ -39,14 +39,17 @@ public class UpdateMenuNavigationUI extends Application {
     public void start(Stage primaryStage) throws Exception {
     	FXMLLoader loader =new FXMLLoader(getClass().getResource("UpdateMenuNavigation.fxml"));
         Parent root = loader.load();
+        
         primaryStage.setTitle("Update Menu");
         primaryStage.setScene(new Scene(root));
+        
         UpdateMenuNavigation controller = loader.getController();
         if(user!=null) {controller.setUser(user); }
         primaryStage.setOnCloseRequest(event -> {
             event.consume(); // Prevent the window from closing immediately
             controller.closeApplication();
         });
+        
         primaryStage.show();
     }
 

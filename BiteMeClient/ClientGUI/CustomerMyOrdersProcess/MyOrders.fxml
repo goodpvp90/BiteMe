@@ -12,7 +12,7 @@
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600" prefWidth="800" styleClass="my-orders-page" stylesheets="@/CSS/client.css" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="CustomerMyOrdersProcess.MyOrders">
     <VBox spacing="20" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <HBox alignment="CENTER_LEFT" spacing="20" styleClass="header">
-            <Text fx:id="headlineText" text="My Orders" wrappingWidth="387.38525390625" />
+            <Text fx:id="headlineText" text="Active Delivery Orders" wrappingWidth="387.38525390625" />
             <HBox HBox.hgrow="ALWAYS" />
             <Button fx:id="backButton" mnemonicParsing="false" onAction="#handleBackButtonAction" text="BACK" />
             <Button fx:id="RefreshListButton" mnemonicParsing="false" onAction="#handleRefreshButton" text="REFRESH LIST" />

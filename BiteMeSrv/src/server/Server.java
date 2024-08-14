@@ -55,7 +55,6 @@ public class Server extends AbstractServer {
 		try {
 			dbController.connect(url, username, password);
 		} catch (ClassNotFoundException | SQLException e) {
-			System.out.println("Failed to connect to the database.");
 			throw new NullPointerException();
 		}
 	}
@@ -99,7 +98,6 @@ public class Server extends AbstractServer {
 		if (msg instanceof Object[]) {
 			Object[] message = (Object[]) msg;
 			operation = (EnumServerOperations) message[0];
-        	System.out.println(operation);
 			switch (operation) {
 			case CLIENT_CONDITION:
 				controller.displayClientDetails((String[]) message[1]);
