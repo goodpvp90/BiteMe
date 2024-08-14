@@ -38,13 +38,10 @@ public class MyOrdersUI extends Application {
 		FXMLLoader loader = new FXMLLoader(getClass().getResource("MyOrders.fxml"));
 		Parent root = loader.load();
 		primaryStage.setTitle("Active Deliveries");
-
 		MyOrders controller = loader.getController();
-
 		if (user != null) {
 			controller.setUser(user);
 		}
-
 		// Handler for "X" button in the top screen
 		primaryStage.setOnCloseRequest(event -> {
 			event.consume(); // Prevent the window from closing immediately
