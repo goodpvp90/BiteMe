@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Text?>
+
+<AnchorPane prefHeight="600.0" prefWidth="800.0" styleClass="blue-gradient-1" stylesheets="@/CSS/client.css" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ClientConnectionProcess.ClientConnectController">
+   <children>
+      <VBox spacing="20" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <HBox alignment="CENTER" styleClass="header">
+            <Text fx:id="headlineText" text="Client Connect" />
+         </HBox>        
+         <Text fx:id="welcomeText" text="Please enter server details" textAlignment="CENTER" wrappingWidth="799.1875" />        
+         <VBox alignment="CENTER" spacing="20">
+            <VBox alignment="CENTER" spacing="10">
+               <Text styleClass="input-label" text="Enter server IP:" />
+               <TextField fx:id="serverIpTextField" maxWidth="300.0" promptText="Enter IP address" styleClass="text-field" text="127.0.0.1" />               
+               <Text styleClass="input-label" text="Enter server Port:" />
+               <TextField fx:id="serverPortTextField" maxWidth="300.0" promptText="Enter port number" styleClass="text-field" text="5555" />
+            </VBox>            
+            <Text fx:id="ErrorTextConnect" fill="RED" text="error" textAlignment="CENTER" visible="false" wrappingWidth="719.3332848548889" />            
+            <HBox alignment="CENTER" spacing="50">
+               <Button fx:id="connectButton" mnemonicParsing="false" onAction="#handleConnectButtonAction" prefHeight="100.0" prefWidth="180.0" text="Connect" />
+               <Button fx:id="quitButton" mnemonicParsing="false" onAction="#handleQuitButtonAction" prefHeight="100.0" prefWidth="180.0" text="Quit" />
+            </HBox>
+         </VBox>
+      </VBox>
+   </children>
+</AnchorPane>
