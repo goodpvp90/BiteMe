@@ -22,14 +22,11 @@ public class CustomerOrderGatherSelectionUI extends Application {
     /** The list of dishes associate with user order to be transfer to checkout. */
     private List<Dish> orders = null;
     
-    
     /** An array of boolean parameters of user preferences selection if returned from checkout. */
     private boolean[] param = null;
     
-    
     /** An array of contact information strings if filled by the user. */
     private String[] contactInfo = null;    
-    
     
     /** An object representing the date information. */
     private Object date = null;
@@ -73,25 +70,20 @@ public class CustomerOrderGatherSelectionUI extends Application {
 	@Override
     public void start(Stage primaryStage) {
         try {
-            // Load the FXML file
             FXMLLoader loader = new FXMLLoader(getClass().getResource("CustomerOrderGatherSelection.fxml")); // Adjust the path as needed
             Parent root = loader.load();
             primaryStage.setScene(new Scene(root));
             primaryStage.setTitle("Order Gathering Selection");
-            
             CustomerOrderGatherSelection controller = loader.getController();
             if(user!=null) controller.setUser(user);
             if(orders!= null) controller.setDishesCount(orders);
             if(param!=null) controller.setBooleanParam(param);
             if(contactInfo!=null) controller.setContactInfo(contactInfo);
             if(date!=null) controller.setDateInfo(date);
-
-          //Handler for "X" button in the top screen
             primaryStage.setOnCloseRequest(event -> {
-                event.consume(); // Prevent the window from closing immediately
+                event.consume();
                 controller.closeApplication();
-            });
-            
+            }); 
             primaryStage.show();
         } catch (Exception e) {
             e.printStackTrace();

@@ -67,19 +67,16 @@ public class CustomerCheckoutUI extends Application {
      */
     @Override
     public void start(Stage primaryStage) throws Exception {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("CustomerCheckout.fxml")); // Adjust the path as needed
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("CustomerCheckout.fxml"));
         Parent root = loader.load();
         primaryStage.setTitle("Checkout");
         primaryStage.setScene(new Scene(root));
-
         CustomerCheckout controller = loader.getController();
         if(orders!= null) controller.setChosenItemsFromMenu(orders);
         if(param!=null) controller.setReturnBooleanPrefGather(param);
         if(contactInfo!=null) controller.setContacts(contactInfo);
         if(user!=null) controller.setUser(user);
-        if(date!=null) controller.setDate(date);
-
-        
+        if(date!=null) controller.setDate(date); 
       //Handler for "X" button in the top screen
         primaryStage.setOnCloseRequest(event -> {
             event.consume(); // Prevent the window from closing immediately

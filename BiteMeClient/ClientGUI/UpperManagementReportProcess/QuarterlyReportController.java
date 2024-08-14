@@ -180,7 +180,6 @@ public class QuarterlyReportController {
             try {
                 parentController.quarterlyReportWindowClosed();
             } catch (Exception e) {
-                System.err.println("Error calling quarterlyReportWindowClosed: " + e.getMessage());
             }
         }
         Stage stage = (Stage) reportChart.getScene().getWindow();

@@ -56,9 +56,9 @@ public class CustomerOrderCreationUI extends Application {
         if (user != null) {
             controller.setUser(user);
         }
-      //Handler for "X" button in the top screen
+        //Handler for "X" button in the top screen
         primaryStage.setOnCloseRequest(event -> {
-            event.consume(); // Prevent the window from closing immediately
+            event.consume();
             controller.closeApplication();
         });
         primaryStage.setScene(new Scene(root));
