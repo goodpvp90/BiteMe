@@ -95,8 +95,9 @@ public class UserHomePageController {
     }
     
     /**
-     * Updates the UI based on the user's type and registration status.
-     */  
+     * Updates the UI buttons shown on window ,based on the user's type, user premissinos and 
+     * registration status.
+     */ 
     private void updateUI() {    	
     	switch(user.getType()) {    	
     	case CEO:
@@ -139,17 +140,12 @@ public class UserHomePageController {
     }
     
     /**
-     * Initializes the controller. This method is automatically called after the FXML file has been loaded.
+     * Initializes the controller. set the Client instance.
      */
     @FXML
     private void initialize() {
         client = Client.getInstance();
-        if (client != null) {
-            client.getUserHomePageController(this);
-            System.out.println("Client and UserHomePageController initialized successfully.");
-        } else {
-            System.out.println("Failed to initialize Client.");
-        }
+        client.getUserHomePageController(this);
     }
 		
     /**
@@ -172,7 +168,7 @@ public class UserHomePageController {
 	}
 
     /**
-     * Handles the create order action, by opening the Customer Order CreationUI.
+     * Handles the create order action, by opening the Customer Order Creation UI.
      *
      * @param event The ActionEvent triggered by clicking the create order button.
      */
@@ -190,7 +186,7 @@ public class UserHomePageController {
     }
 
     /**
-     * Handles the My orders action.
+     * Handles the create order action. Open My Order with orders related to the user.
      *
      * @param event The ActionEvent triggered by clicking the create order button.
      */
@@ -207,7 +203,8 @@ public class UserHomePageController {
     }
     
     /**
-     * Handles the update menu action.
+     * Handles the update menu action. Open Update menu, available only for branch manager
+     * and qualified worker.
      *
      * @param event The ActionEvent triggered by clicking the update menu button.
      */
@@ -224,7 +221,8 @@ public class UserHomePageController {
     }
     
     /**
-     * Handles the view reports action.
+     * Handles the view reports action. Open window of view reports, available only to CEO
+     * and branch manager
      *
      * @param event The ActionEvent triggered by clicking the view reports button.
      */   
@@ -241,7 +239,8 @@ public class UserHomePageController {
     }
 
     /**
-     * Handles the change home branch action.
+     * Handles the change home branch action. Open change home UI for the user to change his
+     * home branch. Available only to customers
      *
      * @param event The ActionEvent triggered by clicking the change home branch button.
      */
@@ -258,7 +257,9 @@ public class UserHomePageController {
     }
 
     /**
-     * Handles the pending orders action.
+     * Handles the pending orders action. open pending orders window with orders
+     * related to the branch.
+     * Available only for qualified workers and branch managers.
      *
      * @param event The ActionEvent triggered by clicking the pending orders button.
      */
@@ -277,11 +278,12 @@ public class UserHomePageController {
 
     /**
      * Updates the welcome text and headline based on the user's type and registration status.
+     * for staff of the branch update also the branch the staff member 
      */
     private void changeHelloTextAndHeadline() {
         String userType = "";
-        boolean staff = true;//if staff true print the branch for staff members
-        
+        //if staff true print the branch for staff members
+        boolean staff = true;
 		switch (user.getType()) {
 		case CEO:
 			staff = false;
@@ -313,18 +315,13 @@ public class UserHomePageController {
 				userType = "Customer";
 				break;
 			}
-		
-
 		default:
 			break;
 		}
-    
         if(staff)
         	headlineText.setText(user.getUsername() + ", " + userType + "\nBranch: " + user.getHomeBranch());
         else
         	headlineText.setText(user.getUsername() + ", " + userType);
-
-        
         if (user.getType()==EnumType.UN_CUSTOMER) {
             // For unregistered customer
             welcomeText.setText("Hello, looks like"
@@ -339,7 +336,7 @@ public class UserHomePageController {
     
     
     /**
-     * Handles the register user action.
+     * Handles the register user action. open register user UI, only available to branch manager. 
      *
      * @param event The ActionEvent triggered by clicking the register user button.
      */   
@@ -364,7 +361,6 @@ public class UserHomePageController {
         public void showNotificationDialog(List<String> text) {
   		Platform.runLater(() -> {
             if (text == null || text.isEmpty()) {
-                System.out.println("No notifications to show.");
                 return;
             }            
             Alert alert = new Alert(AlertType.INFORMATION);
@@ -377,7 +373,7 @@ public class UserHomePageController {
             alert.getButtonTypes().setAll(okButton);
             alert.showAndWait().ifPresent(response -> {
                 if (response == okButton) {
-                    alert.close(); // Close the dialog window
+                    alert.close();
                 }
             });  
         });

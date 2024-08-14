@@ -96,8 +96,8 @@ public class HomeBranchChange {
                     setText(null);
                 } else {
                     setText(item);
-                    setFont(Font.font(16)); // Adjust font size as needed
-                    setAlignment(Pos.CENTER); // Center the text
+                    setFont(Font.font(16));
+                    setAlignment(Pos.CENTER);
                 }
             }
         };
@@ -191,18 +191,13 @@ public class HomeBranchChange {
     @FXML
     void handleBackButtonAction(ActionEvent event) {
         try {
-            // Retrieve the existing stage for UserHomePageUI
             Stage userHomePageStage = UserHomePageUI.getStage();
-
             if (userHomePageStage != null) {
-                userHomePageStage.show();  // Show the hidden stage again
+                userHomePageStage.show();
             } else {
-                // If the stage is somehow null, recreate and show it
                 UserHomePageUI Userapp = new UserHomePageUI(user);
                 Userapp.start(new Stage());
             }
-
-            // Close the current stage
             Stage currentStage = (Stage) backButton.getScene().getWindow();
             currentStage.close();
         } catch (Exception e) {

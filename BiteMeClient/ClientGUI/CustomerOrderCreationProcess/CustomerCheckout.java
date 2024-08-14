@@ -262,7 +262,7 @@ public class CustomerCheckout {
 	private double priceTempAfterComp;
 
 	/**
-	 * The amount of compensation available for the order.
+	 * The amount of compensation, only if user deserves from previous orders.
 	 */
 	private double compensation;
 
@@ -289,14 +289,10 @@ public class CustomerCheckout {
     private void initialize() {
     	client = Client.getInstance();
     	client.getInstanceOfCustomerCheckout(this);
-    	
-    	//Set table columns to get the right getters value
     	nameColumn.setCellValueFactory(new PropertyValueFactory<>("dishName"));
         priceColumn.setCellValueFactory(new PropertyValueFactory<>("price"));
         optionalsColumn.setCellValueFactory(new PropertyValueFactory<>("optionalPick")); 
-        commentsColumn.setCellValueFactory(new PropertyValueFactory<>("comments"));
-        
-    	
+        commentsColumn.setCellValueFactory(new PropertyValueFactory<>("comments"));    	
     }
 
     
@@ -329,12 +325,8 @@ public class CustomerCheckout {
      */
     public void setUser (User user) {
     	this.user = user;
-    	
-
     	menuTableView.getItems().clear();   
-        menuTableView.getItems().addAll(chosenItemsFromMenu);
-        
-        
+        menuTableView.getItems().addAll(chosenItemsFromMenu); 
         if(returnBooleanPrefGather[2]) {
 			setDetailsOnClient(contactInfo[2], contactInfo[3], contactInfo[1] + ", " + contactInfo[0]);		
     	}
@@ -342,10 +334,8 @@ public class CustomerCheckout {
         	setDetailsOnClient(user.getFirstName()+" "+ user.getLastName(),
         			user.getPhone(),"N/A, not delivery");
         }
-        
 		deserveCompensation();
         checkoutTotalPrice();
-
     }
     
     /**
@@ -365,7 +355,6 @@ public class CustomerCheckout {
      * @param compensation the amount of compensation the user deserves
      */
 	public void setCompensation(double compensation) {
-	    //receives from Client if the user deserves compensation(amount)
 		this.compensation = compensation;
 	}
     
@@ -410,7 +399,6 @@ public class CustomerCheckout {
             currentStage.close();
         } catch (Exception e) {
             e.printStackTrace();
-            //showError("An error occurred while loading the User Home Page.");
         }
     }
 
@@ -425,18 +413,16 @@ public class CustomerCheckout {
 		
 		setEarlyDiscount();
 		calculateDelivery();	
-		
 		//if delivery chosen
 		if(returnBooleanPrefGather[2])
 			priceTextInfo.setText(String.format("%.2f", totalPrice) +
 					" (Delivery price included: " + deliveryPrice+")");
 		else
 			priceTextInfo.setText(String.format("%.2f", totalPrice));
-
 	}
 
 	/**
-     * Update user early discount if eligible
+     * Update user compensation discount if eligible
      */
 	private void setEarlyDiscount() {
     	if (returnBooleanPrefGather[0]) {
@@ -452,20 +438,16 @@ public class CustomerCheckout {
 	/**
      * Update user compensation discount if eligible
      */
-	private void deserveCompensation(){
-		//check if user deserves compensation
-		//showCompensationText(true);
-		//compensationValueText.setText("You deserves: "+ compensation);
-        client.getDiscountAmount(user.getUsername());
-
+	private void deserveCompensation() {
+		client.getDiscountAmount(user.getUsername());
 		Platform.runLater(() -> {
-		if (compensation!=0) {
-			isdeservingCompensation = true;
-			showCompensationText(true);
-			compensationValueText.setText("You deserve: "+ compensation);
-			lateOrderDeliveryInfoText.setText("Please Choose yes/no.");
-		}	
-    	});
+			if (compensation != 0) {
+				isdeservingCompensation = true;
+				showCompensationText(true);
+				compensationValueText.setText("You deserve: " + compensation);
+				lateOrderDeliveryInfoText.setText("Please Choose yes/no.");
+			}
+		});
 
 	}
 
@@ -490,11 +472,8 @@ public class CustomerCheckout {
 	@FXML
 	private void handleYesCompensationButton(ActionEvent event) {
 	    changedYesNofunctions(false);
-
-	    // Convert compensation and totalPrice to BigDecimal for precise rounding
 	    BigDecimal compensationDecimal = new BigDecimal(compensation).setScale(2, RoundingMode.HALF_UP);
 	    BigDecimal totalPriceDecimal = new BigDecimal(totalPrice).setScale(2, RoundingMode.HALF_UP);
-
 	    if (compensationDecimal.compareTo(totalPriceDecimal) <= 0) {
 	        lateOrderDeliveryInfoText.setText("Discount confirmed: " + compensationDecimal);
 	        priceTempAfterComp = totalPriceDecimal.doubleValue();
@@ -506,12 +485,8 @@ public class CustomerCheckout {
 	        priceTempAfterComp = totalPriceDecimal.doubleValue();
 	        totalPriceDecimal = BigDecimal.ZERO;
 	    }
-
-	    // Update the compensation and totalPrice with the rounded values
 	    compensation = compensationDecimal.doubleValue();
 	    totalPrice = totalPriceDecimal.doubleValue();
-
-	    // Format the totalPrice for display
 	    if (returnBooleanPrefGather[2]) { // if delivery chosen
 	        priceTextInfo.setText(String.format("%.2f", totalPrice) + 
 	                " (Delivery price included: " + deliveryPrice + ")");
@@ -521,20 +496,21 @@ public class CustomerCheckout {
 	}
 	
 	/**
-     * Handle user "No" selection and return total price before the compensation
-     * change if changed before
+     * Handles the action when the user selects "No" for compensation. 
+     * It processes the compensation value and updates the total price based on 
+     * the current order price before compensation adjustments (if any were made). 
+     * If there were previous compensation changes, they are taken into account.
+     * The method also updates the UI to reflect the selected action and the total price.
      * 
-     * @param event The action event triggered by the "No" button click.
+     * @param event The action event triggered by the "No" button click, 
+     * which indicates that the user has declined the compensation offer.
      */
 	@FXML
 	private void handleNoCompensationButton(ActionEvent event) {
 		changedYesNofunctions(true);
-
-		// Convert compensation and totalPrice to BigDecimal for precise rounding
 		BigDecimal compensationDecimal = new BigDecimal(compensation).setScale(2, RoundingMode.HALF_UP);
 		BigDecimal totalPriceDecimal = new BigDecimal(totalPrice).setScale(2, RoundingMode.HALF_UP);
 		BigDecimal priceTempAfterCompDecimal = new BigDecimal(priceTempAfterComp).setScale(2, RoundingMode.HALF_UP);
-
 		if (priceTempAfterCompDecimal.compareTo(BigDecimal.ZERO) != 0) {
 			if (compensationDecimal.compareTo(totalPriceDecimal) <= 0) {
 				compensationDecimal = priceTempAfterCompDecimal.subtract(totalPriceDecimal);
@@ -545,15 +521,10 @@ public class CustomerCheckout {
 			}
 			priceTempAfterCompDecimal = BigDecimal.ZERO;
 		}
-
-		// Update the compensation and totalPrice with the rounded values
 		compensation = compensationDecimal.doubleValue();
 		totalPrice = totalPriceDecimal.doubleValue();
 		priceTempAfterComp = priceTempAfterCompDecimal.doubleValue();
-
 		lateOrderDeliveryInfoText.setText("Discount was not chosen");
-
-		// Format the totalPrice for display
 		if (returnBooleanPrefGather[2]) { // if delivery chosen
 			priceTextInfo
 					.setText(String.format("%.2f", totalPrice) + " (Delivery price included: " + deliveryPrice + ")");
@@ -579,12 +550,11 @@ public class CustomerCheckout {
 	 */
 	private void calculateDelivery() {
 		deliveryPrice=0;
+		//if normal delivery chosen
 		if(returnBooleanPrefGather[2]) {
-			//if normal delivery chosen
 			deliveryPrice=25;
+			//if shared delivery chosen	
 			if(returnBooleanPrefGather[4]&& Integer.parseInt(contactInfo[6])!=0) {
-				//if shared delivery chosen
-				
 				//delivery price decrease based on number of participants
 				switch(Integer.parseInt(contactInfo[6])) {
 				case 1: //delivery not changed
@@ -626,7 +596,6 @@ public class CustomerCheckout {
 				return;
 			}
 		}
-
 		// Create Order Request Time
 		LocalDateTime orderRequestDateTime = null;
 		Timestamp orderRequestTimestamp = null;
@@ -635,23 +604,16 @@ public class CustomerCheckout {
 			orderRequestDateTime = LocalDateTime.of(date, orderTime);
 			orderRequestTimestamp = Timestamp.valueOf(orderRequestDateTime);
 		}
-
 		// Create Order Date (current date and time)
 		Timestamp orderDateTimestamp = Timestamp.valueOf(LocalDateTime.now());
-
 		Order orderNew;
-		//if (returnBooleanPrefGather[2])// if delivery send delivery info
-		//{// Create new order
 			orderNew = new Order(user.getUsername(), chosenItemsFromMenu.get(0).getMenuId(), orderDateTimestamp,
 					orderRequestTimestamp, totalPrice, returnBooleanPrefGather[2], contactInfo[0], contactInfo[1],
 					contactInfo[3], contactInfo[2]);
-		//} 
-
 		client.sendCreateOrderRequest(orderNew, chosenItemsFromMenu);
 		client.setDiscountAmount(user.getUsername(), compensation);
 		client.removeClientInOrder();
 		showConfirmationDialog();
-		//launchHomePage();
 	}
 	
 	/**
@@ -665,10 +627,8 @@ public class CustomerCheckout {
 	    alert.setTitle("Order Confirmation");
 	    alert.setHeaderText(null);
 	    alert.setContentText("Order created successfully! You will receive an update soon.");
-
 	    ButtonType okButton = new ButtonType("OK", ButtonData.OK_DONE);
 	    alert.getButtonTypes().setAll(okButton);
-
 	    alert.showAndWait().ifPresentOrElse(response -> {
 	        if (response == okButton) {
 	            launchHomePage();
@@ -684,17 +644,13 @@ public class CustomerCheckout {
 	 */
 	private void launchHomePage() {
 		try {
-	        // Retrieve the existing stage for UserHomePageUI
 	        Stage userHomePageStage = UserHomePageUI.getStage();
-
 	        if (userHomePageStage != null) {
-	            userHomePageStage.show();  // Show the hidden stage again
+	            userHomePageStage.show();
 	        } else {
-	            // If the stage is somehow null, recreate and show it
 	            UserHomePageUI Userapp = new UserHomePageUI(user);
 	            Userapp.start(new Stage());
 	        }
-	        // Close the current stage
 	        Stage currentStage = (Stage) backButton.getScene().getWindow();
 	        currentStage.close();
 	    } catch (Exception e) {

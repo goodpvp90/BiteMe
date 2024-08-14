@@ -111,23 +111,18 @@ public class MyOrders {
      */
     @FXML
     private void initialize() {
-    	 // Set up the columns in the table
     	client = Client.getInstance();
     	client.getInstanceOfMyOrders(this);
         orderIdColumn.setCellValueFactory(new PropertyValueFactory<>("orderId"));
         orderDateColumn.setCellValueFactory(new PropertyValueFactory<>("orderDate"));
         totalPriceColumn.setCellValueFactory(new PropertyValueFactory<>("totalPrice"));
-        
-    	
         TableColumn<Order, Void> expandColumn = new TableColumn<>("Expand");
         expandColumn.setCellFactory(param -> new TableCell<>() {
             private final Button expandButton = new Button("Expand");
             {
             	expandButton.setOnAction(event -> {
-                    // Get the Order object associated with the row
                     Order Selectedorder = getTableView().getItems().get(getIndex());
                     if (Selectedorder != null) {
-                        // Pass the orderId to the showOrderDetails method
                         showOrderDetails(Selectedorder.getOrderId()); 
                     }
                 });
@@ -169,8 +164,7 @@ public class MyOrders {
     	Orders = DBOrderList;
     	Platform.runLater(() -> {FilterReadyOrder();});    
     }
-    
-    
+
     /**
      *Sets the dishes in orders retrieved from the database.
      *Prepares the pop up screen for dishes of the selected order
@@ -201,12 +195,10 @@ public class MyOrders {
             detailStage.show();
             dishTableView.setItems(FXCollections.observableArrayList(OrderDishes));
         });
-    }
-    
+    }    
     /**
      * Requests the user's orders from the server. start proccess of loading orders to the list
      */
- 
     public void OrdersLoader()
     {
     	client.getUsersOrders(user.getUsername());
@@ -239,7 +231,9 @@ public class MyOrders {
     }
     
     /**
-     * Handles the action of approving a selected order. 
+     * Handles the action of approving a selected order from the table view.
+     * If an order is selected, it updates the order status to "Completed"
+     * and notifies the server that the order arrived on time.
      */
     @FXML
     private void handleApproveOrderAction() {
@@ -257,10 +251,8 @@ public class MyOrders {
      */
     public void OrderCompleteHandle(boolean show) {
     	Order selectedOrder = orderTableView.getSelectionModel().getSelectedItem();
-    	//if customer deserves compensation
     	if(show)
     		showSorryForDelayDialog(selectedOrder);
-    	
     	else {       	
             readyOrders.remove(selectedOrder);
             orderTableView.getItems().clear();
@@ -278,18 +270,13 @@ public class MyOrders {
     @FXML
     void handleBackButtonAction(ActionEvent event) {
         try {
-            // Retrieve the existing stage for UserHomePageUI
             Stage userHomePageStage = UserHomePageUI.getStage();
-
             if (userHomePageStage != null) {
-                userHomePageStage.show();  // Show the hidden stage again
+                userHomePageStage.show();
             } else {
-                // If the stage is somehow null, recreate and show it
                 UserHomePageUI Userapp = new UserHomePageUI(user);
                 Userapp.start(new Stage());
             }
-
-            // Close the current stage
             Stage currentStage = (Stage) backButton.getScene().getWindow();
             currentStage.close();
         } catch (Exception e) {
@@ -299,13 +286,16 @@ public class MyOrders {
     }
     
     /**
-     * Shows the details of an order dishes in a new pop up window.
+     * Displays the details of the dishes in a specific order in a new pop-up window.
+     * It sends a request to the server to retrieve the dishes associated with the given order ID 
+     * and then opens a new window with a table view to display the dish name, optional picks, and comments.
      * 
-     * @param orderID The ID of the order to display.
+     * @param orderID The ID of the order for which the dish details will be displayed.
      */
     private void showOrderDetails(int orderID) {
     	client.sendShowDishesInOrder(orderID,EnumPageForDishInOrder.CUSTOMER); 
     }
+    
     /**
      * Shows a dialog apologizing for a delay and providing compensation.
      * 
@@ -315,7 +305,6 @@ public class MyOrders {
         
         double halfPrice = (selectedOrder.getTotalPrice()) / 2;
         BigDecimal compensation = new BigDecimal(halfPrice).setScale(2, RoundingMode.HALF_UP);
-        
         Platform.runLater(() -> {
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.initStyle(StageStyle.UTILITY);
@@ -323,10 +312,8 @@ public class MyOrders {
             alert.setHeaderText(null);
             alert.setContentText("We're sorry for the delay.\n"
                     + "You'll receive " + compensation + " as compensation for your next order.");
-
             ButtonType okButton = new ButtonType("OK", ButtonData.OK_DONE);
             alert.getButtonTypes().setAll(okButton);
-
             alert.showAndWait().ifPresentOrElse(response -> {
                 if (response == okButton) {
                 	readyOrders.remove(selectedOrder);
