@@ -171,11 +171,37 @@ public class MyOrders {
     }
     
     
-    public void SetDishInOrdersFromDB(List<DishInOrder> DBDishInOrdersList)
-	{
-    	OrderDishes.clear();                            	 
-    	OrderDishes = DBDishInOrdersList;   	
-	}
+    /**
+     *Sets the dishes in orders retrieved from the database.
+     *Prepares the pop up screen for dishes of the selected order
+     * @param DBDishInOrdersList The list of dishes in orders from the database.
+     */
+    public void SetDishInOrdersFromDB(List<DishInOrder> DBDishInOrdersList) {
+    	OrderDishes.clear();
+    	OrderDishes.addAll(DBDishInOrdersList);
+        Platform.runLater(() -> {
+            Stage detailStage = new Stage();
+            VBox vbox = new VBox();
+            TableView<DishInOrder> dishTableView = new TableView<>();
+            TableColumn<DishInOrder, String> nameColumn = new TableColumn<>("Name");
+            TableColumn<DishInOrder, String> optionalPickColumn = new TableColumn<>("Optional Pick");
+            TableColumn<DishInOrder, String> commentColumn = new TableColumn<>("Comment");
+            nameColumn.setCellValueFactory(new PropertyValueFactory<>("dishName"));
+            optionalPickColumn.setCellValueFactory(new PropertyValueFactory<>("optionalPick"));
+            commentColumn.setCellValueFactory(new PropertyValueFactory<>("comment"));
+            nameColumn.setPrefWidth(100);
+            optionalPickColumn.setPrefWidth(100);
+            commentColumn.setPrefWidth(200);
+            dishTableView.getColumns().add(nameColumn); 
+            dishTableView.getColumns().add(optionalPickColumn);
+            dishTableView.getColumns().add(commentColumn);
+            vbox.getChildren().add(dishTableView);
+            detailStage.setScene(new Scene(vbox));
+            detailStage.setTitle("Order Details");
+            detailStage.show();
+            dishTableView.setItems(FXCollections.observableArrayList(OrderDishes));
+        });
+    }
     
     /**
      * Requests the user's orders from the server. start proccess of loading orders to the list
@@ -279,40 +305,6 @@ public class MyOrders {
      */
     private void showOrderDetails(int orderID) {
     	client.sendShowDishesInOrder(orderID,EnumPageForDishInOrder.CUSTOMER); 
-    	Platform.runLater(() -> {
-        Stage detailStage = new Stage();
-        VBox vbox = new VBox();
-        TableView<DishInOrder> dishTableView = new TableView<DishInOrder>();
-        
-        TableColumn<DishInOrder, String> nameColumn = new TableColumn<DishInOrder, String>("Name");
-        TableColumn<DishInOrder, String> optionalPickColumn = new TableColumn<DishInOrder, String>("Optional Pick");
-        TableColumn<DishInOrder, String> commentColumn = new TableColumn<DishInOrder, String>("Comment");
-        
-        nameColumn.setCellValueFactory(new PropertyValueFactory<DishInOrder, String>("dishName"));
-        optionalPickColumn.setCellValueFactory(new PropertyValueFactory<DishInOrder, String>("optionalPick"));
-        commentColumn.setCellValueFactory(new PropertyValueFactory<DishInOrder, String>("comment"));
-        
-        // Set preferred width for the columns
-        nameColumn.setPrefWidth(100);
-        optionalPickColumn.setPrefWidth(100);
-        commentColumn.setPrefWidth(200);
-        
-        dishTableView.getColumns().add(nameColumn);
-        dishTableView.getColumns().add(optionalPickColumn);
-        dishTableView.getColumns().add(commentColumn);        
-        
-        // Set up the scene before fetching data
-        vbox.getChildren().add(dishTableView);
-        detailStage.setScene(new Scene(vbox));
-        detailStage.setTitle("Order Details");
-        detailStage.show();
-        
-        // Fetch the dish data from the server
-                   
-        
-            dishTableView.setItems(FXCollections.observableArrayList(OrderDishes));
-        });
-
     }
     /**
      * Shows a dialog apologizing for a delay and providing compensation.
