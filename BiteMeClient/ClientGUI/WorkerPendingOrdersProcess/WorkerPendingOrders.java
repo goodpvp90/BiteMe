@@ -215,11 +215,13 @@ public class WorkerPendingOrders {
      *
      * @param DBOrderList The list of orders from the database.
      */
-    public void SetPendingOrdersFromDB(List<Order> DBOrderList)
-	{
-    	pendingOrders.clear();                            	 
-    	pendingOrders = DBOrderList;   	
-	}
+    public void SetPendingOrdersFromDB(List<Order> DBOrderList) {
+        pendingOrders.clear();  
+        pendingOrders.addAll(DBOrderList);
+        Platform.runLater(() -> {
+            orderTableView.getItems().setAll(pendingOrders);
+        });
+    }
     /**
      * Sets the dishes in orders retrieved from the database.
      *
