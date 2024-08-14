@@ -37,7 +37,7 @@ public class MyOrdersUI extends Application {
 	public void start(Stage primaryStage) throws Exception {
 		FXMLLoader loader = new FXMLLoader(getClass().getResource("MyOrders.fxml"));
 		Parent root = loader.load();
-		primaryStage.setTitle("My Orders");
+		primaryStage.setTitle("Active Deliveries");
 
 		MyOrders controller = loader.getController();
 
