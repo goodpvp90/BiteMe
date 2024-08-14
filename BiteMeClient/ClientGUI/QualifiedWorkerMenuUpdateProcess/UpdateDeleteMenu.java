@@ -247,8 +247,9 @@ public class UpdateDeleteMenu {
      */
     public void setMenuDishes(List<Dish> chosenItemsFromMenu) {
     	this.chosenItemsFromMenu = chosenItemsFromMenu;
-    	
-
+        Platform.runLater(() -> {
+        	menuTableView.getItems().addAll(chosenItemsFromMenu);
+        });
     }
     
     /**
