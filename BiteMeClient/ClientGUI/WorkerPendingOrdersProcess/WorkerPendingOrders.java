@@ -227,39 +227,47 @@ public class WorkerPendingOrders {
      *
      * @param DBDishInOrdersList The list of dishes in orders from the database.
      */
-    public void SetDishInOrdersFromDB(List<DishInOrder> DBDishInOrdersList)
-	{
-    	PendingDishInOrders.clear();                            	 
-    	PendingDishInOrders = DBDishInOrdersList;   	
-	}
+    public void SetDishInOrdersFromDB(List<DishInOrder> DBDishInOrdersList) {
+        PendingDishInOrders.clear();
+        PendingDishInOrders.addAll(DBDishInOrdersList);
+
+        // Now that the data is fetched, show the details.
+        Platform.runLater(() -> {
+            Stage detailStage = new Stage();
+            VBox vbox = new VBox();
+            TableView<DishInOrder> dishTableView = new TableView<>();
+            TableColumn<DishInOrder, String> nameColumn = new TableColumn<>("Name");
+            TableColumn<DishInOrder, String> optionalPickColumn = new TableColumn<>("Optional Pick");
+            TableColumn<DishInOrder, String> commentColumn = new TableColumn<>("Comment");
+
+            nameColumn.setCellValueFactory(new PropertyValueFactory<>("dishName"));
+            optionalPickColumn.setCellValueFactory(new PropertyValueFactory<>("optionalPick"));
+            commentColumn.setCellValueFactory(new PropertyValueFactory<>("comment"));
+
+            nameColumn.setPrefWidth(100);
+            optionalPickColumn.setPrefWidth(100);
+            commentColumn.setPrefWidth(200);
+
+            dishTableView.getColumns().addAll(nameColumn, optionalPickColumn, commentColumn);
+            vbox.getChildren().add(dishTableView);
+            detailStage.setScene(new Scene(vbox));
+            detailStage.setTitle("Order Details");
+            detailStage.show();
+
+            dishTableView.setItems(FXCollections.observableArrayList(PendingDishInOrders));
+        });
+    }
+
     /**
      * Displays the dishes of the selected order in a new stage.
      *
      * @param orderID The ID of the order to display dishes for.
      */
     private void showOrderDetails(int orderID) {
-    	client.sendShowDishesInOrder(orderID,EnumPageForDishInOrder.WORKER); 
-    	Platform.runLater(() -> {
-        Stage detailStage = new Stage();
-        VBox vbox = new VBox();
-        TableView<DishInOrder> dishTableView = new TableView<>();       
-        TableColumn<DishInOrder, String> nameColumn = new TableColumn<>("Name");
-        TableColumn<DishInOrder, String> optionalPickColumn = new TableColumn<>("Optional Pick");
-        TableColumn<DishInOrder, String> commentColumn = new TableColumn<>("Comment");        
-        nameColumn.setCellValueFactory(new PropertyValueFactory<>("dishName"));
-        optionalPickColumn.setCellValueFactory(new PropertyValueFactory<>("optionalPick"));
-        commentColumn.setCellValueFactory(new PropertyValueFactory<>("comment"));
-        nameColumn.setPrefWidth(100);
-        optionalPickColumn.setPrefWidth(100);
-        commentColumn.setPrefWidth(200);
-        dishTableView.getColumns().addAll(nameColumn, optionalPickColumn, commentColumn);       
-        vbox.getChildren().add(dishTableView);
-        detailStage.setScene(new Scene(vbox));
-        detailStage.setTitle("Order Details");
-        detailStage.show();
-        dishTableView.setItems(FXCollections.observableArrayList(PendingDishInOrders));
-        });
+        // Send the request to fetch the dishes for this order.
+        client.sendShowDishesInOrder(orderID, EnumPageForDishInOrder.WORKER);
     }
+
     /**
      * Handles the action of approving an order.
      */
