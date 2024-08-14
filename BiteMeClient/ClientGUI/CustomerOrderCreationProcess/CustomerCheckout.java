@@ -649,6 +649,7 @@ public class CustomerCheckout {
 
 		client.sendCreateOrderRequest(orderNew, chosenItemsFromMenu);
 		client.setDiscountAmount(user.getUsername(), compensation);
+		client.removeClientInOrder();
 		showConfirmationDialog();
 		//launchHomePage();
 	}
@@ -682,7 +683,6 @@ public class CustomerCheckout {
 	 * Creates the home page stage and closes the current stage.
 	 */
 	private void launchHomePage() {
-		client.removeClientInOrder();
 		try {
 	        // Retrieve the existing stage for UserHomePageUI
 	        Stage userHomePageStage = UserHomePageUI.getStage();
