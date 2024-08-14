@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.paint.Color?>
+<?import javafx.scene.paint.LinearGradient?>
+<?import javafx.scene.paint.Stop?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<AnchorPane prefHeight="600" prefWidth="800" styleClass="customer-checkout-page" stylesheets="@/CSS/client.css" xmlns="http://javafx.com/javafx/22" xmlns:fx="http://javafx.com/fxml/1" fx:controller="CustomerOrderCreationProcess.CustomerCheckout">
+    <VBox spacing="20" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <HBox alignment="CENTER_LEFT" spacing="20" styleClass="header">
+            <Text fx:id="receiptText" text="Receipt" wrappingWidth="225.79052734375" />
+            <HBox HBox.hgrow="ALWAYS" />
+            <Button fx:id="backButton" mnemonicParsing="false" onAction="#handleBackButtonAction" prefHeight="36.0" prefWidth="88.0" text="BACK" />
+        </HBox>
+    </VBox>
+    
+    <Button fx:id="confirmOrderButton" layoutX="655.0" layoutY="520.0" onAction="#handleConfirmOrderAction" prefHeight="48.0" prefWidth="174.0" text="CONFIRM ORDER" />
+    
+    <Text fx:id="customerDetailsText" layoutX="28.0" layoutY="112.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Customer Details">
+        <font>
+            <Font name="System Bold" size="16.0" />
+        </font>
+    </Text>
+    <Text fx:id="receiverNameLabel" fill="#0000007f" layoutX="28.0" layoutY="134.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Receiver Name: " />
+    <Text fx:id="phoneNumberLabel" fill="#00000080" layoutX="29.0" layoutY="157.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Phone Number:" />
+    <Text fx:id="deliveryAddressLabel" fill="#00000080" layoutX="28.0" layoutY="180.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Delivery Address:" />
+    <Text fx:id="receiverNameInfoText" fill="WHITE" layoutX="140.0" layoutY="134.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Receiver Name Info" wrappingWidth="163.95179748535156" />
+    <Text fx:id="phoneNumInfoText" fill="WHITE" layoutX="140.0" layoutY="157.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Phone Number Info" wrappingWidth="163.95179748535156" />
+    <Text fx:id="deliveryAddInfoText" fill="WHITE" layoutX="140.0" layoutY="180.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Delivery Address Info" wrappingWidth="163.95179748535156" />
+    
+    <Text fx:id="selectedItemsText" layoutX="28.0" layoutY="214.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Selected Items">
+        <font>
+            <Font name="System Bold" size="16.0" />
+        </font>
+    </Text>
+    <TableView fx:id="menuTableView" layoutX="28.0" layoutY="226.0" prefHeight="287.0" prefWidth="440.0">
+        <columns>
+            <TableColumn fx:id="nameColumn" prefWidth="110.66665077209473" text="Name" />
+            <TableColumn fx:id="priceColumn" prefWidth="64.0" text="Price" />
+            <TableColumn fx:id="optionalsColumn" prefWidth="81.33335876464844" text="Optionals" />
+            <TableColumn fx:id="commentsColumn" prefWidth="179.3333740234375" text="Comments" />
+        </columns>
+    </TableView>
+    
+    <Text fx:id="totalPriceLabel" layoutX="28.0" layoutY="552.0" strokeType="OUTSIDE" strokeWidth="0.0" text="TOTAL PRICE:">
+        <font>
+            <Font name="System Bold" size="20.0" />
+        </font>
+    </Text>
+    <Text fx:id="priceTextInfo" fill="#20a119" layoutX="164.0" layoutY="553.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Price Info" wrappingWidth="459.33331298828125">
+        <font>
+            <Font name="System Bold" size="18.0" />
+        </font>
+    </Text>
+    
+    <Text fx:id="discountsText" layoutX="493.0" layoutY="109.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Discounts">
+        <font>
+            <Font name="System Bold" size="16.0" />
+        </font>
+    </Text>
+    <Text fx:id="earlyLabel" fill="#0000007f" layoutX="493.0" layoutY="132.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Early Supply Time:" />
+    <Text fx:id="sharedDeliveryLabel" fill="#0000007f" layoutX="493.0" layoutY="157.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Shared Delivery:" />
+    <Text fx:id="lateOrderCompensationLabel" fill="#0000007f" layoutX="493.0" layoutY="182.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Late Order Compensation:" />
+    <Text fx:id="earlyInfoText" fill="WHITE" layoutX="640.0" layoutY="132.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Early Delivery Info" wrappingWidth="202.6184844970703" />
+    <Text fx:id="sharedDeliveryInfoText" layoutX="640.0" layoutY="157.0" strokeType="OUTSIDE" strokeWidth="0.0" text="User not eligible" wrappingWidth="184.8638916015625">
+      <fill>
+         <LinearGradient endX="1.0" endY="1.0">
+            <stops>
+               <Stop>
+                  <color>
+                     <Color red="1.0" green="1.0" blue="1.0" />
+                  </color>
+               </Stop>
+               <Stop offset="1.0">
+                  <color>
+                     <Color red="1.0" green="1.0" blue="1.0" />
+                  </color>
+               </Stop>
+            </stops>
+         </LinearGradient>
+      </fill></Text>
+    <Text fx:id="lateOrderDeliveryInfoText" fill="WHITE" layoutX="640.0" layoutY="182.0" strokeType="OUTSIDE" strokeWidth="0.0" text="User not eligible" />
+    
+    <Text fx:id="compensationText" fill="#967a7a" layoutX="493.0" layoutY="216.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Compensation" visible="false">
+        <font>
+            <Font name="System Bold" size="16.0" />
+        </font>
+    </Text>
+    <Text fx:id="compensationMessageText" fill="WHITE" layoutX="493.0" layoutY="231.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Hello!&#10;We have found you eligible for 50% off a compensation&#10;for a past late order.&#10;Would you like to use it?" visible="false" wrappingWidth="329.0" />
+    <Button fx:id="yesButton" layoutX="493.0" layoutY="311.0" mnemonicParsing="false" onAction="#handleYesCompensationButton" text="Yes" visible="false" />
+    <Button fx:id="noButton" layoutX="548.0" layoutY="311.0" mnemonicParsing="false" onAction="#handleNoCompensationButton" text="No" visible="false" />
+    <Text fx:id="compensationValueText" fill="WHITE" layoutX="493.0" layoutY="301.0" strokeType="OUTSIDE" strokeWidth="0.0" text="You got Text Compensation" visible="false" />
+    <Text fx:id="errorText" fill="RED" layoutX="530.0" layoutY="471.0" nodeOrientation="RIGHT_TO_LEFT" strokeType="OUTSIDE" strokeWidth="0.0" text="ErrorText" textAlignment="RIGHT" visible="false" wrappingWidth="300.0">
+        <font>
+            <Font size="14.0" />
+        </font>
+    </Text>
+</AnchorPane>

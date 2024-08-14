@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.chart.StackedBarChart?>
+<?import javafx.scene.chart.CategoryAxis?>
+<?import javafx.scene.chart.NumberAxis?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.HBox?>
+
+<VBox xmlns:fx="http://javafx.com/fxml/1" fx:controller="UpperManagementReportProcess.PerformanceReportController"
+      alignment="CENTER" spacing="10" style="-fx-background-color: white;" stylesheets="@/CSS/client.css">
+    <padding>
+        <Insets top="20" right="20" bottom="20" left="20"/>
+    </padding>
+    <Label text="Performance Report" style="-fx-font-size: 24; -fx-font-weight: bold;"/>
+    <Label fx:id="branchLabel" style="-fx-font-size: 16;"/>
+    <Label fx:id="monthYearLabel" style="-fx-font-size: 16;"/>
+    <StackedBarChart fx:id="performanceChart" prefHeight="400" prefWidth="800" styleClass="stack-bar-chart">
+        <xAxis>
+            <CategoryAxis fx:id="xAxis" side="BOTTOM" />
+        </xAxis>
+        <yAxis>
+            <NumberAxis fx:id="yAxis" side="LEFT" />
+        </yAxis>
+    </StackedBarChart>
+    <Label fx:id="performancePercentageLabel" style="-fx-font-size: 18; -fx-font-weight: bold; -fx-text-fill: #2ecc71;"/>
+    <Button text="Close" onAction="#handleClose" style="-fx-background-color: #3498db; -fx-text-fill: white; -fx-padding: 8 16;"/>
+</VBox>
