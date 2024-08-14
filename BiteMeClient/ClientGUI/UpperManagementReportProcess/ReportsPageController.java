@@ -558,7 +558,6 @@ public class ReportsPageController {
      */
     @FXML
     private void handleQuarterlyReport(ActionEvent event) {
-        System.out.println("Quarterly Report button clicked");
         String branch = branchDropdown.getValue();
         String quarterStr = quarterDropdown.getValue();
         String yearStr = quarterYearDropdown.getValue();        
@@ -593,7 +592,6 @@ public class ReportsPageController {
      * @param event The ActionEvent triggered by clicking the quarterly report button.
      */
     public void handleQuarterlyReportResponse(QuarterlyReport qreport, List<Double> monthlyIncomes) {
-        System.out.println("Received quarterly report response");
         Platform.runLater(() -> {
             if (qreport != null && monthlyIncomes != null) {
                 openQuarterlyReportWindow(qreport, monthlyIncomes);
