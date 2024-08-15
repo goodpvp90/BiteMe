@@ -356,6 +356,15 @@ public class CustomerCheckout {
      */
 	public void setCompensation(double compensation) {
 		this.compensation = compensation;
+		Platform.runLater(() -> {
+			if (compensation != 0) {
+				isdeservingCompensation = true;
+				showCompensationText(true);
+				compensationValueText.setText("You deserve: " + compensation);
+				lateOrderDeliveryInfoText.setText("Please Choose yes/no.");
+			}
+		});
+		
 	}
     
 	
